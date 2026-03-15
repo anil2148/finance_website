@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { fetcher } from '@/lib/api/fetcher';
 import type { ExchangeRateResponse, SupportedCurrency } from '@/lib/api/currency';
+import { getLocaleForCurrency } from '@/lib/utils';
 
 type PreferenceContextValue = {
   currency: SupportedCurrency;
@@ -94,7 +95,7 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
       formatCurrency: (rawValue: number, maximumFractionDigits = 0) => {
         const source = Number.isFinite(rawValue) ? rawValue : 0;
 
-        return new Intl.NumberFormat(undefined, {
+        return new Intl.NumberFormat(getLocaleForCurrency(currency), {
           style: 'currency',
           currency,
           maximumFractionDigits
