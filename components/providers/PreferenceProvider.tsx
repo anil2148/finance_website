@@ -1,13 +1,14 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-
-type SupportedCurrency = 'USD' | 'EUR' | 'GBP' | 'INR' | 'CAD' | 'AUD';
+import { fetcher } from '@/lib/api/fetcher';
+import type { ExchangeRateResponse, SupportedCurrency } from '@/lib/api/currency';
 
 type PreferenceContextValue = {
   currency: SupportedCurrency;
   country: string;
   darkMode: boolean;
+  isRatesLoading: boolean;
   setCurrency: (currency: SupportedCurrency) => void;
   setCountry: (country: string) => void;
   toggleDarkMode: () => void;
@@ -17,11 +18,21 @@ type PreferenceContextValue = {
 const PreferenceContext = createContext<PreferenceContextValue | null>(null);
 
 const STORAGE_KEY = 'finance-site-preferences';
+const DEFAULT_RATES: Record<SupportedCurrency, number> = {
+  USD: 1,
+  EUR: 0.92,
+  GBP: 0.79,
+  INR: 83.1,
+  CAD: 1.36,
+  AUD: 1.51
+};
 
 export function PreferenceProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrency] = useState<SupportedCurrency>('USD');
   const [country, setCountry] = useState('United States');
   const [darkMode, setDarkMode] = useState(false);
+  const [rates, setRates] = useState<Record<SupportedCurrency, number>>(DEFAULT_RATES);
+  const [isRatesLoading, setIsRatesLoading] = useState(true);
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -42,22 +53,57 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
     document.documentElement.classList.toggle('dark', darkMode);
   }, [country, currency, darkMode]);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadRates() {
+      setIsRatesLoading(true);
+
+      try {
+        const data = await fetcher<ExchangeRateResponse>(`/api/exchange-rates?base=USD`);
+        if (!cancelled) {
+          setRates(data.rates);
+        }
+      } catch {
+        if (!cancelled) {
+          setRates(DEFAULT_RATES);
+        }
+      } finally {
+        if (!cancelled) {
+          setIsRatesLoading(false);
+        }
+      }
+    }
+
+    loadRates();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currency]);
+
   const value = useMemo<PreferenceContextValue>(
     () => ({
       currency,
       country,
       darkMode,
+      isRatesLoading,
       setCurrency,
       setCountry,
       toggleDarkMode: () => setDarkMode((prev) => !prev),
-      formatCurrency: (value: number, maximumFractionDigits = 0) =>
-        new Intl.NumberFormat(undefined, {
+      formatCurrency: (rawValue: number, maximumFractionDigits = 0) => {
+        const source = Number.isFinite(rawValue) ? rawValue : 0;
+        const multiplier = rates[currency] ?? DEFAULT_RATES[currency] ?? 1;
+        const convertedValue = source * multiplier;
+
+        return new Intl.NumberFormat(undefined, {
           style: 'currency',
           currency,
           maximumFractionDigits
-        }).format(Number.isFinite(value) ? value : 0)
+        }).format(convertedValue);
+      }
     }),
-    [country, currency, darkMode]
+    [country, currency, darkMode, isRatesLoading, rates]
   );
 
   return <PreferenceContext.Provider value={value}>{children}</PreferenceContext.Provider>;
