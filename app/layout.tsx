@@ -9,12 +9,12 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 export const metadata: Metadata = {
   metadataBase: new URL('https://finance-site.vercel.app'),
   title: {
-    default: 'FinanceSite | Interactive Personal Finance Platform',
-    template: '%s | FinanceSite'
+    default: 'FinanceSphere | Interactive Personal Finance Platform',
+    template: '%s | FinanceSphere'
   },
   description: 'Interactive personal finance calculators, comparison tools, and market insights with modern fintech UX.',
   openGraph: {
-    title: 'FinanceSite | Interactive Personal Finance Platform',
+    title: 'FinanceSphere | Interactive Personal Finance Platform',
     description: 'Interactive calculators, dashboard analytics, and conversion-focused comparison content.',
     type: 'website'
   }

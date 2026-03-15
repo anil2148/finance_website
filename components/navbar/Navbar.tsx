@@ -24,7 +24,7 @@ export function Navbar() {
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-700 dark:bg-slate-950/90">
       <nav className="mx-auto max-w-7xl px-4 py-3">
         <div className="flex items-center justify-between gap-3">
-          <Link className="text-lg font-semibold text-brand" href="/">FinanceSite</Link>
+          <Link className="text-lg font-semibold text-brand" href="/">FinanceSphere</Link>
 
           <button className="rounded-lg border p-2 md:hidden" onClick={() => setOpen((prev) => !prev)} aria-label="Toggle menu">
             {open ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
