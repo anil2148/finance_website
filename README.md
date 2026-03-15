@@ -16,49 +16,82 @@ A JAMstack personal finance platform to compare products, use calculators, and r
 ```txt
 finance-site/
 ├─ app/
+│  └─ calculators/
+│     ├─ mortgage-calculator/
+│     ├─ loan-calculator/
+│     ├─ retirement-calculator/
+│     ├─ compound-interest-calculator/
+│     └─ ... (15 calculator routes)
 ├─ components/
-├─ data/
-├─ content/blog/
+│  └─ calculators/
+│     ├─ CalculatorLayout.tsx
+│     ├─ InputSlider.tsx
+│     ├─ ResultCard.tsx
+│     ├─ ChartProjection.tsx
+│     └─ CalculatorHeader.tsx
 ├─ lib/
-├─ public/images/
+│  └─ calculators/
+│     ├─ mortgage.ts
+│     ├─ loan.ts
+│     ├─ compoundInterest.ts
+│     ├─ retirement.ts
+│     ├─ registry.ts
+│     └─ engine.ts
+├─ content/blog/
 ├─ styles/
-├─ scripts/
-├─ tailwind.config.ts
-├─ next.config.js
-├─ tsconfig.json
 └─ package.json
 ```
+
+## Scalable calculator system
+
+The calculator engine is designed to scale to 100+ calculators using a shared definition registry.
+
+1. Add a compute function in `lib/calculators`.
+2. Register the calculator in `lib/calculators/registry.ts` with:
+   - slug, SEO title/description
+   - FAQ content (used for FAQ schema)
+   - internal blog links
+   - default input values
+3. Add a route in `app/calculators/<slug>/page.tsx` that calls the shared `CalculatorPage`.
+
+### Shared UI features
+- Input form + sliders for key financial assumptions
+- Real-time calculation updates
+- Result summary cards
+- Projection charts (growth, amortization, pie, bar)
+- Breakdown tables
+- Tooltip text for financial terminology
+- Mobile-first responsive fintech UI
+
+### Implemented calculators
+- Mortgage Calculator
+- Loan Calculator
+- Compound Interest Calculator
+- Retirement Calculator
+- Credit Card Payoff Calculator
+- Savings Goal Calculator
+- Debt Snowball Calculator
+- Debt Avalanche Calculator
+- Investment Growth Calculator
+- FIRE Calculator
+- Net Worth Calculator
+- Budget Planner
+- Salary After Tax Calculator
+- Auto Loan Calculator
+- Student Loan Calculator
+- Debt Payoff Calculator
 
 ## Local setup
 
 ```bash
-npx create-next-app finance-site
-cd finance-site
 pnpm install
 pnpm dev
 ```
 
-Then open <http://localhost:3000>.
+Then open <http://localhost:3000/calculators>.
 
-## Generate 100 blog posts
+## Generate blog posts
 
 ```bash
 pnpm generate:blog
 ```
-
-## Deploy to Vercel
-1. Push this repository to GitHub.
-2. Import the project in Vercel.
-3. Keep framework preset as **Next.js**.
-4. Build command: `pnpm build`
-5. Output: `.next`
-6. Deploy.
-
-## GitHub push instructions
-
-```bash
-git add .
-git commit -m "feat: build finance platform with comparisons, calculators, blog, and SEO"
-git push origin <branch-name>
-```
-
