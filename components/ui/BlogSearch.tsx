@@ -4,15 +4,18 @@ import { useMemo, useState } from 'react';
 import Fuse from 'fuse.js';
 import { BlogCard } from '@/components/ui/BlogCard';
 import type { BlogPost } from '@/lib/markdown';
+import { usePreferences } from '@/components/providers/PreferenceProvider';
 
 export function BlogSearch({ posts }: { posts: BlogPost[] }) {
   const [query, setQuery] = useState('');
+  const { country } = usePreferences();
 
   const results = useMemo(() => {
-    if (!query) return posts.slice(0, 48);
-    const fuse = new Fuse(posts, { keys: ['title', 'description', 'tags', 'category'], threshold: 0.3 });
+    const countryPosts = posts.filter((post) => post.country === 'global' || post.country === country);
+    if (!query) return countryPosts.slice(0, 48);
+    const fuse = new Fuse(countryPosts, { keys: ['title', 'description', 'tags', 'category'], threshold: 0.3 });
     return fuse.search(query).map((result) => result.item);
-  }, [posts, query]);
+  }, [country, posts, query]);
 
   return (
     <div className="space-y-4">
@@ -25,6 +28,7 @@ export function BlogSearch({ posts }: { posts: BlogPost[] }) {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {results.map((p) => <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} />)}
       </div>
+      {results.length === 0 && <p className="text-sm text-slate-500">No articles available for {country}. Showing global content when available.</p>}
     </div>
   );
 }

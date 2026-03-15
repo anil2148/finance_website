@@ -7,11 +7,11 @@ import { getLocaleForCurrency } from '@/lib/utils';
 
 type PreferenceContextValue = {
   currency: SupportedCurrency;
-  country: string;
+  country: 'US' | 'India' | 'UK' | 'Canada';
   darkMode: boolean;
   isRatesLoading: boolean;
   setCurrency: (currency: SupportedCurrency) => void;
-  setCountry: (country: string) => void;
+  setCountry: (country: 'US' | 'India' | 'UK' | 'Canada') => void;
   toggleDarkMode: () => void;
   formatCurrency: (value: number, maximumFractionDigits?: number) => string;
 };
@@ -30,7 +30,7 @@ const DEFAULT_RATES: Record<SupportedCurrency, number> = {
 
 export function PreferenceProvider({ children }: { children: React.ReactNode }) {
   const [currency, setCurrency] = useState<SupportedCurrency>('USD');
-  const [country, setCountry] = useState('United States');
+  const [country, setCountry] = useState<'US' | 'India' | 'UK' | 'Canada'>('US');
   const [darkMode, setDarkMode] = useState(false);
   const [rates, setRates] = useState<Record<SupportedCurrency, number>>(DEFAULT_RATES);
   const [isRatesLoading, setIsRatesLoading] = useState(true);
@@ -40,7 +40,7 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
     if (!raw) return;
 
     try {
-      const parsed = JSON.parse(raw) as { currency?: SupportedCurrency; country?: string; darkMode?: boolean };
+      const parsed = JSON.parse(raw) as { currency?: SupportedCurrency; country?: 'US' | 'India' | 'UK' | 'Canada'; darkMode?: boolean };
       if (parsed.currency) setCurrency(parsed.currency);
       if (parsed.country) setCountry(parsed.country);
       if (typeof parsed.darkMode === 'boolean') setDarkMode(parsed.darkMode);

@@ -11,7 +11,7 @@ export default function HighYieldSavingsAccountsPage() {
     <SeoComparisonPage
       pageTitle="High Yield Savings Accounts"
       intro="Find high-yield savings options with competitive APYs, low fees, and digital features that make it easier to build your emergency fund."
-      category="high-yield-savings"
+      category="savings_account"
       slug="high-yield-savings-accounts"
       faq={[
         { question: 'Is high-yield savings better than a traditional savings account?', answer: 'High-yield accounts usually provide significantly better APY than traditional branch savings accounts.' },

@@ -11,7 +11,7 @@ export default function BestSavingsAccountsUSAPage() {
     <SeoComparisonPage
       pageTitle="Best Savings Accounts USA"
       intro="Explore top U.S. savings accounts with competitive APYs, low fees, and flexible access so you can grow cash reserves while staying liquid."
-      category="savings-accounts"
+      category="savings_account"
       slug="best-savings-accounts-usa"
       faq={[
         { question: 'Are online savings accounts safe?', answer: 'Yes, if the institution is FDIC-insured, deposits are protected up to applicable limits.' },
