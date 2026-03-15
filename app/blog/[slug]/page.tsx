@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
 import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
 import { articleSchema } from '@/lib/seo';
+import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
@@ -12,16 +13,25 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = getPostBySlug(params.slug);
   if (!post) return {};
+  const canonicalPath = `/blog/${post.slug}`;
+
   return {
     title: post.seoTitle ?? post.title,
     description: post.metaDescription ?? post.description,
-    openGraph: { title: post.title, description: post.description, type: 'article' }
+    alternates: { canonical: canonicalPath },
+    openGraph: { title: post.title, description: post.description, type: 'article', url: `https://financesphere.io${canonicalPath}` },
+    twitter: { card: 'summary_large_image', title: post.title, description: post.description }
   };
 }
 
 export default function BlogArticlePage({ params }: { params: { slug: string } }) {
   const post = getPostBySlug(params.slug);
   if (!post) notFound();
+
+  const posts = getPosts();
+  const relatedPosts = posts
+    .filter((item) => item.slug !== post.slug && (item.category === post.category || item.tags.some((tag) => post.tags.includes(tag))))
+    .slice(0, 3);
 
   const schema = articleSchema(post.title, post.description, post.slug);
   const toc = getHeadings(post.content);
@@ -42,6 +52,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <header className="space-y-2">
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <p className="text-slate-600">{post.description}</p>
+        {/* Sharing: social share buttons improve distribution and backlink opportunities. */}
+        <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
       </header>
 
       <section className="rounded-lg border bg-slate-50 p-4">
@@ -84,6 +96,20 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           <Link className="rounded-full border px-3 py-1" href="/tools">Finance tools</Link>
           <Link className="rounded-full border px-3 py-1" href="/comparison">Comparison pages</Link>
         </div>
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-xl font-semibold">Related articles</h2>
+        <ul className="grid gap-2 text-sm">
+          {relatedPosts.map((related) => (
+            <li key={related.slug}>
+              <Link href={`/blog/${related.slug}`} className="text-blue-700 hover:underline">
+                {related.title}
+              </Link>
+            </li>
+          ))}
+          {relatedPosts.length === 0 && <li className="text-slate-500">More related guides coming soon.</li>}
+        </ul>
       </section>
     </article>
   );

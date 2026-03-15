@@ -7,7 +7,8 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: 'Financial Calculators',
-  description: 'Explore interactive financial calculators with live slider inputs, result cards, and Recharts projections.'
+  description: 'Explore interactive financial calculators with live slider inputs, result cards, and Recharts projections.',
+  alternates: { canonical: '/calculators' }
 };
 
 export default function CalculatorsPage() {

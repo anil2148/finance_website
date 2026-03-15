@@ -4,6 +4,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 
+
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 type OfferRecord = {
   category: string;
   bank: string;
@@ -144,6 +151,7 @@ export function ComparisonPageClient() {
 
               <a
                 href={offer.affiliate_url}
+                onClick={() => window.gtag?.('event', 'affiliate_click', { offer_name: offer.name, offer_category: offer.category, placement: 'comparison_page' })}
                 className="comparison-cta"
                 target="_blank"
                 rel="noopener noreferrer"

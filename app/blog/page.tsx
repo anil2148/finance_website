@@ -1,9 +1,16 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BlogSearch } from '@/components/ui/BlogSearch';
 import { getCategories, getPosts, getTags } from '@/lib/markdown';
 import { NewsletterForm } from '@/components/NewsletterForm';
 
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  title: 'Blog',
+  description: 'Read personal finance guides, calculator explainers, and product comparison insights from FinanceSphere.',
+  alternates: { canonical: '/blog' }
+};
 
 export default function BlogPage() {
   const posts = getPosts();

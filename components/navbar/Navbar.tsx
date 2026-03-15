@@ -37,7 +37,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-700 dark:bg-slate-950/90">
-      <nav className="mx-auto max-w-7xl px-4 py-3">
+      <nav className="mx-auto max-w-7xl px-4 py-3" role="navigation" aria-label="Primary">
         <div className="flex items-center justify-between gap-3">
           <Link className="text-lg font-semibold text-brand" href="/">FinanceSphere</Link>
 
@@ -46,16 +46,16 @@ export function Navbar() {
           </button>
 
           <div className="hidden items-center gap-3 md:flex">
-            <ul className="flex gap-4 text-sm">
+            <ul className="flex gap-4 text-sm" role="menubar">
               {links.map((item) => (
-                <li key={item.label} className="relative group">
+                <li key={item.label} className="relative group" role="none">
                   {item.href ? (
-                    <Link className="hover:text-brand" href={item.href}>{item.label}</Link>
+                    <Link className="hover:text-brand" href={item.href} role="menuitem">{item.label}</Link>
                   ) : (
                     <>
-                      <Link className="comparison-nav-trigger" href="/comparison">{item.label}</Link>
+                      <Link className="comparison-nav-trigger" href="/comparison" role="menuitem" aria-haspopup="true">{item.label}</Link>
                       {/* Flyout menu for comparison categories on desktop. */}
-                      <ul className="comparison-dropdown">
+                      <ul className="comparison-dropdown" role="menu" aria-label="Comparison categories">
                         {item.children?.map((child) => (
                           <li key={child.href}>
                             <Link className="comparison-dropdown-link" href={child.href}>{child.label}</Link>

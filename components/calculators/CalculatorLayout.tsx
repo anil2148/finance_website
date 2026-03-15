@@ -9,6 +9,7 @@ import { InputSlider } from '@/components/calculators/InputSlider';
 import { ResultCard } from '@/components/calculators/ResultCard';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import { calculatorDefinitions, calculatorMap } from '@/lib/calculators/registry';
+import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { BaseCalculatorInputs } from '@/lib/calculators/types';
 import { getCurrencySymbol, getLocaleForCurrency, resolveCurrencyPrefix } from '@/lib/utils';
 
@@ -38,10 +39,13 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   }, [definition]);
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
+  const relatedCalculators = calculatorDefinitions.filter((item) => item.slug !== slug).slice(0, 3);
 
   return (
     <section className="space-y-8 pb-16">
       <CalculatorHeader title={definition.title} description={definition.description} />
+      {/* Sharing: encourage backlinks and distribution for calculator/tool pages. */}
+      <SocialShareButtons title={definition.title} url={`https://financesphere.io/calculators/${slug}`} />
 
       <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
         <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -117,9 +121,28 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <Link className="text-indigo-600 hover:text-indigo-800" href={link.href}>{link.title}</Link>
               </li>
             ))}
+            <li>
+              {/* Internal linking: guide users from calculator results to comparison intent pages. */}
+              <Link className="text-indigo-600 hover:text-indigo-800" href="/comparison">Compare financial products</Link>
+            </li>
           </ul>
         </div>
       </div>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold">Related calculators</h2>
+        <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+          {relatedCalculators.map((item) => (
+            <li key={item.slug}>
+              <Link className="text-indigo-600 hover:text-indigo-800" href={`/calculators/${item.slug}`}>
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
     </section>
   );
 }
+
