@@ -1,53 +1,158 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card } from '@/components/ui/card';
-import { comparisonProducts } from '@/data/comparisonProducts';
+
+type OfferRecord = {
+  category: string;
+  bank: string;
+  name: string;
+  rating: number;
+  apr_apy: string;
+  pros: string[];
+  cons: string[];
+  affiliate_url: string;
+};
+
+const categories = [
+  { label: 'Credit Cards', value: 'credit-cards' },
+  { label: 'Savings Accounts', value: 'savings-accounts' },
+  { label: 'Loans', value: 'loans' },
+  { label: 'Investment Apps', value: 'investment-apps' }
+] as const;
 
 export function ComparisonPageClient() {
-  const [category, setCategory] = useState('all');
-  const [sortBy, setSortBy] = useState<'rating' | 'name'>('rating');
+  const searchParams = useSearchParams();
 
-  const filtered = useMemo(() => {
-    const base = category === 'all' ? comparisonProducts : comparisonProducts.filter((item) => item.category === category);
-    return [...base].sort((a, b) => (sortBy === 'rating' ? b.rating - a.rating : a.name.localeCompare(b.name)));
-  }, [category, sortBy]);
+  // Reads category from the URL so nav links can deep-link to specific lists.
+  const initialCategory = searchParams.get('category') ?? categories[0].value;
+
+  const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [offers, setOffers] = useState<OfferRecord[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setActiveCategory(initialCategory);
+  }, [initialCategory]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    // Fetches real-time offer data from the JSON endpoint.
+    async function loadOffers() {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await fetch('/offers.json', { cache: 'no-store' });
+
+        if (!response.ok) {
+          throw new Error(`Failed to load offers (${response.status})`);
+        }
+
+        const payload = (await response.json()) as OfferRecord[];
+        if (!cancelled) {
+          setOffers(payload);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : 'Unable to load offers.');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadOffers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Filters selected category and sorts by highest rating first.
+  const visibleOffers = useMemo(
+    () => offers
+      .filter((offer) => offer.category === activeCategory)
+      .sort((left, right) => right.rating - left.rating),
+    [activeCategory, offers]
+  );
+
+  const heading = categories.find((item) => item.value === activeCategory)?.label ?? 'Comparison';
 
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Comparison Engine</h1>
-        <p className="text-slate-600">Sort, filter, and evaluate top products with ratings, pros/cons, and affiliate actions.</p>
+        <h1 className="text-3xl font-bold">Comparison</h1>
+        <p className="text-slate-600">Use the category menu to compare top offers by rating, APR/APY, and key trade-offs.</p>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <select className="rounded-lg border px-3 py-2" value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="all">All categories</option>
-          <option value="credit-cards">Credit cards</option>
-          <option value="personal-loans">Personal loans</option>
-          <option value="mortgage-lenders">Mortgage lenders</option>
-          <option value="savings-accounts">Savings accounts</option>
-          <option value="investment-apps">Investment apps</option>
-        </select>
-        <select className="rounded-lg border px-3 py-2" value={sortBy} onChange={(e) => setSortBy(e.target.value as 'rating' | 'name')}>
-          <option value="rating">Sort by rating</option>
-          <option value="name">Sort by name</option>
-        </select>
-      </div>
-
-      <div className="grid gap-4">
-        {filtered.map((product) => (
-          <Card key={product.id} className="grid gap-4 md:grid-cols-[1.3fr_1fr_auto] md:items-center">
-            <div>
-              <h2 className="text-lg font-semibold">{product.name}</h2>
-              <p className="text-sm text-slate-500">Rating: {product.rating} · APR/APY: {product.apr}</p>
-              <p className="mt-2 text-sm"><span className="font-medium">Pros:</span> {product.pros.join(', ')}</p>
-              <p className="text-sm"><span className="font-medium">Cons:</span> {product.cons.join(', ')}</p>
-            </div>
-            <div className="text-sm text-slate-600">{product.category.replace('-', ' ')}</div>
-            <a href={product.affiliateUrl} className="rounded-lg bg-brand px-4 py-2 text-center font-semibold text-white">View Offer</a>
-          </Card>
+      {/* Category menu used to fetch/filter rendered offers by section. */}
+      <nav aria-label="Comparison categories" className="comparison-menu">
+        {categories.map((category) => (
+          <button
+            key={category.value}
+            type="button"
+            className={`comparison-menu-item ${activeCategory === category.value ? 'comparison-menu-item-active' : ''}`}
+            onClick={() => setActiveCategory(category.value)}
+          >
+            {category.label}
+          </button>
         ))}
+      </nav>
+
+      <div className="space-y-4">
+        <h2 className="text-2xl font-semibold">{heading}</h2>
+
+        {loading && <p className="text-sm text-slate-500">Loading latest offers...</p>}
+        {error && <p className="text-sm text-red-600">{error}</p>}
+
+        {!loading && !error && visibleOffers.length === 0 && (
+          <p className="text-sm text-slate-500">No offers found in this category right now.</p>
+        )}
+
+        {/* Render each offer card with bank, details, pros/cons, and affiliate link. */}
+        <div className="grid gap-4">
+          {visibleOffers.map((offer) => (
+            <Card key={`${offer.bank}-${offer.name}`} className="comparison-offer-card">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-brand">{offer.bank}</p>
+                <h3 className="text-lg font-semibold">{offer.name}</h3>
+                <p className="text-sm text-slate-600">APR/APY: {offer.apr_apy} · Rating: {offer.rating.toFixed(1)}</p>
+              </div>
+
+              <div>
+                <p className="mb-1 text-sm font-semibold text-emerald-700">Pros</p>
+                <ul className="comparison-list">
+                  {offer.pros.map((pro) => (
+                    <li key={pro}>{pro}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <p className="mb-1 text-sm font-semibold text-rose-700">Cons</p>
+                <ul className="comparison-list">
+                  {offer.cons.map((con) => (
+                    <li key={con}>{con}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <a
+                href={offer.affiliate_url}
+                className="comparison-cta"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View Offer
+              </a>
+            </Card>
+          ))}
+        </div>
       </div>
     </section>
   );
