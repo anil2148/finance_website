@@ -9,7 +9,8 @@
     "lint": "next lint",
     "generate:blog": "node scripts/generate-blog.mjs",
     "test": "node tests/run-tests.js",
-    "postbuild": "node generate-sitemap.js"
+    "postbuild": "node generate-sitemap.js",
+    "sitemap:watch": "node scripts/sitemap-watch.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
