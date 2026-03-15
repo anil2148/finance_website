@@ -26,7 +26,7 @@ export default function BlogPage() {
 
       <div className="flex flex-wrap gap-2 text-xs">
         {tags.map((tag) => (
-          <Link key={tag} href={`/blog/tag/${tag}`} className="rounded-full border px-3 py-1 text-slate-600">
+          <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-full border px-3 py-1 text-slate-600">
             #{tag}
           </Link>
         ))}

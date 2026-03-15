@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
+import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
 import { articleSchema } from '@/lib/seo';
 
 export function generateStaticParams() {
@@ -46,7 +47,13 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <section className="rounded-lg border bg-slate-50 p-4">
         <h2 className="font-semibold">Table of contents</h2>
         <ul className="mt-2 list-disc pl-5 text-sm text-slate-700">
-          {toc.map((item) => <li key={item}>{item}</li>)}
+          {toc.map((item) => (
+            <li key={item}>
+              <a className="hover:text-slate-900 hover:underline" href={`#${item.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')}`}>
+                {item}
+              </a>
+            </li>
+          ))}
         </ul>
       </section>
 
@@ -62,7 +69,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         </table>
       </section>
 
-      <pre className="whitespace-pre-wrap rounded-xl bg-slate-900 p-4 text-slate-50">{post.content}</pre>
+      <InteractiveArticleContent content={post.content} />
 
       <section className="rounded-xl bg-blue-600 p-5 text-white">
         <h3 className="text-xl font-semibold">Affiliate partner offers</h3>
