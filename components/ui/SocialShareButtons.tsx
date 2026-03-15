@@ -10,7 +10,7 @@ export function SocialShareButtons({ url, title }: SocialShareButtonsProps) {
   const encodedTitle = encodeURIComponent(title);
 
   const links = [
-    { label: 'Share on X', href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}` },
+    { label: 'Share on Twitter', href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}` },
     { label: 'Share on Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` },
     { label: 'Share on LinkedIn', href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}` }
   ];

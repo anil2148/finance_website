@@ -19,10 +19,11 @@ const links: NavLink[] = [
     // Comparison nav group with direct links for each category.
     label: 'Comparison',
     children: [
-      { label: 'Credit Cards', href: '/comparison?category=credit-cards' },
-      { label: 'Savings Accounts', href: '/comparison?category=savings-accounts' },
-      { label: 'Loans', href: '/comparison?category=loans' },
-      { label: 'Investment Apps', href: '/comparison?category=investment-apps' }
+      { label: 'Best Credit Cards 2026', href: '/compare/best-credit-cards-2026' },
+      { label: 'Best Savings Accounts USA', href: '/compare/best-savings-accounts-usa' },
+      { label: 'Best Investment Apps', href: '/compare/best-investment-apps' },
+      { label: 'Mortgage Rate Comparison', href: '/compare/mortgage-rate-comparison' },
+      { label: 'High Yield Savings Accounts', href: '/compare/high-yield-savings-accounts' }
     ]
   },
   { label: 'Blog', href: '/blog' }
