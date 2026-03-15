@@ -3,27 +3,35 @@ import type { Metadata } from 'next';
 import { Navbar } from '@/components/navbar/Navbar';
 import { Footer } from '@/components/footer/Footer';
 import { PageTransition } from '@/components/ui/PageTransition';
+import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
+import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://finance-site.vercel.app'),
-  title: 'FinanceSite | Modern Personal Finance SaaS Platform',
-  description: 'SEO finance content, calculators, dashboard analytics, comparison tools, and newsletter growth in one platform.',
+  title: {
+    default: 'FinanceSite | Interactive Personal Finance Platform',
+    template: '%s | FinanceSite'
+  },
+  description: 'Interactive personal finance calculators, comparison tools, and market insights with modern fintech UX.',
   openGraph: {
-    title: 'FinanceSite | Modern Personal Finance SaaS Platform',
-    description: 'Interactive calculators, financial dashboard, and high-converting comparison content.',
+    title: 'FinanceSite | Interactive Personal Finance Platform',
+    description: 'Interactive calculators, dashboard analytics, and conversion-focused comparison content.',
     type: 'website'
   }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-slate-50 text-slate-900">
-        <Navbar />
-        <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">
-          <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer />
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+        <PreferenceProvider>
+          <Navbar />
+          <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">
+            <Breadcrumbs />
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <Footer />
+        </PreferenceProvider>
       </body>
     </html>
   );
