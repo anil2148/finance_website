@@ -1,0 +1,82 @@
+import { BaseCalculatorInputs, ProjectionPoint } from '@/lib/calculators/types';
+
+export const toMonthlyRate = (annualRate: number) => annualRate / 100 / 12;
+
+export const clampNumber = (value: number, min = 0) => Math.max(min, value);
+
+export const paymentFromPrincipal = (principal: number, annualRate: number, years: number) => {
+  const months = Math.max(1, Math.round(years * 12));
+  const monthlyRate = toMonthlyRate(annualRate);
+
+  if (monthlyRate === 0) {
+    return principal / months;
+  }
+
+  return (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+};
+
+export const buildInvestmentProjection = (inputs: BaseCalculatorInputs, initial = inputs.loanAmount) => {
+  const months = Math.max(1, Math.round(inputs.years * 12));
+  const monthlyReturn = toMonthlyRate(inputs.expectedReturn);
+  const projection: ProjectionPoint[] = [];
+
+  let balance = initial;
+  let contributed = initial;
+
+  for (let month = 1; month <= months; month += 1) {
+    balance = balance * (1 + monthlyReturn) + inputs.monthlyContribution;
+    contributed += inputs.monthlyContribution;
+
+    projection.push({
+      month,
+      year: month / 12,
+      balance,
+      contributed,
+      interestEarned: balance - contributed
+    });
+  }
+
+  return projection;
+};
+
+export const buildAmortizationProjection = (inputs: BaseCalculatorInputs, payment?: number) => {
+  const months = Math.max(1, Math.round(inputs.years * 12));
+  const monthlyRate = toMonthlyRate(inputs.interestRate);
+  const monthlyPayment = payment ?? paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years);
+  const projection: ProjectionPoint[] = [];
+
+  let balance = inputs.loanAmount;
+  let principalPaidTotal = 0;
+  let interestPaidTotal = 0;
+
+  for (let month = 1; month <= months; month += 1) {
+    const interestPaid = balance * monthlyRate;
+    const principalPaid = clampNumber(monthlyPayment - interestPaid);
+    balance = clampNumber(balance - principalPaid);
+
+    principalPaidTotal += principalPaid;
+    interestPaidTotal += interestPaid;
+
+    projection.push({
+      month,
+      year: month / 12,
+      balance,
+      contributed: principalPaidTotal,
+      interestEarned: -interestPaidTotal,
+      principalPaid,
+      interestPaid,
+      payment: monthlyPayment
+    });
+  }
+
+  return projection;
+};
+
+export const asCurrency = (value: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0
+  }).format(value);
+
+export const asPercent = (value: number) => `${value.toFixed(2)}%`;
