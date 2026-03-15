@@ -1,0 +1,110 @@
+[
+  {
+    "id": "cc-1",
+    "category": "credit-cards",
+    "name": "Platinum Cash Rewards Card",
+    "bank": "NovaBank",
+    "rating": 4.8,
+    "apr_apy": "18.99% APR",
+    "annual_fee": "$0",
+    "pros": ["5% cash back on groceries", "No annual fee", "Intro 0% APR for 15 months"],
+    "cons": ["High balance transfer fee", "Excellent credit required"],
+    "affiliate_url": "https://example.com/affiliate/platinum-cash-rewards"
+  },
+  {
+    "id": "cc-2",
+    "category": "credit-cards",
+    "name": "Travel Elite Signature",
+    "bank": "Summit Federal",
+    "rating": 4.6,
+    "apr_apy": "20.24% APR",
+    "annual_fee": "$95",
+    "pros": ["3x travel points", "Priority lounge access", "No foreign transaction fee"],
+    "cons": ["Annual fee", "Lower rewards on non-travel spend"],
+    "affiliate_url": "https://example.com/affiliate/travel-elite-signature"
+  },
+  {
+    "id": "sav-1",
+    "category": "savings-accounts",
+    "name": "Everyday Growth Savings",
+    "bank": "Liberty Trust",
+    "rating": 4.7,
+    "apr_apy": "4.85% APY",
+    "annual_fee": "$0",
+    "pros": ["No monthly fees", "Fast ACH transfers", "FDIC insured"],
+    "cons": ["No ATM card", "Balance caps on top tier APY"],
+    "affiliate_url": "https://example.com/affiliate/everyday-growth-savings"
+  },
+  {
+    "id": "sav-2",
+    "category": "high-yield-savings",
+    "name": "Ultra Yield Online Savings",
+    "bank": "First Harbor Bank",
+    "rating": 4.9,
+    "apr_apy": "5.10% APY",
+    "annual_fee": "$0",
+    "pros": ["Top-tier APY", "No minimum balance", "24/7 app support"],
+    "cons": ["Online only", "Limited cash deposit options"],
+    "affiliate_url": "https://example.com/affiliate/ultra-yield-online"
+  },
+  {
+    "id": "sav-3",
+    "category": "high-yield-savings",
+    "name": "High Interest Reserve",
+    "bank": "BluePeak Financial",
+    "rating": 4.5,
+    "apr_apy": "4.72% APY",
+    "annual_fee": "$0",
+    "pros": ["Strong mobile app", "No maintenance fees", "Automated savings rules"],
+    "cons": ["Lower APY after promo period", "No branch access"],
+    "affiliate_url": "https://example.com/affiliate/high-interest-reserve"
+  },
+  {
+    "id": "inv-1",
+    "category": "investment-apps",
+    "name": "WealthPilot Invest",
+    "bank": "WealthPilot",
+    "rating": 4.7,
+    "apr_apy": "0.25% advisory fee",
+    "annual_fee": "$0",
+    "pros": ["Fractional shares", "Automated portfolios", "Tax-loss harvesting"],
+    "cons": ["No human advisor on base plan", "Margin unavailable"],
+    "affiliate_url": "https://example.com/affiliate/wealthpilot-invest"
+  },
+  {
+    "id": "inv-2",
+    "category": "investment-apps",
+    "name": "AlphaTrade Pro",
+    "bank": "AlphaTrade",
+    "rating": 4.4,
+    "apr_apy": "$0 stock commissions",
+    "annual_fee": "$0",
+    "pros": ["Advanced charting", "Options trading", "Real-time alerts"],
+    "cons": ["Steeper learning curve", "Data feed add-on costs"],
+    "affiliate_url": "https://example.com/affiliate/alphatrade-pro"
+  },
+  {
+    "id": "mor-1",
+    "category": "mortgages",
+    "name": "30-Year Fixed Mortgage",
+    "bank": "Pioneer Home Loans",
+    "rating": 4.6,
+    "apr_apy": "6.42% APR",
+    "annual_fee": "$1,295 origination",
+    "pros": ["Rate lock up to 60 days", "Low down-payment options", "Flexible underwriting"],
+    "cons": ["Higher closing costs", "Rate varies by credit profile"],
+    "affiliate_url": "https://example.com/affiliate/pioneer-fixed-mortgage"
+  },
+  {
+    "id": "mor-2",
+    "category": "mortgages",
+    "name": "15-Year Smart Refi",
+    "bank": "MetroLend",
+    "rating": 4.3,
+    "apr_apy": "5.98% APR",
+    "annual_fee": "$1,050 origination",
+    "pros": ["Lower long-term interest paid", "Fast pre-approval", "Strong refinance support"],
+    "cons": ["Higher monthly payment", "Limited jumbo loan availability"],
+    "affiliate_url": "https://example.com/affiliate/metro-smart-refi"
+  }
+]
