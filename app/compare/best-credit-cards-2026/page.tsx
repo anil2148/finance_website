@@ -11,7 +11,7 @@ export default function BestCreditCards2026Page() {
     <SeoComparisonPage
       pageTitle="Best Credit Cards 2026"
       intro="Our editorial team reviewed top U.S. credit cards to help you compare rewards value, APR ranges, annual fees, and approval requirements before you apply."
-      category="credit-cards"
+      category="credit_card"
       slug="best-credit-cards-2026"
       faq={[
         { question: 'What credit score do I need for premium cards?', answer: 'Most premium rewards cards require good to excellent credit, typically 690 and above.' },

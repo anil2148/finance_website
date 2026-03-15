@@ -11,7 +11,7 @@ export default function BestInvestmentAppsPage() {
     <SeoComparisonPage
       pageTitle="Best Investment Apps"
       intro="Compare beginner-friendly and advanced investing apps by cost, account tools, automation features, and user experience to choose the right platform."
-      category="investment-apps"
+      category="investment_app"
       slug="best-investment-apps"
       faq={[
         { question: 'What is the best app for beginners?', answer: 'Beginner investors often prefer apps with no minimums, fractional shares, and automated portfolios.' },
