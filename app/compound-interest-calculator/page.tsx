@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { EmiCalculator } from '@/components/calculator/EmiCalculator';
+import { CompoundInterestCalculator } from '@/components/calculator/compound-interest-calculator';
 
 export const metadata: Metadata = {
   title: 'Compound Interest Calculator | Investment Growth Projection',
@@ -10,11 +10,11 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-bold">Compound Interest Calculator</h1>
-      <p className="max-w-3xl text-slate-700">
-        See how your principal grows over time with compound returns and consistent monthly investing.
+      <h1 className="text-3xl font-bold tracking-tight">Compound Interest Calculator</h1>
+      <p className="max-w-3xl text-slate-600">
+        Visualize investment growth with live charts, animated totals, and adjustable assumptions.
       </p>
-      <EmiCalculator type="compound" />
+      <CompoundInterestCalculator />
     </section>
   );
 }

@@ -2,6 +2,7 @@ import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import { Navbar } from '@/components/navbar/Navbar';
 import { Footer } from '@/components/footer/Footer';
+import { PageTransition } from '@/components/ui/PageTransition';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://finance-site.vercel.app'),
@@ -19,7 +20,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Navbar />
-        <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">{children}</main>
+        <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">
+          <PageTransition>{children}</PageTransition>
+        </main>
         <Footer />
       </body>
     </html>

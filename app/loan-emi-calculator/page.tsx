@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { EmiCalculator } from '@/components/calculator/EmiCalculator';
+import { LoanCalculator } from '@/components/calculator/loan-calculator';
 
 export const metadata: Metadata = {
   title: 'Loan EMI Calculator | Monthly Payment & Amortization',
@@ -10,12 +10,11 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <section className="space-y-4">
-      <h1 className="text-2xl font-bold">Loan EMI Calculator</h1>
-      <p className="max-w-3xl text-slate-700">
-        Use this free loan EMI calculator to estimate monthly payments for personal loans, auto loans, and other fixed-rate
-        borrowing.
+      <h1 className="text-3xl font-bold tracking-tight">Loan EMI Calculator</h1>
+      <p className="max-w-3xl text-slate-600">
+        Adjust amount, rate, and term to instantly see your EMI, repayment mix, and amortization trend.
       </p>
-      <EmiCalculator type="loan" />
+      <LoanCalculator />
     </section>
   );
 }
