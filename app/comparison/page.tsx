@@ -1,8 +1,6 @@
-'use client';
+import { ComparisonPageClient } from '@/components/comparison/ComparisonPageClient';
 
-import { useMemo, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { comparisonProducts } from '@/data/comparisonProducts';
+export const revalidate = 3600;
 
 export default function ComparisonPage() {
   const [category, setCategory] = useState('all');
@@ -62,4 +60,5 @@ export default function ComparisonPage() {
       </div>
     </section>
   );
+  return <ComparisonPageClient />;
 }

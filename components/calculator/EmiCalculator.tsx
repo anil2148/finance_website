@@ -3,16 +3,11 @@
 import { useMemo, useState } from 'react';
 import { CalculatorInput } from './CalculatorInput';
 import { ChartComponent } from './ChartComponent';
+import { usePreferences } from '@/components/providers/PreferenceProvider';
 
 type CalculatorType = 'loan' | 'mortgage' | 'compound' | 'retirement' | 'networth';
 
 type GrowthPoint = { year: number; value: number };
-
-const currency = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  maximumFractionDigits: 0
-});
 
 function buildLoanProjection(principal: number, monthlyPayment: number, annualRate: number, years: number): GrowthPoint[] {
   const monthlyRate = annualRate / 12 / 100;
@@ -33,6 +28,7 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   const [principal, setPrincipal] = useState(type === 'mortgage' ? 350000 : 10000);
+  const { formatCurrency } = usePreferences();
   const [rate, setRate] = useState(type === 'mortgage' ? 6.8 : 10);
   const [years, setYears] = useState(type === 'mortgage' ? 30 : 5);
   const [contribution, setContribution] = useState(type === 'retirement' ? 800 : 500);
@@ -125,7 +121,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         )}
 
         <p className="rounded-md bg-slate-100 px-3 py-2 text-lg font-semibold">
-          Result: <span className="text-brand">{currency.format(result.value)}</span>
+          Result: <span className="text-brand">{formatCurrency(result.value)}</span>
           {(type === 'loan' || type === 'mortgage') && <span className="text-sm font-normal text-slate-600"> / month</span>}
         </p>
       </div>
