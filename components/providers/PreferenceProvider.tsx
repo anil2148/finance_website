@@ -93,17 +93,15 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
       toggleDarkMode: () => setDarkMode((prev) => !prev),
       formatCurrency: (rawValue: number, maximumFractionDigits = 0) => {
         const source = Number.isFinite(rawValue) ? rawValue : 0;
-        const multiplier = rates[currency] ?? DEFAULT_RATES[currency] ?? 1;
-        const convertedValue = source * multiplier;
 
         return new Intl.NumberFormat(undefined, {
           style: 'currency',
           currency,
           maximumFractionDigits
-        }).format(convertedValue);
+        }).format(source);
       }
     }),
-    [country, currency, darkMode, isRatesLoading, rates]
+    [country, currency, darkMode, isRatesLoading]
   );
 
   return <PreferenceContext.Provider value={value}>{children}</PreferenceContext.Provider>;
