@@ -2,9 +2,11 @@
 
 import { animate } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { usePreferences } from '@/components/providers/PreferenceProvider';
 
 export function AnimatedNumber({ value, currency = true }: { value: number; currency?: boolean }) {
   const [displayValue, setDisplayValue] = useState(value);
+  const { formatCurrency } = usePreferences();
   const previous = useRef(value);
 
   useEffect(() => {
@@ -18,13 +20,5 @@ export function AnimatedNumber({ value, currency = true }: { value: number; curr
     return () => controls.stop();
   }, [value]);
 
-  return (
-    <span>
-      {displayValue.toLocaleString('en-US', {
-        style: currency ? 'currency' : 'decimal',
-        currency: 'USD',
-        maximumFractionDigits: currency ? 0 : 2
-      })}
-    </span>
-  );
+  return <span>{currency ? formatCurrency(displayValue) : displayValue.toLocaleString(undefined, { maximumFractionDigits: 2 })}</span>;
 }

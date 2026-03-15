@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import { FinanceLineChart } from '@/components/charts/FinanceLineChart';
+import { usePreferences } from '@/components/providers/PreferenceProvider';
 
-const currency = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
 export function ProjectionCalculator({
   title,
@@ -21,6 +21,7 @@ export function ProjectionCalculator({
   years?: number;
 }) {
   const [principal, setPrincipal] = useState(initialPrincipal);
+  const { formatCurrency } = usePreferences();
   const [contribution, setContribution] = useState(initialContribution);
   const [rate, setRate] = useState(initialRate);
 
@@ -50,7 +51,7 @@ export function ProjectionCalculator({
         </label>
       </div>
 
-      <p className="text-lg font-semibold">Projected balance: {currency.format(data[data.length - 1]?.value ?? 0)}</p>
+      <p className="text-lg font-semibold">Projected balance: {formatCurrency(data[data.length - 1]?.value ?? 0)}</p>
       <FinanceLineChart data={data} dataKey="value" />
     </section>
   );

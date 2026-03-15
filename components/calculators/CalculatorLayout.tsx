@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
+import { LazyVisible } from '@/components/common/LazyVisible';
 import { CalculatorHeader } from '@/components/calculators/CalculatorHeader';
 import { InputSlider } from '@/components/calculators/InputSlider';
 import { ResultCard } from '@/components/calculators/ResultCard';
@@ -27,7 +28,7 @@ const fieldMeta: Array<{ key: keyof BaseCalculatorInputs; label: string; tooltip
 export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
   const [inputs, setInputs] = useState(definition.defaultInputs);
-  const { formatCurrency } = usePreferences();
+  const { formatCurrency, isRatesLoading } = usePreferences();
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
 
@@ -56,6 +57,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             </div>
 
             <div className="space-y-6">
+              {isRatesLoading && <p className="text-xs text-slate-500">Loading live exchange rates…</p>}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {result.summary.map((item) => (
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`} />
@@ -64,7 +66,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
               <div className="grid gap-4 lg:grid-cols-2">
                 {result.chartKinds.map((chartKind, index) => (
-                  <ProjectionChart key={`${chartKind}-${index}`} chartKind={chartKind} projection={result.projection} />
+                  <LazyVisible key={`${chartKind}-${index}`}>
+                    <ProjectionChart chartKind={chartKind} projection={result.projection} />
+                  </LazyVisible>
                 ))}
               </div>
             </div>
