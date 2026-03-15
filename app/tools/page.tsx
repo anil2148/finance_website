@@ -1,12 +1,13 @@
+import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 
 const tools = [
-  { name: 'Net worth tracker', value: 'Track assets and liabilities with trend insights.' },
-  { name: 'Budget planner', value: 'Set spending caps and monitor monthly categories.' },
-  { name: 'Savings tracker', value: 'Follow progress toward emergency and lifestyle goals.' },
-  { name: 'Debt payoff planner', value: 'Choose avalanche or snowball payoff strategy.' },
-  { name: 'Investment portfolio tracker', value: 'Track allocation and long-term returns.' },
-  { name: 'Financial independence calculator', value: 'Estimate years to FI using savings rate.' }
+  { name: 'Net worth tracker', value: 'Track assets and liabilities with trend insights.', href: '/calculators/net-worth-calculator' },
+  { name: 'Budget planner', value: 'Set spending caps and monitor monthly categories.', href: '/calculators/budget-planner' },
+  { name: 'Savings tracker', value: 'Follow progress toward emergency and lifestyle goals.', href: '/calculators/savings-goal-calculator' },
+  { name: 'Debt payoff planner', value: 'Choose avalanche or snowball payoff strategy.', href: '/calculators/debt-payoff-calculator' },
+  { name: 'Investment portfolio tracker', value: 'Track allocation and long-term returns.', href: '/calculators/investment-growth-calculator' },
+  { name: 'Financial independence calculator', value: 'Estimate years to FI using savings rate.', href: '/calculators/fire-calculator' }
 ];
 
 export default function ToolsPage() {
@@ -21,6 +22,9 @@ export default function ToolsPage() {
           <Card key={tool.name} className="h-full">
             <h2 className="text-lg font-semibold">{tool.name}</h2>
             <p className="text-sm text-slate-600">{tool.value}</p>
+            <Link href={tool.href} className="mt-2 inline-block text-sm font-semibold text-blue-700 hover:text-blue-800">
+              Open tool →
+            </Link>
           </Card>
         ))}
       </div>
