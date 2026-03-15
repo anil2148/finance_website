@@ -11,7 +11,7 @@ import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 const siteUrl = 'https://financesphere.io';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL('https://www.financesphere.io'),
   title: {
     default: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
     template: '%s | FinanceSphere'

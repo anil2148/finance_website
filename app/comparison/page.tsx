@@ -1,33 +1,32 @@
-import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { ComparisonPageClient } from '@/components/comparison/ComparisonPageClient';
 
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Comparison',
-  description: 'Compare credit cards, savings accounts, loans, and investment apps in one place.',
-  alternates: { canonical: '/comparison' }
+  title: 'Compare Credit Cards, Savings Accounts, Loans & Investment Apps',
+  description: 'Explore top-rated finance offers by category, compare APR/APY and features, and find the best fit in one dynamic comparison experience.'
+};
+
+const comparisonSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'FinanceSphere Product Comparisons',
+  description: 'Compare financial products by rating, pricing, and feature trade-offs.',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Credit Cards', url: 'https://www.financesphere.io/comparison?category=credit-cards' },
+    { '@type': 'ListItem', position: 2, name: 'Savings Accounts', url: 'https://www.financesphere.io/comparison?category=savings-accounts' },
+    { '@type': 'ListItem', position: 3, name: 'Loans', url: 'https://www.financesphere.io/comparison?category=loans' },
+    { '@type': 'ListItem', position: 4, name: 'Investment Apps', url: 'https://www.financesphere.io/comparison?category=investment-apps' }
+  ]
 };
 
 export default function ComparisonPage() {
-  const productSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: 'Finance Product Comparison List',
-    itemListElement: [
-      { '@type': 'Product', position: 1, name: 'Credit Cards', category: 'FinancialProduct', url: 'https://financesphere.io/comparison?category=credit-cards' },
-      { '@type': 'Product', position: 2, name: 'Savings Accounts', category: 'FinancialProduct', url: 'https://financesphere.io/comparison?category=savings-accounts' },
-      { '@type': 'Product', position: 3, name: 'Loans', category: 'FinancialProduct', url: 'https://financesphere.io/comparison?category=loans' },
-      { '@type': 'Product', position: 4, name: 'Investment Apps', category: 'FinancialProduct', url: 'https://financesphere.io/comparison?category=investment-apps' }
-    ]
-  };
-
   return (
     <>
-      {/* SEO: product JSON-LD makes comparison categories discoverable as financial products. */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
-      <Suspense fallback={<p className="text-sm text-slate-500">Loading comparison tools...</p>}><ComparisonPageClient /></Suspense>
+      <ComparisonPageClient />
+      {/* Structured data helps search engines interpret comparison content. */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(comparisonSchema) }} />
     </>
   );
 }
