@@ -73,6 +73,13 @@ Required variables:
 DATABASE_URL="postgresql://user:password@localhost:5432/financesite"
 NEXTAUTH_SECRET="replace-with-a-long-secret"
 NEXTAUTH_URL="http://localhost:3000"
+
+# Demo credentials for CredentialsProvider (required for sign-in)
+DEMO_LOGIN_EMAIL="demo@example.com"
+DEMO_LOGIN_PASSWORD="replace-with-a-strong-password"
+
+# Optional: allow demo auth in production (defaults to false)
+ALLOW_DEMO_AUTH="false"
 ```
 
 3. Generate Prisma client and run migrations:
