@@ -1,62 +1,132 @@
 import crypto from 'node:crypto';
 
-type MailchimpConfig = {
+type MailchimpProviderConfig = {
+  provider: 'mailchimp';
   apiKey: string;
   serverPrefix: string;
   audienceId: string;
-  transactionalApiKey: string;
-  fromEmail: string;
-  fromName: string;
 };
 
-function getMailchimpConfig(): MailchimpConfig {
-  const apiKey = process.env.MAILCHIMP_API_KEY;
-  const serverPrefix = process.env.MAILCHIMP_SERVER_PREFIX;
-  const audienceId = process.env.MAILCHIMP_AUDIENCE_ID;
-  const transactionalApiKey = process.env.MAILCHIMP_TRANSACTIONAL_API_KEY;
-  const fromEmail = process.env.NEWSLETTER_FROM_EMAIL;
-  const fromName = process.env.NEWSLETTER_FROM_NAME ?? 'FinanceSite';
+type ConvertKitProviderConfig = {
+  provider: 'convertkit';
+  apiSecret: string;
+  formId: string;
+};
 
-  if (!apiKey || !serverPrefix || !audienceId || !transactionalApiKey || !fromEmail) {
-    throw new Error('Mailchimp environment variables are missing.');
+type ProviderConfig = MailchimpProviderConfig | ConvertKitProviderConfig;
+
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function resolveProviderConfig(): ProviderConfig {
+  const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
+  const mailchimpServerPrefix = process.env.MAILCHIMP_SERVER_PREFIX;
+  const mailchimpAudienceId = process.env.MAILCHIMP_AUDIENCE_ID;
+
+  if (mailchimpApiKey && mailchimpServerPrefix && mailchimpAudienceId) {
+    return {
+      provider: 'mailchimp',
+      apiKey: mailchimpApiKey,
+      serverPrefix: mailchimpServerPrefix,
+      audienceId: mailchimpAudienceId
+    };
   }
 
-  return { apiKey, serverPrefix, audienceId, transactionalApiKey, fromEmail, fromName };
+  const convertkitApiSecret = process.env.CONVERTKIT_API_SECRET;
+  const convertkitFormId = process.env.CONVERTKIT_FORM_ID;
+
+  if (convertkitApiSecret && convertkitFormId) {
+    return {
+      provider: 'convertkit',
+      apiSecret: convertkitApiSecret,
+      formId: convertkitFormId
+    };
+  }
+
+  throw new Error(
+    'Missing newsletter provider config. Set MAILCHIMP_API_KEY/MAILCHIMP_SERVER_PREFIX/MAILCHIMP_AUDIENCE_ID or CONVERTKIT_API_SECRET/CONVERTKIT_FORM_ID.'
+  );
 }
 
 function getSubscriberHash(email: string) {
   return crypto.createHash('md5').update(email.trim().toLowerCase()).digest('hex');
 }
 
-export async function addSubscriberToAudience(email: string) {
-  const config = getMailchimpConfig();
-  const subscriberHash = getSubscriberHash(email);
+export async function subscribeConfirmedEmail(email: string) {
+  const normalizedEmail = email.trim().toLowerCase();
 
-  const response = await fetch(
-    `https://${config.serverPrefix}.api.mailchimp.com/3.0/lists/${config.audienceId}/members/${subscriberHash}`,
-    {
-      method: 'PUT',
-      headers: {
-        Authorization: `apikey ${config.apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email_address: email,
-        status_if_new: 'subscribed',
-        status: 'subscribed',
-        tags: ['newsletter', 'welcome-trigger']
-      })
+  if (!emailPattern.test(normalizedEmail)) {
+    throw new Error('Invalid email address.');
+  }
+
+  const config = resolveProviderConfig();
+
+  if (config.provider === 'mailchimp') {
+    const subscriberHash = getSubscriberHash(normalizedEmail);
+    const response = await fetch(
+      `https://${config.serverPrefix}.api.mailchimp.com/3.0/lists/${config.audienceId}/members/${subscriberHash}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `apikey ${config.apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email_address: normalizedEmail,
+          status_if_new: 'subscribed',
+          status: 'subscribed'
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Unable to subscribe in Mailchimp: ${await response.text()}`);
     }
-  );
+
+    return;
+  }
+
+  const response = await fetch(`https://api.convertkit.com/v3/forms/${config.formId}/subscribe`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      api_secret: config.apiSecret,
+      email: normalizedEmail
+    })
+  });
 
   if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Unable to add subscriber to Mailchimp audience: ${body}`);
+    throw new Error(`Unable to subscribe in ConvertKit: ${await response.text()}`);
   }
 }
 
+type TransactionalConfig = {
+  apiKey: string;
+  fromEmail: string;
+  fromName: string;
+};
+
+function getTransactionalConfig(): TransactionalConfig | null {
+  const apiKey = process.env.MAILCHIMP_TRANSACTIONAL_API_KEY;
+  const fromEmail = process.env.NEWSLETTER_FROM_EMAIL;
+  const fromName = process.env.NEWSLETTER_FROM_NAME ?? 'FinanceSite';
+
+  if (!apiKey || !fromEmail) {
+    return null;
+  }
+
+  return { apiKey, fromEmail, fromName };
+}
+
 async function sendTransactionalEmail({ toEmail, subject, html }: { toEmail: string; subject: string; html: string }) {
-  const config = getMailchimpConfig();
+  const transactionalConfig = getTransactionalConfig();
+
+  if (!transactionalConfig) {
+    console.info(`[newsletter] No transactional email provider configured. Confirmation email for ${toEmail}:`);
+    console.info(html);
+    return;
+  }
 
   const response = await fetch('https://mandrillapp.com/api/1.0/messages/send.json', {
     method: 'POST',
@@ -64,10 +134,10 @@ async function sendTransactionalEmail({ toEmail, subject, html }: { toEmail: str
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      key: config.transactionalApiKey,
+      key: transactionalConfig.apiKey,
       message: {
-        from_email: config.fromEmail,
-        from_name: config.fromName,
+        from_email: transactionalConfig.fromEmail,
+        from_name: transactionalConfig.fromName,
         subject,
         html,
         to: [
@@ -81,8 +151,7 @@ async function sendTransactionalEmail({ toEmail, subject, html }: { toEmail: str
   });
 
   if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Unable to send transactional email: ${body}`);
+    throw new Error(`Unable to send transactional email: ${await response.text()}`);
   }
 }
 
@@ -90,14 +159,6 @@ export async function sendConfirmationEmail(toEmail: string, confirmationLink: s
   await sendTransactionalEmail({
     toEmail,
     subject: 'Confirm your newsletter subscription',
-    html: `<p>Thanks for subscribing to FinanceSite.</p><p>Please confirm your subscription by clicking this link:</p><p><a href="${confirmationLink}">Confirm subscription</a></p><p>This link expires in 24 hours.</p>`
-  });
-}
-
-export async function sendWelcomeEmail(toEmail: string) {
-  await sendTransactionalEmail({
-    toEmail,
-    subject: 'Welcome to the FinanceSite newsletter',
-    html: '<p>You are now subscribed. Welcome aboard! You will start receiving personal finance insights soon.</p>'
+    html: `<p>Thanks for subscribing to FinanceSite.</p><p>Please confirm your subscription by clicking this link:</p><p><a href="${confirmationLink}">Confirm subscription</a></p><p>This link expires in 1 hour.</p>`
   });
 }

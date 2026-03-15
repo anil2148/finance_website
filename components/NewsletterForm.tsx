@@ -3,13 +3,13 @@
 import { FormEvent, useState } from 'react';
 
 type NewsletterFormProps = {
-  source?: string;
   className?: string;
+  source?: string;
 };
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function NewsletterForm({ source = 'website', className }: NewsletterFormProps) {
+export function NewsletterForm({ className }: NewsletterFormProps) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
@@ -32,7 +32,7 @@ export function NewsletterForm({ source = 'website', className }: NewsletterForm
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email: email.trim(), source })
+        body: JSON.stringify({ email: email.trim() })
       });
 
       const payload = (await response.json()) as { message?: string; error?: string };
@@ -45,7 +45,7 @@ export function NewsletterForm({ source = 'website', className }: NewsletterForm
 
       setStatus('success');
       setEmail('');
-      setMessage(payload.message ?? 'Check your email to confirm your subscription.');
+      setMessage(payload.message ?? 'Check your email to confirm subscription.');
     } catch {
       setStatus('error');
       setMessage('Network error. Please try again.');
@@ -53,7 +53,7 @@ export function NewsletterForm({ source = 'website', className }: NewsletterForm
   };
 
   return (
-    <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`}>
+    <form onSubmit={submit} className={`card space-y-3 ${className ?? ""}`}>
       <h3 className="text-lg font-semibold">Subscribe to the newsletter</h3>
       <p className="text-sm text-slate-600">Get weekly finance tips and calculators in your inbox.</p>
       <input
