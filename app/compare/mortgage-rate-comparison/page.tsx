@@ -11,7 +11,7 @@ export default function MortgageRateComparisonPage() {
     <SeoComparisonPage
       pageTitle="Mortgage Rate Comparison"
       intro="Review fixed and refinance mortgage offers with transparent APR data, lender fees, and qualification details before locking your rate."
-      category="mortgages"
+      category="mortgage_lender"
       slug="mortgage-rate-comparison"
       faq={[
         { question: 'What affects mortgage APR?', answer: 'APR depends on your credit score, loan type, down payment, and lender fees.' },
