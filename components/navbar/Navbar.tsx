@@ -53,7 +53,7 @@ export function Navbar() {
                     <Link className="hover:text-brand" href={item.href}>{item.label}</Link>
                   ) : (
                     <>
-                      <Link className="comparison-nav-trigger" href="/comparison">{item.label}</Link>
+                      <Link className="comparison-nav-trigger" href="/comparison" aria-haspopup="menu" aria-label="Open comparison categories">{item.label}</Link>
                       {/* Flyout menu for comparison categories on desktop. */}
                       <ul className="comparison-dropdown">
                         {item.children?.map((child) => (

@@ -7,7 +7,7 @@ import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://finance-site.vercel.app'),
+  metadataBase: new URL('https://www.financesphere.io'),
   title: {
     default: 'FinanceSphere | Interactive Personal Finance Platform',
     template: '%s | FinanceSphere'

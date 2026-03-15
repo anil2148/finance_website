@@ -32,10 +32,18 @@ export function ComparisonPageClient() {
   const [offers, setOffers] = useState<OfferRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showGuide, setShowGuide] = useState(false);
 
   useEffect(() => {
     setActiveCategory(initialCategory);
   }, [initialCategory]);
+
+  useEffect(() => {
+    const seenGuide = window.localStorage.getItem('comparison-guide-seen');
+    if (!seenGuide) {
+      setShowGuide(true);
+    }
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -82,6 +90,12 @@ export function ComparisonPageClient() {
   );
 
   const heading = categories.find((item) => item.value === activeCategory)?.label ?? 'Comparison';
+  const topOfferName = visibleOffers[0]?.name;
+
+  const dismissGuide = () => {
+    window.localStorage.setItem('comparison-guide-seen', 'true');
+    setShowGuide(false);
+  };
 
   return (
     <section className="space-y-6">
@@ -91,12 +105,25 @@ export function ComparisonPageClient() {
       </div>
 
       {/* Category menu used to fetch/filter rendered offers by section. */}
-      <nav aria-label="Comparison categories" className="comparison-menu">
+      {showGuide && (
+        <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm text-blue-900" role="status">
+          <p className="font-semibold">Quick tip</p>
+          <p>Use the Comparison menu or category buttons below to instantly filter offers by product type.</p>
+          <button type="button" onClick={dismissGuide} className="mt-2 rounded-lg bg-blue-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-800">
+            Got it
+          </button>
+        </div>
+      )}
+
+      <nav aria-label="Comparison categories" className="comparison-menu" role="tablist">
         {categories.map((category) => (
           <button
             key={category.value}
             type="button"
             className={`comparison-menu-item ${activeCategory === category.value ? 'comparison-menu-item-active' : ''}`}
+            role="tab"
+            aria-selected={activeCategory === category.value}
+            tabIndex={activeCategory === category.value ? 0 : -1}
             onClick={() => setActiveCategory(category.value)}
           >
             {category.label}
@@ -104,11 +131,11 @@ export function ComparisonPageClient() {
         ))}
       </nav>
 
-      <div className="space-y-4">
+      <div className="space-y-4" id="comparison-results">
         <h2 className="text-2xl font-semibold">{heading}</h2>
 
-        {loading && <p className="text-sm text-slate-500">Loading latest offers...</p>}
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {loading && <p className="text-sm text-slate-500" role="status" aria-live="polite">Loading latest offers...</p>}
+        {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
 
         {!loading && !error && visibleOffers.length === 0 && (
           <p className="text-sm text-slate-500">No offers found in this category right now.</p>
@@ -117,8 +144,9 @@ export function ComparisonPageClient() {
         {/* Render each offer card with bank, details, pros/cons, and affiliate link. */}
         <div className="grid gap-4">
           {visibleOffers.map((offer) => (
-            <Card key={`${offer.bank}-${offer.name}`} className="comparison-offer-card">
+            <Card key={`${offer.bank}-${offer.name}`} className="comparison-offer-card" role="article" aria-label={`${offer.bank} ${offer.name}`}>
               <div className="space-y-2">
+                {offer.name === topOfferName && <span className="top-offer-badge">Top Pick</span>}
                 <p className="text-sm font-medium text-brand">{offer.bank}</p>
                 <h3 className="text-lg font-semibold">{offer.name}</h3>
                 <p className="text-sm text-slate-600">APR/APY: {offer.apr_apy} · Rating: {offer.rating.toFixed(1)}</p>
