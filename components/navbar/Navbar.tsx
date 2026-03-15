@@ -5,13 +5,28 @@ import { useState } from 'react';
 import { Bars3Icon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 
-const links = [
-  ['Calculators', '/calculators'],
-  ['Tools', '/tools'],
-  ['Dashboard', '/dashboard'],
-  ['Comparison', '/comparison'],
-  ['Blog', '/blog']
-] as const;
+type NavLink = {
+  label: string;
+  href?: string;
+  children?: Array<{ label: string; href: string }>;
+};
+
+const links: NavLink[] = [
+  { label: 'Calculators', href: '/calculators' },
+  { label: 'Tools', href: '/tools' },
+  { label: 'Dashboard', href: '/dashboard' },
+  {
+    // Comparison nav group with direct links for each category.
+    label: 'Comparison',
+    children: [
+      { label: 'Credit Cards', href: '/comparison?category=credit-cards' },
+      { label: 'Savings Accounts', href: '/comparison?category=savings-accounts' },
+      { label: 'Loans', href: '/comparison?category=loans' },
+      { label: 'Investment Apps', href: '/comparison?category=investment-apps' }
+    ]
+  },
+  { label: 'Blog', href: '/blog' }
+];
 
 const countries = ['United States', 'United Kingdom', 'India', 'Canada', 'Australia', 'Germany'];
 const currencies = ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'] as const;
@@ -32,8 +47,24 @@ export function Navbar() {
 
           <div className="hidden items-center gap-3 md:flex">
             <ul className="flex gap-4 text-sm">
-              {links.map(([label, href]) => (
-                <li key={href}><Link className="hover:text-brand" href={href}>{label}</Link></li>
+              {links.map((item) => (
+                <li key={item.label} className="relative group">
+                  {item.href ? (
+                    <Link className="hover:text-brand" href={item.href}>{item.label}</Link>
+                  ) : (
+                    <>
+                      <Link className="comparison-nav-trigger" href="/comparison">{item.label}</Link>
+                      {/* Flyout menu for comparison categories on desktop. */}
+                      <ul className="comparison-dropdown">
+                        {item.children?.map((child) => (
+                          <li key={child.href}>
+                            <Link className="comparison-dropdown-link" href={child.href}>{child.label}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </li>
               ))}
             </ul>
             <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs dark:bg-slate-900" value={country} onChange={(event) => setCountry(event.target.value)}>
@@ -51,8 +82,24 @@ export function Navbar() {
         {open && (
           <div className="mt-3 space-y-3 rounded-xl border border-slate-200 bg-white p-3 md:hidden dark:bg-slate-900">
             <ul className="grid gap-2 text-sm">
-              {links.map(([label, href]) => (
-                <li key={href}><Link className="block rounded-lg px-2 py-1 hover:bg-slate-100" href={href} onClick={() => setOpen(false)}>{label}</Link></li>
+              {links.map((item) => (
+                <li key={item.label}>
+                  {item.href ? (
+                    <Link className="block rounded-lg px-2 py-1 hover:bg-slate-100" href={item.href} onClick={() => setOpen(false)}>{item.label}</Link>
+                  ) : (
+                    <div className="space-y-2 rounded-lg border border-slate-200 p-2">
+                      <Link className="block rounded-lg px-2 py-1 font-medium hover:bg-slate-100" href="/comparison" onClick={() => setOpen(false)}>{item.label}</Link>
+                      {/* Nested comparison links for mobile navigation. */}
+                      <ul className="grid gap-1 pl-3 text-xs">
+                        {item.children?.map((child) => (
+                          <li key={child.href}>
+                            <Link className="block rounded-lg px-2 py-1 hover:bg-slate-100" href={child.href} onClick={() => setOpen(false)}>{child.label}</Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </li>
               ))}
             </ul>
             <div className="grid grid-cols-2 gap-2">

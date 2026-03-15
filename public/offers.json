@@ -1,0 +1,82 @@
+[
+  {
+    "category": "credit-cards",
+    "bank": "Nova Bank",
+    "name": "Nova Rewards Plus",
+    "rating": 4.8,
+    "apr_apy": "18.99% APR",
+    "pros": ["3% dining cashback", "No foreign transaction fee", "$200 welcome bonus"],
+    "cons": ["$95 annual fee", "Excellent credit required"],
+    "affiliate_url": "https://example.com/credit-card-nova"
+  },
+  {
+    "category": "credit-cards",
+    "bank": "Summit Credit",
+    "name": "Summit Everyday Cash",
+    "rating": 4.4,
+    "apr_apy": "20.24% APR",
+    "pros": ["No annual fee", "2% groceries and gas", "0% intro APR for 12 months"],
+    "cons": ["Lower rewards after intro period", "Balance transfer fee applies"],
+    "affiliate_url": "https://example.com/credit-card-summit"
+  },
+  {
+    "category": "savings-accounts",
+    "bank": "Harbor Bank",
+    "name": "Harbor High Yield Savings",
+    "rating": 4.9,
+    "apr_apy": "5.05% APY",
+    "pros": ["No monthly maintenance fees", "High APY", "FDIC insured"],
+    "cons": ["No ATM card", "$500 minimum to earn APY"],
+    "affiliate_url": "https://example.com/savings-harbor"
+  },
+  {
+    "category": "savings-accounts",
+    "bank": "Pioneer Trust",
+    "name": "Pioneer Flex Saver",
+    "rating": 4.5,
+    "apr_apy": "4.70% APY",
+    "pros": ["No minimum opening deposit", "Fast mobile transfers"],
+    "cons": ["Lower APY tier below $10k", "No physical branches"],
+    "affiliate_url": "https://example.com/savings-pioneer"
+  },
+  {
+    "category": "loans",
+    "bank": "Crest Lending",
+    "name": "Crest Personal Loan",
+    "rating": 4.6,
+    "apr_apy": "7.49% - 19.99% APR",
+    "pros": ["Same-day funding", "No prepayment penalty", "Flexible terms"],
+    "cons": ["Origination fee up to 4%", "Best rates require top credit"],
+    "affiliate_url": "https://example.com/loan-crest"
+  },
+  {
+    "category": "loans",
+    "bank": "Metro Finance",
+    "name": "Metro Consolidation Loan",
+    "rating": 4.2,
+    "apr_apy": "8.25% - 23.50% APR",
+    "pros": ["Joint applications accepted", "Debt payoff tools"],
+    "cons": ["Late fee charged", "Longer approval for self-employed"],
+    "affiliate_url": "https://example.com/loan-metro"
+  },
+  {
+    "category": "investment-apps",
+    "bank": "Orion Invest",
+    "name": "Orion Automated Portfolio",
+    "rating": 4.7,
+    "apr_apy": "0.25% advisory fee",
+    "pros": ["Automated rebalancing", "Tax-loss harvesting", "Low minimum deposit"],
+    "cons": ["No individual stock trading", "Premium tax support costs extra"],
+    "affiliate_url": "https://example.com/invest-orion"
+  },
+  {
+    "category": "investment-apps",
+    "bank": "Atlas Markets",
+    "name": "Atlas Active Trader",
+    "rating": 4.3,
+    "apr_apy": "$0 commissions",
+    "pros": ["Fractional shares", "Real-time market news", "Retirement account support"],
+    "cons": ["Margin rates can be high", "Advanced tools in paid tier"],
+    "affiliate_url": "https://example.com/invest-atlas"
+  }
+]
