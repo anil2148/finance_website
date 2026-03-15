@@ -1,3 +1,14 @@
+import Link from 'next/link';
+
+const legalLinks = [
+  { href: '/privacy-policy', label: 'Privacy Policy' },
+  { href: '/terms-and-conditions', label: 'Terms & Conditions' },
+  { href: '/affiliate-disclosure', label: 'Affiliate Disclosure' },
+  { href: '/cookie-policy', label: 'Cookie Policy' },
+  { href: '/financial-disclaimer', label: 'Financial Disclaimer' },
+  { href: '/contact', label: 'Contact' }
+];
+
 export function Footer() {
   return (
     <footer className="mt-10 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950">
