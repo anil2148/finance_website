@@ -1,6 +1,6 @@
-# FinanceSite – Modern Personal Finance Platform
+# FinanceSphere – Modern Personal Finance Platform
 
-FinanceSite is a JAMstack + serverless personal finance platform built with **Next.js App Router**, **TypeScript**, **TailwindCSS**, **Framer Motion**, **Recharts**, **NextAuth**, and **Prisma/PostgreSQL**.
+FinanceSphere is a JAMstack + serverless personal finance platform built with **Next.js App Router**, **TypeScript**, **TailwindCSS**, **Framer Motion**, **Recharts**, **NextAuth**, and **Prisma/PostgreSQL**.
 
 ## Features
 
@@ -151,7 +151,7 @@ CONVERTKIT_FORM_ID="your-convertkit-form-id"
 # Optional: Mailchimp Transactional (Mandrill) for sending confirmation email
 MAILCHIMP_TRANSACTIONAL_API_KEY="your-mailchimp-transactional-key"
 NEWSLETTER_FROM_EMAIL="newsletter@yourdomain.com"
-NEWSLETTER_FROM_NAME="FinanceSite"
+NEWSLETTER_FROM_NAME="FinanceSphere"
 ```
 
 If transactional email variables are missing, the app logs the confirmation email HTML server-side for local development.

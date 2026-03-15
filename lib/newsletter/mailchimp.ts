@@ -110,7 +110,7 @@ type TransactionalConfig = {
 function getTransactionalConfig(): TransactionalConfig | null {
   const apiKey = process.env.MAILCHIMP_TRANSACTIONAL_API_KEY;
   const fromEmail = process.env.NEWSLETTER_FROM_EMAIL;
-  const fromName = process.env.NEWSLETTER_FROM_NAME ?? 'FinanceSite';
+  const fromName = process.env.NEWSLETTER_FROM_NAME ?? 'FinanceSphere';
 
   if (!apiKey || !fromEmail) {
     return null;
@@ -159,6 +159,6 @@ export async function sendConfirmationEmail(toEmail: string, confirmationLink: s
   await sendTransactionalEmail({
     toEmail,
     subject: 'Confirm your newsletter subscription',
-    html: `<p>Thanks for subscribing to FinanceSite.</p><p>Please confirm your subscription by clicking this link:</p><p><a href="${confirmationLink}">Confirm subscription</a></p><p>This link expires in 1 hour.</p>`
+    html: `<p>Thanks for subscribing to FinanceSphere.</p><p>Please confirm your subscription by clicking this link:</p><p><a href="${confirmationLink}">Confirm subscription</a></p><p>This link expires in 1 hour.</p>`
   });
 }
