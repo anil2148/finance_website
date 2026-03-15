@@ -8,6 +8,15 @@ type Params = {
   };
 };
 
+function isTokenValidationError(message: string) {
+  return [
+    'Malformed token.',
+    'Invalid token signature.',
+    'Token payload is invalid.',
+    'Token expired.'
+  ].includes(message);
+}
+
 export async function POST(_request: Request, { params }: Params) {
   try {
     const email = verifyConfirmationToken(params.token);
@@ -20,11 +29,14 @@ export async function POST(_request: Request, { params }: Params) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Invalid or expired token.';
-    const status = message.includes('expired') || message.includes('Malformed') || message.includes('Invalid token') ? 400 : 500;
+    const status = isTokenValidationError(message) ? 400 : 500;
 
-    return NextResponse.json({
-      success: false,
-      error: message
-    }, { status });
+    return NextResponse.json(
+      {
+        success: false,
+        error: message
+      },
+      { status }
+    );
   }
 }

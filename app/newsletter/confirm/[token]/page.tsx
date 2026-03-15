@@ -25,7 +25,7 @@ export default function NewsletterConfirmPage({ params }: ConfirmPageProps) {
 
     async function confirmSubscription() {
       try {
-        const response = await fetch(`/newsletter/confirm/${encodeURIComponent(params.token)}`, {
+        const response = await fetch(`/api/newsletter/confirm/${encodeURIComponent(params.token)}`, {
           method: 'POST'
         });
 
