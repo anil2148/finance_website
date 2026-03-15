@@ -6,11 +6,11 @@ import { PageTransition } from '@/components/ui/PageTransition';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://finance-site.vercel.app'),
-  title: 'Finance Site | Compare products and use free calculators',
-  description: 'Compare financial products, read guides, and use free personal finance tools.',
+  title: 'FinanceSite | Modern Personal Finance SaaS Platform',
+  description: 'SEO finance content, calculators, dashboard analytics, comparison tools, and newsletter growth in one platform.',
   openGraph: {
-    title: 'Finance Site',
-    description: 'Compare cards, loans, savings accounts and calculate smarter.',
+    title: 'FinanceSite | Modern Personal Finance SaaS Platform',
+    description: 'Interactive calculators, financial dashboard, and high-converting comparison content.',
     type: 'website'
   }
 };
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
+      <body className="bg-slate-50 text-slate-900">
         <Navbar />
         <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">
           <PageTransition>{children}</PageTransition>

@@ -6,6 +6,9 @@ const config: Config = {
     extend: {
       colors: {
         brand: '#0A66C2'
+      },
+      boxShadow: {
+        soft: '0 20px 35px -25px rgba(15, 23, 42, 0.3)'
       }
     }
   },
