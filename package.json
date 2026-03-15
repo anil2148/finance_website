@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "generate:blog": "node scripts/generate-blog.mjs",
-    "test": "node tests/run-tests.js"
+    "test": "node tests/run-tests.js",
+    "postbuild": "node generate-sitemap.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
