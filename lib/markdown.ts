@@ -42,12 +42,24 @@ export function getPostBySlug(slug: string) {
   return getPosts().find((p) => p.slug === slug);
 }
 
+
+export function normalizeTag(tag: string) {
+  return decodeURIComponent(tag).trim().toLowerCase();
+}
+
 export function getCategories() {
   return [...new Set(getPosts().map((post) => post.category))];
 }
 
 export function getTags() {
-  return [...new Set(getPosts().flatMap((post) => post.tags))];
+  const unique = new Map<string, string>();
+
+  for (const tag of getPosts().flatMap((post) => post.tags)) {
+    const normalized = normalizeTag(tag);
+    if (normalized && !unique.has(normalized)) unique.set(normalized, tag.trim());
+  }
+
+  return [...unique.values()];
 }
 
 export function getHeadings(content: string) {
