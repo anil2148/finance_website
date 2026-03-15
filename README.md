@@ -101,31 +101,37 @@ npm run generate:blog
 - Install command: `npm install`
 - Output: `.next`
 
-## Newsletter (Mailchimp + Double Opt-in, no database)
+## Newsletter (Double Opt-in, no database)
 
-This project now uses a token-based double opt-in flow and does **not** store newsletter subscribers in a local database.
+This project uses a token-based double opt-in flow and does **not** store newsletter subscribers in a local database.
 
 ### Environment variables (`.env.local`)
 
 ```bash
-# Mailchimp Marketing API (audience subscribe)
-MAILCHIMP_API_KEY="your-mailchimp-marketing-api-key"
-MAILCHIMP_SERVER_PREFIX="us21"
-MAILCHIMP_AUDIENCE_ID="your-audience-id"
-
-# Mailchimp Transactional (Mandrill) API (confirmation + welcome emails)
-MAILCHIMP_TRANSACTIONAL_API_KEY="your-mailchimp-transactional-key"
-NEWSLETTER_FROM_EMAIL="newsletter@yourdomain.com"
-NEWSLETTER_FROM_NAME="FinanceSite"
+# Required secret for signed confirmation tokens (min 32 chars)
+NEWSLETTER_TOKEN_SECRET="replace-with-a-long-random-secret"
 
 # App URL used to build confirmation links
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 
-# HMAC signing secret for confirmation tokens
-NEWSLETTER_TOKEN_SECRET="replace-with-a-long-random-secret"
+# Choose ONE provider block below
+
+# Mailchimp Marketing API (audience subscribe on confirmation)
+MAILCHIMP_API_KEY="your-mailchimp-marketing-api-key"
+MAILCHIMP_SERVER_PREFIX="us21"
+MAILCHIMP_AUDIENCE_ID="your-audience-id"
+
+# OR ConvertKit API (form subscribe on confirmation)
+CONVERTKIT_API_SECRET="your-convertkit-api-secret"
+CONVERTKIT_FORM_ID="your-convertkit-form-id"
+
+# Optional: Mailchimp Transactional (Mandrill) for sending confirmation email
+MAILCHIMP_TRANSACTIONAL_API_KEY="your-mailchimp-transactional-key"
+NEWSLETTER_FROM_EMAIL="newsletter@yourdomain.com"
+NEWSLETTER_FROM_NAME="FinanceSite"
 ```
 
-> The required provider variables from the prompt are included above: `MAILCHIMP_API_KEY`, `MAILCHIMP_SERVER_PREFIX`, and `MAILCHIMP_AUDIENCE_ID`.
+If transactional email variables are missing, the app logs the confirmation email HTML server-side for local development.
 
 ### Local test flow
 
@@ -136,15 +142,10 @@ npm install
 npm run dev
 ```
 
-2. Open:
-   - `http://localhost:3000` (homepage form)
-   - `http://localhost:3000/blog` (blog page form)
-
-3. Submit an email in the newsletter form.
-4. Confirm you see: **“Check your email to confirm your subscription”**.
-5. Open the confirmation email and click the tokenized link (`/newsletter/confirm/[token]`).
-6. Confirm the page shows successful confirmation and that a welcome email is received.
-7. Validate the contact in Mailchimp Audience.
+2. Submit an email in the newsletter form (`/` or `/blog`).
+3. Confirm you see: **“Check your email to confirm subscription.”**
+4. Open the confirmation link (`/newsletter/confirm/[token]`).
+5. Confirm the page shows subscription success and verify the contact in Mailchimp or ConvertKit.
 
 ### Deploying (Vercel)
 

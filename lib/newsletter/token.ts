@@ -1,55 +1,63 @@
 import crypto from 'node:crypto';
 
-const TOKEN_TTL_MS = 1000 * 60 * 60 * 24;
+const TOKEN_TTL_SECONDS = 60 * 60;
 
-function getSecret() {
+type NewsletterTokenPayload = {
+  email: string;
+  exp: number;
+};
+
+function getTokenSecret() {
   const secret = process.env.NEWSLETTER_TOKEN_SECRET;
 
-  if (!secret) {
-    throw new Error('NEWSLETTER_TOKEN_SECRET is not set.');
+  if (!secret || secret.length < 32) {
+    throw new Error('NEWSLETTER_TOKEN_SECRET must be set and at least 32 characters long.');
   }
 
   return secret;
 }
 
-function sign(payload: string) {
-  return crypto.createHmac('sha256', getSecret()).update(payload).digest('base64url');
+function signPayload(payload: string) {
+  return crypto.createHmac('sha256', getTokenSecret()).update(payload).digest('base64url');
 }
 
-export function createConfirmationToken(email: string) {
-  const payload = Buffer.from(
-    JSON.stringify({
-      email,
-      exp: Date.now() + TOKEN_TTL_MS
-    })
-  ).toString('base64url');
+export function generateConfirmationToken(email: string, ttlSeconds = TOKEN_TTL_SECONDS) {
+  const normalizedEmail = email.trim().toLowerCase();
+  const tokenPayload: NewsletterTokenPayload = {
+    email: normalizedEmail,
+    exp: Math.floor(Date.now() / 1000) + ttlSeconds
+  };
 
-  const signature = sign(payload);
-  return `${payload}.${signature}`;
+  const encodedPayload = Buffer.from(JSON.stringify(tokenPayload)).toString('base64url');
+  const signature = signPayload(encodedPayload);
+
+  return `${encodedPayload}.${signature}`;
 }
 
-export function readConfirmationToken(token: string) {
-  const [payload, signature] = token.split('.');
+export function verifyConfirmationToken(token: string) {
+  const [encodedPayload, signature] = token.split('.');
 
-  if (!payload || !signature) {
+  if (!encodedPayload || !signature) {
     throw new Error('Malformed token.');
   }
 
-  const expected = sign(payload);
+  const expectedSignature = signPayload(encodedPayload);
+  const signatureBuffer = Buffer.from(signature);
+  const expectedBuffer = Buffer.from(expectedSignature);
 
-  if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+  if (signatureBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) {
     throw new Error('Invalid token signature.');
   }
 
-  const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) as { email?: string; exp?: number };
+  const payload = JSON.parse(Buffer.from(encodedPayload, 'base64url').toString('utf8')) as Partial<NewsletterTokenPayload>;
 
-  if (!decoded.email || !decoded.exp) {
+  if (!payload.email || !payload.exp) {
     throw new Error('Token payload is invalid.');
   }
 
-  if (Date.now() > decoded.exp) {
+  if (Math.floor(Date.now() / 1000) > payload.exp) {
     throw new Error('Token expired.');
   }
 
-  return decoded.email;
+  return payload.email;
 }
