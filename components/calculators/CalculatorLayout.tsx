@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { LazyVisible } from '@/components/common/LazyVisible';
 import { CalculatorHeader } from '@/components/calculators/CalculatorHeader';
 import { InputSlider } from '@/components/calculators/InputSlider';
@@ -31,6 +31,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const [inputs, setInputs] = useState(definition.defaultInputs);
   const { currency, formatCurrency, isRatesLoading } = usePreferences();
   const currencySymbol = getCurrencySymbol(currency);
+
+  useEffect(() => {
+    setInputs(definition.defaultInputs);
+  }, [definition]);
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
 
