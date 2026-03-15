@@ -94,6 +94,22 @@ npm run dev
 npm run generate:blog
 ```
 
+## PDF export setup (calculator output)
+
+To enable client-side calculator PDF downloads in Next.js (App Router), install:
+
+```bash
+npm install jspdf html2canvas
+```
+
+Implementation notes:
+
+- Keep PDF generation in **client components** only (`'use client'`).
+- Use dynamic imports inside click handlers to avoid SSR issues:
+  - `import('jspdf')`
+  - `import('html2canvas')`
+- Capture the calculator output container, then save the generated PDF in the browser (no backend required).
+
 ## Deploy (Vercel)
 
 - Framework preset: Next.js
