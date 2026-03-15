@@ -1,0 +1,73 @@
+/* Basic styling for dynamically rendered offer cards */
+#offers-container {
+  display: grid;
+  gap: 1rem;
+}
+
+.offer-card {
+  border: 1px solid #d8dee9;
+  border-radius: 12px;
+  padding: 1rem;
+  background: #ffffff;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.offer-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.offer-card__bank {
+  margin: 0;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.offer-card__name {
+  margin: 0.35rem 0 0.75rem;
+  font-size: 1.15rem;
+  color: #111827;
+}
+
+.offer-card__apr,
+.offer-card__pros,
+.offer-card__cons {
+  margin: 0.35rem 0;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.offer-card__rating {
+  font-weight: 600;
+  color: #1d4ed8;
+}
+
+.offer-card__button {
+  display: inline-block;
+  margin-top: 0.85rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.offer-card__button:hover {
+  background: #1d4ed8;
+}
+
+.offers-message {
+  margin: 0;
+  padding: 0.9rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #334155;
+}
+
+.offers-message--error {
+  background: #fef2f2;
+  color: #b91c1c;
+}
