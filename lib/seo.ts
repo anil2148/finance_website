@@ -4,6 +4,6 @@ export function articleSchema(title: string, description: string, slug: string) 
     '@type': 'Article',
     headline: title,
     description,
-    url: `https://finance-site.vercel.app/blog/${slug}`
+    url: `https://financesphere.io/blog/${slug}`
   };
 }

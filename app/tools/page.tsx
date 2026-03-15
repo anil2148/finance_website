@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 
@@ -10,9 +11,31 @@ const tools = [
   { name: 'Financial independence calculator', value: 'Estimate years to FI using savings rate.', href: '/calculators/fire-calculator' }
 ];
 
+export const metadata: Metadata = {
+  title: 'Tools',
+  description: 'Use financial tools for net worth, savings, debt payoff, and investment planning on FinanceSphere.',
+  alternates: { canonical: '/tools' }
+};
+
 export default function ToolsPage() {
+  const toolsSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: tools.map((tool, index) => ({
+      '@type': 'SoftwareApplication',
+      position: index + 1,
+      name: tool.name,
+      description: tool.value,
+      applicationCategory: 'FinanceApplication',
+      url: `https://financesphere.io${tool.href}`
+    }))
+  };
+
   return (
     <section className="space-y-6">
+      {/* SEO: JSON-LD schema helps search engines understand tool/software pages. */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolsSchema) }} />
+
       <div>
         <h1 className="text-3xl font-bold">Financial Tools Platform</h1>
         <p className="text-slate-600">A suite of planning tools designed for viral SEO and practical daily money decisions.</p>

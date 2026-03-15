@@ -11,6 +11,7 @@ export type BlogPost = {
   date: string;
   category: string;
   tags: string[];
+  country: 'US' | 'India' | 'UK' | 'Canada' | 'global';
   seoTitle?: string;
   metaDescription?: string;
   content: string;
@@ -30,6 +31,7 @@ export function getPosts(): BlogPost[] {
         date: data.date,
         category: data.category ?? 'general',
         tags: data.tags ?? data.keywords ?? [],
+        country: data.country ?? 'global',
         seoTitle: data.seoTitle,
         metaDescription: data.metaDescription,
         content
@@ -41,7 +43,6 @@ export function getPosts(): BlogPost[] {
 export function getPostBySlug(slug: string) {
   return getPosts().find((p) => p.slug === slug);
 }
-
 
 export function normalizeTag(tag: string) {
   return decodeURIComponent(tag).trim().toLowerCase();

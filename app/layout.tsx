@@ -5,26 +5,50 @@ import { Footer } from '@/components/footer/Footer';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
+import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
+import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
+
+const siteUrl = 'https://financesphere.io';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://finance-site.vercel.app'),
+  metadataBase: new URL('https://www.financesphere.io'),
   title: {
-    default: 'FinanceSphere | Interactive Personal Finance Platform',
+    default: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
     template: '%s | FinanceSphere'
   },
-  description: 'Interactive personal finance calculators, comparison tools, and market insights with modern fintech UX.',
+  description: 'FinanceSphere helps you compare financial products, run calculators, and read practical personal finance guides.',
+  alternates: {
+    canonical: '/'
+  },
+  verification: {
+    // SEO: Google Search Console verification is configurable with an environment variable.
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+  },
   openGraph: {
-    title: 'FinanceSphere | Interactive Personal Finance Platform',
-    description: 'Interactive calculators, dashboard analytics, and conversion-focused comparison content.',
-    type: 'website'
+    title: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
+    description: 'Compare financial products, use interactive calculators, and grow your money knowledge with FinanceSphere.',
+    type: 'website',
+    url: siteUrl,
+    siteName: 'FinanceSphere'
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
+    description: 'Compare products, run calculators, and read practical personal finance guides.'
   }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+        <CookieConsentBanner gaMeasurementId={gaMeasurementId} gtmId={gtmId} />
+
         <PreferenceProvider>
+          <ErrorMonitoring />
           <Navbar />
           <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">
             <Breadcrumbs />

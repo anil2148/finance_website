@@ -2,13 +2,16 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { LazyVisible } from '@/components/common/LazyVisible';
 import { CalculatorHeader } from '@/components/calculators/CalculatorHeader';
 import { InputSlider } from '@/components/calculators/InputSlider';
 import { ResultCard } from '@/components/calculators/ResultCard';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
+import { DownloadPdfButton } from '@/components/pdf/DownloadPdfButton';
+import { ExportCsvButton } from '@/components/calculators/ExportCsvButton';
 import { calculatorDefinitions, calculatorMap } from '@/lib/calculators/registry';
+import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { BaseCalculatorInputs } from '@/lib/calculators/types';
 import { getCurrencySymbol, getLocaleForCurrency, resolveCurrencyPrefix } from '@/lib/utils';
 
@@ -30,6 +33,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
   const [inputs, setInputs] = useState(definition.defaultInputs);
   const { currency, formatCurrency, isRatesLoading } = usePreferences();
+
+  const [showGuide, setShowGuide] = useState(false);
+  const [savedMessage, setSavedMessage] = useState('');
+  const exportRef = useRef<HTMLElement>(null);
   const currencyLocale = getLocaleForCurrency(currency);
   const currencySymbol = getCurrencySymbol(currency, currencyLocale);
 
@@ -38,10 +45,54 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   }, [definition]);
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
+  const relatedCalculators = calculatorDefinitions.filter((item) => item.slug !== slug).slice(0, 3);
+
+
+  useEffect(() => {
+    const hasSeenGuide = window.localStorage.getItem(`calculator-guide-${slug}`);
+    if (!hasSeenGuide) {
+      setShowGuide(true);
+    }
+  }, [slug]);
+
+  const dismissGuide = () => {
+    window.localStorage.setItem(`calculator-guide-${slug}`, 'true');
+    setShowGuide(false);
+  };
+
+  const handleSaveResult = () => {
+    const storageKey = `calculator-result-${slug}`;
+    const payload = {
+      savedAt: new Date().toISOString(),
+      summary: result.summary,
+      breakdown: result.breakdown
+    };
+
+    window.localStorage.setItem(storageKey, JSON.stringify(payload));
+    setSavedMessage('Results saved to this browser.');
+    window.setTimeout(() => setSavedMessage(''), 2500);
+  };
+
+  const csvRows = result.summary.map((item) => ({
+    label: item.label,
+    value: item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`
+  }));
 
   return (
-    <section className="space-y-8 pb-16">
+    <section className="space-y-8 pb-16" ref={exportRef}>
       <CalculatorHeader title={definition.title} description={definition.description} />
+      {/* Sharing: encourage backlinks and distribution for calculator/tool pages. */}
+      <SocialShareButtons title={definition.title} url={`https://financesphere.io/calculators/${slug}`} />
+
+      {showGuide && (
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900" role="status">
+          <p className="font-semibold">First-time walkthrough</p>
+          <p>Adjust sliders on the left, review summary cards, and then save or export your result below.</p>
+          <button type="button" onClick={dismissGuide} className="mt-2 rounded-lg bg-indigo-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-800">
+            Dismiss
+          </button>
+        </div>
+      )}
 
       <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
         <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -69,6 +120,20 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 {result.summary.map((item) => (
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`} />
                 ))}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleSaveResult}
+                  className="btn-primary text-sm"
+                  aria-label="Save calculator result"
+                >
+                  Save Result
+                </button>
+                <DownloadPdfButton targetRef={exportRef} calculatorTitle={definition.title} />
+                <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
+                {savedMessage && <p className="text-xs text-emerald-700" role="status">{savedMessage}</p>}
               </div>
 
               <div className="grid gap-4 lg:grid-cols-2">
@@ -117,9 +182,28 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <Link className="text-indigo-600 hover:text-indigo-800" href={link.href}>{link.title}</Link>
               </li>
             ))}
+            <li>
+              {/* Internal linking: guide users from calculator results to comparison intent pages. */}
+              <Link className="text-indigo-600 hover:text-indigo-800" href="/comparison">Compare financial products</Link>
+            </li>
           </ul>
         </div>
       </div>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold">Related calculators</h2>
+        <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+          {relatedCalculators.map((item) => (
+            <li key={item.slug}>
+              <Link className="text-indigo-600 hover:text-indigo-800" href={`/calculators/${item.slug}`}>
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
     </section>
   );
 }
+

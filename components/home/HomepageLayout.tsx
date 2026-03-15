@@ -23,6 +23,7 @@ const tools = [
   { title: 'Latest articles', desc: 'SEO-rich financial education guides and actionable tips.', href: '/blog' },
   { title: 'Comparison tools', desc: 'Compare cards, loans, and savings accounts in one place.', href: '/comparison' }
 ];
+<meta name="fo-verify" content="98525c3d-9a85-47c5-adbe-962a9dead1eb" />
 
 export function HomepageLayout() {
   return (
