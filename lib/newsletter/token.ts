@@ -9,6 +9,15 @@ type NewsletterTokenPayload = {
 
 function getTokenSecret() {
   const secret = process.env.NEWSLETTER_TOKEN_SECRET;
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  if (secret && secret.length >= 32) {
+    return secret;
+  }
+
+  if (!isProduction) {
+    return 'dev-only-newsletter-secret-change-me-1234567890';
+  }
 
   if (!secret || secret.length < 32) {
     throw new Error('NEWSLETTER_TOKEN_SECRET must be set and at least 32 characters long.');
