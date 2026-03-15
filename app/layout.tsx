@@ -1,12 +1,12 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { Navbar } from '@/components/navbar/Navbar';
 import { Footer } from '@/components/footer/Footer';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
+import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
 
 const siteUrl = 'https://financesphere.io';
 
@@ -45,22 +45,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
-        {gaMeasurementId && (
-          <>
-            {/* Analytics: GA4 global script for page views + event tracking support. */}
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`} strategy="afterInteractive" />
-            <Script id="ga4-script" strategy="afterInteractive">
-              {`window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '${gaMeasurementId}', { send_page_view: true });`}
-            </Script>
-          </>
-        )}
-
-        {gtmId && (
-          // Analytics: optional GTM container for centralized marketing tags.
-          <Script id="gtm-script" strategy="afterInteractive">
-            {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');`}
-          </Script>
-        )}
+        <CookieConsentBanner gaMeasurementId={gaMeasurementId} gtmId={gtmId} />
 
         <PreferenceProvider>
           <ErrorMonitoring />
