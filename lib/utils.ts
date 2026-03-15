@@ -3,6 +3,11 @@ import { twMerge } from 'tailwind-merge';
 
 export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
+export function getLocaleForCurrency(currency: string) {
+  if (currency === 'INR') return 'en-IN';
+  return undefined;
+}
+
 export function getCurrencySymbol(currency: string, locale?: string) {
   const parts = new Intl.NumberFormat(locale, {
     style: 'currency',

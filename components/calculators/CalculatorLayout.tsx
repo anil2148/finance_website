@@ -10,7 +10,7 @@ import { ResultCard } from '@/components/calculators/ResultCard';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import { calculatorDefinitions, calculatorMap } from '@/lib/calculators/registry';
 import { BaseCalculatorInputs } from '@/lib/calculators/types';
-import { getCurrencySymbol, resolveCurrencyPrefix } from '@/lib/utils';
+import { getCurrencySymbol, getLocaleForCurrency, resolveCurrencyPrefix } from '@/lib/utils';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -30,7 +30,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
   const [inputs, setInputs] = useState(definition.defaultInputs);
   const { currency, formatCurrency, isRatesLoading } = usePreferences();
-  const currencySymbol = getCurrencySymbol(currency);
+  const currencyLocale = getLocaleForCurrency(currency);
+  const currencySymbol = getCurrencySymbol(currency, currencyLocale);
 
   useEffect(() => {
     setInputs(definition.defaultInputs);
@@ -58,7 +59,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-4 rounded-3xl bg-slate-950 p-4 sm:p-6">
               {fieldMeta.map((field) => (
-                <InputSlider key={field.key} label={field.label} tooltip={field.tooltip} value={inputs[field.key]} min={field.min} max={field.max} step={field.step} prefix={resolveCurrencyPrefix(field.prefix, currencySymbol)} suffix={field.suffix} onChange={(value) => setInputs((prev) => ({ ...prev, [field.key]: value }))} />
+                <InputSlider key={field.key} label={field.label} tooltip={field.tooltip} value={inputs[field.key]} min={field.min} max={field.max} step={field.step} prefix={resolveCurrencyPrefix(field.prefix, currencySymbol)} suffix={field.suffix} locale={currencyLocale} onChange={(value) => setInputs((prev) => ({ ...prev, [field.key]: value }))} />
               ))}
             </div>
 
