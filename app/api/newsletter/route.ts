@@ -1,74 +1,34 @@
 import { NextResponse } from 'next/server';
-import fs from 'node:fs';
-import path from 'node:path';
+import { createConfirmationToken } from '@/lib/newsletter/token';
+import { sendConfirmationEmail } from '@/lib/newsletter/mailchimp';
 
 type NewsletterPayload = {
-  email: string;
-  leadMagnet?: string;
+  email?: string;
   source?: string;
 };
 
-function saveToFile({ email, leadMagnet, source }: NewsletterPayload) {
-  const file = path.join(process.cwd(), 'data/newsletter-signups.json');
-  const existing = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : [];
-
-  if (!existing.some((entry: { email: string }) => entry.email === email)) {
-    existing.push({ email, leadMagnet, source, date: new Date().toISOString() });
-    fs.writeFileSync(file, JSON.stringify(existing, null, 2));
-  }
-}
-
-async function saveToDatabase(payload: NewsletterPayload) {
-  try {
-    const runtimeRequire = eval('require') as NodeRequire;
-    const { PrismaClient } = runtimeRequire('@prisma/client') as {
-      PrismaClient: new (options?: { log?: string[] }) => {
-        newsletterSubscriber: {
-          upsert: (args: {
-            where: { email: string };
-            update: { leadMagnet?: string; source?: string };
-            create: { email: string; leadMagnet?: string; source?: string };
-          }) => Promise<void>;
-        };
-      };
-    };
-
-    const globalForPrisma = globalThis as { prisma?: InstanceType<typeof PrismaClient> };
-    const prisma = globalForPrisma.prisma ?? new PrismaClient({ log: ['error'] });
-
-    if (process.env.NODE_ENV !== 'production') {
-      globalForPrisma.prisma = prisma;
-    }
-
-    await prisma.newsletterSubscriber.upsert({
-      where: { email: payload.email },
-      update: { leadMagnet: payload.leadMagnet, source: payload.source },
-      create: {
-        email: payload.email,
-        leadMagnet: payload.leadMagnet,
-        source: payload.source
-      }
-    });
-
-    return true;
-  } catch {
-    return false;
-  }
-}
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
-  const { email, leadMagnet, source } = (await req.json()) as NewsletterPayload;
+  try {
+    const { email, source } = (await req.json()) as NewsletterPayload;
 
-  if (!email || !String(email).includes('@')) {
-    return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
+    if (!email || !emailPattern.test(email)) {
+      return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
+    }
+
+    const token = createConfirmationToken(email.trim().toLowerCase());
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000';
+    const confirmationLink = `${appUrl}/newsletter/confirm/${token}?source=${encodeURIComponent(source ?? 'website')}`;
+
+    await sendConfirmationEmail(email.trim().toLowerCase(), confirmationLink);
+
+    return NextResponse.json({
+      success: true,
+      message: 'Check your email to confirm your subscription.'
+    });
+  } catch (error) {
+    console.error('[newsletter-post]', error);
+    return NextResponse.json({ error: 'Unable to process your subscription right now.' }, { status: 500 });
   }
-
-  const savedInDatabase = await saveToDatabase({ email, leadMagnet, source });
-
-  if (savedInDatabase) {
-    return NextResponse.json({ success: true, storage: 'database' });
-  }
-
-  saveToFile({ email, leadMagnet, source });
-  return NextResponse.json({ success: true, storage: 'file' });
 }

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowTrendingUpIcon, ChartBarIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { Card } from '@/components/ui/card';
-import { NewsletterSignup } from '@/components/ui/NewsletterSignup';
+import { NewsletterForm } from '@/components/NewsletterForm';
 
 const stats = [
   { label: 'Monthly users', value: '120K+' },
@@ -82,7 +82,7 @@ export function HomepageLayout() {
         <p className="text-sm leading-6 text-slate-700">Use projection charts and scenario sliders to compare outcomes before you commit to a mortgage, investment, or payoff strategy.</p>
       </Card>
 
-      <NewsletterSignup />
+      <NewsletterForm source="homepage" />
     </section>
   );
 }

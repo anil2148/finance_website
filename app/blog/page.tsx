@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { BlogSearch } from '@/components/ui/BlogSearch';
 import { getCategories, getPosts, getTags } from '@/lib/markdown';
+import { NewsletterForm } from '@/components/NewsletterForm';
 
 export const revalidate = 3600;
 
@@ -33,6 +34,8 @@ export default function BlogPage() {
       </div>
 
       <BlogSearch posts={posts} />
+
+      <NewsletterForm source="blog" className="max-w-xl" />
     </section>
   );
 }
