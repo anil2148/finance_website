@@ -5,16 +5,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const base = 'https://finance-site.vercel.app';
   const staticRoutes = [
     '',
-    '/credit-cards',
-    '/loans',
-    '/savings',
     '/calculators',
+    '/tools',
+    '/dashboard',
+    '/comparison',
     '/blog',
     '/mortgage-calculator',
     '/loan-emi-calculator',
     '/compound-interest-calculator',
     '/retirement-calculator',
-    '/net-worth-calculator'
+    '/fire-retirement-calculator',
+    '/net-worth-calculator',
+    '/investment-growth-calculator',
+    '/savings-goal-calculator',
+    '/debt-payoff-calculator'
   ];
 
   const posts = getPosts().map((post) => ({

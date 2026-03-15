@@ -1,97 +1,102 @@
-# Finance Site (Next.js + TypeScript)
+# FinanceSite – Modern Personal Finance Platform
 
-A JAMstack personal finance platform to compare products, use calculators, and read SEO blog content.
+FinanceSite is a JAMstack + serverless personal finance platform built with **Next.js App Router**, **TypeScript**, **TailwindCSS**, **Framer Motion**, **Recharts**, **NextAuth**, and **Prisma/PostgreSQL**.
 
-## Tech stack
-- Next.js App Router + TypeScript
-- TailwindCSS
-- Recharts
-- Framer Motion
-- Heroicons + HeadlessUI
-- MDX/Markdown content
-- Fuse.js (ready for search extension)
+## Features
 
-## Project structure
+- **SEO Content Engine**
+  - Markdown/MDX blog content under `content/blog`
+  - category pages, tag pages, search, internal links
+  - table of contents, comparison table blocks, FAQ schema, affiliate CTA sections
+  - script to auto-generate **1,000** SEO articles
+- **Financial Calculator Platform**
+  - mortgage, compound interest, retirement, loan EMI, FIRE, net worth, investment growth, savings goal, debt payoff
+  - live calculations, sliders, currency formatting, responsive charting
+- **Financial Tools Platform**
+  - net worth tracker, budget planner, savings tracker, debt payoff planner, portfolio tracker, FI calculator
+- **Personal Finance Dashboard**
+  - net worth overview cards
+  - assets vs liabilities chart
+  - investment growth chart
+  - monthly budget breakdown
+- **Comparison Engine**
+  - categories for cards, loans, mortgage lenders, savings accounts, investment apps
+  - filtering, sorting, ratings, pros/cons, affiliate buttons
+- **Newsletter System**
+  - API route for newsletter signup
+  - Prisma persistence with file fallback
+- **SEO Optimization**
+  - sitemap generation, robots.txt, Open Graph metadata, JSON-LD schema
+
+## Repository structure
 
 ```txt
-finance-site/
-├─ app/
-│  └─ calculators/
-│     ├─ mortgage-calculator/
-│     ├─ loan-calculator/
-│     ├─ retirement-calculator/
-│     ├─ compound-interest-calculator/
-│     └─ ... (15 calculator routes)
-├─ components/
-│  └─ calculators/
-│     ├─ CalculatorLayout.tsx
-│     ├─ InputSlider.tsx
-│     ├─ ResultCard.tsx
-│     ├─ ChartProjection.tsx
-│     └─ CalculatorHeader.tsx
-├─ lib/
-│  └─ calculators/
-│     ├─ mortgage.ts
-│     ├─ loan.ts
-│     ├─ compoundInterest.ts
-│     ├─ retirement.ts
-│     ├─ registry.ts
-│     └─ engine.ts
-├─ content/blog/
-├─ styles/
-└─ package.json
+app/
+  dashboard/
+  calculators/
+  tools/
+  blog/
+  comparison/
+  api/auth/[...nextauth]/
+  api/newsletter/
+components/
+  ui/
+  charts/
+  dashboard/
+  calculators/
+content/blog/
+lib/
+  seo/
+  auth/
+  utils/
+prisma/schema.prisma
+scripts/generate-blog.mjs
 ```
 
-## Scalable calculator system
+## Setup
 
-The calculator engine is designed to scale to 100+ calculators using a shared definition registry.
-
-1. Add a compute function in `lib/calculators`.
-2. Register the calculator in `lib/calculators/registry.ts` with:
-   - slug, SEO title/description
-   - FAQ content (used for FAQ schema)
-   - internal blog links
-   - default input values
-3. Add a route in `app/calculators/<slug>/page.tsx` that calls the shared `CalculatorPage`.
-
-### Shared UI features
-- Input form + sliders for key financial assumptions
-- Real-time calculation updates
-- Result summary cards
-- Projection charts (growth, amortization, pie, bar)
-- Breakdown tables
-- Tooltip text for financial terminology
-- Mobile-first responsive fintech UI
-
-### Implemented calculators
-- Mortgage Calculator
-- Loan Calculator
-- Compound Interest Calculator
-- Retirement Calculator
-- Credit Card Payoff Calculator
-- Savings Goal Calculator
-- Debt Snowball Calculator
-- Debt Avalanche Calculator
-- Investment Growth Calculator
-- FIRE Calculator
-- Net Worth Calculator
-- Budget Planner
-- Salary After Tax Calculator
-- Auto Loan Calculator
-- Student Loan Calculator
-- Debt Payoff Calculator
-
-## Local setup
+1. Install dependencies:
 
 ```bash
-pnpm install
-pnpm dev
+npm install
 ```
 
-Then open <http://localhost:3000/calculators>.
-
-## Generate blog posts
+2. Configure environment variables:
 
 ```bash
-pnpm generate:blog
+cp .env.example .env.local
 ```
+
+Required variables:
+
+```bash
+DATABASE_URL="postgresql://user:password@localhost:5432/financesite"
+NEXTAUTH_SECRET="replace-with-a-long-secret"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+3. Generate Prisma client and run migrations:
+
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+4. Run development server:
+
+```bash
+npm run dev
+```
+
+## Generate 1,000 SEO articles
+
+```bash
+npm run generate:blog
+```
+
+## Deploy (Vercel)
+
+- Framework preset: Next.js
+- Build command: `npm run build`
+- Install command: `npm install`
+- Output: `.next`

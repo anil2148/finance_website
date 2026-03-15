@@ -4,14 +4,55 @@ import matter from 'gray-matter';
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
-export function getPosts() {
-  return fs.readdirSync(contentDir).filter((f) => f.endsWith('.mdx')).map((file) => {
-    const raw = fs.readFileSync(path.join(contentDir, file), 'utf8');
-    const { data, content } = matter(raw);
-    return { ...data, content } as { title: string; slug: string; description: string; date: string; content: string };
-  });
+export type BlogPost = {
+  title: string;
+  slug: string;
+  description: string;
+  date: string;
+  category: string;
+  tags: string[];
+  seoTitle?: string;
+  metaDescription?: string;
+  content: string;
+};
+
+export function getPosts(): BlogPost[] {
+  return fs
+    .readdirSync(contentDir)
+    .filter((f) => f.endsWith('.mdx'))
+    .map((file) => {
+      const raw = fs.readFileSync(path.join(contentDir, file), 'utf8');
+      const { data, content } = matter(raw);
+      return {
+        title: data.title,
+        slug: data.slug,
+        description: data.description,
+        date: data.date,
+        category: data.category ?? 'general',
+        tags: data.tags ?? data.keywords ?? [],
+        seoTitle: data.seoTitle,
+        metaDescription: data.metaDescription,
+        content
+      } as BlogPost;
+    })
+    .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 export function getPostBySlug(slug: string) {
   return getPosts().find((p) => p.slug === slug);
+}
+
+export function getCategories() {
+  return [...new Set(getPosts().map((post) => post.category))];
+}
+
+export function getTags() {
+  return [...new Set(getPosts().flatMap((post) => post.tags))];
+}
+
+export function getHeadings(content: string) {
+  return content
+    .split('\n')
+    .filter((line) => line.startsWith('## '))
+    .map((line) => line.replace('## ', '').trim());
 }
