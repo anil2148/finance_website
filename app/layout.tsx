@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Navbar } from '@/components/navbar/Navbar';
 import { Footer } from '@/components/footer/Footer';
 import { PageTransition } from '@/components/ui/PageTransition';
@@ -35,6 +36,9 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
     description: 'Compare products, run calculators, and read practical personal finance guides.'
+  },
+  other: {
+    'google-adsense-account': 'ca-pub-9445870262181780'
   }
 };
 
@@ -44,6 +48,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          crossOrigin="anonymous"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9445870262181780"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <CookieConsentBanner gaMeasurementId={gaMeasurementId} gtmId={gtmId} />
 
