@@ -1,5 +1,5 @@
 import '@/styles/globals.css';
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
 import { Navbar } from '@/components/navbar/Navbar';
 import { Footer } from '@/components/footer/Footer';
@@ -13,6 +13,10 @@ const siteUrl = 'https://financesphere.io';
 const siteTitle = 'Financesphere.io | Smart Finance Insights, Tools & Strategies';
 const siteDescription =
   'Financesphere.io provides finance insights, market analysis, and smart tools to help you grow wealth, track investments, and make better financial decisions.';
+const ogDescription =
+  'Financesphere.io provides finance insights, market analysis, and smart tools to help you grow wealth and make better financial decisions.';
+const twitterTitle = 'Financesphere.io | Smart Finance Insights';
+const twitterDescription = 'Finance insights and tools to grow wealth and track investments.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -32,14 +36,13 @@ export const metadata: Metadata = {
     index: true,
     follow: true
   },
-  themeColor: '#0b1f3a',
   verification: {
     // SEO: Google Search Console verification is configurable with an environment variable.
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
   },
   openGraph: {
     title: siteTitle,
-    description: siteDescription,
+    description: ogDescription,
     type: 'website',
     url: siteUrl,
     siteName: 'Financesphere.io',
@@ -51,13 +54,17 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: siteTitle,
-    description: siteDescription,
+    title: twitterTitle,
+    description: twitterDescription,
     images: [`${siteUrl}/og-image.png`]
   },
   other: {
     'google-adsense-account': 'ca-pub-9445870262181780'
   }
+};
+
+export const viewport: Viewport = {
+  themeColor: '#0b1f3a'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
