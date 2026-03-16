@@ -93,8 +93,10 @@ export function DownloadPdfButton({ targetRef, calculatorTitle, fileName }: Down
       <button
         type="button"
         onClick={handleDownload}
-        disabled={isGenerating}
-        className="inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-70"
+        aria-disabled={isGenerating}
+        className={`inline-flex items-center gap-2 rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition ${
+          isGenerating ? 'cursor-not-allowed opacity-70' : 'hover:bg-brand/90'
+        }`}
       >
         {isGenerating ? (
           <>
