@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { FinancialComparisonTable } from '@/components/comparison-table/FinancialComparisonTable';
 import { OfferCard } from '@/components/comparison-table/OfferCard';
 import type { FinancialCategory, FinancialProduct } from '@/lib/financialProducts';
 
@@ -51,8 +50,6 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
       <div className="grid gap-4 md:grid-cols-2">
         {filtered.map((product) => <OfferCard key={product.id} product={product} />)}
       </div>
-
-      <FinancialComparisonTable data={filtered} defaultCategory={category} hideControls />
     </section>
   );
 }
