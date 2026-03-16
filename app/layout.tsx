@@ -10,32 +10,50 @@ import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
 
 const siteUrl = 'https://financesphere.io';
+const siteTitle = 'Financesphere.io | Smart Finance Insights, Tools & Strategies';
+const siteDescription =
+  'Financesphere.io provides finance insights, market analysis, and smart tools to help you grow wealth, track investments, and make better financial decisions.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.financesphere.io'),
-  title: {
-    default: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
-    template: '%s | FinanceSphere'
-  },
-  description: 'FinanceSphere helps you compare financial products, run calculators, and read practical personal finance guides.',
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
+  description: siteDescription,
   alternates: {
-    canonical: '/'
+    canonical: siteUrl
   },
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon.png', sizes: '16x16', type: 'image/png' }
+    ],
+    apple: [{ url: '/favicon.png', sizes: '180x180', type: 'image/png' }]
+  },
+  robots: {
+    index: true,
+    follow: true
+  },
+  themeColor: '#0b1f3a',
   verification: {
     // SEO: Google Search Console verification is configurable with an environment variable.
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
   },
   openGraph: {
-    title: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
-    description: 'Compare financial products, use interactive calculators, and grow your money knowledge with FinanceSphere.',
+    title: siteTitle,
+    description: siteDescription,
     type: 'website',
     url: siteUrl,
-    siteName: 'FinanceSphere'
+    siteName: 'Financesphere.io',
+    images: [
+      {
+        url: `${siteUrl}/og-image.png`
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FinanceSphere | Personal Finance Calculators, Tools & Comparisons',
-    description: 'Compare products, run calculators, and read practical personal finance guides.'
+    title: siteTitle,
+    description: siteDescription,
+    images: [`${siteUrl}/og-image.png`]
   },
   other: {
     'google-adsense-account': 'ca-pub-9445870262181780'
