@@ -20,14 +20,22 @@ export function InputSlider({ label, tooltip, value, min, max, step = 1, onChang
     <label className="block rounded-2xl bg-slate-900/70 p-4 text-slate-100 shadow-lg">
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="font-medium">{label}</span>
-        <span
-          className="rounded-md bg-slate-800 px-2 py-1 text-xs text-slate-300"
-          title={tooltip}
-          id={tooltipId}
-          role="note"
-          aria-label={`${label} help: ${tooltip}`}
-        >
-          ?
+        <span className="group relative inline-flex" tabIndex={0}>
+          <span
+            className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-slate-800 text-xs text-slate-300"
+            aria-describedby={tooltipId}
+            aria-label={`${label} help`}
+            role="img"
+          >
+            ?
+          </span>
+          <span
+            id={tooltipId}
+            role="tooltip"
+            className="pointer-events-none absolute right-0 top-full z-20 mt-2 hidden w-64 rounded-lg border border-slate-600 bg-slate-950 p-2 text-left text-xs leading-relaxed text-slate-100 shadow-xl group-hover:block group-focus-within:block"
+          >
+            {tooltip}
+          </span>
         </span>
       </div>
       <div className="mb-2 text-lg font-semibold text-white">{prefix}{value.toLocaleString(locale)}{suffix}</div>
