@@ -61,7 +61,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'mortgage-calculator',
     title: 'Mortgage Calculator',
-    description: 'Estimate monthly mortgage payments and visualize amortization.',
+    description: 'Estimate monthly mortgage costs and total interest before buying or refinancing a home.',
     seoTitle: 'Mortgage Calculator: Payment & Amortization Schedule',
     seoDescription: 'Calculate monthly mortgage payments, total interest, and view an interactive amortization chart.',
     faq: [
@@ -78,7 +78,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'loan-calculator',
     title: 'Loan Calculator',
-    description: 'Model personal or business loan repayments with EMI and interest details.',
+    description: 'Calculate monthly EMI, total interest, and payoff timing for personal, auto, or other fixed loans.',
     seoTitle: 'Loan Calculator: Monthly EMI & Interest Breakdown',
     seoDescription: 'Calculate monthly loan payments with an amortization schedule and loan cost breakdown.',
     faq: [{ question: 'What is EMI?', answer: 'EMI is the equal monthly installment made toward principal and interest.' }],
@@ -89,7 +89,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'compound-interest-calculator',
     title: 'Compound Interest Calculator',
-    description: 'Forecast compound growth from recurring contributions.',
+    description: 'Project how your savings and regular contributions can grow through compounding over time.',
     seoTitle: 'Compound Interest Calculator: Future Value Projection',
     seoDescription: 'Estimate your future value with monthly contributions and visual growth projections.',
     faq: [{ question: 'Why does compounding matter?', answer: 'Compounding allows returns to generate additional returns over time.' }],
@@ -100,7 +100,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'retirement-calculator',
     title: 'Retirement Calculator',
-    description: 'Plan retirement savings with inflation-adjusted outcomes.',
+    description: 'Estimate retirement savings progress with inflation-aware projections and withdrawal planning context.',
     seoTitle: 'Retirement Calculator: Inflation-Adjusted Savings Plan',
     seoDescription: 'Calculate projected retirement balance and estimate sustainable retirement income.',
     faq: [{ question: 'What is the 4% rule?', answer: 'It is a guideline for annual retirement withdrawals to reduce depletion risk.' }],
@@ -251,7 +251,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'debt-payoff-calculator',
     title: 'Debt Payoff Calculator',
-    description: 'Create a payoff timeline with extra monthly contributions.',
+    description: 'See how extra monthly payments can shorten payoff time and reduce total debt interest.',
     seoTitle: 'Debt Payoff Calculator: Custom Repayment Strategy',
     seoDescription: 'Project debt payoff schedules, interest costs, and acceleration benefits.',
     faq: [{ question: 'What inputs matter most for payoff?', answer: 'Interest rate and extra monthly payments have the largest impact.' }],

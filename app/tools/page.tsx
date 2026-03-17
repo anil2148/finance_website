@@ -37,8 +37,8 @@ export default function ToolsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolsSchema) }} />
 
       <div>
-        <h1 className="text-3xl font-bold">Financial Tools Platform</h1>
-        <p className="text-slate-600">A suite of planning tools designed for viral SEO and practical daily money decisions.</p>
+        <h1 className="text-3xl font-bold">Finance tools that support better decisions</h1>
+        <p className="text-slate-600">Use these tools to understand where your money is going, set priorities, and test different plans before you commit.</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (

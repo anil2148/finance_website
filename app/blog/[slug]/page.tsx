@@ -69,28 +69,16 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         </ul>
       </section>
 
-      <section className="overflow-x-auto rounded-lg border">
-        <table className="min-w-full text-sm">
-          <thead className="bg-slate-50 text-left">
-            <tr><th className="px-3 py-2">Option</th><th className="px-3 py-2">Best for</th><th className="px-3 py-2">Rating</th></tr>
-          </thead>
-          <tbody>
-            <tr className="border-t"><td className="px-3 py-2">Starter</td><td className="px-3 py-2">Beginners</td><td className="px-3 py-2">4.4/5</td></tr>
-            <tr className="border-t"><td className="px-3 py-2">Growth</td><td className="px-3 py-2">Long-term planning</td><td className="px-3 py-2">4.7/5</td></tr>
-          </tbody>
-        </table>
-      </section>
-
       <InteractiveArticleContent content={post.content} />
 
       <section className="rounded-xl bg-blue-600 p-5 text-white">
-        <h3 className="text-xl font-semibold">Affiliate partner offers</h3>
-        <p className="text-sm text-blue-100">Compare vetted financial products and unlock welcome bonuses.</p>
-        <a href="/comparison" className="mt-3 inline-flex rounded-lg bg-white px-4 py-2 font-semibold text-blue-700">View Offers</a>
+        <h3 className="text-xl font-semibold">Put this guide into action</h3>
+        <p className="text-sm text-blue-100">Use FinanceSphere calculators and comparison pages to test numbers that match your situation before you make a decision.</p>
+        <a href="/comparison" className="mt-3 inline-flex rounded-lg bg-white px-4 py-2 font-semibold text-blue-700">Compare options</a>
       </section>
 
       <section>
-        <h3 className="mb-2 font-semibold">Related internal links</h3>
+        <h3 className="mb-2 font-semibold">Helpful next steps</h3>
         <div className="flex flex-wrap gap-2 text-sm">
           <Link className="rounded-full border px-3 py-1" href="/calculators">Financial calculators</Link>
           <Link className="rounded-full border px-3 py-1" href="/tools">Finance tools</Link>

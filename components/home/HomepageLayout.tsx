@@ -2,15 +2,9 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowTrendingUpIcon, ChartBarIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { ArrowTrendingUpIcon, ChartBarIcon } from '@heroicons/react/24/outline';
 import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
-
-const stats = [
-  { label: 'Monthly users', value: '120K+' },
-  { label: 'Calculators run', value: '2.4M' },
-  { label: 'Avg. session', value: '5m 12s' }
-];
 
 const popularCalculators = [
   ['Mortgage Calculator', '/calculators/mortgage-calculator'],
@@ -20,10 +14,9 @@ const popularCalculators = [
 
 const tools = [
   { title: 'Financial tools', desc: 'Budget planning, tax estimation, and retirement scenarios.', href: '/tools' },
-  { title: 'Latest articles', desc: 'SEO-rich financial education guides and actionable tips.', href: '/blog' },
+  { title: 'Latest articles', desc: 'Read practical guides that explain financial concepts in plain language.', href: '/blog' },
   { title: 'Comparison tools', desc: 'Compare cards, loans, and savings accounts in one place.', href: '/comparison' }
 ];
-<meta name="fo-verify" content="98525c3d-9a85-47c5-adbe-962a9dead1eb" />
 
 export function HomepageLayout() {
   return (
@@ -32,21 +25,17 @@ export function HomepageLayout() {
         <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.6),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(129,140,248,0.5),transparent_35%),linear-gradient(rgba(148,163,184,0.22)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.22)_1px,transparent_1px)] [background-size:auto,auto,26px_26px,26px_26px]" />
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
           <div className="relative space-y-4">
-            <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100"><SparklesIcon className="h-4 w-4" /> Modern fintech planning hub</p>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Plan money smarter with a futuristic financial command center</h1>
-            <p className="max-w-xl text-blue-100/95">Live calculators, dynamic charts, and data-rich comparisons with a high-contrast layout tuned for readability across desktop and mobile.</p>
+            <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">FinanceSphere</p>
+            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Simple finance calculators for everyday decisions</h1>
+            <p className="max-w-xl text-blue-100/95">Use FinanceSphere to estimate mortgage payments, loan EMI, retirement savings, net worth, savings goals, debt payoff plans, and long-term investment growth.</p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">Explore calculators</Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/comparison">Compare products</Link>
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/blog">Read money guides</Link>
             </div>
           </div>
-          <div className="relative grid gap-3">
-            {stats.map((item, idx) => (
-              <motion.div key={item.label} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }} className="rounded-xl border border-cyan-100/30 bg-slate-900/60 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
-                <p className="text-sm text-cyan-100">{item.label}</p>
-                <p className="text-2xl font-bold">{item.value}</p>
-              </motion.div>
-            ))}
+          <div className="relative rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
+            <h2 className="text-xl font-semibold">What you can do here</h2>
+            <p className="mt-2 text-sm text-cyan-100">Run fast what-if scenarios before taking on debt, changing your savings plan, or updating your investment strategy.</p>
           </div>
         </div>
       </Card>
@@ -60,7 +49,7 @@ export function HomepageLayout() {
                 <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)]">
                   <ChartBarIcon className="h-6 w-6 text-blue-700" />
                   <h3 className="mt-2 text-lg font-semibold text-slate-900">{title}</h3>
-                  <p className="text-sm leading-6 text-slate-700">Instant updates with slider controls, visual breakdowns, and mobile-friendly UX.</p>
+                  <p className="text-sm leading-6 text-slate-700">Estimate payments, balances, and timelines in seconds with clear charts and simple inputs.</p>
                 </Card>
               </Link>
             </motion.div>
