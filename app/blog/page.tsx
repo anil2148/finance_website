@@ -21,7 +21,7 @@ export default function BlogPage() {
     <section className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold">FinanceSphere Blog</h1>
-        <p className="text-slate-600">Clear, practical articles focused on real personal-finance questions: lowering interest costs, picking the right account, improving credit, and planning long-term wealth.</p>
+        <p className="text-slate-600">Read practical guides tied to everyday decisions—choosing a mortgage term, paying down debt faster, improving credit habits, and building savings that support your goals.</p>
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm">

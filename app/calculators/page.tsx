@@ -16,7 +16,7 @@ export default function CalculatorsPage() {
     <section className="space-y-6">
       <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-blue-800 to-brand p-6 text-white">
         <h1 className="text-3xl font-bold tracking-tight">Finance calculators for major money decisions</h1>
-        <p className="max-w-3xl text-blue-100">From buying a home to accelerating debt payoff, each calculator is built to show monthly cash-flow impact, long-term cost, and outcome trade-offs.</p>
+        <p className="max-w-3xl text-blue-100">Use these calculators to plan payments, compare borrowing options, test savings timelines, and pressure-test long-term decisions before money is committed.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

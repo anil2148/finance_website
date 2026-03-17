@@ -20,6 +20,46 @@ const ProjectionChart = dynamic(() => import('@/components/calculators/Projectio
   loading: () => <div className="h-72 animate-pulse rounded-2xl bg-slate-100" />
 });
 
+
+const guideMessageBySlug: Record<string, { title: string; body: string }> = {
+  'mortgage-calculator': {
+    title: 'Mortgage planning walkthrough',
+    body: 'Set loan amount, APR, and term, then compare monthly payment and total interest to keep housing costs within your budget.'
+  },
+  'loan-calculator': {
+    title: 'Loan EMI walkthrough',
+    body: 'Enter borrowing details and compare installment amounts across terms so you can pick a repayment plan you can sustain.'
+  },
+  'compound-interest-calculator': {
+    title: 'Compounding walkthrough',
+    body: 'Start with your current balance, add monthly contributions, and test different return assumptions to map long-term growth.'
+  },
+  'retirement-calculator': {
+    title: 'Retirement readiness walkthrough',
+    body: 'Model contributions, expected return, and timeline to estimate whether your current savings pace supports retirement goals.'
+  },
+  'fire-calculator': {
+    title: 'FIRE planning walkthrough',
+    body: 'Adjust savings rate and investment return assumptions to estimate your financial independence target and timeline.'
+  },
+  'net-worth-calculator': {
+    title: 'Net worth tracking walkthrough',
+    body: 'Use assets, liabilities, and contribution assumptions to monitor overall financial health and direction over time.'
+  },
+  'investment-growth-calculator': {
+    title: 'Investment growth walkthrough',
+    body: 'Compare contribution levels and return assumptions to see how portfolio value may grow across long horizons.'
+  },
+  'savings-goal-calculator': {
+    title: 'Savings goal walkthrough',
+    body: 'Set your target timeline and monthly amount to check whether your plan can fund major goals on schedule.'
+  },
+  'debt-payoff-calculator': {
+    title: 'Debt payoff walkthrough',
+    body: 'Increase extra monthly payments to compare payoff speed and interest reduction before choosing a debt strategy.'
+  }
+};
+
 const fieldMeta: Array<{ key: keyof BaseCalculatorInputs; label: string; tooltip: string; min: number; max: number; step?: number; prefix?: string; suffix?: string }> = [
   { key: 'loanAmount', label: 'Loan Amount / Starting Balance', tooltip: 'Starting principal, debt, or investment amount.', min: 1000, max: 2000000, step: 500, prefix: '$' },
   { key: 'interestRate', label: 'Interest Rate', tooltip: 'APR for loans or liabilities.', min: 0, max: 35, step: 0.1, suffix: '%' },
@@ -46,7 +86,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
   const relatedCalculators = calculatorDefinitions.filter((item) => item.slug !== slug).slice(0, 3);
-
+  const guideMessage = guideMessageBySlug[slug] ?? {
+    title: 'First-time walkthrough',
+    body: 'Adjust sliders on the left, review summary cards, and then save or export your result below.'
+  };
 
   useEffect(() => {
     const hasSeenGuide = window.localStorage.getItem(`calculator-guide-${slug}`);
@@ -86,8 +129,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
       {showGuide && (
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900" role="status">
-          <p className="font-semibold">First-time walkthrough</p>
-          <p>Adjust sliders on the left, review summary cards, and then save or export your result below.</p>
+          <p className="font-semibold">{guideMessage.title}</p>
+          <p>{guideMessage.body}</p>
           <button type="button" onClick={dismissGuide} className="mt-2 rounded-lg bg-indigo-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-800">
             Dismiss
           </button>

@@ -78,7 +78,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'loan-calculator',
     title: 'Loan Calculator',
-    description: 'Estimate monthly loan payments, total borrowing cost, and payoff date for personal, auto, or other installment loans.',
+    description: 'Calculate monthly EMI-style installments, total interest, and payoff date before choosing a personal, auto, or fixed-term loan.',
     seoTitle: 'Loan Calculator: Monthly EMI & Interest Breakdown',
     seoDescription: 'Calculate monthly installment payments with a year-by-year amortization schedule and total interest breakdown.',
     faq: [{ question: 'What is EMI?', answer: 'EMI (equated monthly installment) is a fixed payment that covers both interest and principal each month.' }],
@@ -89,7 +89,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'compound-interest-calculator',
     title: 'Compound Interest Calculator',
-    description: 'Project how consistent contributions compound over time so you can set realistic savings and investing targets.',
+    description: 'Model long-term balance growth from a starting amount and recurring contributions to set realistic investing milestones.',
     seoTitle: 'Compound Interest Calculator: Future Value Projection',
     seoDescription: 'Estimate future portfolio value from a starting balance, recurring contributions, and expected annual return.',
     faq: [{ question: 'Why does compounding matter?', answer: 'Because earnings stay invested, your returns can generate additional returns, accelerating growth over longer periods.' }],
@@ -100,7 +100,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'retirement-calculator',
     title: 'Retirement Calculator',
-    description: 'Forecast retirement balances with inflation-aware assumptions to test whether your savings plan supports future spending.',
+    description: 'Estimate retirement readiness by testing contribution levels, investment returns, and inflation-adjusted spending assumptions.',
     seoTitle: 'Retirement Calculator: Inflation-Adjusted Savings Plan',
     seoDescription: 'Project retirement account growth and estimate potential annual withdrawals using common planning rules.',
     faq: [{ question: 'What is the 4% rule?', answer: 'The 4% rule is a starting-point guideline suggesting first-year withdrawals around 4% of portfolio value, adjusted over time.' }],
@@ -111,10 +111,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'credit-card-payoff-calculator',
     title: 'Credit Card Payoff Calculator',
-    description: 'Estimate payoff timeline and cost for revolving balances.',
+    description: 'Plan how fast to clear card balances by comparing minimum payments with larger monthly payoff amounts.',
     seoTitle: 'Credit Card Payoff Calculator: Debt-Free Timeline',
-    seoDescription: 'Calculate how long it will take to pay off your credit card and compare strategies.',
-    faq: [{ question: 'Does paying more each month help?', answer: 'Yes. Extra payments reduce principal faster and lower interest costs.' }],
+    seoDescription: 'Estimate card payoff month, total interest, and repayment impact when you raise monthly payments.',
+    faq: [{ question: 'Does paying more each month help?', answer: 'Yes. Higher monthly payments reduce principal sooner, which lowers interest and shortens payoff time.' }],
     blogLinks: [{ title: 'Avoid Credit Card Interest', href: '/blog/seo-avoid-credit-card-interest' }],
     defaultInputs: { ...defaultInputs, loanAmount: 15000, interestRate: 19.9, years: 5 },
     compute: (inputs) => debtPayoffResult('Credit Card Payoff Plan', inputs)
@@ -122,10 +122,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'savings-goal-calculator',
     title: 'Savings Goal Calculator',
-    description: 'Track monthly savings needed to hit future goals.',
+    description: 'Estimate the monthly amount required to reach a target by your deadline, including growth and inflation assumptions.',
     seoTitle: 'Savings Goal Calculator: Reach Milestones Faster',
-    seoDescription: 'Estimate how much to save each month and visualize your progress over time.',
-    faq: [{ question: 'Can I include inflation?', answer: 'Yes. Use inflation inputs to estimate real purchasing power.' }],
+    seoDescription: 'Calculate monthly savings needed for a target date and track projected progress year by year.',
+    faq: [{ question: 'Can I include inflation?', answer: 'Yes. Inflation assumptions help you test whether your target still holds purchasing power in future years.' }],
     blogLinks: [{ title: 'Best Savings Goals by Age', href: '/blog/seo-best-savings-goals-by-age' }],
     defaultInputs: { ...defaultInputs, loanAmount: 10000, years: 10 },
     compute: (inputs) => growthResult('Savings Goal Projection', inputs)
@@ -133,7 +133,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'debt-snowball-calculator',
     title: 'Debt Snowball Calculator',
-    description: 'Prioritize smallest balances first for momentum.',
+    description: 'Simulate a snowball strategy that clears small balances first to build motivation and visible progress.',
     seoTitle: 'Debt Snowball Calculator: Build Debt Payoff Momentum',
     seoDescription: 'Simulate debt snowball strategy with charts and payoff timeline insights.',
     faq: [{ question: 'What is debt snowball?', answer: 'It pays smallest debt first while making minimum payments on others.' }],
@@ -144,7 +144,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'debt-avalanche-calculator',
     title: 'Debt Avalanche Calculator',
-    description: 'Prioritize highest-interest balances to minimize cost.',
+    description: 'Model an avalanche strategy that targets high-interest balances first to reduce total interest paid.',
     seoTitle: 'Debt Avalanche Calculator: Minimize Interest Paid',
     seoDescription: 'Model debt avalanche payoff and compare savings across repayment plans.',
     faq: [{ question: 'What is debt avalanche?', answer: 'It focuses extra payments on the highest-interest debt first.' }],
@@ -155,7 +155,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'investment-growth-calculator',
     title: 'Investment Growth Calculator',
-    description: 'Project long-term portfolio growth under varied assumptions.',
+    description: 'Forecast portfolio value using contribution, return, and inflation assumptions to support long-term investing decisions.',
     seoTitle: 'Investment Growth Calculator: Long-Term Portfolio Forecast',
     seoDescription: 'Forecast investment growth with expected return, inflation, and contribution inputs.',
     faq: [{ question: 'Is return guaranteed?', answer: 'No. Returns are estimates and real markets can vary widely.' }],
@@ -166,7 +166,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'fire-calculator',
     title: 'FIRE Calculator',
-    description: 'Estimate time to Financial Independence / Retire Early.',
+    description: 'Estimate the savings pace and portfolio target needed to reach financial independence earlier than traditional retirement.',
     seoTitle: 'FIRE Calculator: Financial Independence Timeline',
     seoDescription: 'Estimate your path to financial independence by modeling savings rate, investment return, and target spending.',
     faq: [{ question: 'What is FIRE?', answer: 'FIRE means Financial Independence, Retire Early—building enough invested assets to cover living costs without active income.' }],
@@ -177,7 +177,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'net-worth-calculator',
     title: 'Net Worth Calculator',
-    description: 'Track assets minus liabilities over time and see how debt payoff and investing choices affect long-term net worth.',
+    description: 'Track assets versus liabilities and project how saving, investing, and debt repayment choices influence net worth over time.',
     seoTitle: 'Net Worth Calculator: Track Financial Progress',
     seoDescription: 'Calculate current net worth and project forward based on contribution and growth assumptions.',
     faq: [{ question: 'How often should I track net worth?', answer: 'Monthly or quarterly tracking is usually enough to spot trends without reacting to short-term noise.' }],
@@ -251,10 +251,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'debt-payoff-calculator',
     title: 'Debt Payoff Calculator',
-    description: 'Measure how extra monthly payments affect debt payoff speed and total interest paid.',
+    description: 'Compare debt repayment scenarios to see how extra monthly payments change your debt-free date and lifetime interest.',
     seoTitle: 'Debt Payoff Calculator: Custom Repayment Strategy',
     seoDescription: 'Build a debt payoff schedule and compare standard vs accelerated repayment outcomes.',
-    faq: [{ question: 'What inputs matter most for payoff?', answer: 'APR and extra payment size usually have the biggest impact on payoff speed and total interest.' }],
+    faq: [{ question: 'What inputs matter most for payoff?', answer: 'Interest rate and extra monthly payment usually drive the biggest change in payoff time and total interest.' }],
     blogLinks: [{ title: 'Balance Transfer Strategy', href: '/blog/seo-balance-transfer-strategy' }],
     defaultInputs: { ...defaultInputs, loanAmount: 28000, years: 6 },
     compute: (inputs) => debtPayoffResult('Debt Payoff Projection', inputs)

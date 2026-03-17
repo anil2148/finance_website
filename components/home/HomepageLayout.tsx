@@ -7,9 +7,21 @@ import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
 
 const popularCalculators = [
-  ['Mortgage Calculator', '/calculators/mortgage-calculator'],
-  ['Compound Interest Calculator', '/calculators/compound-interest-calculator'],
-  ['Debt Payoff Calculator', '/calculators/debt-payoff-calculator']
+  {
+    title: 'Mortgage Calculator',
+    href: '/calculators/mortgage-calculator',
+    description: 'Estimate monthly principal-and-interest payments before you choose a home budget or loan term.'
+  },
+  {
+    title: 'Compound Interest Calculator',
+    href: '/calculators/compound-interest-calculator',
+    description: 'See how recurring contributions and time compound into long-term growth for future goals.'
+  },
+  {
+    title: 'Debt Payoff Calculator',
+    href: '/calculators/debt-payoff-calculator',
+    description: 'Compare payoff timelines and interest cost when you add extra monthly payments.'
+  }
 ];
 
 const tools = [
@@ -27,7 +39,7 @@ export function HomepageLayout() {
           <div className="relative space-y-4">
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">FinanceSphere</p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Finance tools built for real decisions, not generic estimates</h1>
-            <p className="max-w-xl text-blue-100/95">Stress-test monthly payments, retirement scenarios, debt timelines, and savings targets with calculators that highlight trade-offs you can actually act on.</p>
+            <p className="max-w-xl text-blue-100/95">FinanceSphere helps households, first-time buyers, and long-term savers test trade-offs before they commit to a mortgage, debt strategy, or investing plan.</p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">Explore calculators</Link>
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/blog">Read money guides</Link>
@@ -35,7 +47,7 @@ export function HomepageLayout() {
           </div>
           <div className="relative rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
             <h2 className="text-xl font-semibold">What you can do today</h2>
-            <p className="mt-2 text-sm text-cyan-100">Run best-case and worst-case scenarios for rates, contribution levels, and payoff speed before taking on a mortgage, car loan, or new card balance.</p>
+            <p className="mt-2 text-sm text-cyan-100">Use calculators for home buying, retirement planning, debt reduction, and savings targets so your next financial step is based on numbers you understand.</p>
           </div>
         </div>
       </Card>
@@ -43,13 +55,13 @@ export function HomepageLayout() {
       <section>
         <h2 className="mb-4 text-2xl font-semibold text-slate-900">Popular calculators</h2>
         <div className="grid gap-4 md:grid-cols-3">
-          {popularCalculators.map(([title, href]) => (
-            <motion.div key={href} whileHover={{ y: -4 }}>
-              <Link href={href}>
+          {popularCalculators.map((calculator) => (
+            <motion.div key={calculator.href} whileHover={{ y: -4 }}>
+              <Link href={calculator.href}>
                 <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)]">
                   <ChartBarIcon className="h-6 w-6 text-blue-700" />
-                  <h3 className="mt-2 text-lg font-semibold text-slate-900">{title}</h3>
-                  <p className="text-sm leading-6 text-slate-700">See payment amounts, total interest, and timeline changes instantly when you adjust key assumptions.</p>
+                  <h3 className="mt-2 text-lg font-semibold text-slate-900">{calculator.title}</h3>
+                  <p className="text-sm leading-6 text-slate-700">{calculator.description}</p>
                 </Card>
               </Link>
             </motion.div>
