@@ -2,1221 +2,1849 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Angular 16+ Complete Guide — Senior Developer Reference</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Angular 16+ Complete Guide 2024 – Signals, Standalone, DI, Change Detection & 40+ Q&A</title>
 <style>
-  :root {
-    --bg: #0f0f13;
-    --bg2: #16161e;
-    --bg3: #1e1e2e;
-    --border: #2a2a3e;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --faint: #475569;
-    --purple: #a78bfa;
-    --purple-dim: #312e62;
-    --teal: #34d399;
-    --teal-dim: #0d3d2b;
-    --amber: #fbbf24;
-    --amber-dim: #3d2d0a;
-    --blue: #60a5fa;
-    --blue-dim: #0d2447;
-    --red: #f87171;
-    --red-dim: #3d0d0d;
-    --green: #86efac;
-    --green-dim: #0d3d1a;
-    --code-bg: #1a1a2e;
-    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-    --sans: 'Inter', 'DM Sans', system-ui, sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 15px;
-    line-height: 1.7;
-  }
-
-  /* Layout */
-  .layout { display: flex; min-height: 100vh; }
-  nav {
-    width: 240px;
-    flex-shrink: 0;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    padding: 1.5rem 1rem;
-  }
-  nav h2 { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); margin-bottom: .75rem; }
-  nav a { display: block; font-size: 13px; color: var(--muted); padding: 5px 8px; border-radius: 6px; text-decoration: none; margin-bottom: 2px; }
-  nav a:hover { background: var(--bg3); color: var(--text); }
-  nav .section { margin-top: 1.25rem; }
-  main { flex: 1; max-width: 820px; padding: 2.5rem 2rem; }
-
-  /* Typography */
-  h1 { font-size: 30px; font-weight: 700; line-height: 1.2; margin-bottom: .5rem; }
-  h1 span { color: var(--purple); }
-  h2 { font-size: 20px; font-weight: 600; margin: 3rem 0 1rem; padding-top: 2rem; border-top: 1px solid var(--border); }
-  h3 { font-size: 16px; font-weight: 600; margin: 1.5rem 0 .5rem; color: var(--text); }
-  h4 { font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: .35rem; text-transform: uppercase; letter-spacing: .05em; }
-  p { color: var(--muted); margin-bottom: .75rem; font-size: 14px; }
-  a { color: var(--blue); }
-
-  /* Badges */
-  .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 20px; }
-  .bv16 { background: var(--blue-dim); color: var(--blue); }
-  .bv17 { background: var(--amber-dim); color: var(--amber); }
-  .bv18 { background: var(--green-dim); color: var(--green); }
-  .bnew { background: var(--purple-dim); color: var(--purple); }
-  .badv { background: var(--red-dim); color: var(--red); }
-
-  /* Code */
-  code { font-family: var(--mono); font-size: 12px; background: var(--code-bg); border: 1px solid var(--border); padding: 1px 6px; border-radius: 4px; color: var(--purple); }
-  pre {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-    overflow-x: auto;
-    font-family: var(--mono);
-    font-size: 12.5px;
-    line-height: 1.7;
-    margin: .75rem 0 1.25rem;
-    position: relative;
-  }
-  pre .kw { color: var(--purple); }
-  pre .fn { color: var(--blue); }
-  pre .str { color: var(--teal); }
-  pre .cm { color: var(--faint); }
-  pre .dec { color: var(--amber); }
-  pre .ty { color: #f9a8d4; }
-
-  /* Cards */
-  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
-  .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: .75rem 0; }
-  .card-grid .card { margin-bottom: 0; }
-  .card h3 { margin-top: 0; font-size: 14px; }
-  .card p { font-size: 13px; margin-bottom: 0; }
-
-  /* Version pills */
-  .vpills { display: flex; gap: .875rem; margin: 1rem 0 1.5rem; flex-wrap: wrap; }
-  .vpill { flex: 1; min-width: 180px; background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
-  .vpill .ver { font-size: 14px; font-weight: 600; margin-bottom: .4rem; display: flex; align-items: center; gap: 8px; }
-  .vpill .feat { font-size: 12px; color: var(--muted); line-height: 1.6; }
-
-  /* Side-by-side code comparison */
-  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem; margin: .75rem 0; }
-  .compare-col { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; }
-  .compare-col h4 { margin-bottom: .5rem; }
-  .compare-col pre { margin: 0; border: none; padding: .625rem; background: var(--code-bg); font-size: 11.5px; }
-
-  /* Alert boxes */
-  .tip { border-left: 3px solid; border-radius: 0 8px 8px 0; padding: .75rem 1rem; margin: .75rem 0; }
-  .tip-green { background: var(--green-dim); border-color: var(--teal); }
-  .tip-green p { color: var(--green); font-size: 13px; margin: 0; }
-  .tip-amber { background: var(--amber-dim); border-color: var(--amber); }
-  .tip-amber p { color: var(--amber); font-size: 13px; margin: 0; }
-
-  /* Diagrams (SVG) */
-  .diagram { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin: 1rem 0 1.5rem; }
-
-  /* Q&A */
-  .qa { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: .875rem; overflow: hidden; }
-  .qq {
-    display: flex; justify-content: space-between; align-items: flex-start;
-    gap: 12px; padding: 1rem 1.25rem; cursor: pointer;
-    transition: background .15s;
-  }
-  .qq:hover { background: var(--bg3); }
-  .qq-inner { flex: 1; }
-  .qq-tag { font-size: 11px; font-weight: 600; color: var(--purple); background: var(--purple-dim); padding: 2px 8px; border-radius: 20px; display: inline-block; margin-bottom: .35rem; letter-spacing: .03em; }
-  .qq-text { font-size: 14px; font-weight: 500; line-height: 1.5; }
-  .qq-arrow { font-size: 12px; color: var(--faint); flex-shrink: 0; transition: transform .2s; margin-top: 3px; }
-  .qa-body { display: none; padding: 0 1.25rem 1.25rem; border-top: 1px solid var(--border); }
-  .qa-body.open { display: block; }
-  .qa-body p { margin: .75rem 0 .4rem; }
-  .qa-body pre { font-size: 12px; }
-
-  /* Steps */
-  .steps { margin: .75rem 0; }
-  .step { display: flex; gap: .75rem; margin-bottom: .6rem; align-items: flex-start; }
-  .step-n { flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--purple-dim); color: var(--purple); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
-  .step-t { font-size: 13px; color: var(--muted); line-height: 1.5; flex: 1; }
-
-  /* CTA buttons */
-  .cta { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(96,165,250,.25); cursor: pointer; text-decoration: none; margin: .25rem .25rem 0 0; transition: opacity .15s; }
-  .cta:hover { opacity: .8; }
-
-  /* Hero */
-  .hero { margin-bottom: 2.5rem; }
-  .hero-badges { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: .875rem; }
-
-  /* TOC */
-  .toc { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 2.5rem; }
-  .toc h4 { font-size: 12px; margin-bottom: .75rem; }
-  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 1.5rem; }
-  .toc-grid a { font-size: 13px; color: var(--muted); padding: 3px 0; display: block; }
-  .toc-grid a:hover { color: var(--purple); }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-  /* Responsive */
-  @media (max-width: 760px) {
-    nav { display: none; }
-    main { padding: 1.5rem 1rem; }
-    .card-grid, .compare, .vpills { grid-template-columns: 1fr; flex-direction: column; }
-    h1 { font-size: 22px; }
-  }
+:root{
+  --bg:#ffffff;--bg2:#f8f9fa;--bg3:#f1f3f4;--border:#e0e0e0;--border2:#c8cacf;
+  --text:#202124;--muted:#5f6368;--faint:#9aa0a6;
+  --accent:#1a73e8;--accent2:#0d62d0;--accent-bg:#e8f0fe;--accent-border:#aecbfa;
+  --green:#137333;--green-bg:#e6f4ea;--green-border:#a8d5b5;
+  --amber:#b06000;--amber-bg:#fef7e0;--amber-border:#f8d775;
+  --red:#c5221f;--red-bg:#fce8e6;--red-border:#f5c6c5;
+  --purple:#7b1fa2;--purple-bg:#f3e5f5;--purple-border:#ce93d8;
+  --teal:#00695c;--teal-bg:#e0f2f1;--teal-border:#80cbc4;
+  --code-bg:#1e1e2e;--code-text:#cdd6f4;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono","Cascadia Code","Fira Code",monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.8}
+/* ---- Layout ---- */
+.layout{display:grid;grid-template-columns:270px 1fr;max-width:1200px;margin:0 auto;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--bg2);border-right:1px solid var(--border);padding:1.25rem .875rem 4rem}
+aside .logo{font-size:13px;font-weight:700;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:1rem;margin-bottom:1.25rem;line-height:1.4}
+aside .logo small{display:block;font-weight:400;color:var(--faint);font-size:11px;margin-top:2px}
+.nav-section{margin-bottom:1.25rem}
+.nav-section h6{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-bottom:.4rem;padding:0 6px}
+aside a{display:block;font-size:12.5px;color:var(--muted);padding:4px 8px;border-radius:4px;text-decoration:none;line-height:1.4;margin-bottom:1px}
+aside a:hover{background:var(--bg3);color:var(--text)}
+main{padding:2.5rem 3rem 6rem;min-width:0}
+/* ---- Typography ---- */
+h1{font-size:32px;font-weight:800;line-height:1.2;margin-bottom:.375rem}
+h2{font-size:22px;font-weight:700;margin:3.5rem 0 1rem;padding-bottom:.625rem;border-bottom:2px solid var(--border)}
+h3{font-size:18px;font-weight:700;margin:2rem 0 .625rem;color:var(--text)}
+h4{font-size:15px;font-weight:700;margin:1.5rem 0 .4rem}
+h5{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--faint);margin:1rem 0 .35rem}
+p{color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:.875rem}
+p strong{color:var(--text);font-weight:600}
+ul,ol{padding-left:1.35rem;color:var(--muted);font-size:15px;margin-bottom:.875rem}
+li{margin-bottom:.3rem;line-height:1.7}
+li strong{color:var(--text)}
+a{color:var(--accent)}
+a:hover{text-decoration:underline}
+hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+/* ---- Code ---- */
+code{font-family:var(--mono);font-size:13px;background:var(--bg3);border:1px solid var(--border);padding:1px 6px;border-radius:4px;color:#c5221f}
+pre{background:var(--code-bg);border-radius:10px;padding:1.375rem 1.5rem;overflow-x:auto;font-family:var(--mono);font-size:13px;line-height:1.8;margin:.75rem 0 1.5rem;border:1px solid #313244;position:relative}
+.file{position:absolute;top:0;right:0;background:#313244;color:#6c7086;font-size:11px;padding:3px 10px;border-radius:0 10px 0 6px;font-family:var(--sans)}
+/* syntax colors */
+.k{color:#cba6f7}.fn{color:#89b4fa}.s{color:#a6e3a1}.v{color:#fab387}.ty{color:#f38ba8}.c{color:#6c7086;font-style:italic}.dec{color:#f9e2af}.kw{color:#cba6f7}
+/* ---- Callouts ---- */
+.box{border-radius:8px;padding:1rem 1.25rem;margin:1rem 0 1.5rem;border:1px solid}
+.box .bh{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:.4rem}
+.box p{font-size:14px;margin:0;line-height:1.65}
+.box ul{font-size:14px;margin:.4rem 0 0}
+.info{background:var(--accent-bg);border-color:var(--accent-border)}.info .bh{color:var(--accent)}.info p,.info li{color:#1558b0}
+.ok{background:var(--green-bg);border-color:var(--green-border)}.ok .bh{color:var(--green)}.ok p,.ok li{color:#0d5226}
+.warn{background:var(--amber-bg);border-color:var(--amber-border)}.warn .bh{color:var(--amber)}.warn p,.warn li{color:#7c4500}
+.err{background:var(--red-bg);border-color:var(--red-border)}.err .bh{color:var(--red)}.err p,.err li{color:#8c1916}
+.note{background:var(--purple-bg);border-color:var(--purple-border)}.note .bh{color:var(--purple)}.note p,.note li{color:#5c1175}
+.tip{background:var(--teal-bg);border-color:var(--teal-border)}.tip .bh{color:var(--teal)}.tip p,.tip li{color:#004d45}
+/* ---- Diagram ---- */
+.dbox{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1.25rem 0 1.75rem}
+.dcap{font-size:13px;color:var(--faint);text-align:center;padding:.6rem;background:var(--bg3);border-top:1px solid var(--border);font-style:italic}
+/* ---- Compare ---- */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0 1.5rem}
+.cmp-col{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:1rem}
+.cmp-col h5{margin:0 0 .5rem;color:var(--text)}
+.cmp-col pre{margin:0;font-size:12px;padding:.75rem}
+/* ---- Card grid ---- */
+.cg{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:1rem 0 1.5rem}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem}
+.card h4{margin:0 0 .35rem;font-size:15px}
+.card p{font-size:13px;margin:0;color:var(--muted)}
+/* ---- Table ---- */
+table{width:100%;border-collapse:collapse;font-size:14px;margin:1rem 0 1.5rem}
+th{background:var(--bg3);font-weight:700;padding:.625rem .875rem;text-align:left;border:1px solid var(--border)}
+td{padding:.55rem .875rem;border:1px solid var(--border);color:var(--muted);vertical-align:top}
+tr:nth-child(even) td{background:var(--bg2)}
+/* ---- Output / Error boxes ---- */
+.output{background:#1c1c1c;border-radius:7px;padding:.875rem 1.1rem;margin:.5rem 0 1rem;font-family:var(--mono);font-size:12.5px;color:#4ec9b0}
+.errbox{background:#1c0909;border:1px solid #5c1a1a;border-radius:7px;padding:.875rem 1.1rem;margin:.5rem 0 1rem;font-family:var(--mono);font-size:12.5px;color:#f14c4c}
+/* ---- Version badges ---- */
+.vb{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;margin:0 3px 3px 0}
+.v16{background:#e8f0fe;color:#1a73e8}.v17{background:#fef7e0;color:#b06000}.v18{background:#e6f4ea;color:#137333}.vstable{background:#e6f4ea;color:#137333}.vexp{background:#fce4ec;color:#c2185b}
+/* ---- Steps ---- */
+.steps{list-style:none;padding:0;margin:.75rem 0 1.25rem;counter-reset:step}
+.steps li{display:flex;gap:.875rem;margin-bottom:.875rem;align-items:flex-start}
+.sn{flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.sb{flex:1;font-size:14px;color:var(--muted);line-height:1.65;padding-top:3px}
+.sb strong{color:var(--text)}
+/* ---- Q&A ---- */
+.qa{border:1px solid var(--border);border-radius:10px;margin-bottom:1rem;overflow:hidden;background:#fff}
+.qq{padding:1rem 1.25rem;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;background:var(--bg2);transition:background .15s}
+.qq:hover{background:var(--bg3)}
+.qq-in{flex:1}
+.meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.375rem;align-items:center}
+.dt{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.easy{background:#e6f4ea;color:#137333}.med{background:#fef7e0;color:#b06000}.hard{background:#fce8e6;color:#c5221f}
+.ttag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;background:#e8f0fe;color:#1558b0}
+.qq-text{font-size:15px;font-weight:600;color:var(--text);line-height:1.5}
+.qarr{font-size:11px;color:var(--faint);flex-shrink:0;transition:transform .2s;margin-top:3px}
+.qa-body{display:none;padding:1.25rem;border-top:1px solid var(--border)}
+.qa-body.open{display:block}
+.qa-body h4{color:var(--text);margin-top:1rem;margin-bottom:.375rem;font-size:15px}
+.qa-body h4:first-child{margin-top:0}
+.qa-body p,.qa-body li{font-size:14px}
+.qa-body pre{font-size:12.5px}
+/* ---- TOC ---- */
+.toc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:2.5rem}
+.toc h5{margin:0 0 .875rem}
+.toc-g{display:grid;grid-template-columns:1fr 1fr;gap:2px 2rem}
+.toc-g a{font-size:13px;color:var(--muted);padding:3px 0;display:block}
+.toc-g a:hover{color:var(--accent)}
+/* ---- Scrollbar ---- */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+@media(max-width:860px){.layout{grid-template-columns:1fr}aside{display:none}main{padding:1.5rem 1rem}.cmp,.cg,.toc-g{grid-template-columns:1fr}h1{font-size:24px}}
 </style>
 </head>
 <body>
-
 <div class="layout">
 
-<nav>
-  <h2>Angular 16+ Guide</h2>
-  <div class="section">
-    <h2 style="font-size:10px;margin-bottom:.4rem">Concepts</h2>
-    <a href="#versions">Version highlights</a>
-    <a href="#signals">Signals</a>
-    <a href="#standalone">Standalone</a>
-    <a href="#di">Dependency injection</a>
-    <a href="#cd">Change detection</a>
-    <a href="#controlflow">Control flow &amp; @defer</a>
-    <a href="#perf">Performance</a>
-    <a href="#state">State management</a>
+<!-- ===== SIDEBAR ===== -->
+<aside>
+  <div class="logo">Angular 16+ Complete Guide<small>Signals · Standalone · DI · Change Detection</small></div>
+  <div class="nav-section"><h6>Introduction</h6>
+    <a href="#overview">What's new in Angular 16–18</a>
+    <a href="#signals">What are Signals?</a>
   </div>
-  <div class="section">
-    <h2 style="font-size:10px;margin-bottom:.4rem">Scenario Q&amp;A</h2>
-    <a href="#qa-signals">Signals</a>
-    <a href="#qa-cd">Change detection</a>
-    <a href="#qa-di">DI patterns</a>
-    <a href="#qa-perf">Performance</a>
-    <a href="#qa-arch">Architecture</a>
-    <a href="#qa-testing">Testing</a>
-    <a href="#qa-forms">Forms</a>
-    <a href="#qa-rxjs">RxJS vs signals</a>
-    <a href="#qa-ssr">SSR / hydration</a>
-    <a href="#qa-router">Router</a>
+  <div class="nav-section"><h6>Signals</h6>
+    <a href="#signal-api">signal() — WritableSignal</a>
+    <a href="#computed">computed() — derived state</a>
+    <a href="#effect">effect() — side effects</a>
+    <a href="#signal-inputs">Signal inputs & outputs</a>
+    <a href="#rxjs-interop">toSignal() & toObservable()</a>
+    <a href="#linked-signal">linkedSignal (v18)</a>
   </div>
-</nav>
+  <div class="nav-section"><h6>Standalone</h6>
+    <a href="#standalone">Standalone components</a>
+    <a href="#bootstrap">bootstrapApplication()</a>
+    <a href="#lazy-routes">Lazy routes — loadComponent</a>
+  </div>
+  <div class="nav-section"><h6>Dependency Injection</h6>
+    <a href="#inject-fn">inject() function</a>
+    <a href="#destroyref">DestroyRef & takeUntilDestroyed</a>
+    <a href="#injection-token">InjectionToken</a>
+    <a href="#route-providers">Route-level providers</a>
+  </div>
+  <div class="nav-section"><h6>Change Detection</h6>
+    <a href="#cd-default">Default strategy</a>
+    <a href="#cd-onpush">OnPush strategy</a>
+    <a href="#local-cd">Local CD with Signals (v17)</a>
+    <a href="#zoneless">Zoneless (v18)</a>
+  </div>
+  <div class="nav-section"><h6>Control Flow & Defer</h6>
+    <a href="#control-flow">@if, @for, @switch</a>
+    <a href="#defer">@defer blocks</a>
+  </div>
+  <div class="nav-section"><h6>Interview Q&amp;A</h6>
+    <a href="#qa-signals">Q&amp;A — Signals</a>
+    <a href="#qa-cd">Q&amp;A — Change Detection</a>
+    <a href="#qa-di">Q&amp;A — Dependency Injection</a>
+    <a href="#qa-standalone">Q&amp;A — Standalone</a>
+    <a href="#qa-perf">Q&amp;A — Performance</a>
+    <a href="#qa-scenario">Q&amp;A — Scenarios</a>
+    <a href="#qa-rxjs">Q&amp;A — RxJS vs Signals</a>
+  </div>
+</aside>
 
+<!-- ===== MAIN ===== -->
 <main>
 
 <!-- Hero -->
-<div class="hero">
-  <h1>Angular <span>16+</span> complete guide</h1>
-  <p style="font-size:16px;color:var(--muted);margin-top:.4rem">Architecture, signals, standalone, DI, change detection, and 30+ scenario Q&amp;As for senior developers and blog authors.</p>
-  <div class="hero-badges">
-    <span class="badge bv16">Angular 16</span>
-    <span class="badge bv17">Angular 17</span>
-    <span class="badge bv18">Angular 18</span>
-    <span class="badge badv">Senior level</span>
-    <span class="badge bnew">Blog-ready</span>
+<div style="margin-bottom:2rem">
+  <div style="margin-bottom:.5rem">
+    <span class="vb v16">Angular 16</span><span class="vb v17">Angular 17</span><span class="vb v18">Angular 18</span>
   </div>
+  <h1>Angular 16+ Complete Guide</h1>
+  <p style="font-size:17px;color:var(--muted);margin:.375rem 0 1rem">Signals, Standalone Components, Dependency Injection, Change Detection, Control Flow &amp; 40+ senior-level interview questions with detailed answers — written for blog publication.</p>
 </div>
 
 <!-- TOC -->
 <div class="toc">
-  <h4>Contents</h4>
-  <div class="toc-grid">
-    <a href="#versions">Version highlights</a>
-    <a href="#signals">Signals &amp; reactivity</a>
-    <a href="#standalone">Standalone architecture</a>
-    <a href="#di">Modern DI patterns</a>
-    <a href="#cd">Change detection</a>
-    <a href="#controlflow">Control flow &amp; @defer</a>
-    <a href="#perf">Performance patterns</a>
-    <a href="#state">State management</a>
-    <a href="#qasection">Scenario Q&amp;A (30+)</a>
-    <a href="#qa-arch">Architecture migration</a>
+  <h5>Table of Contents</h5>
+  <div class="toc-g">
+    <a href="#overview">Version highlights 16–18</a><a href="#signals">What are Angular Signals?</a>
+    <a href="#signal-api">signal() WritableSignal</a><a href="#computed">computed() memoised state</a>
+    <a href="#effect">effect() side effects</a><a href="#signal-inputs">Signal inputs/outputs</a>
+    <a href="#rxjs-interop">toSignal() / toObservable()</a><a href="#standalone">Standalone architecture</a>
+    <a href="#inject-fn">inject() function</a><a href="#cd-onpush">OnPush change detection</a>
+    <a href="#local-cd">Local CD (v17)</a><a href="#zoneless">Zoneless CD (v18)</a>
+    <a href="#control-flow">@if / @for / @switch</a><a href="#defer">@defer lazy loading</a>
+    <a href="#qa-signals">Q&amp;A — Signals (8 Qs)</a><a href="#qa-cd">Q&amp;A — Change Detection (6 Qs)</a>
+    <a href="#qa-di">Q&amp;A — DI (5 Qs)</a><a href="#qa-scenario">Q&amp;A — Scenarios (8 Qs)</a>
   </div>
 </div>
 
-<!-- Versions -->
-<section id="versions">
-<h2>Version highlights — 16 → 18</h2>
-<div class="vpills">
-  <div class="vpill">
-    <div class="ver">Angular 16 <span class="badge bv16">May 2023</span></div>
-    <div class="feat">Signals (developer preview) &middot; Required inputs &middot; DestroyRef &middot; takeUntilDestroyed &middot; inject() in field initializers &middot; Vite/esbuild preview &middot; Self-closing tags</div>
-  </div>
-  <div class="vpill">
-    <div class="ver">Angular 17 <span class="badge bv17">Nov 2023</span></div>
-    <div class="feat">@if / @for / @switch &middot; @defer blocks &middot; Signals stable &middot; Full SSR hydration &middot; Vite/esbuild default &middot; angular.dev &middot; Signal inputs (17.1) &middot; Signal outputs (17.3)</div>
-  </div>
-  <div class="vpill">
-    <div class="ver">Angular 18 <span class="badge bv18">May 2024</span></div>
-    <div class="feat">Zoneless (experimental) &middot; Route-level render modes &middot; Signal inputs stable &middot; linkedSignal &middot; Material 3 stable &middot; Fallback for ng-content &middot; TypeScript 5.4</div>
-  </div>
-</div>
-</section>
+<!-- ============================================================ -->
+<h2 id="overview">What changed in Angular 16, 17, and 18</h2>
+<p>Angular went through its most significant evolution in years across these three versions. The core team introduced a brand-new reactivity model (Signals), made NgModules optional (Standalone), overhauled the template syntax, and began the journey toward removing Zone.js dependency entirely.</p>
 
-<!-- Signals -->
-<section id="signals">
-<h2>Signals — the new reactivity model</h2>
+<table>
+  <thead><tr><th>Version</th><th>Released</th><th>Key features</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Angular 16</strong></td><td>May 2023</td><td>Signals (developer preview), required inputs, <code>DestroyRef</code>, <code>takeUntilDestroyed()</code>, <code>inject()</code> in field initializers, Vite/esbuild preview, self-closing tags, functional guards/resolvers</td></tr>
+    <tr><td><strong>Angular 17</strong></td><td>Nov 2023</td><td>Signals stable, new built-in <code>@if</code>/<code>@for</code>/<code>@switch</code>, <code>@defer</code> blocks, full SSR hydration, Vite/esbuild default, signal inputs (17.1), signal outputs (17.3), Local Change Detection, new angular.dev</td></tr>
+    <tr><td><strong>Angular 18</strong></td><td>May 2024</td><td>Zoneless change detection (experimental), <code>linkedSignal</code>, route-level render modes, signal inputs stable, <code>ng-content</code> fallback, Material 3 stable, TypeScript 5.4 support</td></tr>
+  </tbody>
+</table>
 
-<p>Signals are synchronous, pull-based reactive primitives. Angular tracks which template reads which signal and schedules re-renders only for components where a read signal has changed. No Zone.js dirty-checking the entire tree.</p>
+<!-- ============================================================ -->
+<h2 id="signals">What are Angular Signals?</h2>
 
-<div class="diagram">
-<svg width="100%" viewBox="0 0 780 190">
+<p>A Signal is a reactive value wrapper that knows its current value and <strong>notifies interested consumers when that value changes</strong>. Unlike a plain TypeScript variable, a signal is "reactive" — any template, <code>computed()</code>, or <code>effect()</code> that reads a signal is automatically re-evaluated when the signal changes.</p>
+
+<p>Before Signals, Angular relied on Zone.js to detect when something had happened and then checked every component in the tree. Signals flip this model: instead of Angular <em>asking</em> "did anything change?", signals <em>tell</em> Angular exactly what changed and which templates depend on it.</p>
+
+<div class="dbox">
+<svg width="100%" viewBox="0 0 720 190">
   <defs>
-    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round"/>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1a73e8" stroke-width="1.5" stroke-linecap="round"/>
     </marker>
-    <marker id="arrgray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M2 1L8 5L2 9" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+    <marker id="ag" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#137333" stroke-width="1.5" stroke-linecap="round"/>
     </marker>
   </defs>
+  <!-- Without signals -->
+  <rect x="20" y="15" width="310" height="165" rx="10" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="0.8"/>
+  <text x="40" y="42" fill="#9aa0a6" font-size="11" font-weight="700" font-family="-apple-system,sans-serif" letter-spacing=".07em">WITHOUT SIGNALS</text>
+  <rect x="40" y="55" width="110" height="34" rx="6" fill="#fce8e6" stroke="#f5c6c5" stroke-width="0.8"/>
+  <text x="95" y="78" text-anchor="middle" fill="#c5221f" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">Any async event</text>
+  <line x1="152" y1="72" x2="195" y2="72" stroke="#c5221f" stroke-width="1" marker-end="url(#a)"/>
+  <rect x="198" y="55" width="100" height="34" rx="6" fill="#fce8e6" stroke="#f5c6c5" stroke-width="0.8"/>
+  <text x="248" y="78" text-anchor="middle" fill="#c5221f" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">Zone.js fires</text>
+  <text x="175" y="115" text-anchor="middle" fill="#c5221f" font-size="11" font-family="-apple-system,sans-serif">↓ Check EVERY component ↓</text>
+  <rect x="40" y="128" width="57" height="30" rx="4" fill="#f8d5d4" stroke="#f5c6c5" stroke-width="0.5"/>
+  <text x="68" y="148" text-anchor="middle" fill="#c5221f" font-size="10" font-family="-apple-system,sans-serif">Comp A</text>
+  <rect x="107" y="128" width="57" height="30" rx="4" fill="#f8d5d4" stroke="#f5c6c5" stroke-width="0.5"/>
+  <text x="135" y="148" text-anchor="middle" fill="#c5221f" font-size="10" font-family="-apple-system,sans-serif">Comp B</text>
+  <rect x="174" y="128" width="57" height="30" rx="4" fill="#f8d5d4" stroke="#f5c6c5" stroke-width="0.5"/>
+  <text x="202" y="148" text-anchor="middle" fill="#c5221f" font-size="10" font-family="-apple-system,sans-serif">Comp C</text>
+  <rect x="241" y="128" width="57" height="30" rx="4" fill="#f8d5d4" stroke="#f5c6c5" stroke-width="0.5"/>
+  <text x="269" y="148" text-anchor="middle" fill="#c5221f" font-size="10" font-family="-apple-system,sans-serif">Comp D</text>
+  <text x="175" y="174" text-anchor="middle" fill="#c5221f" font-size="10" font-family="-apple-system,sans-serif" font-style="italic">All 4 checked even if only B changed</text>
 
-  <!-- Core row -->
-  <rect x="40" y="25" width="155" height="56" rx="8" fill="#312e62" stroke="#7f77dd" stroke-width="0.8"/>
-  <text x="117" y="49" text-anchor="middle" fill="#c4b5fd" font-size="13" font-weight="600" font-family="Inter,sans-serif">WritableSignal</text>
-  <text x="117" y="67" text-anchor="middle" fill="#8b7dd4" font-size="11" font-family="Inter,sans-serif">signal(value)</text>
-
-  <line x1="195" y1="53" x2="245" y2="53" stroke="#7f77dd" stroke-width="1" marker-end="url(#arr)"/>
-
-  <rect x="247" y="25" width="155" height="56" rx="8" fill="#0d3d2b" stroke="#1D9E75" stroke-width="0.8"/>
-  <text x="324" y="49" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="600" font-family="Inter,sans-serif">Computed</text>
-  <text x="324" y="67" text-anchor="middle" fill="#4aa880" font-size="11" font-family="Inter,sans-serif">computed(() =&gt; ...)</text>
-
-  <line x1="402" y1="53" x2="452" y2="53" stroke="#7f77dd" stroke-width="1" marker-end="url(#arr)"/>
-
-  <rect x="454" y="25" width="155" height="56" rx="8" fill="#0d3d2b" stroke="#1D9E75" stroke-width="0.8"/>
-  <text x="531" y="49" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="600" font-family="Inter,sans-serif">Effect</text>
-  <text x="531" y="67" text-anchor="middle" fill="#4aa880" font-size="11" font-family="Inter,sans-serif">effect(() =&gt; ...)</text>
-
-  <!-- Interop row -->
-  <rect x="40" y="120" width="155" height="52" rx="8" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="0.8"/>
-  <text x="117" y="142" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="600" font-family="Inter,sans-serif">Signal input</text>
-  <text x="117" y="159" text-anchor="middle" fill="#64748b" font-size="11" font-family="Inter,sans-serif">input() / input.required()</text>
-
-  <rect x="247" y="120" width="155" height="52" rx="8" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="0.8"/>
-  <text x="324" y="142" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="600" font-family="Inter,sans-serif">toSignal / toObservable</text>
-  <text x="324" y="159" text-anchor="middle" fill="#64748b" font-size="11" font-family="Inter,sans-serif">RxJS bridge</text>
-
-  <rect x="454" y="120" width="155" height="52" rx="8" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="0.8"/>
-  <text x="531" y="142" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="600" font-family="Inter,sans-serif">linkedSignal</text>
-  <text x="531" y="159" text-anchor="middle" fill="#64748b" font-size="11" font-family="Inter,sans-serif">Angular 18+</text>
-
-  <text x="640" y="53" text-anchor="start" fill="#475569" font-size="11" font-family="Inter,sans-serif">core primitives</text>
-  <text x="640" y="146" text-anchor="start" fill="#475569" font-size="11" font-family="Inter,sans-serif">interop / advanced</text>
-  <line x1="630" y1="97" x2="760" y2="97" stroke="#2a2a3e" stroke-width="0.5" stroke-dasharray="3 3"/>
+  <!-- With signals -->
+  <rect x="390" y="15" width="310" height="165" rx="10" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="0.8"/>
+  <text x="410" y="42" fill="#137333" font-size="11" font-weight="700" font-family="-apple-system,sans-serif" letter-spacing=".07em">WITH SIGNALS</text>
+  <rect x="410" y="55" width="100" height="34" rx="6" fill="#e8f0fe" stroke="#aecbfa" stroke-width="0.8"/>
+  <text x="460" y="78" text-anchor="middle" fill="#1a73e8" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">Signal changes</text>
+  <line x1="512" y1="72" x2="555" y2="72" stroke="#137333" stroke-width="1" marker-end="url(#ag)"/>
+  <rect x="558" y="55" width="120" height="34" rx="6" fill="#e6f4ea" stroke="#a8d5b5" stroke-width="0.8"/>
+  <text x="618" y="78" text-anchor="middle" fill="#137333" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">Notifies consumers</text>
+  <text x="545" y="115" text-anchor="middle" fill="#137333" font-size="11" font-family="-apple-system,sans-serif">↓ Only update what depends on it ↓</text>
+  <rect x="410" y="128" width="57" height="30" rx="4" fill="#f1f3f4" stroke="#e0e0e0" stroke-width="0.5"/>
+  <text x="438" y="148" text-anchor="middle" fill="#9aa0a6" font-size="10" font-family="-apple-system,sans-serif">Comp A</text>
+  <rect x="477" y="128" width="57" height="30" rx="4" fill="#b7e1cd" stroke="#a8d5b5" stroke-width="0.8"/>
+  <text x="505" y="148" text-anchor="middle" fill="#0d5226" font-size="10" font-weight="700" font-family="-apple-system,sans-serif">Comp B ✓</text>
+  <rect x="544" y="128" width="57" height="30" rx="4" fill="#f1f3f4" stroke="#e0e0e0" stroke-width="0.5"/>
+  <text x="572" y="148" text-anchor="middle" fill="#9aa0a6" font-size="10" font-family="-apple-system,sans-serif">Comp C</text>
+  <rect x="611" y="128" width="57" height="30" rx="4" fill="#f1f3f4" stroke="#e0e0e0" stroke-width="0.5"/>
+  <text x="639" y="148" text-anchor="middle" fill="#9aa0a6" font-size="10" font-family="-apple-system,sans-serif">Comp D</text>
+  <text x="545" y="174" text-anchor="middle" fill="#137333" font-size="10" font-family="-apple-system,sans-serif" font-style="italic">Only Comp B re-renders — 3 skipped</text>
 </svg>
+<div class="dcap">Without signals: Zone.js triggers a full tree check. With signals: only the component that consumed the changed signal re-renders.</div>
 </div>
 
-<div class="compare">
-  <div class="compare-col">
-    <h4>Before — RxJS BehaviorSubject</h4>
-    <pre>count$ = new BehaviorSubject(0);
+<!-- ============================================================ -->
+<h2 id="signal-api">signal() — creating a WritableSignal</h2>
 
-increment() {
-  this.count$.next(this.count$.value + 1);
+<p>You create a signal by calling <code>signal(initialValue)</code>. The return type is <code>WritableSignal&lt;T&gt;</code>. To read the value you call it as a function: <code>count()</code>. To change the value you use one of three mutation methods.</p>
+
+<pre><span class="file">counter.component.ts</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="fn">signal</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+
+<span class="dec">@Component</span>({
+  <span class="fn">standalone</span>: <span class="kw">true</span>,
+  <span class="fn">template</span>: <span class="s">`
+    &lt;p&gt;Count is: {{ count() }}&lt;/p&gt;
+    &lt;button (click)="increment()"&gt;+1&lt;/button&gt;
+    &lt;button (click)="decrement()"&gt;-1&lt;/button&gt;
+    &lt;button (click)="reset()"&gt;Reset&lt;/button&gt;
+  `</span>
+})
+<span class="k">export class</span> <span class="ty">CounterComponent</span> {
+  <span class="c">// signal() creates a WritableSignal&lt;number&gt; with initial value 0</span>
+  count = <span class="fn">signal</span>(<span class="v">0</span>);
+
+  increment() { <span class="k">this</span>.count.<span class="fn">update</span>(v => v + <span class="v">1</span>); }  <span class="c">// current value → new value</span>
+  decrement() { <span class="k">this</span>.count.<span class="fn">update</span>(v => v - <span class="v">1</span>); }
+  reset()     { <span class="k">this</span>.count.<span class="fn">set</span>(<span class="v">0</span>); }              <span class="c">// direct replacement</span>
+}</pre>
+
+<h4>Three ways to update a signal</h4>
+<table>
+  <thead><tr><th>Method</th><th>Signature</th><th>When to use</th><th>Example</th></tr></thead>
+  <tbody>
+    <tr><td><code>.set(value)</code></td><td><code>(newVal: T) => void</code></td><td>You already have the new value</td><td><code>name.set('Alice')</code></td></tr>
+    <tr><td><code>.update(fn)</code></td><td><code>((current: T) => T) => void</code></td><td>New value derived from current</td><td><code>count.update(v => v + 1)</code></td></tr>
+    <tr><td><code>.mutate(fn)</code></td><td><code>((val: T) => void) => void</code></td><td><strong>Removed in v17.</strong> Used to mutate objects in-place</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<div class="box warn">
+  <div class="bh">Angular 17 Breaking Change — .mutate() removed</div>
+  <p><code>.mutate()</code> was removed in Angular 17 because mutation without creating a new reference breaks the contract that signals use for equality checking. Use <code>.update()</code> with an immutable pattern: <code>items.update(arr => [...arr, newItem])</code></p>
+</div>
+
+<h4>Signal equality — how Angular decides if a re-render is needed</h4>
+<p>By default, Angular uses <code>Object.is()</code> (strict reference equality) to compare the old and new signal value. If you pass the same primitive value, no re-render fires. For complex objects, you can supply a custom equality function:</p>
+<pre><span class="k">import</span> _ <span class="k">from</span> <span class="s">'lodash'</span>;
+
+<span class="c">// Deep equality — signal won't notify if the new array has the same contents</span>
+<span class="k">const</span> data = <span class="fn">signal</span>([<span class="s">'a'</span>, <span class="s">'b'</span>], { equal: _.isEqual });
+data.<span class="fn">set</span>([<span class="s">'a'</span>, <span class="s">'b'</span>]);  <span class="c">// different array reference but equal content → no notification</span>
+
+<span class="c">// Making a signal read-only for public API</span>
+<span class="k">private</span> _count = <span class="fn">signal</span>(<span class="v">0</span>);
+<span class="k">readonly</span> count = <span class="k">this</span>._count.<span class="fn">asReadonly</span>();  <span class="c">// returns Signal&lt;number&gt;, no .set()/.update()</span></pre>
+
+<!-- ============================================================ -->
+<h2 id="computed">computed() — memoised derived state</h2>
+
+<p><code>computed()</code> creates a <strong>read-only, memoised signal</strong> whose value is derived from one or more other signals. It is lazy and memoised — it only recalculates when a dependency signal has changed AND something reads it. Multiple reads return the cached result.</p>
+
+<p>The key difference from a getter: a getter recalculates on every access. A computed signal tracks its dependencies and skips recalculation if none of them changed.</p>
+
+<pre><span class="file">cart.service.ts</span>
+<span class="k">import</span> { <span class="fn">Injectable</span>, <span class="fn">signal</span>, <span class="fn">computed</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+
+<span class="dec">@Injectable</span>({ <span class="fn">providedIn</span>: <span class="s">'root'</span> })
+<span class="k">export class</span> <span class="ty">CartService</span> {
+  <span class="k">private</span> _items = <span class="fn">signal</span>&lt;{ name: <span class="ty">string</span>; price: <span class="ty">number</span>; qty: <span class="ty">number</span> }[]&gt;([]);
+  <span class="k">readonly</span> items = <span class="k">this</span>._items.<span class="fn">asReadonly</span>();
+
+  <span class="c">// computed() reads _items() — tracked as a dependency</span>
+  <span class="k">readonly</span> itemCount = <span class="fn">computed</span>(() => <span class="k">this</span>._items().<span class="fn">length</span>);
+  <span class="k">readonly</span> subtotal  = <span class="fn">computed</span>(() =>
+    <span class="k">this</span>._items().<span class="fn">reduce</span>((sum, i) => sum + i.price * i.qty, <span class="v">0</span>)
+  );
+  <span class="c">// computed() can read other computed() — chain of dependencies</span>
+  <span class="k">readonly</span> tax   = <span class="fn">computed</span>(() => <span class="k">this</span>.subtotal() * <span class="v">0.1</span>);
+  <span class="k">readonly</span> total = <span class="fn">computed</span>(() => <span class="k">this</span>.subtotal() + <span class="k">this</span>.tax());
+
+  <span class="fn">add</span>(item: { name: <span class="ty">string</span>; price: <span class="ty">number</span>; qty: <span class="ty">number</span> }) {
+    <span class="k">this</span>._items.<span class="fn">update</span>(arr => [...arr, item]);
+  }
+  <span class="fn">remove</span>(name: <span class="ty">string</span>) {
+    <span class="k">this</span>._items.<span class="fn">update</span>(arr => arr.<span class="fn">filter</span>(i => i.name !== name));
+  }
+}</pre>
+
+<div class="box info">
+  <div class="bh">How computed() tracks dependencies</div>
+  <p>When a <code>computed()</code> runs for the first time, Angular records every signal it calls (<code>signal()</code>). Those become its dependencies. Next time any of those signals change, Angular marks the computed as stale. The computation does NOT re-run immediately — it runs lazily only when something reads the computed value again.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="effect">effect() — running side effects reactively</h2>
+
+<p><code>effect()</code> creates a reactive side effect — a function that runs once immediately on creation, then re-runs whenever any signal it reads changes. It must be called inside an injection context (constructor or field initializer).</p>
+
+<pre><span class="file">theme.component.ts</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="fn">signal</span>, <span class="fn">effect</span>, <span class="fn">inject</span>, <span class="ty">Injector</span>, <span class="fn">runInInjectionContext</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+
+<span class="dec">@Component</span>({ <span class="fn">standalone</span>: <span class="kw">true</span> })
+<span class="k">export class</span> <span class="ty">ThemeComponent</span> {
+  theme = <span class="fn">signal</span>&lt;<span class="s">'light'</span> | <span class="s">'dark'</span>&gt;(<span class="s">'light'</span>);
+
+  <span class="k">constructor</span>() {
+    <span class="c">// effect runs once now, then again every time theme() changes</span>
+    <span class="fn">effect</span>(() => {
+      <span class="c">// Angular tracks that this effect reads theme()</span>
+      document.body.setAttribute(<span class="s">'data-theme'</span>, <span class="k">this</span>.theme());
+      localStorage.<span class="fn">setItem</span>(<span class="s">'theme'</span>, <span class="k">this</span>.theme());
+    });
+  }
 }
 
-// template
-{{ count$ | async }}</pre>
-  </div>
-  <div class="compare-col">
-    <h4>After — Angular 16+ signals</h4>
-    <pre>count   = signal(0);
-doubled = computed(() => this.count() * 2);
+<span class="c">// If you must call effect() outside the constructor, use runInInjectionContext</span>
+<span class="k">export class</span> <span class="ty">SomeClass</span> {
+  <span class="k">private</span> injector = <span class="fn">inject</span>(<span class="ty">Injector</span>);
 
-increment() {
-  this.count.update(v => v + 1);
-}
+  <span class="fn">ngOnInit</span>() {
+    <span class="fn">runInInjectionContext</span>(<span class="k">this</span>.injector, () => {
+      <span class="fn">effect</span>(() => console.<span class="fn">log</span>(<span class="k">this</span>.theme()));
+    });
+  }
+}</pre>
 
-// template — no async pipe needed
-{{ count() }}  {{ doubled() }}</pre>
-  </div>
+<div class="box err">
+  <div class="bh">Anti-pattern: writing a signal inside effect()</div>
+  <p>Setting a signal inside <code>effect()</code> creates circular data flow and potential infinite loops. Angular will warn about this in development. If you need a value derived from another signal, always use <code>computed()</code>.</p>
 </div>
 
-<div class="tip tip-green">
-  <p>Signals integrate natively with <code>OnPush</code>. A signal read in a template marks that component for check automatically when the signal changes — no <code>markForCheck()</code> required.</p>
-</div>
-
-<h3>Signal inputs &amp; outputs (v17.1+)</h3>
-<pre>// Signal inputs — replaces @Input() decorator
-title  = input.required&lt;string&gt;();           // required, throws if missing
-count  = input(0);                            // optional with default
-alias  = input&lt;string&gt;('', { alias: 'lbl' }); // with alias
-
-// Derive from inputs using computed()
-upper = computed(() => this.title().toUpperCase());
-
-// Signal output — replaces @Output() + EventEmitter
-clicked = output&lt;MouseEvent&gt;();
-// template: (click)="clicked.emit($event)"
-
-// Route params auto-bound to signal inputs (requires withComponentInputBinding())
-id = input.required&lt;string&gt;();  // bound from :id route param</pre>
-
-<h3>RxJS interop</h3>
-<pre>// RxJS Observable → Signal (for template consumption)
-private readonly users$ = this.http.get&lt;User[]&gt;('/api/users').pipe(shareReplay(1));
-readonly users = toSignal(this.users$, { initialValue: [] });
-
-// Signal → Observable (to feed into RxJS pipelines)
-readonly userId$ = toObservable(this.selectedUserId);
-readonly user$   = this.userId$.pipe(
-  switchMap(id => this.http.get&lt;User&gt;(`/users/${id}`))
+<div class="cmp">
+  <div class="cmp-col">
+    <h5>Wrong — signal write in effect</h5>
+    <pre><span class="c">// Anti-pattern: effect sets a signal</span>
+<span class="fn">effect</span>(() => {
+  <span class="k">this</span>.fullName.<span class="fn">set</span>(
+    `${this.first()} ${this.last()}`
+  );
+});</pre>
+  </div>
+  <div class="cmp-col">
+    <h5>Correct — use computed()</h5>
+    <pre><span class="c">// Derived state belongs in computed()</span>
+fullName = <span class="fn">computed</span>(() =>
+  `${this.first()} ${this.last()}`
 );</pre>
-</section>
-
-<!-- Standalone -->
-<section id="standalone">
-<h2>Standalone architecture</h2>
-<p>Standalone components own their own <code>imports</code> array. No <code>NgModule</code> required. The app bootstraps from a component + provider configuration object.</p>
-
-<div class="diagram">
-<svg width="100%" viewBox="0 0 780 220">
-  <!-- NgModule box -->
-  <rect x="30" y="20" width="330" height="185" rx="14" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="0.8"/>
-  <text x="55" y="48" fill="#475569" font-size="12" font-weight="600" font-family="Inter,sans-serif">NgModule era (pre-v15)</text>
-
-  <rect x="60" y="65" width="270" height="52" rx="8" fill="#0d2447" stroke="#185FA5" stroke-width="0.8"/>
-  <text x="195" y="87" text-anchor="middle" fill="#93c5fd" font-size="13" font-weight="600" font-family="Inter,sans-serif">AppModule</text>
-  <text x="195" y="104" text-anchor="middle" fill="#5b8ec4" font-size="11" font-family="Inter,sans-serif">declarations, imports, bootstrap</text>
-
-  <line x1="195" y1="117" x2="195" y2="148" stroke="#2a2a3e" stroke-width="1"/>
-
-  <rect x="60" y="148" width="125" height="42" rx="8" fill="#0d2447" stroke="#185FA5" stroke-width="0.8"/>
-  <text x="122" y="169" text-anchor="middle" fill="#93c5fd" font-size="12" font-weight="600" font-family="Inter,sans-serif">FeatureModule</text>
-
-  <rect x="205" y="148" width="125" height="42" rx="8" fill="#0d2447" stroke="#185FA5" stroke-width="0.8"/>
-  <text x="267" y="169" text-anchor="middle" fill="#93c5fd" font-size="12" font-weight="600" font-family="Inter,sans-serif">SharedModule</text>
-
-  <!-- Standalone box -->
-  <rect x="420" y="20" width="330" height="185" rx="14" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="0.8"/>
-  <text x="445" y="48" fill="#475569" font-size="12" font-weight="600" font-family="Inter,sans-serif">Standalone era (v15+)</text>
-
-  <rect x="450" y="65" width="270" height="52" rx="8" fill="#0d3d2b" stroke="#1D9E75" stroke-width="0.8"/>
-  <text x="585" y="87" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="600" font-family="Inter,sans-serif">bootstrapApplication()</text>
-  <text x="585" y="104" text-anchor="middle" fill="#4aa880" font-size="11" font-family="Inter,sans-serif">AppComponent + providers array</text>
-
-  <line x1="585" y1="117" x2="585" y2="148" stroke="#2a2a3e" stroke-width="1"/>
-
-  <rect x="450" y="148" width="125" height="42" rx="8" fill="#312e62" stroke="#7f77dd" stroke-width="0.8"/>
-  <text x="512" y="169" text-anchor="middle" fill="#c4b5fd" font-size="12" font-weight="600" font-family="Inter,sans-serif">StandaloneComp</text>
-
-  <rect x="595" y="148" width="125" height="42" rx="8" fill="#312e62" stroke="#7f77dd" stroke-width="0.8"/>
-  <text x="657" y="169" text-anchor="middle" fill="#c4b5fd" font-size="12" font-weight="600" font-family="Inter,sans-serif">imports: [...]</text>
-</svg>
+  </div>
 </div>
 
-<pre>// main.ts — standalone bootstrap (no AppModule)
-bootstrapApplication(AppComponent, {
+<h4>Cleanup inside effect()</h4>
+<p>You can register a cleanup function inside an effect using <code>onCleanup()</code>. The cleanup runs before the effect re-runs (when its dependencies changed) and when the effect is destroyed.</p>
+<pre><span class="fn">effect</span>(onCleanup => {
+  <span class="k">const</span> subscription = someObservable.<span class="fn">subscribe</span>(v => console.<span class="fn">log</span>(v));
+  onCleanup(() => subscription.<span class="fn">unsubscribe</span>());  <span class="c">// runs before next execution</span>
+});</pre>
+
+<!-- ============================================================ -->
+<h2 id="signal-inputs">Signal inputs and outputs</h2>
+
+<h3>Signal inputs — replacing @Input()</h3>
+<p>Angular 17.1 introduced signal inputs as a stable replacement for <code>@Input()</code>. Instead of a plain property, signal inputs are <code>Signal&lt;T&gt;</code> values — you read them with <code>this.title()</code>. This means any <code>computed()</code> that reads a signal input automatically recalculates when the parent passes a new value — no need for <code>ngOnChanges</code>.</p>
+
+<pre><span class="file">user-card.component.ts</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="fn">input</span>, <span class="fn">output</span>, <span class="fn">computed</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+
+<span class="dec">@Component</span>({
+  <span class="fn">standalone</span>: <span class="kw">true</span>,
+  <span class="fn">selector</span>: <span class="s">'user-card'</span>,
+  <span class="fn">template</span>: <span class="s">`
+    &lt;h2&gt;{{ displayName() }}&lt;/h2&gt;
+    &lt;p&gt;{{ email() }}&lt;/p&gt;
+    @if (isAdmin()) { &lt;span class="badge"&gt;Admin&lt;/span&gt; }
+    &lt;button (click)="deleteClicked.emit(id())"&gt;Delete&lt;/button&gt;
+  `</span>
+})
+<span class="k">export class</span> <span class="ty">UserCardComponent</span> {
+  <span class="c">// required input — NG error if parent doesn't supply it</span>
+  id    = <span class="fn">input</span>.<span class="fn">required</span>&lt;<span class="ty">string</span>&gt;();
+  name  = <span class="fn">input</span>.<span class="fn">required</span>&lt;<span class="ty">string</span>&gt;();
+  email = <span class="fn">input</span>.<span class="fn">required</span>&lt;<span class="ty">string</span>&gt;();
+
+  <span class="c">// optional input with default value</span>
+  role  = <span class="fn">input</span>&lt;<span class="s">'user'</span> | <span class="s">'admin'</span>&gt;(<span class="s">'user'</span>);
+
+  <span class="c">// alias — parent uses [label]="..." but class property is title</span>
+  title = <span class="fn">input</span>&lt;<span class="ty">string</span>&gt;(<span class="s">''</span>, { alias: <span class="s">'label'</span> });
+
+  <span class="c">// signal output replaces @Output() clicked = new EventEmitter&lt;string&gt;()</span>
+  deleteClicked = <span class="fn">output</span>&lt;<span class="ty">string</span>&gt;();
+
+  <span class="c">// computed() from signal inputs — auto-updates when name() or role() changes</span>
+  displayName = <span class="fn">computed</span>(() => <span class="k">this</span>.name().<span class="fn">toUpperCase</span>());
+  isAdmin     = <span class="fn">computed</span>(() => <span class="k">this</span>.role() === <span class="s">'admin'</span>);
+}</pre>
+
+<p>If <code>input.required()</code> is not supplied by the parent, Angular throws at runtime:</p>
+<div class="errbox">Error: NG0950: Required input 'name' from component UserCardComponent must be specified.</div>
+<p>This is stronger than the old <code>@Input() required name!: string</code> TypeScript assertion, which was never enforced at runtime by Angular.</p>
+
+<h4>Comparison: @Input/@Output vs signal inputs/outputs</h4>
+<table>
+  <thead><tr><th>Feature</th><th>@Input() / @Output()</th><th>input() / output()</th></tr></thead>
+  <tbody>
+    <tr><td>Value type</td><td>Plain TypeScript property</td><td>Signal — must call <code>this.name()</code></td></tr>
+    <tr><td>Required enforcement</td><td>TypeScript only (<code>!</code> assertion)</td><td>Runtime NG error</td></tr>
+    <tr><td>Works with computed()</td><td>No — need ngOnChanges</td><td>Yes — computed automatically tracks</td></tr>
+    <tr><td>Transform</td><td>transform option in @Input</td><td><code>input(default, { transform: fn })</code></td></tr>
+    <tr><td>Alias</td><td><code>@Input('alias')</code></td><td><code>input(default, { alias: 'alias' })</code></td></tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="rxjs-interop">toSignal() and toObservable() — RxJS interop</h2>
+
+<h3>toSignal() — consume an Observable as a Signal</h3>
+<p><code>toSignal()</code> subscribes to an Observable and exposes the latest emitted value as a Signal. The subscription is automatically cleaned up when the injection context is destroyed — no manual unsubscription needed.</p>
+
+<pre><span class="file">users.component.ts</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="fn">inject</span>, <span class="fn">computed</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+<span class="k">import</span> { <span class="fn">toSignal</span> } <span class="k">from</span> <span class="s">'@angular/core/rxjs-interop'</span>;
+<span class="k">import</span> { <span class="fn">UserService</span> } <span class="k">from</span> <span class="s">'./user.service'</span>;
+
+<span class="dec">@Component</span>({
+  <span class="fn">standalone</span>: <span class="kw">true</span>,
+  <span class="fn">template</span>: <span class="s">`
+    @if (users().length) {
+      @for (u of users(); track u.id) {
+        &lt;p&gt;{{ u.name }}&lt;/p&gt;
+      }
+    } @else { &lt;p&gt;No users found.&lt;/p&gt; }
+  `</span>
+})
+<span class="k">export class</span> <span class="ty">UsersComponent</span> {
+  <span class="k">private</span> svc = <span class="fn">inject</span>(<span class="ty">UserService</span>);
+
+  <span class="c">// initialValue sets the signal value before first emission</span>
+  <span class="c">// Without it, type would be User[] | undefined</span>
+  users = <span class="fn">toSignal</span>(<span class="k">this</span>.svc.<span class="fn">getAll</span>$(), { initialValue: [] <span class="k">as</span> <span class="ty">User</span>[] });
+
+  adminCount = <span class="fn">computed</span>(() => <span class="k">this</span>.users().<span class="fn">filter</span>(u => u.role === <span class="s">'admin'</span>).<span class="fn">length</span>);
+}</pre>
+
+<div class="box warn">
+  <div class="bh">Common bug: toSignal() fires HTTP twice</div>
+  <p>Calling <code>toSignal(this.http.get(...))</code> directly subscribes to a cold observable. If the component mounts twice or the service has multiple injections, two HTTP requests fire. Always add <code>shareReplay(1)</code> to share the observable before converting:</p>
+</div>
+<pre><span class="c">// service.ts — share before converting</span>
+<span class="k">private readonly</span> users$ = <span class="k">this</span>.http.<span class="fn">get</span>&lt;<span class="ty">User</span>[]&gt;(<span class="s">'/api/users'</span>).<span class="fn">pipe</span>(<span class="fn">shareReplay</span>(<span class="v">1</span>));
+<span class="k">readonly</span> users = <span class="fn">toSignal</span>(<span class="k">this</span>.users$, { initialValue: [] });
+<span class="c">// HTTP fires exactly once — all toSignal() consumers share the same subscription</span></pre>
+
+<h4>toSignal() options reference</h4>
+<table>
+  <thead><tr><th>Option</th><th>Type</th><th>Purpose</th></tr></thead>
+  <tbody>
+    <tr><td><code>initialValue</code></td><td><code>T</code></td><td>Value before first emission. Without it, signal type includes <code>undefined</code>.</td></tr>
+    <tr><td><code>requireSync</code></td><td><code>boolean</code></td><td>Throw if the observable doesn't emit synchronously (safe for BehaviorSubject).</td></tr>
+    <tr><td><code>injector</code></td><td><code>Injector</code></td><td>Custom injector when calling outside injection context.</td></tr>
+    <tr><td><code>manualCleanup</code></td><td><code>boolean</code></td><td>Prevent automatic unsubscription. You manage cleanup.</td></tr>
+  </tbody>
+</table>
+
+<h3>toObservable() — feed a Signal into an RxJS pipeline</h3>
+<pre><span class="file">search.component.ts</span>
+<span class="k">import</span> { <span class="fn">toSignal</span>, <span class="fn">toObservable</span> } <span class="k">from</span> <span class="s">'@angular/core/rxjs-interop'</span>;
+
+<span class="k">export class</span> <span class="ty">SearchComponent</span> {
+  searchTerm = <span class="fn">signal</span>(<span class="s">''</span>);
+
+  <span class="c">// Convert signal → observable to use debounce + cancellation</span>
+  results = <span class="fn">toSignal</span>(
+    <span class="fn">toObservable</span>(<span class="k">this</span>.searchTerm).<span class="fn">pipe</span>(
+      <span class="fn">debounceTime</span>(<span class="v">300</span>),
+      <span class="fn">distinctUntilChanged</span>(),
+      <span class="fn">switchMap</span>(term => <span class="k">this</span>.searchSvc.<span class="fn">search</span>(term))  <span class="c">// cancels in-flight</span>
+    ),
+    { initialValue: <span class="k">[]</span> }
+  );
+}</pre>
+
+<!-- ============================================================ -->
+<h2 id="linked-signal">linkedSignal — Angular 18</h2>
+<p><code>linkedSignal</code> is a new primitive in Angular 18 that creates a <em>writable</em> signal whose value is reset/synchronised whenever a source signal changes. It solves a common pattern where you want a local writable signal that "resets" when an input changes.</p>
+<pre><span class="file">tabs.component.ts — Angular 18</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="fn">input</span>, <span class="fn">linkedSignal</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+
+<span class="dec">@Component</span>({ <span class="fn">standalone</span>: <span class="kw">true</span> })
+<span class="k">export class</span> <span class="ty">TabsComponent</span> {
+  tabs = <span class="fn">input</span>.<span class="fn">required</span>&lt;<span class="ty">string</span>[]&gt;();
+
+  <span class="c">// activeTab is writable (user can change it) but resets to tabs()[0]</span>
+  <span class="c">// whenever the tabs input itself changes</span>
+  activeTab = <span class="fn">linkedSignal</span>(() => <span class="k">this</span>.tabs()[<span class="v">0</span>]);
+
+  <span class="fn">selectTab</span>(tab: <span class="ty">string</span>) {
+    <span class="k">this</span>.activeTab.<span class="fn">set</span>(tab);  <span class="c">// user changes — behaves as writable signal</span>
+  }
+  <span class="c">// When parent changes [tabs], activeTab resets to the new tabs()[0] automatically</span>
+}</pre>
+
+<!-- ============================================================ -->
+<h2 id="standalone">Standalone components — no NgModule needed</h2>
+
+<p>Standalone components, directives, and pipes were stabilised in Angular 15. With Angular 17 they became the default for all new projects. A standalone component is <strong>self-contained</strong> — it declares its own dependencies in an <code>imports</code> array rather than relying on an NgModule to provide them.</p>
+
+<div class="dbox">
+<svg width="100%" viewBox="0 0 720 210">
+  <!-- NgModule -->
+  <rect x="20" y="15" width="310" height="185" rx="10" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="0.8"/>
+  <text x="40" y="42" fill="#9aa0a6" font-size="11" font-weight="700" font-family="-apple-system,sans-serif" letter-spacing=".07em">NGMODULE PATTERN</text>
+  <rect x="40" y="55" width="270" height="44" rx="6" fill="#e8f0fe" stroke="#aecbfa" stroke-width="0.8"/>
+  <text x="175" y="74" text-anchor="middle" fill="#1558b0" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">AppModule</text>
+  <text x="175" y="90" text-anchor="middle" fill="#1558b0" font-size="10" font-family="-apple-system,sans-serif">declarations, imports, bootstrap</text>
+  <rect x="40" y="115" width="120" height="34" rx="6" fill="#e8f0fe" stroke="#aecbfa" stroke-width="0.6"/>
+  <text x="100" y="137" text-anchor="middle" fill="#1558b0" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">FeatureModule</text>
+  <rect x="190" y="115" width="120" height="34" rx="6" fill="#e8f0fe" stroke="#aecbfa" stroke-width="0.6"/>
+  <text x="250" y="137" text-anchor="middle" fill="#1558b0" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">SharedModule</text>
+  <text x="175" y="190" text-anchor="middle" fill="#9aa0a6" font-size="10" font-family="-apple-system,sans-serif" font-style="italic">Components declared in modules, not themselves</text>
+
+  <!-- Standalone -->
+  <rect x="390" y="15" width="310" height="185" rx="10" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="0.8"/>
+  <text x="410" y="42" fill="#137333" font-size="11" font-weight="700" font-family="-apple-system,sans-serif" letter-spacing=".07em">STANDALONE PATTERN</text>
+  <rect x="410" y="55" width="270" height="44" rx="6" fill="#e6f4ea" stroke="#a8d5b5" stroke-width="0.8"/>
+  <text x="545" y="74" text-anchor="middle" fill="#0d5226" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">bootstrapApplication(AppComponent)</text>
+  <text x="545" y="90" text-anchor="middle" fill="#0d5226" font-size="10" font-family="-apple-system,sans-serif">+ provideRouter(), provideHttpClient()</text>
+  <rect x="410" y="115" width="120" height="34" rx="6" fill="#f3e5f5" stroke="#ce93d8" stroke-width="0.6"/>
+  <text x="470" y="134" text-anchor="middle" fill="#5c1175" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">DashboardComp</text>
+  <text x="470" y="148" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="-apple-system,sans-serif">imports:[RouterLink,...]</text>
+  <rect x="560" y="115" width="120" height="34" rx="6" fill="#f3e5f5" stroke="#ce93d8" stroke-width="0.6"/>
+  <text x="620" y="134" text-anchor="middle" fill="#5c1175" font-size="11" font-weight="600" font-family="-apple-system,sans-serif">UserListComp</text>
+  <text x="620" y="148" text-anchor="middle" fill="#7b1fa2" font-size="9" font-family="-apple-system,sans-serif">imports:[NgOpt,UserCard]</text>
+  <text x="545" y="190" text-anchor="middle" fill="#137333" font-size="10" font-family="-apple-system,sans-serif" font-style="italic">Each component self-contained, tree-shakeable</text>
+</svg>
+<div class="dcap">NgModule pattern: components declare which module owns them. Standalone pattern: each component owns its own imports.</div>
+</div>
+
+<pre><span class="file">user-list.component.ts</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="fn">inject</span>, <span class="fn">signal</span>, <span class="fn">computed</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+<span class="k">import</span> { <span class="fn">NgOptimizedImage</span> } <span class="k">from</span> <span class="s">'@angular/common'</span>;
+<span class="k">import</span> { <span class="fn">RouterLink</span> } <span class="k">from</span> <span class="s">'@angular/router'</span>;
+<span class="k">import</span> { <span class="fn">UserCardComponent</span> } <span class="k">from</span> <span class="s">'./user-card.component'</span>;
+
+<span class="dec">@Component</span>({
+  <span class="fn">standalone</span>: <span class="kw">true</span>,                        <span class="c">// ← marks it standalone</span>
+  <span class="fn">selector</span>: <span class="s">'user-list'</span>,
+  <span class="fn">imports</span>: [<span class="ty">NgOptimizedImage</span>, <span class="ty">RouterLink</span>, <span class="ty">UserCardComponent</span>],  <span class="c">// ← self-managed</span>
+  <span class="fn">template</span>: <span class="s">`
+    @for (user of users(); track user.id) {
+      &lt;user-card [name]="user.name" [email]="user.email" /&gt;
+    }
+  `</span>
+})
+<span class="k">export class</span> <span class="ty">UserListComponent</span> {
+  <span class="k">private</span> svc = <span class="fn">inject</span>(<span class="ty">UserService</span>);
+  users = <span class="fn">toSignal</span>(<span class="k">this</span>.svc.<span class="fn">getAll</span>$(), { initialValue: [] });
+}</pre>
+
+<!-- ============================================================ -->
+<h2 id="bootstrap">bootstrapApplication() and provide*() functions</h2>
+
+<pre><span class="file">main.ts — fully standalone, no AppModule</span>
+<span class="k">import</span> { <span class="fn">bootstrapApplication</span> } <span class="k">from</span> <span class="s">'@angular/platform-browser'</span>;
+<span class="k">import</span> { <span class="fn">provideRouter</span>, <span class="fn">withComponentInputBinding</span>, <span class="fn">withPreloading</span>, <span class="ty">PreloadAllModules</span> } <span class="k">from</span> <span class="s">'@angular/router'</span>;
+<span class="k">import</span> { <span class="fn">provideHttpClient</span>, <span class="fn">withInterceptorsFromDi</span> } <span class="k">from</span> <span class="s">'@angular/common/http'</span>;
+<span class="k">import</span> { <span class="fn">provideAnimationsAsync</span> } <span class="k">from</span> <span class="s">'@angular/platform-browser/animations/async'</span>;
+<span class="k">import</span> { <span class="fn">provideClientHydration</span> } <span class="k">from</span> <span class="s">'@angular/platform-browser'</span>;
+
+<span class="fn">bootstrapApplication</span>(<span class="ty">AppComponent</span>, {
   providers: [
-    provideRouter(routes, withComponentInputBinding(), withPreloading(PreloadAllModules)),
-    provideHttpClient(withInterceptorsFromDi()),
-    provideAnimationsAsync(),
-    provideClientHydration(),  // SSR hydration (v17+)
+    <span class="fn">provideRouter</span>(routes,
+      <span class="fn">withComponentInputBinding</span>(),       <span class="c">// route params → @Input / input()</span>
+      <span class="fn">withPreloading</span>(<span class="ty">PreloadAllModules</span>)
+    ),
+    <span class="fn">provideHttpClient</span>(<span class="fn">withInterceptorsFromDi</span>()),
+    <span class="fn">provideAnimationsAsync</span>(),
+    <span class="fn">provideClientHydration</span>(),              <span class="c">// SSR hydration (v17+)</span>
+  ]
+});</pre>
+
+<h4>Why provide*() functions instead of forRoot()?</h4>
+<p><code>provide*()</code> functions are <strong>tree-shakeable provider factories</strong>. Because they are plain functions, unused features are removed by the bundler at build time. <code>RouterModule.forRoot()</code> always included the entire router feature set. <code>provideRouter(routes, withPreloading(...))</code> only includes the features you explicitly add.</p>
+
+<table>
+  <thead><tr><th>Old (forRoot)</th><th>New (provide*)</th></tr></thead>
+  <tbody>
+    <tr><td><code>RouterModule.forRoot(routes)</code></td><td><code>provideRouter(routes)</code></td></tr>
+    <tr><td><code>HttpClientModule</code></td><td><code>provideHttpClient()</code></td></tr>
+    <tr><td><code>BrowserAnimationsModule</code></td><td><code>provideAnimationsAsync()</code></td></tr>
+  </tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2 id="lazy-routes">Lazy routes with loadComponent</h2>
+
+<pre><span class="file">app.routes.ts</span>
+<span class="k">import</span> { <span class="ty">Routes</span> } <span class="k">from</span> <span class="s">'@angular/router'</span>;
+
+<span class="k">export const</span> routes: <span class="ty">Routes</span> = [
+  {
+    path: <span class="s">'dashboard'</span>,
+    <span class="c">// Lazy-load a single standalone component — no wrapper module needed</span>
+    loadComponent: () => <span class="fn">import</span>(<span class="s">'./dashboard/dashboard.component'</span>)
+      .<span class="fn">then</span>(m => m.<span class="ty">DashboardComponent</span>)
+  },
+  {
+    path: <span class="s">'admin'</span>,
+    <span class="c">// Route-scoped providers — services scoped to this subtree only</span>
+    providers: [<span class="ty">AdminService</span>, { provide: <span class="ty">ADMIN_LEVEL</span>, useValue: <span class="s">'superadmin'</span> }],
+    loadChildren: () => <span class="fn">import</span>(<span class="s">'./admin/admin.routes'</span>)
+  },
+  {
+    path: <span class="s">'user/:id'</span>,
+    loadComponent: () => <span class="fn">import</span>(<span class="s">'./user/user.component'</span>).<span class="fn">then</span>(m => m.<span class="ty">UserComponent</span>),
+    resolve: { profile: userProfileResolver }
+  }
+];
+
+<span class="c">// user.component.ts — route params auto-bound (requires withComponentInputBinding)</span>
+<span class="k">export class</span> <span class="ty">UserComponent</span> {
+  id      = <span class="fn">input</span>.<span class="fn">required</span>&lt;<span class="ty">string</span>&gt;();   <span class="c">// from :id route param</span>
+  tab     = <span class="fn">input</span>(<span class="s">'overview'</span>);          <span class="c">// from ?tab= query param</span>
+  profile = <span class="fn">input</span>&lt;<span class="ty">UserProfile</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);  <span class="c">// from resolve.profile</span>
+  <span class="c">// No ActivatedRoute needed!</span>
+}</pre>
+
+<!-- ============================================================ -->
+<h2 id="inject-fn">The inject() function</h2>
+
+<p>The <code>inject()</code> function is a functional alternative to constructor injection. Angular 16 made it possible to call <code>inject()</code> in <strong>field initializers</strong> — properties declared directly on the class body. This eliminates the need for a constructor in most components.</p>
+
+<div class="cmp">
+  <div class="cmp-col">
+    <h5>Constructor injection (old)</h5>
+    <pre><span class="dec">@Component</span>({ <span class="fn">standalone</span>: <span class="kw">true</span> })
+<span class="k">export class</span> <span class="ty">OldComp</span> {
+  users: <span class="ty">User</span>[] = [];
+
+  <span class="k">constructor</span>(
+    <span class="k">private</span> svc: <span class="ty">UserService</span>,
+    <span class="k">private</span> router: <span class="ty">Router</span>
+  ) {}
+
+  <span class="fn">ngOnInit</span>() {
+    this.svc.<span class="fn">getAll</span>$().<span class="fn">subscribe</span>(
+      u => <span class="k">this</span>.users = u
+    );
+  }
+}</pre>
+  </div>
+  <div class="cmp-col">
+    <h5>inject() at field level (new)</h5>
+    <pre><span class="dec">@Component</span>({ <span class="fn">standalone</span>: <span class="kw">true</span> })
+<span class="k">export class</span> <span class="ty">NewComp</span> {
+  <span class="k">private</span> svc    = <span class="fn">inject</span>(<span class="ty">UserService</span>);
+  <span class="k">private</span> router = <span class="fn">inject</span>(<span class="ty">Router</span>);
+  <span class="k">private</span> ref    = <span class="fn">inject</span>(<span class="ty">DestroyRef</span>);
+
+  users = <span class="fn">toSignal</span>(
+    <span class="k">this</span>.svc.<span class="fn">getAll</span>$(),
+    { initialValue: [] }
+  );
+  <span class="c">// No constructor, no ngOnInit</span>
+}</pre>
+  </div>
+</div>
+
+<div class="box info">
+  <div class="bh">Injection context — when can you call inject()?</div>
+  <ul>
+    <li>Inside a class constructor</li>
+    <li>In a field initializer (evaluated during construction)</li>
+    <li>Inside a factory function for a provider</li>
+    <li>Inside <code>runInInjectionContext(injector, fn)</code></li>
+    <li>Inside a functional guard, resolver, or interceptor (they receive an injection context)</li>
+  </ul>
+  <p>Calling <code>inject()</code> in <code>ngOnInit</code>, event handlers, Promises, or setTimeout throws:</p>
+</div>
+<div class="errbox">NG0203: inject() must be called from an injection context such as a constructor, a factory function, a field initializer, or a function used with runInInjectionContext.</div>
+
+<!-- ============================================================ -->
+<h2 id="destroyref">DestroyRef and takeUntilDestroyed()</h2>
+
+<p><code>DestroyRef</code> is an injectable that lets you register cleanup callbacks without implementing <code>OnDestroy</code>. <code>takeUntilDestroyed()</code> is a pipeable RxJS operator that automatically completes an Observable when the current injection context is destroyed.</p>
+
+<pre><span class="file">realtime.component.ts</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="fn">inject</span>, <span class="ty">DestroyRef</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+<span class="k">import</span> { <span class="fn">takeUntilDestroyed</span> } <span class="k">from</span> <span class="s">'@angular/core/rxjs-interop'</span>;
+
+<span class="dec">@Component</span>({ <span class="fn">standalone</span>: <span class="kw">true</span> })
+<span class="k">export class</span> <span class="ty">RealtimeComponent</span> {
+  <span class="k">private</span> wsService  = <span class="fn">inject</span>(<span class="ty">WebSocketService</span>);
+  <span class="k">private</span> destroyRef = <span class="fn">inject</span>(<span class="ty">DestroyRef</span>);
+
+  messages = <span class="fn">signal</span>&lt;<span class="ty">string</span>[]&gt;([]);
+
+  <span class="k">constructor</span>() {
+    <span class="c">// Automatically unsubscribes when component is destroyed</span>
+    <span class="k">this</span>.wsService.messages$.<span class="fn">pipe</span>(
+      <span class="fn">takeUntilDestroyed</span>(<span class="k">this</span>.destroyRef)
+    ).<span class="fn">subscribe</span>(msg => {
+      <span class="k">this</span>.messages.<span class="fn">update</span>(arr => [...arr, msg]);
+    });
+
+    <span class="c">// Register any additional cleanup</span>
+    <span class="k">this</span>.destroyRef.<span class="fn">onDestroy</span>(() => {
+      console.<span class="fn">log</span>(<span class="s">'RealtimeComponent destroyed — cleaning up'</span>);
+    });
+  }
+}
+
+<span class="c">// Shorthand: takeUntilDestroyed() with no arg auto-injects DestroyRef</span>
+<span class="c">// Only works in field initializer or constructor (injection context)</span>
+<span class="k">export class</span> <span class="ty">CleanComponent</span> {
+  data$ = <span class="fn">inject</span>(<span class="ty">DataService</span>).stream$.<span class="fn">pipe</span>(<span class="fn">takeUntilDestroyed</span>());
+}</pre>
+
+<!-- ============================================================ -->
+<h2 id="injection-token">InjectionToken — type-safe non-class DI</h2>
+
+<p>Use <code>InjectionToken</code> when you want to inject a value that is not a class — configuration objects, environment variables, feature flags, primitive values, or abstract interfaces.</p>
+
+<pre><span class="file">tokens.ts</span>
+<span class="k">import</span> { <span class="ty">InjectionToken</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+
+<span class="k">export interface</span> <span class="ty">AppConfig</span> {
+  apiUrl: <span class="ty">string</span>;
+  maxRetries: <span class="ty">number</span>;
+  features: { darkMode: <span class="ty">boolean</span>; beta: <span class="ty">boolean</span> };
+}
+
+<span class="c">// providedIn + factory = tree-shakeable, no NgModule, no explicit register</span>
+<span class="k">export const</span> <span class="ty">APP_CONFIG</span> = <span class="k">new</span> <span class="ty">InjectionToken</span>&lt;<span class="ty">AppConfig</span>&gt;(<span class="s">'app.config'</span>, {
+  providedIn: <span class="s">'root'</span>,
+  factory: () => ({
+    apiUrl: <span class="s">'https://api.prod.example.com'</span>,
+    maxRetries: <span class="v">3</span>,
+    features: { darkMode: <span class="kw">true</span>, beta: <span class="kw">false</span> }
+  })
+});
+
+<span class="c">// consume it anywhere with full type safety</span>
+<span class="dec">@Injectable</span>({ <span class="fn">providedIn</span>: <span class="s">'root'</span> })
+<span class="k">export class</span> <span class="ty">ApiService</span> {
+  <span class="k">private</span> cfg = <span class="fn">inject</span>(<span class="ty">APP_CONFIG</span>);  <span class="c">// type is AppConfig</span>
+  <span class="k">private</span> base = <span class="k">this</span>.cfg.apiUrl;
+
+  <span class="fn">get</span>&lt;<span class="ty">T</span>&gt;(path: <span class="ty">string</span>) {
+    <span class="k">return</span> <span class="k">this</span>.http.<span class="fn">get</span>&lt;<span class="ty">T</span>&gt;(`${this.base}${path}`);
+  }
+}</pre>
+
+<!-- ============================================================ -->
+<h2 id="route-providers">Route-level providers — replacing lazy module scoping</h2>
+
+<p>In NgModule-based apps, lazy-loaded modules created their own injector that scoped services to that module's lifetime. In standalone Angular, you replicate this with the <code>providers</code> array on a route definition. Services in route-level providers are shared by all components in that route subtree and are destroyed when the user navigates away.</p>
+
+<pre><span class="file">app.routes.ts</span>
+{
+  path: <span class="s">'admin'</span>,
+  <span class="c">// EnvironmentProviders scoped to /admin subtree — created on nav in, destroyed on nav out</span>
+  providers: [
+    <span class="ty">AdminUserService</span>,
+    <span class="ty">AuditLogService</span>,
+    { provide: <span class="ty">AUTH_LEVEL</span>, useValue: <span class="s">'admin'</span> }
+  ],
+  loadChildren: () => <span class="fn">import</span>(<span class="s">'./admin/admin.routes'</span>)
+}
+
+<span class="c">// vs component providers — each component instance gets its own service</span>
+<span class="dec">@Component</span>({
+  providers: [<span class="ty">WizardStateService</span>]  <span class="c">// destroyed with the component — one per instance</span>
+})</pre>
+
+<!-- ============================================================ -->
+<h2 id="cd-default">Change Detection — Default strategy</h2>
+
+<p>Angular's default change detection strategy uses Zone.js. Zone.js monkey-patches all browser async APIs (setTimeout, Promise.then, XHR, event listeners) and notifies Angular whenever any of them complete. Angular then runs a top-down check of the <em>entire component tree</em> to find and update any bindings that changed.</p>
+
+<p>This works, but it is inefficient for large apps: every click, every HTTP response, every timer tick checks every component — even those with no data relevant to the change.</p>
+
+<!-- ============================================================ -->
+<h2 id="cd-onpush">Change Detection — OnPush strategy</h2>
+
+<p>With <code>ChangeDetectionStrategy.OnPush</code>, Angular marks the component and its entire subtree as "clean" and skips them during change detection unless one of these specific triggers occurs:</p>
+
+<ul>
+  <li><strong>@Input() or input() reference changes</strong> — the parent passes a new object/array reference (not a mutation)</li>
+  <li><strong>An event in the component fires</strong> — click, input, keydown within the component's template</li>
+  <li><strong>async pipe emits</strong> — an Observable connected via <code>| async</code> emits a new value</li>
+  <li><strong>Signal read in template changes</strong> (v17+) — a signal whose value changed since last render</li>
+  <li><strong>ChangeDetectorRef.markForCheck()</strong> — manual trigger (escape hatch)</li>
+</ul>
+
+<pre><span class="file">product-list.component.ts</span>
+<span class="k">import</span> { <span class="fn">Component</span>, <span class="ty">ChangeDetectionStrategy</span>, <span class="fn">input</span>, <span class="fn">computed</span> } <span class="k">from</span> <span class="s">'@angular/core'</span>;
+
+<span class="dec">@Component</span>({
+  <span class="fn">standalone</span>: <span class="kw">true</span>,
+  <span class="fn">changeDetection</span>: <span class="ty">ChangeDetectionStrategy</span>.OnPush,
+  <span class="fn">template</span>: <span class="s">`
+    &lt;p&gt;Showing {{ visibleCount() }} of {{ products().length }} products&lt;/p&gt;
+    @for (p of visibleProducts(); track p.id) {
+      &lt;product-card [product]="p" /&gt;
+    }
+  `</span>
+})
+<span class="k">export class</span> <span class="ty">ProductListComponent</span> {
+  products = <span class="fn">input</span>&lt;<span class="ty">Product</span>[]&gt;([]);
+  filter   = <span class="fn">input</span>(<span class="s">''</span>);
+  maxShow  = <span class="fn">input</span>(<span class="v">20</span>);
+
+  visibleProducts = <span class="fn">computed</span>(() =>
+    <span class="k">this</span>.products()
+      .<span class="fn">filter</span>(p => p.name.<span class="fn">toLowerCase</span>().<span class="fn">includes</span>(<span class="k">this</span>.filter().<span class="fn">toLowerCase</span>()))
+      .<span class="fn">slice</span>(<span class="v">0</span>, <span class="k">this</span>.maxShow())
+  );
+  visibleCount = <span class="fn">computed</span>(() => <span class="k">this</span>.visibleProducts().length);
+}</pre>
+
+<!-- ============================================================ -->
+<h2 id="local-cd">Local Change Detection with Signals (Angular 17)</h2>
+
+<p>Angular 17 introduced <strong>Local Change Detection</strong> — a significant performance improvement. When a signal used in a component's template changes, Angular now marks <em>only that specific component</em> as dirty, not its ancestors. For ancestors, it sets a "has child views to refresh" flag so the next change detection pass knows it needs to traverse into those children without checking the ancestors themselves.</p>
+
+<p>This requires two conditions: the component must use <strong>OnPush</strong> and the binding must use <strong>Signals</strong>. When both are true, a signal change causes the minimum possible amount of change detection work.</p>
+
+<div class="dbox">
+<svg width="100%" viewBox="0 0 720 220">
+  <!-- Pre v17 -->
+  <rect x="20" y="15" width="310" height="195" rx="10" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="0.8"/>
+  <text x="40" y="42" fill="#9aa0a6" font-size="11" font-weight="700" font-family="-apple-system,sans-serif" letter-spacing=".07em">PRE-v17 (OnPush + signal change)</text>
+  <text x="175" y="67" text-anchor="middle" fill="#c5221f" font-size="11" font-family="-apple-system,sans-serif">All ancestors marked dirty too ↓</text>
+  <rect x="115" y="78" width="120" height="32" rx="6" fill="#fce8e6" stroke="#f5c6c5" stroke-width="0.8"/>
+  <text x="175" y="99" text-anchor="middle" fill="#c5221f" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">AppComponent ✗</text>
+  <rect x="115" y="125" width="120" height="32" rx="6" fill="#fce8e6" stroke="#f5c6c5" stroke-width="0.8"/>
+  <text x="175" y="146" text-anchor="middle" fill="#c5221f" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">Parent ✗</text>
+  <rect x="115" y="172" width="120" height="32" rx="6" fill="#c8e6c9" stroke="#81c784" stroke-width="1"/>
+  <text x="175" y="193" text-anchor="middle" fill="#1b5e20" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">Child (signal) ✓</text>
+
+  <!-- v17+ -->
+  <rect x="390" y="15" width="310" height="195" rx="10" fill="#f8f9fa" stroke="#e0e0e0" stroke-width="0.8"/>
+  <text x="410" y="42" fill="#137333" font-size="11" font-weight="700" font-family="-apple-system,sans-serif" letter-spacing=".07em">v17+ LOCAL CHANGE DETECTION</text>
+  <text x="545" y="67" text-anchor="middle" fill="#137333" font-size="11" font-family="-apple-system,sans-serif">Only signal consumer marked dirty ↓</text>
+  <rect x="485" y="78" width="120" height="32" rx="6" fill="#f1f3f4" stroke="#e0e0e0" stroke-width="0.8"/>
+  <text x="545" y="99" text-anchor="middle" fill="#9aa0a6" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">AppComponent —</text>
+  <rect x="485" y="125" width="120" height="32" rx="6" fill="#e8f5e9" stroke="#a5d6a7" stroke-width="0.8"/>
+  <text x="545" y="146" text-anchor="middle" fill="#2e7d32" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">Parent (traversal)</text>
+  <rect x="485" y="172" width="120" height="32" rx="6" fill="#c8e6c9" stroke="#81c784" stroke-width="1"/>
+  <text x="545" y="193" text-anchor="middle" fill="#1b5e20" font-size="12" font-weight="700" font-family="-apple-system,sans-serif">Child (dirty) ✓</text>
+</svg>
+<div class="dcap">Pre-v17: signal change marks all ancestors dirty. v17+: ancestors only get a traversal flag, not a dirty mark. Only the signal consumer re-renders.</div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="zoneless">Zoneless Change Detection — Angular 18</h2>
+
+<p>Angular 18 introduced experimental support for running entirely without Zone.js. In zoneless mode, Angular does not rely on Zone.js to know when to check for changes. Instead, it only re-renders components when a signal they consume changes, when <code>ChangeDetectorRef.markForCheck()</code> is called, or when an event fires inside the component.</p>
+
+<pre><span class="file">main.ts — enable zoneless (experimental)</span>
+<span class="fn">bootstrapApplication</span>(<span class="ty">AppComponent</span>, {
+  providers: [
+    <span class="fn">provideExperimentalZonelessChangeDetection</span>()
   ]
 });
 
-// feature.component.ts — imports are per-component
-@Component({
-  standalone: true,
-  selector: 'app-feature',
-  imports: [RouterOutlet, NgOptimizedImage, UserCardComponent, ReactiveFormsModule],
-  template: `
-    @if (user()) { &lt;user-card [user]="user()" /&gt; }
-    &lt;router-outlet /&gt;
-  `
-})
-export class FeatureComponent {
-  user = toSignal(inject(UserService).getUser$());
-}</pre>
+<span class="c">// Also remove zone.js from angular.json polyfills:
+// "polyfills": ["zone.js"]  →  "polyfills": []</span></pre>
 
-<h3>Lazy route loading — no module needed</h3>
-<pre>// app.routes.ts
-export const routes: Routes = [
-  {
-    path: 'dashboard',
-    loadComponent: () => import('./dashboard.component').then(m => m.DashboardComponent),
-  },
-  {
-    path: 'admin',
-    loadChildren: () => import('./admin/admin.routes'),
-    // Route-scoped providers — replaces lazy module providers
-    providers: [AdminService, { provide: ADMIN_CONFIG, useValue: adminConfig }],
-  },
-  {
-    path: 'user/:id',
-    component: UserDetailComponent,
-    resolve: { profile: userProfileResolver },
-  }
-];</pre>
-</section>
-
-<!-- DI -->
-<section id="di">
-<h2>Dependency injection — modern patterns</h2>
-
-<div class="card-grid">
-  <div class="card">
-    <h3>inject() function</h3>
-    <p>Replaces constructor injection. Works in field initializers, factory functions, guards, resolvers, interceptors — anywhere inside an injection context.</p>
-  </div>
-  <div class="card">
-    <h3>DestroyRef</h3>
-    <p>Register cleanup callbacks without implementing <code>OnDestroy</code>. Works in services and directives too. Combine with <code>takeUntilDestroyed()</code> for RxJS auto-unsubscription.</p>
-  </div>
-  <div class="card">
-    <h3>InjectionToken</h3>
-    <p>Type-safe DI for non-class values (config objects, feature flags, env vars). Use <code>providedIn: 'root'</code> with a factory for tree-shakeable tokens.</p>
-  </div>
-  <div class="card">
-    <h3>EnvironmentProviders</h3>
-    <p>Scope providers to a route subtree via <code>providers:</code> in route config. Replaces lazy-loaded module providers entirely.</p>
-  </div>
+<div class="box warn">
+  <div class="bh">Zoneless is experimental in Angular 18</div>
+  <p>Third-party libraries that rely on Zone.js to trigger change detection (e.g. they call <code>setTimeout</code> or emit events without using Signals or <code>markForCheck()</code>) will stop working correctly in zoneless mode. Test every dependency before adopting this in production.</p>
 </div>
 
-<pre>@Component({ standalone: true, ... })
-export class UserComponent {
-  // inject() in field initializers — no constructor needed
-  private http   = inject(HttpClient);
-  private router = inject(Router);
-  private ref    = inject(DestroyRef);
-  private config = inject(APP_CONFIG);   // InjectionToken
+<!-- ============================================================ -->
+<h2 id="control-flow">New built-in control flow — @if, @for, @switch</h2>
 
-  // Automatic cleanup when component is destroyed
-  users$ = this.http.get&lt;User[]&gt;('/api/users').pipe(
-    takeUntilDestroyed(this.ref)
-  );
-}
+<p>Angular 17 replaced structural directives with a new built-in template syntax. The new syntax is compiled directly into the template engine — no import needed, better type narrowing, better performance, and clearer developer error messages.</p>
 
-// InjectionToken — tree-shakeable
-export const APP_CONFIG = new InjectionToken&lt;AppConfig&gt;('app.config', {
-  providedIn: 'root',
-  factory: () => ({ apiUrl: 'https://api.example.com', debug: false })
-});
+<div class="cmp">
+  <div class="cmp-col">
+    <h5>*ngIf / *ngFor / ngSwitch</h5>
+    <pre>&lt;div *ngIf="user; else noUser"&gt;
+  {{ user.name }}
+&lt;/div&gt;
+&lt;ng-template #noUser&gt;
+  Loading...
+&lt;/ng-template&gt;
 
-// Functional HTTP interceptor (v15+) — uses inject() internally
-export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  const token = inject(AuthService).token();    // signal!
-  return next(
-    req.clone({ setHeaders: { Authorization: `Bearer ${token()}` } })
-  );
-};</pre>
-</section>
-
-<!-- Change detection -->
-<section id="cd">
-<h2>Change detection</h2>
-
-<div class="diagram">
-<svg width="100%" viewBox="0 0 780 150">
-  <rect x="30" y="20" width="195" height="56" rx="8" fill="#1a1a2e" stroke="#2a2a3e" stroke-width="0.8"/>
-  <text x="127" y="44" text-anchor="middle" fill="#94a3b8" font-size="13" font-weight="600" font-family="Inter,sans-serif">Default</text>
-  <text x="127" y="62" text-anchor="middle" fill="#475569" font-size="11" font-family="Inter,sans-serif">checks whole tree</text>
-
-  <rect x="295" y="20" width="195" height="56" rx="8" fill="#0d3d2b" stroke="#1D9E75" stroke-width="0.8"/>
-  <text x="392" y="44" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="600" font-family="Inter,sans-serif">OnPush</text>
-  <text x="392" y="62" text-anchor="middle" fill="#4aa880" font-size="11" font-family="Inter,sans-serif">skips unchanged subtrees</text>
-
-  <rect x="560" y="20" width="195" height="56" rx="8" fill="#312e62" stroke="#7f77dd" stroke-width="0.8"/>
-  <text x="657" y="44" text-anchor="middle" fill="#c4b5fd" font-size="13" font-weight="600" font-family="Inter,sans-serif">Zoneless (v18)</text>
-  <text x="657" y="62" text-anchor="middle" fill="#8b7dd4" font-size="11" font-family="Inter,sans-serif">signal-driven only</text>
-
-  <text x="127" y="105" text-anchor="middle" fill="#475569" font-size="11" font-family="Inter,sans-serif">Any event triggers full check</text>
-  <text x="392" y="105" text-anchor="middle" fill="#475569" font-size="11" font-family="Inter,sans-serif">@Input ref change / signal / async pipe</text>
-  <text x="657" y="105" text-anchor="middle" fill="#475569" font-size="11" font-family="Inter,sans-serif">provideExperimentalZoneless()</text>
-  <text x="127" y="123" text-anchor="middle" fill="#2a2a3e" font-size="11" font-family="Inter,sans-serif">via Zone.js dirty-checking</text>
-  <text x="392" y="123" text-anchor="middle" fill="#2a2a3e" font-size="11" font-family="Inter,sans-serif">markForCheck() as escape hatch</text>
-  <text x="657" y="123" text-anchor="middle" fill="#2a2a3e" font-size="11" font-family="Inter,sans-serif">no Zone.js, signals notify directly</text>
-</svg>
-</div>
-
-<pre>// OnPush — recommended for all components
-@Component({
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  ...
-})
-export class UserListComponent {
-  // These trigger re-render automatically:
-  users     = input.required&lt;User[]&gt;();            // @Input ref change
-  userCount = computed(() => this.users().length); // signal-derived
-  users$    = toSignal(this.userService.users$);   // async pipe equivalent
-
-  // Escape hatch — only when mutating non-signal state
-  constructor(private cdr: ChangeDetectorRef) {}
-  refresh() { this.cdr.markForCheck(); }
-}
-
-// Zoneless — Angular 18 experimental
-bootstrapApplication(AppComponent, {
-  providers: [provideExperimentalZonelessChangeDetection()]
-});</pre>
-</section>
-
-<!-- Control flow -->
-<section id="controlflow">
-<h2>New control flow &amp; @defer (v17)</h2>
-
-<div class="compare">
-  <div class="compare-col">
-    <h4>Old structural directives</h4>
-    <pre>*ngIf="user; else loading"
-*ngFor="let u of users; trackBy: trackById"
-[ngSwitch]="role"
-  *ngSwitchCase="'admin'"
-  *ngSwitchDefault</pre>
+&lt;li *ngFor="let item of items;
+           trackBy:trackById;
+           let i = index"&gt;
+  {{ i }}: {{ item.name }}
+&lt;/li&gt;</pre>
   </div>
-  <div class="compare-col">
-    <h4>New built-in control flow</h4>
-    <pre>@if (user) { ... } @else { &lt;spinner/&gt; }
-@for (u of users; track u.id) { ... }
-@empty { &lt;p&gt;No users&lt;/p&gt; }
-@switch (role) {
-  @case ('admin') { &lt;admin-panel/&gt; }
-  @default { &lt;user-panel/&gt; }
+  <div class="cmp-col">
+    <h5>@if / @for / @switch</h5>
+    <pre>@if (user) {
+  &lt;div&gt;{{ user.name }}&lt;/div&gt;
+} @else if (isLoading) {
+  &lt;spinner /&gt;
+} @else {
+  &lt;p&gt;Not found.&lt;/p&gt;
+}
+
+@for (item of items; track item.id;
+      let i = $index) {
+  &lt;li&gt;{{ i }}: {{ item.name }}&lt;/li&gt;
+} @empty {
+  &lt;li&gt;No items.&lt;/li&gt;
 }</pre>
   </div>
 </div>
 
-<div class="tip tip-amber">
-  <p><code>@for</code> requires a <code>track</code> expression — not optional like <code>trackBy</code>. Always use a unique identifier. Using <code>track $index</code> disables list reconciliation and should only be a last resort.</p>
+<h4>Built-in @for context variables</h4>
+<table>
+  <thead><tr><th>Variable</th><th>Type</th><th>Meaning</th></tr></thead>
+  <tbody>
+    <tr><td><code>$index</code></td><td>number</td><td>Zero-based position in the collection</td></tr>
+    <tr><td><code>$first</code></td><td>boolean</td><td>True for the first item</td></tr>
+    <tr><td><code>$last</code></td><td>boolean</td><td>True for the last item</td></tr>
+    <tr><td><code>$even</code></td><td>boolean</td><td>True at even-indexed positions</td></tr>
+    <tr><td><code>$odd</code></td><td>boolean</td><td>True at odd-indexed positions</td></tr>
+    <tr><td><code>$count</code></td><td>number</td><td>Total number of items</td></tr>
+  </tbody>
+</table>
+
+<div class="box err">
+  <div class="bh">@for requires track — not optional</div>
+  <p>Unlike <code>trackBy</code> in <code>*ngFor</code> which was optional, <code>track</code> in <code>@for</code> is mandatory. Omitting it is a compile error. Using <code>track $index</code> is allowed but disables Angular's list reconciliation — it destroys and recreates every DOM element on re-render. Always use a unique identifier: <code>track item.id</code>.</p>
 </div>
 
-<h3>@defer — lazy loading with declarative triggers</h3>
-<pre>@defer (on viewport; prefetch on idle) {
-  &lt;heavy-analytics-chart [data]="chartData" /&gt;
-} @placeholder (minimum 400ms) {
-  &lt;div class="chart-skeleton" aria-busy="true"&gt;&lt;/div&gt;
-} @loading (minimum 200ms) {
-  &lt;loading-spinner size="sm" /&gt;
+<!-- ============================================================ -->
+<h2 id="defer">@defer blocks — declarative lazy loading</h2>
+
+<p><code>@defer</code> is a template-level feature that downloads a component's JavaScript bundle only when a trigger condition is met. Before the trigger fires, Angular shows the <code>@placeholder</code>. While the bundle is downloading, it shows <code>@loading</code>. If the download fails, it shows <code>@error</code>.</p>
+
+<pre>&lt;h2&gt;Product Details&lt;/h2&gt;
+&lt;!-- Reviews section is below the fold — load it lazily --&gt;
+
+@defer (on viewport; prefetch on idle) {
+  &lt;reviews-section [productId]="id()" /&gt;
+
+} @placeholder (minimum 300ms) {
+  &lt;!-- Shown until trigger fires — min prevents flash --&gt;
+  &lt;div class="reviews-skeleton" aria-busy="true"&gt;&lt;/div&gt;
+
+} @loading (minimum 200ms; after 100ms) {
+  &lt;!-- Shown while bundle downloads (after 100ms delay) --&gt;
+  &lt;loading-spinner /&gt;
+
 } @error {
-  &lt;p&gt;Chart failed to load. &lt;a (click)="retry()"&gt;Retry&lt;/a&gt;&lt;/p&gt;
-}
-
-// Interaction trigger — load when user clicks a button
-&lt;button #loadTrigger&gt;Load reviews&lt;/button&gt;
-@defer (on interaction(loadTrigger)) { &lt;reviews /&gt; }
-
-// Conditional trigger — load when condition becomes true
-@defer (when userIsAuthenticated()) { &lt;private-content /&gt; }</pre>
-
-<div class="tip tip-green">
-  <p><code>prefetch on idle</code> downloads the bundle during browser idle time — so when the trigger fires, the component loads from cache (near-instant). Zero bundle cost until needed.</p>
-</div>
-</section>
-
-<!-- Performance -->
-<section id="perf">
-<h2>Performance patterns</h2>
-
-<div class="card-grid">
-  <div class="card">
-    <h3>NgOptimizedImage</h3>
-    <p>Automatic <code>&lt;link rel="preload"&gt;</code> for priority images, responsive <code>srcset</code> generation, lazy loading by default, CDN integration for format negotiation (WebP/AVIF).</p>
-  </div>
-  <div class="card">
-    <h3>@defer on viewport</h3>
-    <p>Below-fold components defer rendering until they scroll into view. Bundle downloaded only when needed. Combine with <code>prefetch on idle</code> for instant-feel loading.</p>
-  </div>
-  <div class="card">
-    <h3>SSR + hydration (v17)</h3>
-    <p>Full app hydration enabled by default. DOM reuse from server render prevents layout shift. <code>ngSkipHydration</code> escapes for problematic components.</p>
-  </div>
-  <div class="card">
-    <h3>OnPush + signals</h3>
-    <p>Apply <code>OnPush</code> everywhere and use signals for state. Angular skips unchanged subtrees — effectively free for components that haven't changed.</p>
-  </div>
-</div>
-
-<pre>// LCP image with priority preload
-@Component({ imports: [NgOptimizedImage] })
-export class HeroComponent {}
-// template:
-// &lt;img ngSrc="hero.jpg" width="1200" height="600" priority
-//      sizes="(max-width: 768px) 100vw, 1200px" /&gt;
-
-// Configure CDN loader for automatic format + resize
-providers: [provideImgixLoader('https://cdn.example.com')]
-
-// Lazy standalone component route
-export const routes: Routes = [{
-  path: 'report',
-  loadComponent: () => import('./report.component').then(m => m.ReportComponent)
-}];
-
-// SSR-safe code (avoid browser-only APIs during server render)
-@Component({...})
-export class MapComponent {
-  private platform = inject(PLATFORM_ID);
-  showMap = isPlatformBrowser(this.platform);
+  &lt;p&gt;Reviews could not load. &lt;a (click)="retry()"&gt;Try again&lt;/a&gt;&lt;/p&gt;
 }</pre>
-</section>
 
-<!-- State -->
-<section id="state">
-<h2>State management — signals vs NgRx</h2>
+<h4>All @defer trigger types</h4>
+<table>
+  <thead><tr><th>Trigger</th><th>When it fires</th><th>Notes</th></tr></thead>
+  <tbody>
+    <tr><td><code>on idle</code></td><td>Browser is idle</td><td>Uses requestIdleCallback. Default if no trigger specified.</td></tr>
+    <tr><td><code>on viewport</code></td><td>Element enters viewport</td><td>Uses IntersectionObserver. Best for below-fold content.</td></tr>
+    <tr><td><code>on interaction(ref)</code></td><td>User clicks/focuses ref element</td><td>Pass a template reference: <code>#triggerBtn</code></td></tr>
+    <tr><td><code>on hover(ref)</code></td><td>User hovers over ref element</td><td>Uses mouseover/focusin events</td></tr>
+    <tr><td><code>on timer(2s)</code></td><td>After a fixed delay</td><td>Parses <code>ms</code> or <code>s</code> units</td></tr>
+    <tr><td><code>when condition</code></td><td>Boolean expression becomes true</td><td><code>when isAuthenticated()</code></td></tr>
+    <tr><td><code>on immediate</code></td><td>As soon as browser not busy</td><td>Similar to idle but without waiting</td></tr>
+  </tbody>
+</table>
 
-<h3>Signal-based store (recommended for most apps)</h3>
-<pre>@Injectable({ providedIn: 'root' })
-export class CartStore {
-  private readonly _items = signal&lt;CartItem[]&gt;([]);
+<div class="box ok">
+  <div class="bh">Best practice: combine on viewport + prefetch on idle</div>
+  <p>The <code>prefetch</code> option downloads the bundle in the background before the trigger fires. Combining <code>on viewport; prefetch on idle</code> means: download the bundle during browser idle time, but only render the component when it enters the viewport. The user gets an instant render because the bundle is already cached locally.</p>
+</div>
 
-  // Public read-only surface
-  readonly items  = this._items.asReadonly();
-  readonly count  = computed(() => this._items().length);
-  readonly total  = computed(() => this._items().reduce((s, i) => s + i.price, 0));
-  readonly isEmpty = computed(() => this._items().length === 0);
+<!-- ================================================================ -->
+<!--                       Q & A SECTION                              -->
+<!-- ================================================================ -->
 
-  add(item: CartItem)     { this._items.update(v => [...v, item]); }
-  remove(id: string)      { this._items.update(v => v.filter(i => i.id !== id)); }
-  clear()                 { this._items.set([]); }
-  updateQty(id: string, qty: number) {
-    this._items.update(v => v.map(i => i.id === id ? { ...i, qty } : i));
+<h2 id="qa-signals">Interview Q&amp;A — Signals</h2>
+<p>These questions reflect what a developer with 3–5 years of Angular experience is expected to know. Each answer explains the mechanism deeply, not just the surface API.</p>
+
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Signals</span><span class="dt med">Medium</span></div>
+  <div class="qq-text">What is the difference between signal(), computed(), and effect()? When would you use each one?</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>signal() — mutable source of truth</h4>
+<p>Use <code>signal()</code> for state that your component or service <em>owns</em> and mutates directly. It is the raw, writable reactive value. Every other reactive primitive derives from or reacts to signals.</p>
+<pre>isLoading    = signal(false);
+selectedTab  = signal&lt;'overview' | 'details'&gt;('overview');
+currentUser  = signal&lt;User | null&gt;(null);</pre>
+
+<h4>computed() — read-only derived state, lazily memoised</h4>
+<p>Use <code>computed()</code> whenever a value can be <em>derived</em> from other signals. The key properties: (1) lazy — only re-evaluates when a dependency changed AND something reads it. (2) Memoised — multiple reads return the same cached result until a dependency changes. (3) Read-only — you cannot call <code>.set()</code> on it.</p>
+<p>Never store derived data in a writable signal that you manually sync — that creates bugs and race conditions. Let <code>computed()</code> own all derived state.</p>
+<pre>fullName    = computed(() => `${this.firstName()} ${this.lastName()}`);
+isFormValid = computed(() => !!this.email() &amp;&amp; this.password().length &gt;= 8);
+admins      = computed(() => this.users().filter(u =&gt; u.role === 'admin'));</pre>
+
+<h4>effect() — side effects outside Angular's reactivity</h4>
+<p>Use <code>effect()</code> only for things that escape Angular's reactivity: writing to DOM attributes, localStorage, sending analytics, logging, calling third-party libraries. It runs once on creation, then re-runs whenever any signal it reads changes. It must be in an injection context.</p>
+<p><strong>Never use effect() to derive new signal state</strong> — that belongs in <code>computed()</code>.</p>
+<pre>effect(() =&gt; {
+  document.title = `${this.pageName()} | My App`;          // DOM side effect
+  analytics.page(this.pageName());                          // analytics
+  localStorage.setItem('lastPage', this.pageName());        // storage
+});</pre>
+</div>
+</div>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Signals</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">A computed() that reads an array signal stops updating when items are pushed into the array. Why does this happen and what are the solutions?</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>Root cause: Angular uses Object.is() for equality</h4>
+<p>By default, signals compare old and new values using <code>Object.is()</code> — strict reference equality. When you call <code>this.items().push(newItem)</code>, the array is mutated in place. The array reference before and after the push is <strong>the same object</strong>. <code>Object.is(arr, arr)</code> returns <code>true</code>, so Angular considers the signal unchanged and does not notify any <code>computed()</code> or template that depends on it.</p>
+<pre>// BUG — mutation in place
+items = signal&lt;string[]&gt;([]);
+computed_count = computed(() =&gt; this.items().length);  // never updates!
+
+addItem(item: string) {
+  this.items().push(item);    // same reference — signal sees no change
+}</pre>
+
+<h4>Solution 1: use .update() with an immutable pattern (recommended)</h4>
+<pre>addItem(item: string) {
+  this.items.update(arr =&gt; [...arr, item]);   // new array reference
+}
+removeItem(idx: number) {
+  this.items.update(arr =&gt; arr.filter((_, i) =&gt; i !== idx));
+}
+updateItem(idx: number, val: string) {
+  this.items.update(arr =&gt; arr.map((v, i) =&gt; i === idx ? val : v));
+}</pre>
+
+<h4>Solution 2: custom equality function for deep comparison</h4>
+<pre>import _ from 'lodash';
+
+// Signal won't notify if new array has same contents (deep equal)
+items = signal&lt;string[]&gt;([], { equal: _.isEqual });
+
+// Now mutation is detectable — but only if you call .set() with new value
+addItem(item: string) {
+  this.items.set([...this.items(), item]);
+}</pre>
+
+<h4>Why immutable updates are preferred in Angular signals</h4>
+<p>Immutable updates (creating a new array/object instead of mutating) make change detection predictable — Angular can always tell what changed by reference comparison alone. They also enable features like undo/redo, time-travel debugging, and straightforward memoization.</p>
+</div>
+</div>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Signals</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">How does toSignal() manage its subscription lifecycle? What happens if you call it outside an injection context?</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>Lifecycle management via DestroyRef</h4>
+<p><code>toSignal()</code> internally calls <code>inject(DestroyRef)</code> when it runs. It registers an <code>onDestroy</code> callback that unsubscribes from the Observable when the current injection context (the component or service) is destroyed. This is why you do not need to manually unsubscribe — the cleanup is automatic.</p>
+
+<h4>What happens outside injection context</h4>
+<p>Calling <code>toSignal()</code> in <code>ngOnInit</code>, an event handler, or a Promise throws:</p>
+<div class="errbox">NG0203: toSignal() can only be used within an injection context such as a constructor, a factory function, a field initializer, or a function used with runInInjectionContext.</div>
+
+<h4>How to use toSignal() outside injection context</h4>
+<pre>export class SearchComponent implements OnInit {
+  private injector = inject(Injector);
+  results = signal&lt;Result[]&gt;([]);
+
+  ngOnInit() {
+    // Pass the injector explicitly to toSignal()
+    const results = toSignal(this.searchService.results$, {
+      initialValue: [],
+      injector: this.injector    // manually provide injection context
+    });
+    this.results = results;
   }
 }</pre>
 
-<div class="tip tip-green">
-  <p>Use signals + services for most apps. Add NgRx (or NgRx SignalStore) when you need Redux DevTools time-travel debugging, strict action audit trails, or team conventions already rely on it.</p>
+<h4>manualCleanup option</h4>
+<pre>// If you want to manage the subscription yourself:
+const signal = toSignal(observable$, { manualCleanup: true });
+// Signal will NOT be automatically cleaned up — your responsibility</pre>
 </div>
-</section>
-
-<!-- Q&A Section -->
-<section id="qasection">
-<h2>Scenario-based Q&amp;A — senior level</h2>
-<p>30+ questions modelled on real senior interview conversations. Each scenario mirrors a problem you'd encounter on a production Angular team. Click to expand answers.</p>
-</section>
-
-<h3 id="qa-signals" style="margin-top:1.5rem">Signals</h3>
+</div>
 
 <div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Signals &middot; scenario</div>
-    <div class="qq-text">You convert a user-list HTTP call to <code>toSignal()</code> and the request fires twice on initial load. What went wrong and how do you fix it?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Signals</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">What is linkedSignal in Angular 18? What problem does it solve that computed() cannot?</div></div>
+  <span class="qarr">▼</span>
 </div>
 <div class="qa-body">
-  <p><strong>Cause:</strong> <code>toSignal(this.http.get(...))</code> subscribes to a cold observable. If the component mounts twice (e.g. inside a toggling <code>@if</code>), or if the service is not singleton, two HTTP calls fire. A second common cause is calling <code>this.http.get()</code> directly inside <code>toSignal()</code> — every injection of the service creates a new cold subscription.</p>
-  <p><strong>Fix:</strong> Share the observable before converting with <code>shareReplay(1)</code>.</p>
-  <pre>@Injectable({ providedIn: 'root' })
-export class UserService {
-  private http = inject(HttpClient);
+<h4>The problem computed() cannot solve</h4>
+<p><code>computed()</code> is read-only. It is perfect for values that are always derived from other signals. But sometimes you need a value that: (1) starts derived from a source signal, (2) can be overridden by the user (written to), AND (3) resets back to the derived value when the source changes.</p>
+<p>Classic example: a selected tab that resets to the first tab whenever the tab list changes, but allows user selection in between.</p>
 
-  // Cold observable shared so only ONE HTTP call fires
-  private readonly users$ = this.http.get&lt;User[]&gt;('/api/users').pipe(shareReplay(1));
-  readonly users = toSignal(this.users$, { initialValue: [] });
+<h4>Without linkedSignal — messy workaround with effect()</h4>
+<pre>// BAD: using effect() to sync signals
+tabs = input.required&lt;string[]&gt;();
+activeTab = signal('');   // writable
+
+constructor() {
+  // Anti-pattern: effect writes to a signal
+  effect(() =&gt; { this.activeTab.set(this.tabs()[0]); });
 }</pre>
-  <p>If the double-mount is the real cause, check whether the component hosting the signal is inside an <code>@if</code> that toggles on the same tick, or whether <code>providedIn: 'root'</code> is missing from the service.</p>
+
+<h4>With linkedSignal — clean and correct</h4>
+<pre>tabs = input.required&lt;string[]&gt;();
+
+// linkedSignal: writable, but resets when tabs() changes
+activeTab = linkedSignal(() =&gt; this.tabs()[0]);
+
+selectTab(tab: string) {
+  this.activeTab.set(tab);    // user can override freely
+}
+// When parent changes [tabs]="newTabs", activeTab auto-resets to newTabs[0]</pre>
+
+<h4>Advanced form with computation</h4>
+<pre>// linkedSignal with source + computation pattern (Angular 18 extended form)
+activeTab = linkedSignal({
+  source: this.tabs,                      // watch this signal
+  computation: (tabs, previous) =&gt; {
+    // If previous selection still exists in new tabs, keep it
+    if (previous?.value &amp;&amp; tabs.includes(previous.value)) return previous.value;
+    return tabs[0];  // otherwise reset to first
+  }
+});</pre>
+</div>
+</div>
+
+<h2 id="qa-cd">Interview Q&amp;A — Change Detection</h2>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Change Detection</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">Explain exactly how Local Change Detection in Angular 17 works with OnPush and Signals. Why do you need both?</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>Background: how OnPush worked before v17</h4>
+<p>When a signal in a child component changed before v17, Angular used <code>markViewDirty()</code>, which marked the component AND all its ancestors as dirty. This triggered a full change detection pass from the root down to the changed component — checking every ancestor along the way.</p>
+
+<h4>What Angular 17 changed: markAncestorsForTraversal</h4>
+<p>Angular 17 introduced a new function <code>markAncestorsForTraversal()</code> that replaces <code>markViewDirty()</code> for signal-driven updates. Instead of marking ancestors as <strong>dirty</strong>, it marks them as "has child views to refresh" (<code>HasChildViewsToRefresh</code> flag). The difference:</p>
+<ul>
+  <li><strong>Dirty</strong> = check this component's bindings</li>
+  <li><strong>HasChildViewsToRefresh</strong> = traverse into children but skip checking this component's own bindings</li>
+</ul>
+<p>Result: only the component that actually consumed the changed signal has its template re-evaluated. Ancestors are traversed but not checked.</p>
+
+<h4>Why you need BOTH OnPush AND Signals</h4>
+<ul>
+  <li><strong>OnPush without signals</strong>: still uses Zone.js for non-signal updates. Zone.js triggers full tree check. Local CD not active.</li>
+  <li><strong>Signals without OnPush (Default strategy)</strong>: Zone.js still triggers full tree check after every event. The signal change also triggers a re-render but the "local" benefit is masked.</li>
+  <li><strong>OnPush + Signals</strong>: Zone.js still runs but can skip the component (OnPush + no dirty inputs). Signal change uses <code>markAncestorsForTraversal()</code> — only the consumer is checked. Maximum performance.</li>
+</ul>
+<pre>@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,  // required condition 1
+  template: `&lt;p&gt;{{ count() }}&lt;/p&gt;`                  // signal in template = required condition 2
+})
+export class OptimisedComponent {
+  count = signal(0);  // when count.set(1) fires, only THIS component re-renders
+}</pre>
 </div>
 </div>
 
 <div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Signals &middot; scenario</div>
-    <div class="qq-text">A colleague uses <code>effect()</code> to sync a signal value into another signal. Code review says this is an anti-pattern. Why, and what is the correct pattern?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Change Detection</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">A third-party charting library updates its internal state outside Angular's zone, and the chart never re-renders. What are your options from worst to best?</div></div>
+  <span class="qarr">▼</span>
 </div>
 <div class="qa-body">
-  <p><strong>Why it's wrong:</strong> Setting a signal inside <code>effect()</code> creates an indirect data dependency that is hard to trace and can cause infinite loops if not careful. Angular warns about this and may throw in strict mode.</p>
-  <pre>// BAD — anti-pattern
-effect(() => {
-  this.fullName.set(`${this.firstName()} ${this.lastName()}`); // side-effect write
-});
+<h4>Why it happens</h4>
+<p>Zone.js intercepts standard browser async APIs (setTimeout, Promise, XHR, addEventListener). Libraries that use <code>requestAnimationFrame</code>, WebGL contexts, native WebSocket, or their own internal event systems run <em>outside</em> Zone.js. Angular is never notified and never checks the affected components.</p>
 
-// GOOD — use computed() for derived values
-fullName = computed(() => `${this.firstName()} ${this.lastName()}`);</pre>
-  <p><code>effect()</code> is for side effects outside Angular's reactivity system — DOM manipulation, logging, analytics, calling non-Angular APIs. Not for deriving new state.</p>
-  <p>If you genuinely need to write a signal from an effect (rare), use the <code>allowSignalWrites: true</code> option and document why <code>computed()</code> cannot solve it.</p>
-</div>
-</div>
+<h4>Option 1 (worst): remove OnPush from the component</h4>
+<p>Removing <code>OnPush</code> makes the component Default strategy — Zone.js checks it on every tick. This works but sacrifices all performance optimisation and is the wrong fix.</p>
 
-<h3 id="qa-cd" style="margin-top:1.5rem">Change detection</h3>
+<h4>Option 2: wrap in NgZone.run()</h4>
+<pre>constructor(private zone: NgZone) {}
 
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Change detection &middot; scenario</div>
-    <div class="qq-text">An <code>OnPush</code> component stops updating when you mutate an array. Diagnose it and fix it without removing OnPush.</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <p><strong>Diagnosis:</strong> <code>OnPush</code> only re-renders when an <code>@Input</code> reference changes. <code>array.push(item)</code> mutates the array but keeps the same reference — Angular sees an unchanged reference and skips the component.</p>
-  <p><strong>Fixes (in order of preference):</strong></p>
-  <div class="steps">
-    <div class="step"><span class="step-n">1</span><div class="step-t"><strong>Immutable update</strong> — create a new array reference: <code>this.items = [...this.items, newItem]</code></div></div>
-    <div class="step"><span class="step-n">2</span><div class="step-t"><strong>Convert to signal</strong> — signals always notify regardless of change detection strategy</div></div>
-    <div class="step"><span class="step-n">3</span><div class="step-t"><strong>markForCheck() escape hatch</strong> — only if you must mutate and cannot use signals</div></div>
-  </div>
-  <pre>// Option 2 — signal-based (preferred in Angular 16+)
-items = signal&lt;Item[]&gt;([]);
-addItem(i: Item) { this.items.update(v => [...v, i]); }
-// template reads items() — automatically re-renders on change</pre>
-</div>
-</div>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Change detection &middot; scenario</div>
-    <div class="qq-text">A developer adds a third-party library that updates UI outside Angular's zone. The changes don't show up. What is happening and what are the solutions?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <p><strong>Cause:</strong> Zone.js intercepts browser APIs (setTimeout, Promise, XHR, etc.) to know when to run change detection. A third-party library that updates state using its own scheduler (requestAnimationFrame, custom event emitter) runs outside Zone.js and Angular never detects the change.</p>
-  <p><strong>Solutions:</strong></p>
-  <pre>// Option 1: Run callback inside NgZone
-constructor(private zone: NgZone) {
-  thirdPartyLib.onUpdate((data) => {
-    this.zone.run(() => { this.data = data; });
+ngOnInit() {
+  this.chart.on('dataUpdated', (newData) =&gt; {
+    this.zone.run(() =&gt; {         // bring execution into Angular zone
+      this.chartData = newData;   // triggers change detection
+    });
   });
+}</pre>
+
+<h4>Option 3: ChangeDetectorRef.detectChanges()</h4>
+<pre>private cdr = inject(ChangeDetectorRef);
+
+ngOnInit() {
+  this.chart.on('dataUpdated', (newData) =&gt; {
+    this.chartData = newData;
+    this.cdr.detectChanges();   // force check this component + children
+  });
+}</pre>
+
+<h4>Option 4 (best for new code): use a Signal</h4>
+<pre>chartData = signal&lt;ChartData | null&gt;(null);
+
+ngOnInit() {
+  this.chart.on('dataUpdated', (newData) =&gt; {
+    this.chartData.set(newData);   // Signal notifies template directly
+    // No zone, no cdr needed — works with OnPush + zoneless
+  });
+}</pre>
+<p>The Signal approach is the cleanest: it works regardless of whether Zone.js is present, works with OnPush and zoneless, and is the pattern Angular 18's zoneless mode is built around.</p>
+</div>
+</div>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Change Detection</span><span class="dt med">Medium</span></div>
+  <div class="qq-text">What is the difference between ChangeDetectorRef.markForCheck() and ChangeDetectorRef.detectChanges()? When would you use each?</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>markForCheck()</h4>
+<p>Marks the current component and all its ancestors as dirty in the change detection tree. Angular will check them on the <em>next</em> change detection cycle — not immediately. It does NOT synchronously run change detection.</p>
+<p>Use it when: you are inside an async callback (Zone.js-patched), RxJS async pipe, or after external state update in an <code>OnPush</code> component and you want Angular to pick it up on its own next tick.</p>
+
+<h4>detectChanges()</h4>
+<p>Runs change detection <em>synchronously and immediately</em> on the current component and its children (down the tree). Does NOT check ancestors. Use it sparingly.</p>
+<p>Use it when: you need the DOM to reflect a change before the next animation frame (e.g. before measuring an element's dimensions), or when integrating with non-Angular libraries that need the DOM updated synchronously.</p>
+
+<pre>// markForCheck — deferred, marks ancestors too
+@Component({ changeDetection: ChangeDetectionStrategy.OnPush })
+export class AsyncComponent {
+  private cdr = inject(ChangeDetectorRef);
+  data: string[] = [];
+
+  ngOnInit() {
+    someExternalLibrary.onUpdate(items =&gt; {
+      this.data = items;
+      this.cdr.markForCheck();   // Angular will re-check on next tick
+    });
+  }
 }
 
-// Option 2: Manually trigger change detection
-constructor(private cdr: ChangeDetectorRef) {}
-onLibUpdate(data: any) { this.data = data; this.cdr.detectChanges(); }
+// detectChanges — immediate, only children
+export class MeasureComponent {
+  private cdr = inject(ChangeDetectorRef);
+  private el  = inject(ElementRef);
 
-// Option 3 (best, Angular 16+): Store data in a signal — works outside zone
-data = signal&lt;any&gt;(null);
-onLibUpdate(d: any) { this.data.set(d); }  // Signal notifies, no zone needed</pre>
+  showAndMeasure() {
+    this.isVisible = true;
+    this.cdr.detectChanges();                   // DOM updated synchronously
+    const height = this.el.nativeElement.offsetHeight;  // can measure now
+  }
+}</pre>
 </div>
 </div>
 
-<h3 id="qa-di" style="margin-top:1.5rem">DI patterns</h3>
+<h2 id="qa-di">Interview Q&amp;A — Dependency Injection</h2>
 
 <div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">DI &middot; scenario</div>
-    <div class="qq-text">You need a different <code>ThemeService</code> implementation on mobile vs desktop without <code>if</code> branching in every component. How?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">DI</span><span class="dt med">Medium</span></div>
+  <div class="qq-text">Explain the difference between providedIn: 'root', providedIn: 'any', component-level providers, and route-level providers. When would you choose each?</div></div>
+  <span class="qarr">▼</span>
 </div>
 <div class="qa-body">
-  <pre>// 1. Define an abstract class as the interface
-abstract class ThemeService { abstract theme: Signal&lt;string&gt;; }
+<h4>providedIn: 'root' — singleton across the whole application</h4>
+<p>The service is registered with the root environment injector. There is exactly one instance shared by every component, service, and guard in the app. It is also <strong>tree-shakeable</strong> — if nothing injects it, the bundler removes it.</p>
+<p>Use for: AuthService, UserStore, ThemeService, LoggingService — things that must be singleton and app-wide.</p>
+<pre>@Injectable({ providedIn: 'root' })
+export class AuthService { /* one instance, app-wide */ }</pre>
 
-// 2. Two implementations
-@Injectable() class MobileThemeService extends ThemeService { theme = signal('compact'); }
-@Injectable() class DesktopThemeService extends ThemeService { theme = signal('spacious'); }
+<h4>providedIn: 'any' — one instance per lazy boundary</h4>
+<p>Each lazy-loaded chunk (module or route) gets its own instance. Eagerly-loaded modules share one instance. Rarely used in modern Angular — route-level providers are more explicit and preferred.</p>
 
-// 3. Provide the correct one at the root
-// main.ts
-providers: [{
-  provide: ThemeService,
-  useClass: window.innerWidth &lt; 768 ? MobileThemeService : DesktopThemeService
-}]
+<h4>Component providers — one instance per component instance</h4>
+<p>Each component instance creates its own injector and its own service instance. When the component is destroyed, its service is destroyed too. Sibling components each get their own instance — they do not share state.</p>
+<p>Use for: form state services, wizard step services, autocomplete services where each component instance needs its own state.</p>
+<pre>@Component({
+  providers: [WizardStateService]  // each WizardComponent instance gets its own
+})
+export class WizardComponent { /* this.svc is exclusive to this instance */ }</pre>
 
-// 4. Components just inject the abstract class — zero branching
+<h4>Route-level providers (standalone) — scoped to route subtree lifetime</h4>
+<p>Services are shared by all components in the route subtree and destroyed when navigating away. This is the standalone equivalent of lazy module scoping.</p>
+<pre>// app.routes.ts
+{
+  path: 'checkout',
+  providers: [CheckoutSessionService],  // destroyed when leaving /checkout
+  loadChildren: () =&gt; import('./checkout/checkout.routes')
+}</pre>
+</div>
+</div>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">DI</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">You want a service to have different implementations based on environment (mock in tests, real in prod) without changing the consuming components. How do you implement this cleanly?</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>Solution: abstract class as the DI token + multiple implementations</h4>
+<p>Define an abstract class as the interface. Both real and mock implementations extend it. The DI token is the abstract class itself. Components inject the abstract class — they are never aware of which implementation is active.</p>
+<pre>// payment.service.ts — abstract class acts as token
+export abstract class PaymentService {
+  abstract charge(amount: number): Observable&lt;PaymentResult&gt;;
+  abstract refund(transactionId: string): Observable&lt;void&gt;;
+}
+
+// real-payment.service.ts
+@Injectable()
+export class StripePaymentService extends PaymentService {
+  charge(amount: number) { return this.http.post&lt;PaymentResult&gt;('/api/charge', { amount }); }
+  refund(id: string) { return this.http.post&lt;void&gt;(`/api/refund/${id}`, {}); }
+}
+
+// mock-payment.service.ts (for tests / dev)
+@Injectable()
+export class MockPaymentService extends PaymentService {
+  charge(amount: number) { return of({ success: true, transactionId: 'mock-123' }); }
+  refund(id: string) { return of(void 0); }
+}
+
+// main.ts (production)
+providers: [{ provide: PaymentService, useClass: StripePaymentService }]
+
+// test setup
+providers: [{ provide: PaymentService, useClass: MockPaymentService }]
+
+// component — no change needed, injects abstract class
 @Component({...})
-export class HeaderComponent {
-  private theme = inject(ThemeService);
-  currentTheme = this.theme.theme;  // Signal&lt;string&gt;
+export class CheckoutComponent {
+  private payments = inject(PaymentService);  // gets Stripe or Mock transparently
 }</pre>
-  <p>For runtime switching (user changes device orientation), use a single service with a <code>computed()</code> that derives theme from a device-size signal + user preference signal rather than two separate classes.</p>
 </div>
 </div>
 
 <div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">DI &middot; scenario</div>
-    <div class="qq-text">After migrating to standalone, your lazy routes no longer get their scoped services. The services that were provided in lazy-loaded modules are now available globally. How do you fix scoping?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">DI</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">A unit test breaks after migrating to inject() in field initializers with "inject() must be called from an injection context". How do you fix all test scenarios?</div></div>
+  <span class="qarr">▼</span>
 </div>
 <div class="qa-body">
-  <p><strong>Cause:</strong> Lazy-loaded modules created their own injector, scoping services to the module's lifetime. With standalone, there are no module injectors — all services default to the root injector unless you explicitly scope them.</p>
-  <pre>// Solution: Route-level providers array
-export const adminRoutes: Routes = [{
-  path: '',
-  // These providers are scoped to this route subtree
-  providers: [
-    AdminService,
-    AuditLogService,
-    { provide: AUTH_LEVEL, useValue: 'admin' }
-  ],
-  loadComponent: () => import('./admin-shell.component')
-    .then(m => m.AdminShellComponent),
-  children: [...]
-}];</pre>
-  <p>Services in <code>providers:</code> at route level live in the route's environment injector — scoped to the route subtree exactly like a lazy module used to scope them. They are destroyed when the user navigates away.</p>
-</div>
-</div>
+<h4>Why the error occurs</h4>
+<p>Field initializers with <code>inject()</code> execute during the class constructor, which is called by <code>TestBed.createComponent()</code>. All providers must be declared in <code>configureTestingModule()</code> <em>before</em> <code>createComponent()</code> is called. Missing providers cause the injection context error.</p>
 
-<h3 id="qa-perf" style="margin-top:1.5rem">Performance</h3>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Performance &middot; scenario</div>
-    <div class="qq-text">Your LCP is 4.2 seconds caused by a hero image. You are on Angular 16. Walk through the fix.</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <div class="steps">
-    <div class="step"><span class="step-n">1</span><div class="step-t">Add <code>NgOptimizedImage</code> to the component imports</div></div>
-    <div class="step"><span class="step-n">2</span><div class="step-t">Replace <code>&lt;img src="..."&gt;</code> with <code>&lt;img ngSrc="..." priority&gt;</code> — <code>priority</code> injects <code>&lt;link rel="preload"&gt;</code> in <code>&lt;head&gt;</code> automatically</div></div>
-    <div class="step"><span class="step-n">3</span><div class="step-t">Add explicit <code>width</code> and <code>height</code> to prevent CLS</div></div>
-    <div class="step"><span class="step-n">4</span><div class="step-t">Configure a CDN loader for automatic WebP/AVIF format and resize-on-demand</div></div>
-  </div>
-  <pre>// component
-@Component({ imports: [NgOptimizedImage], ... })
-
-// template
-&lt;img ngSrc="/hero.jpg" width="1200" height="600" priority
-     sizes="(max-width: 768px) 100vw, 1200px" /&gt;
-
-// providers
-provideImgixLoader('https://myapp.imgix.net')</pre>
-  <p>Also ensure the LCP image is not inside a <code>@defer</code> block or a lazy-loaded component — those are loaded later by definition.</p>
-</div>
-</div>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Performance &middot; scenario</div>
-    <div class="qq-text">A list component with 10,000 items causes noticeable scroll lag. <code>OnPush</code> is already applied. What else can you do?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <p><code>OnPush</code> skips change detection but still renders all 10,000 DOM nodes. The DOM itself is the bottleneck.</p>
-  <div class="steps">
-    <div class="step"><span class="step-n">1</span><div class="step-t"><strong>Virtual scrolling</strong> (CDK) — renders only visible rows, recycles DOM elements as user scrolls</div></div>
-    <div class="step"><span class="step-n">2</span><div class="step-t"><strong>Pagination or infinite scroll</strong> — limit the list size at source</div></div>
-    <div class="step"><span class="step-n">3</span><div class="step-t"><strong>track by unique ID in @for</strong> — ensures Angular reuses DOM elements on re-render rather than recreating them</div></div>
-    <div class="step"><span class="step-n">4</span><div class="step-t"><strong>Defer non-critical columns</strong> — use <code>@defer</code> on complex cell content (charts, avatars) inside list rows</div></div>
-  </div>
-  <pre>// CDK virtual scroll — renders only visible rows
-&lt;cdk-virtual-scroll-viewport itemSize="48" style="height: 600px"&gt;
-  &lt;div *cdkVirtualFor="let item of items; trackBy: trackId"&gt;
-    {{ item.name }}
-  &lt;/div&gt;
-&lt;/cdk-virtual-scroll-viewport&gt;</pre>
-</div>
-</div>
-
-<h3 id="qa-arch" style="margin-top:1.5rem">Architecture</h3>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Architecture &middot; scenario</div>
-    <div class="qq-text">You are migrating a large NgModule app to standalone. What is the safest path and what pitfalls should you watch for?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <p><strong>Leaf-first migration — automated by the Angular schematic:</strong></p>
-  <pre>ng generate @angular/core:standalone</pre>
-  <div class="steps">
-    <div class="step"><span class="step-n">1</span><div class="step-t">Run the schematic — it converts components leaf-first automatically</div></div>
-    <div class="step"><span class="step-n">2</span><div class="step-t">Validate each layer, commit, move up to parent components</div></div>
-    <div class="step"><span class="step-n">3</span><div class="step-t">Convert services last — <code>providedIn: 'root'</code> works with both NgModule and standalone</div></div>
-    <div class="step"><span class="step-n">4</span><div class="step-t">Replace <code>AppModule</code> with <code>bootstrapApplication()</code> once all feature modules are gone</div></div>
-  </div>
-  <p><strong>Key pitfalls:</strong></p>
-  <p>&bull; SharedModules that export many components must be broken into sets of standalone components imported individually (or via barrel exports).</p>
-  <p>&bull; <code>forRoot()</code> provider patterns must be converted to <code>provide*()</code> functions (e.g. <code>provideRouter()</code>, <code>provideHttpClient()</code>).</p>
-  <p>&bull; Lazy module providers must migrate to route-level <code>providers:</code> arrays.</p>
-</div>
-</div>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Architecture &middot; scenario</div>
-    <div class="qq-text">Your team debates whether to use NgRx, Akita, or signals + services for state management in 2024. What do you recommend and why?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <p><strong>Signals + services</strong> for most applications — less boilerplate, fully typed, Angular-native, zero additional dependency:</p>
-  <pre>// Signal service — replaces NgRx for most use cases
-@Injectable({ providedIn: 'root' })
-export class OrderStore {
-  private readonly _orders = signal&lt;Order[]&gt;([]);
-  readonly orders  = this._orders.asReadonly();
-  readonly pending = computed(() => this._orders().filter(o => o.status === 'pending'));
-  readonly count   = computed(() => this._orders().length);
-
-  loadOrders() { inject(OrderService).getAll$().subscribe(o => this._orders.set(o)); }
-}</pre>
-  <p><strong>Add NgRx when:</strong> Redux DevTools time-travel is required, mutations arrive from many disconnected sources that need a strict action audit trail, or team conventions already rely on it.</p>
-  <p><strong>NgRx SignalStore</strong> (NgRx 17+) bridges both worlds — signals under the hood, NgRx architecture on top. A strong choice for teams already invested in NgRx.</p>
-  <p><strong>Avoid Akita/NGXS</strong> in new projects — they are not actively aligned with Angular's signal direction.</p>
-</div>
-</div>
-
-<h3 id="qa-testing" style="margin-top:1.5rem">Testing</h3>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Testing &middot; scenario</div>
-    <div class="qq-text">A component uses <code>inject()</code> in field initializers instead of constructor injection. Your existing test setup breaks with "inject() must be called from an injection context". How do you fix it?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <p><code>inject()</code> in field initializers runs during <code>TestBed.createComponent()</code>. All dependencies must be provided in <code>configureTestingModule</code> before that call.</p>
-  <pre>describe('UserComponent', () => {
+<h4>Fix 1: Standalone component test</h4>
+<pre>describe('UserComponent', () =&gt; {
   let httpSpy: jasmine.SpyObj&lt;HttpClient&gt;;
 
-  beforeEach(async () => {
+  beforeEach(async () =&gt; {
     httpSpy = jasmine.createSpyObj('HttpClient', ['get']);
     httpSpy.get.and.returnValue(of([]));
 
     await TestBed.configureTestingModule({
-      imports: [UserComponent],         // standalone — import the component
+      imports: [UserComponent],       // standalone: import not declare
       providers: [
         { provide: HttpClient, useValue: httpSpy },
-        { provide: Router, useValue: { navigate: jasmine.createSpy() } }
+        { provide: Router,     useValue: { navigate: jasmine.createSpy('navigate') } },
+        { provide: APP_CONFIG, useValue: { apiUrl: 'http://test.com', maxRetries: 1 } }
       ]
     }).compileComponents();
   });
 
-  it('should create', () => {
+  it('should create', () =&gt; {
     const fixture = TestBed.createComponent(UserComponent);
     expect(fixture.componentInstance).toBeTruthy();
   });
-});
+});</pre>
 
-// Testing signal stores in isolation — no TestBed needed
-it('adds item to cart', () => {
-  TestBed.runInInjectionContext(() => {
+<h4>Fix 2: Test a signal service in isolation</h4>
+<pre>it('CartStore: adds and removes items', () =&gt; {
+  TestBed.runInInjectionContext(() =&gt; {
     const store = new CartStore();
-    store.add({ id: '1', name: 'Book', price: 15 });
-    expect(store.count()).toBe(1);
-    expect(store.total()).toBe(15);
+
+    store.add({ id: '1', name: 'Book', price: 15, qty: 2 });
+    expect(store.itemCount()).toBe(1);
+    expect(store.total()).toBe(30);
+
+    store.remove('1');
+    expect(store.itemCount()).toBe(0);
+    expect(store.total()).toBe(0);
+  });
+});</pre>
+
+<h4>Fix 3: Testing components that use toSignal()</h4>
+<pre>describe('UserListComponent', () =&gt; {
+  const mockUsers: User[] = [
+    { id: '1', name: 'Alice', role: 'admin' },
+    { id: '2', name: 'Bob',   role: 'user'  }
+  ];
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      imports: [UserListComponent],
+      providers: [{
+        provide: UserService,
+        useValue: { getAll$: () =&gt; of(mockUsers) }
+      }]
+    }).compileComponents();
+  });
+
+  it('filters admins correctly', () =&gt; {
+    const fixture = TestBed.createComponent(UserListComponent);
+    fixture.detectChanges();
+    const comp = fixture.componentInstance;
+    expect(comp.adminCount()).toBe(1);
   });
 });</pre>
 </div>
 </div>
 
-<h3 id="qa-forms" style="margin-top:1.5rem">Forms</h3>
+<h2 id="qa-standalone">Interview Q&amp;A — Standalone Architecture</h2>
 
 <div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Forms &middot; scenario</div>
-    <div class="qq-text">Step 2 validators in a multi-step form need to read step 1 values (e.g. VAT required if EU country selected). How do you architect cross-step validation cleanly?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Standalone</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">You are upgrading an Angular 12 app (NgModule-based) to Angular 17 with standalone. Walk through your migration strategy, decisions, and pitfalls.</div></div>
+  <span class="qarr">▼</span>
 </div>
 <div class="qa-body">
-  <p>Place the cross-field validator on the parent <code>FormGroup</code> rather than individual controls — it always has access to sibling values:</p>
-  <pre>const checkoutForm = new FormGroup({
-  billing:  new FormGroup({ country: new FormControl('', Validators.required) }),
-  business: new FormGroup({ vatId:   new FormControl('') })
-}, { validators: [vatRequiredForEU] });
+<h4>Step 1: upgrade Angular version by version</h4>
+<p>Never jump from Angular 12 to 17 in one step. Angular provides migration schematics and breaking change lists for each major version. Each version upgrade is: <code>ng update @angular/core@13 @angular/cli@13</code>, fix issues, test, commit, repeat up to v17.</p>
 
-function vatRequiredForEU(group: AbstractControl): ValidationErrors | null {
-  const country = group.get('billing.country')?.value;
-  const vatId   = group.get('business.vatId')?.value;
-  const euCountries = ['DE', 'FR', 'NL', 'ES', 'IT'];
-  if (euCountries.includes(country) &amp;&amp; !vatId?.trim()) {
-    return { vatRequired: { country } };
-  }
-  return null;
-}
+<h4>Step 2: run the standalone migration schematic</h4>
+<pre>ng generate @angular/core:standalone</pre>
+<p>This runs in three modes (pass <code>--mode</code>):</p>
+<ul>
+  <li><code>convert-to-standalone</code>: adds <code>standalone: true</code> to all components and moves imports into the component</li>
+  <li><code>prune-ng-modules</code>: removes NgModule files that have become empty</li>
+  <li><code>standalone-bootstrap</code>: switches <code>main.ts</code> to use <code>bootstrapApplication()</code></li>
+</ul>
+<p>Run them in order. Compile and test after each pass.</p>
 
-// In template — show error from parent group
-@if (checkoutForm.errors?.['vatRequired']) {
-  &lt;p class="error"&gt;VAT ID required for EU businesses&lt;/p&gt;
+<h4>Step 3: handle SharedModule</h4>
+<p>SharedModule is the biggest challenge. It typically exports dozens of components. After conversion, each component needs to import from the SharedModule directly. Two strategies:</p>
+<ul>
+  <li><strong>Barrel export</strong>: keep SharedModule temporarily as a compatibility shim that re-exports all standalone components. Components import from it. Then gradually replace with direct imports.</li>
+  <li><strong>Direct import</strong>: import each shared component individually where needed. More verbose initially but fully tree-shakeable.</li>
+</ul>
+
+<h4>Common pitfalls</h4>
+<ul>
+  <li><strong>forRoot() providers</strong>: libraries using <code>MyLib.forRoot()</code> must be replaced with their <code>provide*()</code> function equivalent or added to <code>bootstrapApplication()</code>'s providers array.</li>
+  <li><strong>Lazy module providers</strong>: services <code>providedIn</code> a lazy module must move to route-level <code>providers:</code> arrays in app.routes.ts.</li>
+  <li><strong>TestBed</strong>: all component tests must change from <code>declarations: [MyComp]</code> to <code>imports: [MyComp]</code>.</li>
+  <li><strong>CommonModule</strong>: standalone components include NgIf/NgFor by default via CommonModule in the imports array, but in v17+ you can use the new <code>@if</code>/<code>@for</code> syntax with no import needed.</li>
+</ul>
+</div>
+</div>
+
+<h2 id="qa-perf">Interview Q&amp;A — Performance</h2>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Performance</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">Your Angular app has a 10,000 row table. Users report scroll lag. OnPush is applied. What else do you do?</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>Why OnPush alone is not enough</h4>
+<p>OnPush reduces unnecessary change detection but does NOT reduce the number of DOM nodes. 10,000 <code>&lt;tr&gt;</code> elements still exist in the DOM — layout, paint, and scroll events are still slow because the browser must manage all of them.</p>
+
+<h4>Solution 1: CDK Virtual Scroll (renders only visible rows)</h4>
+<pre>// app.component.ts
+imports: [ScrollingModule]
+
+// template
+&lt;cdk-virtual-scroll-viewport itemSize="48" style="height: 600px; overflow-y: auto;"&gt;
+  &lt;table&gt;
+    &lt;tr *cdkVirtualFor="let row of rows; trackBy: trackById"&gt;
+      &lt;td&gt;{{ row.name }}&lt;/td&gt;
+      &lt;td&gt;{{ row.value }}&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/cdk-virtual-scroll-viewport&gt;
+// Only ~20 rows are in the DOM at any time — rest are virtualised</pre>
+
+<h4>Solution 2: @defer inside rows for complex cells</h4>
+<pre>@for (row of rows; track row.id) {
+  &lt;tr&gt;
+    &lt;td&gt;{{ row.name }}&lt;/td&gt;
+    &lt;td&gt;
+      @defer (on viewport) {
+        &lt;complex-cell [data]="row.chartData" /&gt;  &lt;!-- only renders when visible --&gt;
+      } @placeholder { &lt;span&gt;...&lt;/span&gt; }
+    &lt;/td&gt;
+  &lt;/tr&gt;
 }</pre>
-  <p>For async validation (e.g. validate VAT ID against an API), move the logic into a service that returns an Observable, inject it inside the validator factory using <code>inject()</code>, and return <code>asyncValidators</code> instead.</p>
+
+<h4>Solution 3: server-side pagination / infinite scroll</h4>
+<p>Load only 50 rows at a time. When user scrolls to the bottom, append the next page. Never load all 10,000 rows into the browser — the server query should also paginate.</p>
+
+<h4>Solution 4: ensure track uses a unique ID, not $index</h4>
+<p>If <code>track $index</code> is used, Angular destroys and recreates every DOM row when the data changes. With <code>track row.id</code>, Angular reuses DOM elements — only actually changed cells are updated.</p>
 </div>
 </div>
 
-<h3 id="qa-rxjs" style="margin-top:1.5rem">RxJS vs signals</h3>
+<h2 id="qa-scenario">Interview Q&amp;A — Scenario-based</h2>
 
 <div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">RxJS vs signals &middot; scenario</div>
-    <div class="qq-text">When should you keep RxJS in an Angular 17+ codebase versus converting to signals? Where is each appropriate?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Scenario</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">After an Angular 17 SSR deployment, users report a hydration error: "NG0500: NodeInjector: NOT_FOUND". A date picker component is causing it. Walk through diagnosing and fixing this.</div></div>
+  <span class="qarr">▼</span>
 </div>
 <div class="qa-body">
-  <pre>// Keep RxJS for:
-// - HTTP with cancellation
-readonly user$ = this.routeId$.pipe(switchMap(id => this.http.get(`/user/${id}`)));
+<h4>What NG0500 means</h4>
+<p>This error indicates Angular's hydration process cannot match the server-rendered DOM to what the client would produce on first render. During hydration, Angular walks the server DOM and the component tree in sync, applying event listeners and bindings. If a node is missing or in a different position (mismatch), the walk fails.</p>
 
-// - Complex coordination
-readonly dashboard$ = combineLatest([this.user$, this.permissions$]).pipe(
-  debounceTime(10), map(([u, p]) => buildDashboard(u, p))
-);
+<h4>Why date pickers cause mismatches</h4>
+<ul>
+  <li><code>new Date()</code> returns a different value on the server (SSR time) and on the client (user's local timezone/clock)</li>
+  <li>Browser-only APIs accessed during render (<code>window</code>, <code>localStorage</code>, <code>navigator</code>) throw on the server</li>
+  <li>Random IDs generated at render time (<code>Math.random()</code>) produce different values</li>
+</ul>
 
-// - WebSocket streams
-readonly messages$ = this.ws.connect('/chat').pipe(retry({ delay: 2000 }));
+<h4>Diagnosis steps</h4>
+<pre>// 1. Enable debug hydration overlay in development
+import { withDebugInfo } from '@angular/core';
 
-// Use signals for:
-// - Local component state
-selectedTab = signal&lt;'overview' | 'details'&gt;('overview');
-
-// - Derived/computed values (replaces BehaviorSubject patterns)
-isLoading   = signal(false);
-errorMsg    = signal&lt;string | null&gt;(null);
-displayName = computed(() => `${this.firstName()} ${this.lastName()}`);
-
-// - @Input data flows — signal inputs natively
-title = input.required&lt;string&gt;();
-
-// Bridge when needed
-readonly user = toSignal(this.user$, { initialValue: null });
-readonly routeId$ = toObservable(this.routeIdSignal);</pre>
-</div>
-</div>
-
-<h3 id="qa-ssr" style="margin-top:1.5rem">SSR &amp; hydration</h3>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">SSR &middot; scenario</div>
-    <div class="qq-text">After enabling SSR in Angular 17, a date picker causes a hydration mismatch error: "Node not found". What is the cause and how do you fix it?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <p><strong>Cause:</strong> Hydration mismatches occur when the server-rendered DOM differs from what the client renders on first paint. Common culprits for date pickers:</p>
-  <p>&bull; <code>new Date()</code> called inline — different value on server (build time) vs client (user's local time)</p>
-  <p>&bull; <code>localStorage</code> / <code>window</code> accessed during server render — throws <code>ReferenceError</code></p>
-  <p>&bull; Random IDs generated fresh each render</p>
-  <pre>// Fix 1: Platform guard — skip browser-only UI during SSR
-export class DatePickerComponent {
-  private platform = inject(PLATFORM_ID);
-  readonly isBrowser = isPlatformBrowser(this.platform);
-}
-// template: @if (isBrowser) { &lt;date-picker /&gt; }
-
-// Fix 2: Stabilise via TransferState — share value server → client
-import { TransferState, makeStateKey } from '@angular/core';
-const TODAY_KEY = makeStateKey&lt;string&gt;('today');
-
-export class AppComponent {
-  private ts = inject(TransferState);
-  readonly today = this.ts.get(TODAY_KEY, null) ??
-    (() => { const d = new Date().toISOString(); this.ts.set(TODAY_KEY, d); return d; })();
-}
-
-// Fix 3: Last resort — skip hydration for this component only
-&lt;date-picker ngSkipHydration /&gt;</pre>
-</div>
-</div>
-
-<h3 id="qa-router" style="margin-top:1.5rem">Router</h3>
-
-<div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Router &middot; scenario</div>
-    <div class="qq-text">You want route params automatically bound to component inputs without writing <code>ActivatedRoute</code> subscriptions. How?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
-</div>
-<div class="qa-body">
-  <pre>// 1. Enable withComponentInputBinding() in providers
 bootstrapApplication(AppComponent, {
-  providers: [
-    provideRouter(routes, withComponentInputBinding())
-  ]
-});
+  providers: [provideClientHydration(withDebugInfo())]
+})
+// This highlights mismatched nodes in the browser DevTools</pre>
 
-// 2. Route definition
-{ path: 'user/:id', component: UserDetailComponent }
+<h4>Fix 1: isPlatformBrowser guard</h4>
+<pre>@Component({
+  standalone: true,
+  template: `
+    @if (isBrowser) {
+      &lt;date-picker [(ngModel)]="selectedDate" /&gt;
+    }
+  `
+})
+export class BookingComponent {
+  private platform = inject(PLATFORM_ID);
+  isBrowser = isPlatformBrowser(this.platform);
+  selectedDate = new Date().toISOString().split('T')[0];
+}</pre>
 
-// 3. Component — params bound automatically to matching inputs
-@Component({ standalone: true, ... })
-export class UserDetailComponent {
-  // :id param bound as string automatically
-  id  = input.required&lt;string&gt;();
-  // ?tab= query param bound automatically
-  tab = input('overview');
-  // Resolved route data also bound
-  profile = input&lt;UserProfile | null&gt;(null);
+<h4>Fix 2: TransferState for date consistency</h4>
+<pre>const RENDER_DATE_KEY = makeStateKey&lt;string&gt;('renderDate');
 
-  // Derive from bound signal
-  user$ = toObservable(this.id).pipe(
-    switchMap(id => this.userService.getUser$(id))
+@Component({ standalone: true })
+export class BookingComponent {
+  private ts = inject(TransferState);
+
+  // Server sets, client reads — same value, no mismatch
+  renderDate = this.ts.get(RENDER_DATE_KEY, null) ??
+    (() =&gt; {
+      const d = new Date().toISOString().split('T')[0];
+      this.ts.set(RENDER_DATE_KEY, d);
+      return d;
+    })();
+}</pre>
+
+<h4>Fix 3: ngSkipHydration (last resort)</h4>
+<pre>&lt;date-picker ngSkipHydration [(ngModel)]="date" /&gt;
+&lt;!-- Angular skips reconciliation for this subtree --&gt;
+&lt;!-- Use sparingly — forfeits the performance benefit of hydration --&gt;</pre>
+</div>
+</div>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Scenario</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">Your product team wants a search-as-you-type feature. As the user types, results should update but NOT send an HTTP request on every keystroke. The results must cancel in-flight requests when a new query supersedes the old one. Implement this cleanly with Angular 17+ patterns.</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>The design</h4>
+<p>Signals own the local UI state (search term, loading flag). RxJS handles the async coordination (debounce, cancellation with switchMap). <code>toSignal()</code> bridges RxJS output back to a Signal for clean template binding. No manual subscription management needed.</p>
+<pre>// search.component.ts
+import { Component, signal, inject } from '@angular/core';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
+import { debounceTime, distinctUntilChanged, switchMap, tap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+
+@Component({
+  standalone: true,
+  template: `
+    &lt;input
+      [value]="searchTerm()"
+      (input)="searchTerm.set($any($event.target).value)"
+      placeholder="Search products..."
+    /&gt;
+
+    @if (isLoading()) { &lt;loading-spinner /&gt; }
+
+    @if (error()) {
+      &lt;p class="error"&gt;{{ error() }}&lt;/p&gt;
+    }
+
+    @for (result of results(); track result.id) {
+      &lt;product-card [product]="result" /&gt;
+    } @empty {
+      @if (!isLoading()) { &lt;p&gt;No results found.&lt;/p&gt; }
+    }
+  `
+})
+export class SearchComponent {
+  private searchService = inject(SearchService);
+
+  searchTerm = signal('');
+  isLoading  = signal(false);
+  error      = signal&lt;string | null&gt;(null);
+
+  results = toSignal(
+    toObservable(this.searchTerm).pipe(   // signal → observable
+      debounceTime(300),                  // wait 300ms after last keystroke
+      distinctUntilChanged(),             // skip if same as previous
+      tap(() =&gt; {
+        this.isLoading.set(true);
+        this.error.set(null);
+      }),
+      switchMap(term =&gt;                   // cancel previous in-flight request
+        term.trim()
+          ? this.searchService.search(term).pipe(
+              tap(() =&gt; this.isLoading.set(false)),
+              catchError(err =&gt; {
+                this.error.set('Search failed. Please try again.');
+                this.isLoading.set(false);
+                return of([]);
+              })
+            )
+          : of([]).pipe(tap(() =&gt; this.isLoading.set(false)))
+      )
+    ),
+    { initialValue: [] }
   );
 }</pre>
-  <p>No <code>ActivatedRoute</code>, no <code>paramMap.pipe(map(...))</code>, no unsubscription needed. The router manages binding lifecycle automatically.</p>
 </div>
 </div>
 
 <div class="qa">
-<div class="qq" onclick="toggle(this)">
-  <div class="qq-inner">
-    <div class="qq-tag">Router &middot; scenario</div>
-    <div class="qq-text">You need a route guard that injects a service and redirects based on a signal. How do you write a functional guard in Angular 15+?</div>
-  </div>
-  <span class="qq-arrow">&#9660;</span>
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">Scenario</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">You are building a multi-step checkout form (5 steps). Step 3 validators depend on step 1 values (e.g. business account requires VAT ID). How do you architect the reactive form and cross-step validation?</div></div>
+  <span class="qarr">▼</span>
 </div>
 <div class="qa-body">
-  <pre>// Functional guard (v15+) — uses inject() internally
-export const authGuard: CanActivateFn = (route, state) => {
-  const auth   = inject(AuthService);
-  const router = inject(Router);
+<h4>Architecture decision: one FormGroup with nested groups per step</h4>
+<p>Using one root <code>FormGroup</code> with nested step groups means cross-step validators have access to all values through the parent group. Each step component receives a slice of the form via a <code>FormGroup</code> input — it does not own the whole form.</p>
+<pre>// checkout.service.ts — owns the form
+@Injectable()
+export class CheckoutFormService {
+  form = new FormGroup({
+    step1: new FormGroup({
+      accountType: new FormControl&lt;'personal' | 'business'&gt;('personal', Validators.required),
+      email: new FormControl('', [Validators.required, Validators.email])
+    }),
+    step2: new FormGroup({
+      address: new FormControl('', Validators.required),
+      city:    new FormControl('', Validators.required)
+    }),
+    step3: new FormGroup({
+      vatId: new FormControl('')    // required only if accountType === 'business'
+    }),
+    step4: new FormGroup({ payment: new FormControl('', Validators.required) }),
+    step5: new FormGroup({ confirm: new FormControl(false, Validators.requiredTrue) })
+  },
+  // Cross-step validator lives on the root group — has access to all steps
+  { validators: [this.vatValidator()] });
 
-  // Read signal value inside guard
-  if (auth.isAuthenticated()) {
-    return true;
+  private vatValidator(): ValidatorFn {
+    return (root: AbstractControl): ValidationErrors | null =&gt; {
+      const type  = root.get('step1.accountType')?.value;
+      const vatId = root.get('step3.vatId')?.value;
+      if (type === 'business' &amp;&amp; !vatId?.trim()) {
+        return { vatRequired: { message: 'VAT ID is required for business accounts.' } };
+      }
+      return null;
+    };
   }
-  // Redirect with return URL
-  return router.createUrlTree(['/login'], {
-    queryParams: { returnUrl: state.url }
-  });
-};
+}
 
-// Register on route
-{ path: 'dashboard', canActivate: [authGuard], ... }
+// step3.component.ts — receives only step3's FormGroup
+@Component({ standalone: true })
+export class Step3Component {
+  stepForm = input.required&lt;FormGroup&gt;();  // passed from parent
 
-// Resolve guard — also functional
-export const userResolver: ResolveFn&lt;User&gt; = (route) => {
-  const id = route.paramMap.get('id')!;
-  return inject(UserService).getUser$(id);
-};</pre>
+  showVatError = computed(() =&gt;
+    this.stepForm().root.errors?.['vatRequired'] &amp;&amp;
+    this.stepForm().get('vatId')?.touched
+  );
+}
+
+// template step3
+&lt;form [formGroup]="stepForm()"&gt;
+  &lt;input formControlName="vatId" placeholder="VAT ID" /&gt;
+  @if (showVatError()) {
+    &lt;p class="error"&gt;{{ stepForm().root.errors?.['vatRequired']?.message }}&lt;/p&gt;
+  }
+&lt;/form&gt;</pre>
 </div>
 </div>
 
-<div style="margin:2.5rem 0 1rem;border-top:1px solid var(--border);padding-top:1.5rem">
-  <p style="font-size:13px;color:var(--faint)">Angular 16–18 &middot; Senior-level reference &middot; All code uses strict TypeScript</p>
-  <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem">
-    <a class="cta" href="https://angular.dev/guide/signals" target="_blank">Official signals docs ↗</a>
-    <a class="cta" href="https://angular.dev/guide/standalone-components" target="_blank">Standalone guide ↗</a>
-    <a class="cta" href="https://angular.dev/guide/defer" target="_blank">@defer reference ↗</a>
-    <a class="cta" href="https://ngrx.io/guide/signals" target="_blank">NgRx SignalStore ↗</a>
-  </div>
+<h2 id="qa-rxjs">Interview Q&amp;A — RxJS vs Signals</h2>
+
+<div class="qa">
+<div class="qq" onclick="t(this)">
+  <div class="qq-in"><div class="meta"><span class="ttag">RxJS vs Signals</span><span class="dt hard">Hard</span></div>
+  <div class="qq-text">With Signals in Angular 17+, is RxJS obsolete? Give a comprehensive answer covering where each belongs.</div></div>
+  <span class="qarr">▼</span>
+</div>
+<div class="qa-body">
+<h4>Short answer: No, RxJS is not obsolete</h4>
+<p>Signals and RxJS solve fundamentally different problems. The Angular team has explicitly stated they do not plan to remove RxJS. The two are designed to work together via <code>toSignal()</code> and <code>toObservable()</code>.</p>
+
+<h4>Keep using RxJS for:</h4>
+<ul>
+  <li><strong>HTTP with cancellation</strong>: <code>switchMap</code> auto-cancels the previous in-flight request when a new value arrives. Signals have no equivalent for this pattern.</li>
+  <li><strong>Debounce / throttle</strong>: <code>debounceTime(300)</code>, <code>throttleTime(1000)</code> for search-as-you-type, scroll handlers, button anti-double-click.</li>
+  <li><strong>Complex stream coordination</strong>: <code>combineLatest([a$, b$])</code>, <code>forkJoin([req1$, req2$])</code>, <code>withLatestFrom(store$)</code>.</li>
+  <li><strong>Retry logic</strong>: <code>retry({ count: 3, delay: 1000 })</code>, exponential backoff with <code>retryWhen</code>.</li>
+  <li><strong>WebSocket streams</strong>: long-lived multi-value streams over time.</li>
+  <li><strong>Error recovery pipelines</strong>: <code>catchError(() =&gt; of(fallback))</code>, <code>onErrorResumeNext</code>.</li>
+</ul>
+
+<h4>Replace with Signals:</h4>
+<ul>
+  <li>Local component state (toggles, tabs, loading flags, form values) — previously <code>BehaviorSubject</code></li>
+  <li>Derived values — previously <code>combineLatest + map + distinctUntilChanged</code>, now <code>computed()</code></li>
+  <li><code>@Input()</code> bindings — now signal inputs</li>
+  <li>Store patterns without async coordination — plain signal services</li>
+  <li>Template binding — previously <code>| async</code> pipe, now signals read directly</li>
+</ul>
+
+<h4>The canonical bridge pattern</h4>
+<pre>export class UserDashboardComponent {
+  // 1. Signal for local state
+  userId  = signal&lt;string | null&gt;(null);
+  loading = signal(false);
+
+  // 2. RxJS pipeline for async coordination + cancellation
+  private user$ = toObservable(this.userId).pipe(       // signal → RxJS
+    filter(id =&gt; !!id),
+    tap(() =&gt; this.loading.set(true)),
+    switchMap(id =&gt; this.userService.get$(id!)),        // cancels prev request
+    tap(() =&gt; this.loading.set(false)),
+    catchError(() =&gt; { this.loading.set(false); return of(null); })
+  );
+
+  // 3. Signal for template — no async pipe needed
+  user = toSignal(this.user$, { initialValue: null });  // RxJS → Signal
+
+  // 4. computed() for derived UI state
+  displayName = computed(() =&gt; this.user()?.name?.toUpperCase() ?? 'Guest');
+}</pre>
+<p>This pattern gives you the best of both worlds: ergonomic signals in templates, full RxJS power for async coordination.</p>
+</div>
 </div>
 
+
+<hr>
+<p style="font-size:13px;color:var(--faint);text-align:center;margin:2rem 0 1rem">Angular 16 · 17 · 18 &nbsp;·&nbsp; All code examples use strict TypeScript &nbsp;·&nbsp; Based on official Angular documentation and community best practices &nbsp;·&nbsp; Updated 2024</p>
 </main>
 </div>
 
 <script>
-function toggle(el) {
-  const body = el.nextElementSibling;
-  const arrow = el.querySelector('.qq-arrow');
-  const isOpen = body.classList.contains('open');
+function t(el) {
+  const body  = el.nextElementSibling;
+  const arrow = el.querySelector('.qarr');
+  const open  = body.classList.contains('open');
   document.querySelectorAll('.qa-body.open').forEach(b => {
     b.classList.remove('open');
-    b.previousElementSibling.querySelector('.qq-arrow').style.transform = '';
+    b.previousElementSibling.querySelector('.qarr').style.transform = '';
   });
-  if (!isOpen) {
+  if (!open) {
     body.classList.add('open');
     arrow.style.transform = 'rotate(180deg)';
   }
