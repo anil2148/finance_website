@@ -38,8 +38,8 @@ export function HomepageLayout() {
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
           <div className="relative space-y-4">
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">FinanceSphere</p>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Finance tools built for real decisions, not generic estimates</h1>
-            <p className="max-w-xl text-blue-100/95">FinanceSphere helps households, first-time buyers, and long-term savers test trade-offs before they commit to a mortgage, debt strategy, or investing plan.</p>
+            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Finance tools for home, debt, savings, and investing decisions</h1>
+            <p className="max-w-xl text-blue-100/95">FinanceSphere helps households, first-time buyers, and long-term savers compare trade-offs before committing to a mortgage, debt plan, or investing strategy.</p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">Explore calculators</Link>
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/blog">Read money guides</Link>
@@ -47,7 +47,7 @@ export function HomepageLayout() {
           </div>
           <div className="relative rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
             <h2 className="text-xl font-semibold">What you can do today</h2>
-            <p className="mt-2 text-sm text-cyan-100">Use calculators for home buying, retirement planning, debt reduction, and savings targets so your next financial step is based on numbers you understand.</p>
+            <p className="mt-2 text-sm text-cyan-100">Use focused calculators to estimate payments, compare timelines, and test how one change today affects your long-term plan.</p>
           </div>
         </div>
       </Card>
@@ -81,7 +81,7 @@ export function HomepageLayout() {
 
       <Card className="border-slate-200/90 bg-white/90">
         <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900"><ArrowTrendingUpIcon className="h-5 w-5 text-blue-700" /> Decide with confidence</h3>
-        <p className="text-sm leading-6 text-slate-700">FinanceSphere is designed to help you compare outcomes quickly: how much interest you can avoid, how fast savings can grow, and what each choice costs over time.</p>
+        <p className="text-sm leading-6 text-slate-700">FinanceSphere brings your key numbers into one workflow so you can compare options, spot trade-offs early, and move forward with a plan you can explain.</p>
       </Card>
 
       <NewsletterForm source="homepage" />
