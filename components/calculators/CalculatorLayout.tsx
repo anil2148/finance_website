@@ -60,7 +60,7 @@ const guideMessageBySlug: Record<string, { title: string; body: string }> = {
   }
 };
 
-const fieldMeta: Array<{ key: keyof BaseCalculatorInputs; label: string; tooltip: string; min: number; max: number; step?: number; prefix?: string; suffix?: string }> = [
+const defaultFieldMeta: Array<{ key: keyof BaseCalculatorInputs; label: string; tooltip: string; min: number; max: number; step?: number; prefix?: string; suffix?: string }> = [
   { key: 'loanAmount', label: 'Loan Amount / Starting Balance', tooltip: 'Starting principal, debt, or investment amount.', min: 1000, max: 2000000, step: 500, prefix: '$' },
   { key: 'interestRate', label: 'Interest Rate', tooltip: 'APR for loans or liabilities.', min: 0, max: 35, step: 0.1, suffix: '%' },
   { key: 'monthlyContribution', label: 'Monthly Contribution', tooltip: 'Extra monthly payment or investment contribution.', min: 0, max: 25000, step: 25, prefix: '$' },
@@ -68,6 +68,28 @@ const fieldMeta: Array<{ key: keyof BaseCalculatorInputs; label: string; tooltip
   { key: 'inflationRate', label: 'Inflation Rate', tooltip: 'Expected annual inflation for purchasing power adjustment.', min: 0, max: 10, step: 0.1, suffix: '%' },
   { key: 'expectedReturn', label: 'Expected Return', tooltip: 'Projected annual investment return.', min: 0, max: 20, step: 0.1, suffix: '%' }
 ];
+
+const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculatorInputs, { label: string; tooltip: string }>>> = {
+  'mortgage-calculator': {
+    loanAmount: { label: 'Mortgage Principal', tooltip: 'Amount financed after down payment and closing-credit adjustments.' },
+    interestRate: { label: 'Mortgage APR', tooltip: 'Annual mortgage interest rate used to calculate principal-and-interest payments.' },
+    monthlyContribution: { label: 'Extra Monthly Principal', tooltip: 'Additional principal paid each month to reduce payoff time and interest.' },
+    years: { label: 'Loan Term', tooltip: 'Length of the mortgage repayment period in years.' }
+  },
+  'salary-after-tax-calculator': {
+    loanAmount: { label: 'Gross Annual Salary', tooltip: 'Your yearly income before taxes and payroll deductions.' },
+    interestRate: { label: 'Effective Tax Rate', tooltip: 'Estimated blended tax rate used to calculate annual and monthly take-home pay.' },
+    inflationRate: { label: 'Inflation Assumption', tooltip: 'Expected inflation used to estimate the purchasing power of take-home income.' }
+  },
+  'debt-payoff-calculator': {
+    loanAmount: { label: 'Current Debt Balance', tooltip: 'Outstanding debt principal you want to repay.' },
+    monthlyContribution: { label: 'Extra Debt Payment', tooltip: 'Additional amount paid each month above minimum requirements.' }
+  },
+  'savings-goal-calculator': {
+    loanAmount: { label: 'Current Savings', tooltip: 'Money already saved toward your target goal.' },
+    monthlyContribution: { label: 'Monthly Savings', tooltip: 'Amount you plan to save each month toward your goal.' }
+  }
+};
 
 export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
@@ -90,6 +112,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     title: 'First-time walkthrough',
     body: 'Adjust sliders on the left, review summary cards, and then save or export your result below.'
   };
+  const fieldMeta = useMemo(
+    () => defaultFieldMeta.map((field) => ({ ...field, ...(fieldMetaOverridesBySlug[slug]?.[field.key] ?? {}) })),
+    [slug]
+  );
 
   useEffect(() => {
     const hasSeenGuide = window.localStorage.getItem(`calculator-guide-${slug}`);
@@ -249,4 +275,3 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     </section>
   );
 }
-
