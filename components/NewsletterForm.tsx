@@ -1,6 +1,6 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useMemo, useState } from 'react';
 
 type NewsletterFormProps = {
   className?: string;
@@ -9,10 +9,30 @@ type NewsletterFormProps = {
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function NewsletterForm({ className }: NewsletterFormProps) {
+const copyBySource: Record<string, { title: string; description: string; button: string }> = {
+  homepage: {
+    title: 'Get weekly planning ideas',
+    description: 'Receive one short email each week with practical calculator use-cases for debt, savings, and long-term planning.',
+    button: 'Send weekly ideas'
+  },
+  blog: {
+    title: 'Get new guides in your inbox',
+    description: 'Get updates when we publish practical explainers on mortgages, credit cards, saving, and investing basics.',
+    button: 'Send blog updates'
+  }
+};
+
+const defaultCopy = {
+  title: 'Subscribe to the newsletter',
+  description: 'Get one concise weekly email with calculator walkthroughs, rate-watch insights, and actionable money moves.',
+  button: 'Subscribe'
+};
+
+export function NewsletterForm({ className, source }: NewsletterFormProps) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const copy = useMemo(() => (source ? copyBySource[source] ?? defaultCopy : defaultCopy), [source]);
 
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,9 +73,9 @@ export function NewsletterForm({ className }: NewsletterFormProps) {
   };
 
   return (
-    <form onSubmit={submit} className={`card space-y-3 ${className ?? ""}`}>
-      <h3 className="text-lg font-semibold">Subscribe to the newsletter</h3>
-      <p className="text-sm text-slate-600">Get one concise weekly email with calculator walkthroughs, rate-watch insights, and actionable money moves.</p>
+    <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`}>
+      <h3 className="text-lg font-semibold">{copy.title}</h3>
+      <p className="text-sm text-slate-600">{copy.description}</p>
       <input
         className="input"
         type="email"
@@ -67,7 +87,7 @@ export function NewsletterForm({ className }: NewsletterFormProps) {
         aria-label="Email address"
       />
       <button className="btn-primary disabled:opacity-70" type="submit" disabled={status === 'loading'}>
-        {status === 'loading' ? 'Submitting...' : 'Subscribe'}
+        {status === 'loading' ? 'Submitting...' : copy.button}
       </button>
       {message ? (
         <p className={status === 'success' ? 'alert-success' : 'text-sm text-red-600'} role="status" aria-live="polite">
