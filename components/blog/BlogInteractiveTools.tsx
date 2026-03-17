@@ -22,7 +22,7 @@ export function CreditScoreImpactSimulator() {
       <input className="input" type="number" value={score} onChange={(e) => setScore(Number(e.target.value))} placeholder="Current credit score" />
       <input className="input" type="number" value={utilization} onChange={(e) => setUtilization(Number(e.target.value))} placeholder="Credit utilization %" />
       <input className="input" type="number" value={missedPayments} onChange={(e) => setMissedPayments(Number(e.target.value))} placeholder="Missed payments" />
-      <p className="text-sm text-slate-600">Estimated score after improvements: <strong>{projected}</strong></p>
+      <p className="text-sm text-slate-600">Projected score range after these changes: <strong>{projected}</strong></p>
     </div>
   );
 }
@@ -40,7 +40,7 @@ export function SavingsGrowthCalculator() {
       <input className="input" type="number" value={principal} onChange={(e) => setPrincipal(Number(e.target.value))} placeholder="Initial deposit" />
       <input className="input" type="number" value={rate} onChange={(e) => setRate(Number(e.target.value))} placeholder="Interest rate" />
       <input className="input" type="number" value={years} onChange={(e) => setYears(Number(e.target.value))} placeholder="Years" />
-      <p className="text-sm text-slate-600">Future Value = Principal × (1 + Rate)^Years = <strong>${futureValue.toFixed(2)}</strong></p>
+      <p className="text-sm text-slate-600">Estimated ending balance (annual compounding): <strong>${futureValue.toFixed(2)}</strong></p>
     </div>
   );
 }
@@ -65,7 +65,7 @@ export function CreditCardRecommendationTool({ products }: { products: Financial
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-2">
-      <h3 className="font-semibold">Credit Card Recommendation Tool</h3>
+      <h3 className="font-semibold">Credit Card Fit Finder</h3>
       <input className="input" type="number" value={creditScore} onChange={(e) => setCreditScore(Number(e.target.value))} placeholder="Credit score" />
       <input className="input" type="number" value={monthlySpending} onChange={(e) => setMonthlySpending(Number(e.target.value))} placeholder="Monthly spending" />
       <input className="input" value={preferredRewards} onChange={(e) => setPreferredRewards(e.target.value)} placeholder="Preferred rewards" />
@@ -74,7 +74,7 @@ export function CreditCardRecommendationTool({ products }: { products: Financial
         <option value="any">Any annual fee</option>
       </select>
       <input className="input" value={topCategory} onChange={(e) => setTopCategory(e.target.value)} placeholder="Top spending category" />
-      {recommendation && <p className="text-sm text-slate-600">Recommended card: <strong>{recommendation.name}</strong> by {recommendation.bank}. <a className="text-brand underline" href={`/go/${recommendation.id}`} target="_blank" rel="noreferrer">View Offer</a></p>}
+      {recommendation && <p className="text-sm text-slate-600">Best match based on your inputs: <strong>{recommendation.name}</strong> by {recommendation.bank}. <a className="text-brand underline" href={`/go/${recommendation.id}`} target="_blank" rel="noreferrer">View Offer</a></p>}
     </div>
   );
 }

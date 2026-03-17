@@ -4,8 +4,8 @@ import { ComparisonPageClient } from '@/components/comparison/ComparisonPageClie
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Compare Credit Cards, Savings, Mortgages, Loans & Investment Apps',
-  description: 'Explore top-rated finance offers by category, compare APR/APY and features, and find the best fit across cards, savings, mortgages, loans, and investment apps.',
+  title: 'Compare Credit Cards, Savings, Mortgages, Loans & Investment Apps | FinanceSphere',
+  description: 'Compare APR/APY, annual fees, bonus offers, and product strengths across credit cards, savings accounts, lenders, loans, and investing apps.',
   alternates: { canonical: '/comparison' }
 };
 
@@ -13,7 +13,7 @@ const comparisonSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'FinanceSphere Product Comparisons',
-  description: 'Compare financial products by rating, pricing, and feature trade-offs.',
+  description: 'Compare financial products by rates, fees, bonuses, and practical fit for your goals.',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Credit Cards', url: 'https://www.financesphere.io/comparison?category=credit_card' },
     { '@type': 'ListItem', position: 2, name: 'Savings Accounts', url: 'https://www.financesphere.io/comparison?category=savings_account' },

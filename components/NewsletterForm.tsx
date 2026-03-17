@@ -55,7 +55,7 @@ export function NewsletterForm({ className }: NewsletterFormProps) {
   return (
     <form onSubmit={submit} className={`card space-y-3 ${className ?? ""}`}>
       <h3 className="text-lg font-semibold">Subscribe to the newsletter</h3>
-      <p className="text-sm text-slate-600">Get weekly finance tips and calculators in your inbox.</p>
+      <p className="text-sm text-slate-600">Get one concise weekly email with calculator walkthroughs, rate-watch insights, and actionable money moves.</p>
       <input
         className="input"
         type="email"

@@ -55,9 +55,9 @@ export function CalculatorPage({ slug }: { slug: string }) {
     '@type': 'HowTo',
     name: `How to use ${calculator.title}`,
     step: [
-      { '@type': 'HowToStep', name: 'Adjust calculator inputs', text: 'Use sliders to customize values for your scenario.' },
-      { '@type': 'HowToStep', name: 'Review summary outputs', text: 'Analyze totals, monthly amounts, and key metrics.' },
-      { '@type': 'HowToStep', name: 'Open related resources', text: 'Use internal links to compare offers and read guides.' }
+      { '@type': 'HowToStep', name: 'Enter your current numbers', text: 'Add your balance, rate, timeline, and monthly contribution assumptions.' },
+      { '@type': 'HowToStep', name: 'Review cost and timeline outputs', text: 'Check monthly payment, total interest, ending balance, and payoff or growth timeline.' },
+      { '@type': 'HowToStep', name: 'Compare scenarios before deciding', text: 'Adjust one variable at a time to compare trade-offs, then use related guides and comparison pages.' }
     ]
   };
 

@@ -3,17 +3,17 @@ import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 
 const tools = [
-  { name: 'Net worth tracker', value: 'Track assets and liabilities with trend insights.', href: '/calculators/net-worth-calculator' },
-  { name: 'Budget planner', value: 'Set spending caps and monitor monthly categories.', href: '/calculators/budget-planner' },
-  { name: 'Savings tracker', value: 'Follow progress toward emergency and lifestyle goals.', href: '/calculators/savings-goal-calculator' },
-  { name: 'Debt payoff planner', value: 'Choose avalanche or snowball payoff strategy.', href: '/calculators/debt-payoff-calculator' },
-  { name: 'Investment portfolio tracker', value: 'Track allocation and long-term returns.', href: '/calculators/investment-growth-calculator' },
-  { name: 'Financial independence calculator', value: 'Estimate years to FI using savings rate.', href: '/calculators/fire-calculator' }
+  { name: 'Net worth tracker', value: 'Track how assets and liabilities change over time so you can measure real wealth progress.', href: '/calculators/net-worth-calculator' },
+  { name: 'Budget planner', value: 'Test spending and saving scenarios before changing fixed expenses or debt payments.', href: '/calculators/budget-planner' },
+  { name: 'Savings tracker', value: 'Estimate how much to save each month to reach emergency, travel, or home goals on schedule.', href: '/calculators/savings-goal-calculator' },
+  { name: 'Debt payoff planner', value: 'Compare repayment approaches and see the interest impact of adding extra monthly payments.', href: '/calculators/debt-payoff-calculator' },
+  { name: 'Investment growth tracker', value: 'Project long-term balance growth and understand how contributions and returns compound.', href: '/calculators/investment-growth-calculator' },
+  { name: 'Financial independence calculator', value: 'Estimate your path to FI by modeling savings rate, return assumptions, and timeline.', href: '/calculators/fire-calculator' }
 ];
 
 export const metadata: Metadata = {
-  title: 'Tools',
-  description: 'Use financial tools for net worth, savings, debt payoff, and investment planning on FinanceSphere.',
+  title: 'Finance Tools | FinanceSphere',
+  description: 'Use FinanceSphere tools to plan net worth growth, debt payoff, savings goals, and financial independence with scenario-based projections.',
   alternates: { canonical: '/tools' }
 };
 
@@ -37,8 +37,8 @@ export default function ToolsPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolsSchema) }} />
 
       <div>
-        <h1 className="text-3xl font-bold">Finance tools that support better decisions</h1>
-        <p className="text-slate-600">Use these tools to understand where your money is going, set priorities, and test different plans before you commit.</p>
+        <h1 className="text-3xl font-bold">Finance tools for planning, not guesswork</h1>
+        <p className="text-slate-600">Each tool is designed to answer a concrete question—how long payoff will take, how much to save monthly, or whether your current plan supports future goals.</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (

@@ -13,9 +13,9 @@ const debtPayoffResult = (title: string, inputs: BaseCalculatorInputs): Calculat
   return {
     title,
     summary: [
-      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Required monthly payment including extra payoff amount.' },
-      { label: 'Payoff Time', value: finalMonth / 12, suffix: ' yrs', helpText: 'Estimated time needed to eliminate the debt.' },
-      { label: 'Interest Saved', value: inputs.monthlyContribution * 12 * inputs.years * 0.35, currency: true, helpText: 'Estimated interest saved by accelerating repayment.' }
+      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Estimated required payment including your extra monthly debt contribution.' },
+      { label: 'Payoff Time', value: finalMonth / 12, suffix: ' yrs', helpText: 'Approximate payoff timeline based on current balance, APR, and payment strategy.' },
+      { label: 'Interest Saved', value: inputs.monthlyContribution * 12 * inputs.years * 0.35, currency: true, helpText: 'Directional estimate of interest avoided when you pay above the minimum.' }
     ],
     projection,
     breakdown: [
@@ -34,9 +34,9 @@ const growthResult = (title: string, inputs: BaseCalculatorInputs): CalculatorRe
   return {
     title,
     summary: [
-      { label: 'Ending Balance', value: endingBalance, currency: true, helpText: 'Projected ending balance based on assumptions provided.' },
-      { label: 'Contributions', value: inputs.loanAmount + inputs.monthlyContribution * inputs.years * 12, currency: true, helpText: 'Combined initial and recurring contributions.' },
-      { label: 'Real Return', value: inputs.expectedReturn - inputs.inflationRate, suffix: '%', helpText: 'Expected return after inflation.' }
+      { label: 'Ending Balance', value: endingBalance, currency: true, helpText: 'Projected ending value using your starting amount, contribution rate, and return assumptions.' },
+      { label: 'Contributions', value: inputs.loanAmount + inputs.monthlyContribution * inputs.years * 12, currency: true, helpText: 'Total dollars you contributed over the full projection period.' },
+      { label: 'Real Return', value: inputs.expectedReturn - inputs.inflationRate, suffix: '%', helpText: 'Estimated return net of inflation to reflect real purchasing-power growth.' }
     ],
     projection,
     breakdown: [
@@ -61,12 +61,12 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'mortgage-calculator',
     title: 'Mortgage Calculator',
-    description: 'Estimate monthly mortgage costs and total interest before buying or refinancing a home.',
+    description: 'Estimate principal-and-interest payments, total interest cost, and amortization pace before buying or refinancing.',
     seoTitle: 'Mortgage Calculator: Payment & Amortization Schedule',
-    seoDescription: 'Calculate monthly mortgage payments, total interest, and view an interactive amortization chart.',
+    seoDescription: 'Model monthly mortgage payments, lifetime interest, and payoff progression with an interactive amortization view.',
     faq: [
-      { question: 'How is mortgage payment calculated?', answer: 'The calculator uses the standard fixed-rate mortgage formula with monthly compounding.' },
-      { question: 'Does this include taxes and insurance?', answer: 'This calculator focuses on principal and interest. Taxes and insurance can be added manually.' }
+      { question: 'How is mortgage payment calculated?', answer: 'We use the fixed-rate amortization formula: payment is based on loan amount, APR, and term with monthly compounding.' },
+      { question: 'Does this include taxes and insurance?', answer: 'No. Results focus on principal and interest. Add property tax, homeowners insurance, and HOA separately for full housing cost.' }
     ],
     blogLinks: [
       { title: 'Mortgage Preapproval Checklist', href: '/blog/seo-mortgage-preapproval-checklist' },
@@ -78,10 +78,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'loan-calculator',
     title: 'Loan Calculator',
-    description: 'Calculate monthly EMI, total interest, and payoff timing for personal, auto, or other fixed loans.',
+    description: 'Estimate monthly loan payments, total borrowing cost, and payoff date for personal, auto, or other installment loans.',
     seoTitle: 'Loan Calculator: Monthly EMI & Interest Breakdown',
-    seoDescription: 'Calculate monthly loan payments with an amortization schedule and loan cost breakdown.',
-    faq: [{ question: 'What is EMI?', answer: 'EMI is the equal monthly installment made toward principal and interest.' }],
+    seoDescription: 'Calculate monthly installment payments with a year-by-year amortization schedule and total interest breakdown.',
+    faq: [{ question: 'What is EMI?', answer: 'EMI (equated monthly installment) is a fixed payment that covers both interest and principal each month.' }],
     blogLinks: [{ title: 'How Loan Interest Works', href: '/blog/seo-how-loan-interest-works' }],
     defaultInputs: { ...defaultInputs, years: 7 },
     compute: calculateLoan
@@ -89,10 +89,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'compound-interest-calculator',
     title: 'Compound Interest Calculator',
-    description: 'Project how your savings and regular contributions can grow through compounding over time.',
+    description: 'Project how consistent contributions compound over time so you can set realistic savings and investing targets.',
     seoTitle: 'Compound Interest Calculator: Future Value Projection',
-    seoDescription: 'Estimate your future value with monthly contributions and visual growth projections.',
-    faq: [{ question: 'Why does compounding matter?', answer: 'Compounding allows returns to generate additional returns over time.' }],
+    seoDescription: 'Estimate future portfolio value from a starting balance, recurring contributions, and expected annual return.',
+    faq: [{ question: 'Why does compounding matter?', answer: 'Because earnings stay invested, your returns can generate additional returns, accelerating growth over longer periods.' }],
     blogLinks: [{ title: 'Dollar-Cost Averaging Guide', href: '/blog/seo-dollar-cost-averaging-guide' }],
     defaultInputs: { ...defaultInputs, loanAmount: 15000, years: 20 },
     compute: calculateCompoundInterest
@@ -100,10 +100,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'retirement-calculator',
     title: 'Retirement Calculator',
-    description: 'Estimate retirement savings progress with inflation-aware projections and withdrawal planning context.',
+    description: 'Forecast retirement balances with inflation-aware assumptions to test whether your savings plan supports future spending.',
     seoTitle: 'Retirement Calculator: Inflation-Adjusted Savings Plan',
-    seoDescription: 'Calculate projected retirement balance and estimate sustainable retirement income.',
-    faq: [{ question: 'What is the 4% rule?', answer: 'It is a guideline for annual retirement withdrawals to reduce depletion risk.' }],
+    seoDescription: 'Project retirement account growth and estimate potential annual withdrawals using common planning rules.',
+    faq: [{ question: 'What is the 4% rule?', answer: 'The 4% rule is a starting-point guideline suggesting first-year withdrawals around 4% of portfolio value, adjusted over time.' }],
     blogLinks: [{ title: 'Retirement Accounts 101', href: '/blog/seo-retirement-accounts-101' }],
     defaultInputs,
     compute: calculateRetirement
@@ -168,8 +168,8 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     title: 'FIRE Calculator',
     description: 'Estimate time to Financial Independence / Retire Early.',
     seoTitle: 'FIRE Calculator: Financial Independence Timeline',
-    seoDescription: 'Calculate your FIRE number and timeline using savings rate and expected return.',
-    faq: [{ question: 'What is FIRE?', answer: 'FIRE stands for Financial Independence, Retire Early.' }],
+    seoDescription: 'Estimate your path to financial independence by modeling savings rate, investment return, and target spending.',
+    faq: [{ question: 'What is FIRE?', answer: 'FIRE means Financial Independence, Retire Early—building enough invested assets to cover living costs without active income.' }],
     blogLinks: [{ title: 'Long-Term Investing Mindset', href: '/blog/seo-long-term-investing-mindset' }],
     defaultInputs: { ...defaultInputs, loanAmount: 120000, monthlyContribution: 1800, years: 20 },
     compute: (inputs) => growthResult('FIRE Projection', inputs)
@@ -177,10 +177,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'net-worth-calculator',
     title: 'Net Worth Calculator',
-    description: 'Visualize net worth trajectory with assets and liabilities.',
+    description: 'Track assets minus liabilities over time and see how debt payoff and investing choices affect long-term net worth.',
     seoTitle: 'Net Worth Calculator: Track Financial Progress',
-    seoDescription: 'Compute and project your net worth growth with charts and contribution assumptions.',
-    faq: [{ question: 'How often should I track net worth?', answer: 'Monthly or quarterly updates can help keep goals on track.' }],
+    seoDescription: 'Calculate current net worth and project forward based on contribution and growth assumptions.',
+    faq: [{ question: 'How often should I track net worth?', answer: 'Monthly or quarterly tracking is usually enough to spot trends without reacting to short-term noise.' }],
     blogLinks: [{ title: 'How to Build a Cash Buffer', href: '/blog/seo-how-to-build-cash-buffer' }],
     defaultInputs: { ...defaultInputs, loanAmount: 50000, years: 15 },
     compute: (inputs) => growthResult('Net Worth Projection', inputs)
@@ -188,10 +188,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'budget-planner',
     title: 'Budget Planner',
-    description: 'Forecast savings and debt outcomes based on monthly cash flow.',
+    description: 'Model how spending, debt payments, and monthly saving decisions influence your cash flow and future balances.',
     seoTitle: 'Budget Planner: Monthly Spending & Savings Forecast',
-    seoDescription: 'Use this budget planner to map monthly contribution, debt payoff, and savings growth.',
-    faq: [{ question: 'Can this replace a detailed budget app?', answer: 'It is best used as a scenario planner rather than transaction tracking tool.' }],
+    seoDescription: 'Estimate how reallocating monthly cash changes debt payoff speed and savings progress.',
+    faq: [{ question: 'Can this replace a detailed budget app?', answer: 'No. It works best as a planning calculator for scenarios, not as a transaction-by-transaction budgeting app.' }],
     blogLinks: [{ title: '50/30/20 Rule for Saving', href: '/blog/seo-50-30-20-rule-for-saving' }],
     defaultInputs: { ...defaultInputs, loanAmount: 12000, years: 5 },
     compute: (inputs) => growthResult('Budget Planning Projection', inputs)
@@ -199,10 +199,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'salary-after-tax-calculator',
     title: 'Salary After Tax Calculator',
-    description: 'Estimate annual take-home salary after taxes and inflation.',
+    description: 'Estimate annual and monthly take-home pay using an effective tax-rate assumption and inflation adjustment.',
     seoTitle: 'Salary After Tax Calculator: Estimate Take-Home Pay',
-    seoDescription: 'Calculate estimated after-tax salary and compare purchasing power over time.',
-    faq: [{ question: 'Is this exact tax advice?', answer: 'No. This is an estimate and does not replace professional tax guidance.' }],
+    seoDescription: 'Estimate net salary after taxes and compare nominal income to inflation-adjusted purchasing power.',
+    faq: [{ question: 'Is this exact tax advice?', answer: 'No. This is a planning estimate using simplified assumptions, not tax preparation or personalized tax advice.' }],
     blogLinks: [{ title: 'Tax Saving Strategies', href: '/blog/tax-saving-strategies-99' }],
     defaultInputs: { ...defaultInputs, loanAmount: 90000, interestRate: 24, years: 1, monthlyContribution: 0, expectedReturn: 0 },
     compute: (inputs) => {
@@ -212,9 +212,9 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
       return {
         title: 'Salary After Tax',
         summary: [
-          { label: 'After-Tax Salary', value: afterTax, currency: true, helpText: 'Estimated annual salary after taxes.' },
-          { label: 'Monthly Take Home', value: monthly, currency: true, helpText: 'Estimated monthly net income after taxes.' },
-          { label: 'Inflation Adjusted', value: inflationAdjusted, currency: true, helpText: 'Estimated purchasing power after inflation.' }
+          { label: 'After-Tax Salary', value: afterTax, currency: true, helpText: 'Estimated annual net pay after applying the effective tax-rate input.' },
+          { label: 'Monthly Take Home', value: monthly, currency: true, helpText: 'Estimated monthly take-home amount based on annual net pay.' },
+          { label: 'Inflation Adjusted', value: inflationAdjusted, currency: true, helpText: 'Estimated inflation-adjusted value of your annual net pay.' }
         ],
         projection: [{ month: 12, year: 1, balance: afterTax, contributed: afterTax, interestEarned: 0 }],
         breakdown: [
@@ -229,10 +229,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'auto-loan-calculator',
     title: 'Auto Loan Calculator',
-    description: 'Evaluate car loan affordability and interest cost.',
+    description: 'Estimate monthly car-loan payments, total financing cost, and affordability before visiting a dealership.',
     seoTitle: 'Auto Loan Calculator: Car Payment and Interest Breakdown',
-    seoDescription: 'Estimate monthly auto loan payments and full-term financing costs with charts.',
-    faq: [{ question: 'How much should a car payment be?', answer: 'Many planners target 10-15% of monthly take-home pay.' }],
+    seoDescription: 'Model auto-loan payments, cumulative interest, and payoff timing across different terms and APRs.',
+    faq: [{ question: 'How much should a car payment be?', answer: 'A common rule of thumb is keeping auto costs manageable relative to take-home pay, but the right cap depends on your budget.' }],
     blogLinks: [{ title: 'Auto Loan Term Length', href: '/blog/seo-auto-loan-term-length' }],
     defaultInputs: { ...defaultInputs, loanAmount: 32000, years: 6, interestRate: 7.1 },
     compute: calculateLoan
@@ -240,10 +240,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'student-loan-calculator',
     title: 'Student Loan Calculator',
-    description: 'Estimate repayment term and cost for education debt.',
+    description: 'Estimate student-loan payment amounts, payoff timeline, and total interest across repayment assumptions.',
     seoTitle: 'Student Loan Calculator: Repayment Plan and Timeline',
-    seoDescription: 'Compare student loan repayment outcomes and visualize payoff progress.',
-    faq: [{ question: 'Can I pay student loans early?', answer: 'Yes. Extra payments can reduce total interest and shorten payoff period.' }],
+    seoDescription: 'Compare repayment scenarios and see how extra payments change total interest and payoff date.',
+    faq: [{ question: 'Can I pay student loans early?', answer: 'Yes. Paying above the required amount can reduce interest cost and shorten your repayment timeline.' }],
     blogLinks: [{ title: 'Loan Documents You Need', href: '/blog/seo-loan-documents-you-need' }],
     defaultInputs: { ...defaultInputs, loanAmount: 45000, years: 10, interestRate: 5.8 },
     compute: calculateLoan
@@ -251,10 +251,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'debt-payoff-calculator',
     title: 'Debt Payoff Calculator',
-    description: 'See how extra monthly payments can shorten payoff time and reduce total debt interest.',
+    description: 'Measure how extra monthly payments affect debt payoff speed and total interest paid.',
     seoTitle: 'Debt Payoff Calculator: Custom Repayment Strategy',
-    seoDescription: 'Project debt payoff schedules, interest costs, and acceleration benefits.',
-    faq: [{ question: 'What inputs matter most for payoff?', answer: 'Interest rate and extra monthly payments have the largest impact.' }],
+    seoDescription: 'Build a debt payoff schedule and compare standard vs accelerated repayment outcomes.',
+    faq: [{ question: 'What inputs matter most for payoff?', answer: 'APR and extra payment size usually have the biggest impact on payoff speed and total interest.' }],
     blogLinks: [{ title: 'Balance Transfer Strategy', href: '/blog/seo-balance-transfer-strategy' }],
     defaultInputs: { ...defaultInputs, loanAmount: 28000, years: 6 },
     compute: (inputs) => debtPayoffResult('Debt Payoff Projection', inputs)

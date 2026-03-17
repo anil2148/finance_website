@@ -25,7 +25,7 @@ export function OfferCard({ product }: { product: FinancialProduct }) {
         </div>
       </div>
       <a className="comparison-cta" href={`/go/${product.id}`} target="_blank" rel="noreferrer sponsored noopener">
-        View Offer
+        View terms & offer
       </a>
     </article>
   );
