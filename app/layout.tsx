@@ -10,13 +10,13 @@ import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
 
 const siteUrl = 'https://financesphere.io';
-const siteTitle = 'Financesphere.io | Smart Finance Insights, Tools & Strategies';
+const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
 const siteDescription =
-  'Financesphere.io provides finance insights, market analysis, and smart tools to help you grow wealth, track investments, and make better financial decisions.';
+  'FinanceSphere helps you model major money decisions with calculators, compare financial products, and learn practical strategies for saving, borrowing, and investing.';
 const ogDescription =
-  'Financesphere.io provides finance insights, market analysis, and smart tools to help you grow wealth and make better financial decisions.';
-const twitterTitle = 'Financesphere.io | Smart Finance Insights';
-const twitterDescription = 'Finance insights and tools to grow wealth and track investments.';
+  'Use FinanceSphere to estimate costs, evaluate trade-offs, and choose financial products that fit your goals.';
+const twitterTitle = 'FinanceSphere | Practical Finance Tools';
+const twitterDescription = 'Calculator-first guidance for mortgages, debt payoff, savings, and investing.';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     description: ogDescription,
     type: 'website',
     url: siteUrl,
-    siteName: 'Financesphere.io',
+    siteName: 'FinanceSphere',
     images: [
       {
         url: `${siteUrl}/og-image.png`

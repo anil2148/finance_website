@@ -6,8 +6,8 @@ import { calculatorDefinitions } from '@/lib/calculators/registry';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Financial Calculators',
-  description: 'Explore FinanceSphere calculators for mortgage costs, loan EMI, compound growth, retirement, savings goals, debt payoff, and net worth planning.',
+  title: 'Financial Calculators | FinanceSphere',
+  description: 'Use FinanceSphere calculators to model mortgage payments, debt payoff timelines, retirement income targets, investment growth, and take-home pay scenarios.',
   alternates: { canonical: '/calculators' }
 };
 
@@ -15,8 +15,8 @@ export default function CalculatorsPage() {
   return (
     <section className="space-y-6">
       <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-blue-800 to-brand p-6 text-white">
-        <h1 className="text-3xl font-bold tracking-tight">Finance calculators for real-life planning</h1>
-        <p className="max-w-3xl text-blue-100">Calculate mortgage payments, loan EMI, savings targets, retirement readiness, debt payoff timelines, and long-term investment growth in one place.</p>
+        <h1 className="text-3xl font-bold tracking-tight">Finance calculators for major money decisions</h1>
+        <p className="max-w-3xl text-blue-100">From buying a home to accelerating debt payoff, each calculator is built to show monthly cash-flow impact, long-term cost, and outcome trade-offs.</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
