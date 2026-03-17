@@ -7,7 +7,7 @@ import { NewsletterForm } from '@/components/NewsletterForm';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'Blog',
+  title: 'Finance Blog | FinanceSphere',
   description: 'Read personal finance guides, calculator explainers, and product comparison insights from FinanceSphere.',
   alternates: { canonical: '/blog' }
 };
@@ -20,8 +20,8 @@ export default function BlogPage() {
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">SEO Finance Content Engine</h1>
-        <p className="text-slate-600">1,000 SEO-ready articles with categories, tags, internal links, and structured FAQ content.</p>
+        <h1 className="text-3xl font-bold">FinanceSphere Blog</h1>
+        <p className="text-slate-600">Educational articles that help you understand borrowing, saving, investing, and retirement planning so you can make better money decisions.</p>
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm">

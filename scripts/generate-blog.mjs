@@ -17,12 +17,12 @@ fs.mkdirSync(outDir, { recursive: true });
 for (let i = 1; i <= 1000; i++) {
   const topic = topics[(i - 1) % topics.length];
   const slug = `${topic.slug}-guide-${i}`;
-  const title = `${topic.title}: Practical 2026 Guide #${i}`;
+  const title = `${topic.title}: Practical Money Guide`;
 
   const content = `---
 title: "${title}"
-seoTitle: "${topic.title} Strategy Guide ${i} | FinanceSite"
-metaDescription: "Actionable ${topic.slug.replace('-', ' ')} strategies, comparison table, FAQ, and affiliate picks in one guide."
+seoTitle: "${topic.title} Guide | FinanceSphere"
+metaDescription: "Practical ${topic.slug.replace('-', ' ')} tips, examples, and planning steps for better day-to-day money decisions."
 slug: "${slug}"
 description: "Learn ${topic.slug.replace('-', ' ')} with actionable tactics and smart decision frameworks."
 keywords: ["finance", "${topic.slug}", "comparison"]
@@ -34,11 +34,11 @@ date: "2026-01-01"
 ## Why this matters
 ${topic.title} can accelerate your long-term wealth strategy when done consistently.
 
-## Comparison table
-| Option | Benefit | Consideration |
+## Compare your options
+| Approach | Helpful when | Watch for |
 |---|---|---|
-| Option A | Lower cost | Fewer premium perks |
-| Option B | Higher upside | Requires stronger credit profile |
+| Lower monthly payment | You need breathing room in your budget | Higher total interest over time |
+| Faster payoff plan | You want to lower total borrowing cost | Higher monthly payment commitment |
 
 ## Step-by-step plan
 1. Audit your current financial baseline.
@@ -46,12 +46,10 @@ ${topic.title} can accelerate your long-term wealth strategy when done consisten
 3. Automate the winning strategy.
 
 ## FAQ
-**Is this beginner friendly?** Yes, start simple and optimize as you go.
+**Is this beginner friendly?** Yes. Start with one simple change and review your progress each month.
 
-## Affiliate CTA
-Explore partner recommendations and apply with confidence.
-
-Internal links: [/comparison](/comparison), [/calculators](/calculators), [/tools](/tools), [/dashboard](/dashboard).
+## Next steps
+See also: [Calculators](/calculators), [Tools](/tools), and [Comparison guides](/comparison).
 `;
 
   fs.writeFileSync(path.join(outDir, `${slug}.mdx`), content);
