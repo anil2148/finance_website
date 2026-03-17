@@ -15,6 +15,13 @@ export function Footer() {
       <div className="mx-auto max-w-7xl space-y-2 px-4 py-6 text-sm text-slate-500 dark:text-slate-300">
         <p>© 2026 FinanceSphere. All rights reserved.</p>
         <p>FinanceSphere may earn compensation from partners when you click through to an offer. Ratings and write-ups are based on product terms, features, and user-fit factors—not partner payments.</p>
+        <ul className="flex flex-wrap gap-x-4 gap-y-2 pt-2 text-xs">
+          {legalLinks.map((link) => (
+            <li key={link.href}>
+              <Link className="hover:text-slate-700 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </footer>
   );
