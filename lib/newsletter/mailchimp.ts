@@ -1,4 +1,5 @@
 import crypto from 'node:crypto';
+import { isValidEmail, maskEmail, normalizeEmail } from '@/lib/newsletter/validation';
 
 type MailchimpProviderConfig = {
   provider: 'mailchimp';
@@ -14,8 +15,6 @@ type ConvertKitProviderConfig = {
 };
 
 type ProviderConfig = MailchimpProviderConfig | ConvertKitProviderConfig;
-
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function resolveProviderConfig(): ProviderConfig {
   const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
@@ -48,13 +47,13 @@ function resolveProviderConfig(): ProviderConfig {
 }
 
 function getSubscriberHash(email: string) {
-  return crypto.createHash('md5').update(email.trim().toLowerCase()).digest('hex');
+  return crypto.createHash('md5').update(normalizeEmail(email)).digest('hex');
 }
 
 export async function subscribeConfirmedEmail(email: string) {
-  const normalizedEmail = email.trim().toLowerCase();
+  const normalizedEmail = normalizeEmail(email);
 
-  if (!emailPattern.test(normalizedEmail)) {
+  if (!isValidEmail(normalizedEmail)) {
     throw new Error('Invalid email address.');
   }
 
@@ -123,8 +122,9 @@ async function sendTransactionalEmail({ toEmail, subject, html }: { toEmail: str
   const transactionalConfig = getTransactionalConfig();
 
   if (!transactionalConfig) {
-    console.info(`[newsletter] No transactional email provider configured. Confirmation email for ${toEmail}:`);
-    console.info(html);
+    console.info('[newsletter] Transactional provider not configured; confirmation email delivery skipped.', {
+      recipient: maskEmail(toEmail)
+    });
     return;
   }
 
