@@ -94,7 +94,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
       titleTemplates: [
         '%TOPIC%: How to Compare Offers Without Overpaying',
         '%TOPIC%: Fees, Rewards, and Interest Tradeoffs',
-        '%TOPIC%: A Smarter Decision Framework for 2026'
+        '%TOPIC%: A Smarter Decision Framework'
       ],
       descriptionTemplates: [
         'Make a better %TOPIC_LOWER% decision with fee break-even math, statement-timing tactics, and links to the right calculators.',
@@ -165,7 +165,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
       },
       titleTemplates: [
         '%TOPIC%: Account Choices That Keep More of Your Return',
-        '%TOPIC%: Practical Tax-Efficiency Moves for 2026',
+        '%TOPIC%: Practical Tax-Efficiency Moves',
         '%TOPIC%: How to Reduce Tax Drag Without Guesswork'
       ],
       descriptionTemplates: [

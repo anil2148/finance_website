@@ -73,8 +73,8 @@ const visualPools: Array<{ keyword: string; variants: VisualVariant[] }> = [
     keyword: 'mortgage',
     variants: [
       {
-        src: '/images/blog-visual-loans-docs.svg',
-        alt: 'Mortgage approval workflow with required borrower documentation',
+        src: '/images/blog-visual-mortgage.svg',
+        alt: 'Mortgage planning dashboard showing payment range and preapproval milestones',
         cardClassName: 'from-sky-50 via-blue-50 to-indigo-100',
         heroClassName: 'from-sky-50 via-blue-50 to-indigo-100'
       },
