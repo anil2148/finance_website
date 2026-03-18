@@ -53,6 +53,11 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
     { href: '/calculators/loan-calculator', label: 'Loan Calculator' },
     { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
   ],
+  mortgages: [
+    { href: '/learn/loans', label: 'Mortgage & Loans Hub' },
+    { href: '/calculators/mortgage-calculator', label: 'Mortgage Calculator' },
+    { href: '/compare/mortgage-rate-comparison', label: 'Compare Mortgage Rates' }
+  ],
   'credit-cards': [
     { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
     { href: '/calculators/credit-card-payoff-calculator', label: 'Credit Card Payoff Calculator' },
@@ -62,6 +67,16 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
     { href: '/learn/budgeting', label: 'Budgeting Hub' },
     { href: '/calculators/savings-goal-calculator', label: 'Savings Goal Calculator' },
     { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' }
+  ],
+  budgeting: [
+    { href: '/learn/budgeting', label: 'Budgeting Hub' },
+    { href: '/calculators/budget-planner', label: 'Budget Planner' },
+    { href: '/compare/high-yield-savings-accounts', label: 'Compare High-Yield Savings' }
+  ],
+  tax: [
+    { href: '/learn/investing', label: 'Tax-Aware Investing Hub' },
+    { href: '/calculators/salary-after-tax-calculator', label: 'Salary After-Tax Calculator' },
+    { href: '/best-investment-apps', label: 'Tax-Friendly Brokerage Options' }
   ]
 };
 
@@ -77,9 +92,9 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     shell: 'from-amber-50 to-orange-50'
   },
   mortgages: {
-    src: '/images/blog-visual-loans-docs.svg',
-    alt: 'Mortgage document prep illustration',
-    shell: 'from-teal-50 to-cyan-50'
+    src: '/images/blog-visual-mortgage-home.svg',
+    alt: 'Mortgage planning board with home price, down-payment, and rate range checkpoints',
+    shell: 'from-cyan-50 to-blue-50'
   },
   'credit-cards': {
     src: '/images/blog-visual-credit.svg',
