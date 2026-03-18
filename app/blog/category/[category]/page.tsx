@@ -39,6 +39,16 @@ const categoryCopy: Record<string, { title: string; description: string; editori
     title: 'Credit Card Articles',
     description: 'APR and fee tradeoffs, utilization strategy, and practical ways to maximize rewards without paying interest.',
     editorialAngle: 'Expect payment-timing tactics and break-even math over promotional marketing language.'
+  },
+  tax: {
+    title: 'Tax Planning Articles',
+    description: 'Tax-efficiency frameworks that prioritize account location and repeatable annual maintenance, not one-off tricks.',
+    editorialAngle: 'Coverage centers on after-tax return outcomes, guardrails, and coordination with long-term investing goals.'
+  },
+  'passive-income': {
+    title: 'Passive Income Articles',
+    description: 'Decision frameworks for building durable recurring income streams without overconcentration risk.',
+    editorialAngle: 'Expect tradeoff-heavy coverage across yield reliability, liquidity, and tax complexity.'
   }
 };
 
@@ -115,14 +125,19 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     src: '/images/blog-visual-tax.svg',
     alt: 'Tax planning worksheet and timeline illustration',
     shell: 'from-rose-50 to-pink-50'
+  },
+  'passive-income': {
+    src: '/images/blog-visual-investing-risk.svg',
+    alt: 'Passive income allocation panel with risk and cashflow indicators',
+    shell: 'from-emerald-50 to-teal-50'
   }
 };
 
 const featuredOrderByCategory: Record<string, string[]> = {
-  investing: ['seo-investing-for-beginners-roadmap', 'seo-tax-efficient-investing-tips'],
-  loans: ['seo-mortgage-preapproval-checklist', 'seo-how-to-compare-personal-loan-apr', 'seo-debt-to-income-ratio-guide'],
-  'credit-cards': ['seo-how-credit-utilization-works'],
-  'savings-accounts': ['seo-emergency-fund-3-to-6-months', 'seo-high-yield-savings-basics', 'seo-50-30-20-rule-for-saving']
+  investing: ['beginner-investing-roadmap-year-one-milestones', 'tax-efficient-investing-account-location-decisions'],
+  loans: ['mortgage-preapproval-checklist-underwriting', 'personal-loan-comparison-for-bad-month-resilience', 'debt-to-income-ratio-90-day-plan'],
+  'credit-cards': ['credit-utilization-statement-cycle-playbook'],
+  'savings-accounts': ['emergency-fund-target-by-recovery-timeline', 'how-to-choose-a-high-yield-savings-account', 'budget-rule-based-reset']
 };
 
 function getCategoryContent(category: string) {
@@ -193,6 +208,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Featured in this category</h2>
+        <p className="text-sm text-slate-600">Each featured card includes a different decision angle so this category reads like an editorial selection, not a templated list.</p>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {featuredPosts.map((p) => (
             <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
@@ -212,7 +228,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
       )}
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="text-lg font-semibold">Continue your decision path</h2>
+        <h2 className="text-lg font-semibold">What to do next from this category</h2>
         <p className="mt-1 text-sm text-slate-600">Run numbers first, compare offers second, then return to this category for scenario-specific decisions.</p>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           {journeyLinks.map((item) => (

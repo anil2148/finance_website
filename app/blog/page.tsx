@@ -17,17 +17,50 @@ const startHereGuides = [
   {
     title: 'Investing roadmap for beginners',
     href: '/blog/seo-investing-for-beginners-roadmap',
-    next: '/calculators/investment-growth-calculator'
+    next: '/calculators/investment-growth-calculator',
+    angle: 'Build a year-one contribution system you can sustain in volatile markets.'
   },
   {
     title: 'How to compare personal loan APR',
     href: '/blog/seo-how-to-compare-personal-loan-apr',
-    next: '/calculators/loan-calculator'
+    next: '/calculators/loan-calculator',
+    angle: 'Choose for bad-month resilience, not teaser-rate marketing.'
   },
   {
     title: 'Emergency fund target (3 to 6 months)',
     href: '/blog/seo-emergency-fund-3-to-6-months',
-    next: '/calculators/savings-goal-calculator'
+    next: '/calculators/savings-goal-calculator',
+    angle: 'Set your reserve target by recovery timeline and household risk.'
+  }
+];
+
+const curatedCollections = [
+  {
+    title: 'Borrowing underwriter-ready',
+    description: 'For readers applying in the next 30–120 days: clean your file, improve DTI, and avoid avoidable lender delays.',
+    links: [
+      { href: '/blog/category/loans', label: 'Loans category' },
+      { href: '/learn/loans', label: 'Loans hub' },
+      { href: '/compare/mortgage-rate-comparison', label: 'Compare mortgage offers' }
+    ]
+  },
+  {
+    title: 'Build savings with operating rules',
+    description: 'These pieces focus on automation, transfer reliability, and what to do when fixed costs suddenly spike.',
+    links: [
+      { href: '/blog/category/savings-accounts', label: 'Savings category' },
+      { href: '/calculators/savings-goal-calculator', label: 'Savings Goal Calculator' },
+      { href: '/best-savings-accounts-usa', label: 'Best savings accounts' }
+    ]
+  },
+  {
+    title: 'Investing process over prediction',
+    description: 'Use scenario-based guides on account location, contribution cadence, and downturn rules you can stick with.',
+    links: [
+      { href: '/blog/category/investing', label: 'Investing category' },
+      { href: '/compare/best-investment-apps', label: 'Best investment apps' },
+      { href: '/learn/investing', label: 'Investing hub' }
+    ]
   }
 ];
 
@@ -67,8 +100,27 @@ export default function BlogPage() {
           {startHereGuides.map((guide) => (
             <article key={guide.href} className="rounded-xl border border-slate-200 p-4">
               <Link href={guide.href} className="text-base font-semibold text-slate-900 hover:text-blue-700 hover:underline">{guide.title}</Link>
+              <p className="mt-2 text-sm text-slate-600">{guide.angle}</p>
               <p className="mt-2 text-xs uppercase tracking-wide text-slate-500">Recommended next step</p>
               <Link href={guide.next} className="text-sm font-medium text-blue-700 hover:underline">Open matching calculator →</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-semibold">Curated by decision type</h2>
+        <p className="mt-1 text-sm text-slate-600">We prioritize a smaller set of stronger guides and route each cluster into the right tools, hubs, and comparisons.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {curatedCollections.map((collection) => (
+            <article key={collection.title} className="rounded-xl border border-slate-200 p-4">
+              <h3 className="text-base font-semibold text-slate-900">{collection.title}</h3>
+              <p className="mt-2 text-sm text-slate-600">{collection.description}</p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                {collection.links.map((link) => (
+                  <Link key={link.href} href={link.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">{link.label}</Link>
+                ))}
+              </div>
             </article>
           ))}
         </div>
