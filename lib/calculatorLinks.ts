@@ -29,9 +29,17 @@ export const matchingCalculatorLinksByBlogCategory: Record<string, Array<{ label
   ],
   mortgages: [
     { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
-    { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' }
+    { label: 'Loan Calculator', href: '/calculators/loan-calculator' }
   ],
-  'credit cards': [
+  loans: [
+    { label: 'Loan Calculator', href: '/calculators/loan-calculator' },
+    { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' }
+  ],
+  savings: [
+    { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
+    { label: 'Compound Interest Calculator', href: '/calculators/compound-interest-calculator' }
+  ],
+  'credit-cards': [
     { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
     { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' }
   ]
