@@ -6,6 +6,7 @@ const legalLinks = [
   { href: '/affiliate-disclosure', label: 'Affiliate Disclosure' },
   { href: '/cookie-policy', label: 'Cookie Policy' },
   { href: '/financial-disclaimer', label: 'Financial Disclaimer' },
+  { href: '/help', label: 'Help Center' },
   { href: '/contact', label: 'Contact' }
 ];
 
