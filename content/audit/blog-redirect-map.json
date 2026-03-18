@@ -5707,7 +5707,7 @@
   },
   {
     "source": "/blog/seo-automate-your-savings-plan",
-    "destination": "/blog/seo-50-30-20-rule-for-saving",
+    "destination": "/blog/seo-emergency-fund-3-to-6-months",
     "permanent": true,
     "reason": "REDIRECT"
   },
@@ -7147,7 +7147,7 @@
   },
   {
     "source": "/blog/tax-saving-strategies-99",
-    "destination": "/blog/seo-automate-your-savings-plan",
+    "destination": "/blog/seo-tax-efficient-investing-tips",
     "permanent": true,
     "reason": "REDIRECT"
   }
