@@ -77,9 +77,9 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     shell: 'from-amber-50 to-orange-50'
   },
   mortgages: {
-    src: '/images/blog-visual-loans-docs.svg',
-    alt: 'Mortgage document prep illustration',
-    shell: 'from-teal-50 to-cyan-50'
+    src: '/images/comparison-analytics-illustration.svg',
+    alt: 'Mortgage rate and monthly payment comparison dashboard illustration',
+    shell: 'from-cyan-50 to-blue-50'
   },
   'credit-cards': {
     src: '/images/blog-visual-credit.svg',
@@ -93,8 +93,8 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
   },
   budgeting: {
     src: '/images/blog-visual-savings-goals.svg',
-    alt: 'Budgeting envelope and goal-tracking illustration',
-    shell: 'from-sky-50 to-cyan-50'
+    alt: 'Budget category planning board with monthly cashflow checkpoints',
+    shell: 'from-sky-50 to-indigo-50'
   },
   tax: {
     src: '/images/blog-visual-tax.svg',
