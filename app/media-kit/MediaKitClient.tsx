@@ -3,13 +3,6 @@
 import { useRef } from 'react';
 import { DownloadPdfButton } from '@/components/pdf/DownloadPdfButton';
 
-const audienceStats = [
-  { label: 'Monthly pageviews', value: '185,000+' },
-  { label: 'Email subscribers', value: '41,000+' },
-  { label: 'Avg. session duration', value: '4m 12s' },
-  { label: 'US audience share', value: '78%' }
-];
-
 const adProducts = [
   {
     name: 'Sponsored article',
@@ -37,7 +30,7 @@ export function MediaKitClient() {
         <div>
           <h1 className="text-3xl font-bold">FinanceSphere Media Kit</h1>
           <p className="mt-2 max-w-2xl text-sm text-gray-600">
-            Download a print-ready PDF with our audience profile, ad inventory, and partnership details.
+            Download a print-ready PDF with our partnership formats, placement options, and contact details.
           </p>
         </div>
         <DownloadPdfButton
@@ -55,20 +48,19 @@ export function MediaKitClient() {
           <p className="text-sm font-semibold uppercase tracking-wide text-brand">Updated March 2026</p>
           <h2 className="text-2xl font-bold">Reach financially active U.S. consumers</h2>
           <p className="text-sm text-gray-600">
-            FinanceSphere helps readers compare financial products, use interactive planning tools, and make confident
-            money decisions.
+            FinanceSphere is focused on helping people compare financial options, use practical calculators, and make
+            clearer money decisions.
           </p>
         </header>
 
         <section className="space-y-3">
-          <h3 className="text-lg font-semibold">Audience snapshot</h3>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {audienceStats.map((stat) => (
-              <div key={stat.label} className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-                <p className="text-xs uppercase tracking-wide text-gray-500">{stat.label}</p>
-                <p className="mt-1 text-xl font-semibold">{stat.value}</p>
-              </div>
-            ))}
+          <h3 className="text-lg font-semibold">Audience focus</h3>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <ul className="list-inside list-disc space-y-1 text-sm text-gray-700">
+              <li>People comparing mortgages, loans, savings, and investing paths.</li>
+              <li>Users planning major decisions with calculators and educational guides.</li>
+              <li>Readers looking for clear explanations of long-term financial tradeoffs.</li>
+            </ul>
           </div>
         </section>
 
@@ -99,7 +91,7 @@ export function MediaKitClient() {
         <section className="space-y-2">
           <h3 className="text-lg font-semibold">Why brands partner with us</h3>
           <ul className="list-inside list-disc space-y-1 text-sm text-gray-700">
-            <li>SEO-driven evergreen traffic focused on high-intent financial topics.</li>
+            <li>Context built around practical finance questions and decision-making moments.</li>
             <li>Contextual placements across calculators and comparison pages.</li>
             <li>Editorial standards that prioritize trust, transparency, and disclosures.</li>
           </ul>
