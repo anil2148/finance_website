@@ -10,8 +10,13 @@ type SeoComparisonPageProps = {
   slug: string;
 };
 
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
+
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: SeoComparisonPageProps) {
   const pageProducts = getFinancialProducts().filter((item) => item.category === category);
+  const topRated = [...pageProducts].sort((a, b) => b.rating - a.rating).slice(0, 3);
 
   const schemaProducts = pageProducts.map((item) => ({
     '@type': 'Product',
@@ -32,7 +37,21 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
       <header className="space-y-3">
         <h1 className="text-3xl font-bold">{pageTitle}</h1>
         <p className="max-w-3xl text-slate-600">{intro}</p>
+        <p className="text-xs text-slate-500">Reviewed by FinanceSphere editorial team • Last updated {formatDate(new Date())}</p>
       </header>
+
+      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm">
+        <p className="font-semibold text-blue-900">Top picks by use case</p>
+        <ul className="mt-2 grid gap-2 md:grid-cols-3">
+          {topRated.map((item, index) => (
+            <li key={item.id} className="rounded-lg border border-blue-100 bg-white p-3">
+              <p className="text-xs text-blue-600">#{index + 1} Rated</p>
+              <p className="font-medium text-slate-900">{item.name}</p>
+              <p className="text-xs text-slate-600">Best for: {item.pros[0]}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <ComparisonEngine defaultCategory={category} />
 
@@ -54,6 +73,22 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
             <li><Link href="/calculators/mortgage-calculator" className="text-brand hover:underline">Mortgage Calculator</Link></li>
             <li><Link href="/calculators/savings-goal-calculator" className="text-brand hover:underline">Savings Goal Calculator</Link></li>
           </ul>
+        </div>
+        <div>
+          <h2 className="mb-2 text-lg font-semibold">Alternatives to compare</h2>
+          <ul className="space-y-1 text-sm">
+            <li><Link href="/best-savings-accounts-usa" className="text-brand hover:underline">Best savings accounts</Link></li>
+            <li><Link href="/best-investment-apps" className="text-brand hover:underline">Best investment apps</Link></li>
+            <li><Link href="/comparison" className="text-brand hover:underline">Full comparison engine</Link></li>
+          </ul>
+        </div>
+        <div>
+          <h2 className="mb-2 text-lg font-semibold">How we review</h2>
+          <p className="text-sm text-slate-600">We score products by fee drag, value, features, and user-fit. Learn our methodology and disclosures before acting.</p>
+          <div className="mt-2 flex gap-2 text-xs">
+            <Link className="rounded-full border px-2 py-1" href="/editorial-policy">Editorial policy</Link>
+            <Link className="rounded-full border px-2 py-1" href="/how-we-make-money">How we make money</Link>
+          </div>
         </div>
       </section>
 

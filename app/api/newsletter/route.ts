@@ -2,9 +2,13 @@ import { NextResponse } from 'next/server';
 import { sendConfirmationEmail } from '@/lib/newsletter/mailchimp';
 import { generateConfirmationToken } from '@/lib/newsletter/token';
 import { isValidEmail, maskEmail, normalizeEmail } from '@/lib/newsletter/validation';
+import { appendSignupLog } from '@/lib/newsletter/storage';
 
 type NewsletterPayload = {
   email?: string;
+  source?: string;
+  persona?: string;
+  leadMagnet?: string;
 };
 
 type ErrorCode =
@@ -97,6 +101,15 @@ export async function POST(request: Request) {
       });
       return errorResponse(502, 'EMAIL_PROVIDER_ERROR', 'Unable to send confirmation email right now. Please try again.');
     }
+
+
+    appendSignupLog({
+      email_hash_hint: maskEmail(normalizedEmail),
+      source: payload.source ?? 'unknown',
+      persona: payload.persona ?? 'unspecified',
+      lead_magnet: payload.leadMagnet ?? 'none',
+      timestamp: new Date().toISOString()
+    });
 
     return NextResponse.json({
       success: true,

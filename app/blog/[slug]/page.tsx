@@ -5,6 +5,9 @@ import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
 import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
 import { articleSchema } from '@/lib/seo';
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
+import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
+import { getRelatedLinks } from '@/lib/internalLinks';
+import { NewsletterForm } from '@/components/NewsletterForm';
 
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
@@ -35,6 +38,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
   const schema = articleSchema(post.title, post.description, post.slug);
   const toc = getHeadings(post.content);
+  const relatedLinks = getRelatedLinks(post.category);
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -52,9 +56,10 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <header className="space-y-2">
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <p className="text-slate-600">{post.description}</p>
-        {/* Sharing: social share buttons improve distribution and backlink opportunities. */}
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
       </header>
+
+      <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />
 
       <section className="rounded-lg border bg-slate-50 p-4">
         <h2 className="font-semibold">Table of contents</h2>
@@ -71,6 +76,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <InteractiveArticleContent content={post.content} />
 
+      <NewsletterForm source="blog" leadMagnet="7-day-money-reset-checklist" className="max-w-2xl border-2 border-blue-100" />
+
       <section className="rounded-xl bg-blue-600 p-5 text-white">
         <h3 className="text-xl font-semibold">Put this guide into action</h3>
         <p className="text-sm text-blue-100">Use FinanceSphere calculators and comparison pages to test numbers that match your situation before you make a decision.</p>
@@ -78,11 +85,11 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       </section>
 
       <section>
-        <h3 className="mb-2 font-semibold">Helpful next steps</h3>
+        <h3 className="mb-2 font-semibold">You may also like</h3>
         <div className="flex flex-wrap gap-2 text-sm">
-          <Link className="rounded-full border px-3 py-1" href="/calculators">Financial calculators</Link>
-          <Link className="rounded-full border px-3 py-1" href="/tools">Finance tools</Link>
-          <Link className="rounded-full border px-3 py-1" href="/comparison">Comparison pages</Link>
+          {relatedLinks.map((link) => (
+            <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
+          ))}
         </div>
       </section>
 

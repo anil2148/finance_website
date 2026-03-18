@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
+import { getAuthorIdForCategory } from '@/lib/authors';
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
@@ -15,6 +16,9 @@ export type BlogPost = {
   seoTitle?: string;
   metaDescription?: string;
   content: string;
+  authorId: string;
+  reviewedById: string;
+  updatedAt: string;
 };
 
 export function getPosts(): BlogPost[] {
@@ -34,7 +38,10 @@ export function getPosts(): BlogPost[] {
         country: data.country ?? 'global',
         seoTitle: data.seoTitle,
         metaDescription: data.metaDescription,
-        content
+        content,
+        authorId: data.authorId ?? getAuthorIdForCategory(data.category ?? 'general'),
+        reviewedById: data.reviewedById ?? 'rachel_nguyen',
+        updatedAt: data.updatedAt ?? data.date
       } as BlogPost;
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1));

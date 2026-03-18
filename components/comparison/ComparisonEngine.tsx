@@ -13,9 +13,14 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
   const [category, setCategory] = useState<FinancialCategory | 'all'>(defaultCategory);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'apr_apy'>('rating');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/products').then((res) => res.json()).then(setProducts).catch(() => setProducts([]));
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
@@ -46,6 +51,15 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
           <option value="apr_apy">Sort by APR/APY</option>
         </select>
       </div>
+
+      {loading ? <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">Loading comparison data...</p> : null}
+
+      {!loading && filtered.length === 0 ? (
+        <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm">
+          <p className="font-medium">No products matched your filters.</p>
+          <p className="mt-1 text-slate-600">Try clearing search, switching categories, or exploring our full comparison page.</p>
+        </div>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
         {filtered.map((product) => <OfferCard key={product.id} product={product} />)}

@@ -25,6 +25,16 @@ const links: NavLink[] = [
     ]
   },
   { label: 'Tools', children: [{ label: 'Calculators', href: '/calculators' }] },
+  {
+    label: 'Learn',
+    children: [
+      { label: 'Investing Hub', href: '/learn/investing' },
+      { label: 'Credit Cards Hub', href: '/learn/credit-cards' },
+      { label: 'Loans Hub', href: '/learn/loans' },
+      { label: 'Budgeting Hub', href: '/learn/budgeting' },
+      { label: 'Passive Income Hub', href: '/learn/passive-income' }
+    ]
+  },
   { label: 'Blog', href: '/blog' },
   { label: 'About', href: '/about' },
   { label: 'Help', href: '/help' },
