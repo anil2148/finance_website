@@ -10,7 +10,8 @@
     "generate:blog": "node scripts/generate-blog.mjs",
     "test": "node tests/run-tests.js",
     "postbuild": "node generate-sitemap.js",
-    "sitemap:watch": "node scripts/sitemap-watch.mjs"
+    "sitemap:watch": "node scripts/sitemap-watch.mjs",
+    "verify:fullsite": "node scripts/verify-full-site-execution.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
