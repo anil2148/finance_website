@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
 import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
@@ -11,6 +11,7 @@ import { getRelatedLinks } from '@/lib/internalLinks';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { getBlogVisual } from '@/lib/blogVisuals';
 import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByBlogCategory, resolveCalculatorHref } from '@/lib/calculatorLinks';
+import { redirectForSlug } from '@/lib/blogCleanup';
 
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
@@ -32,7 +33,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default function BlogArticlePage({ params }: { params: { slug: string } }) {
   const post = getPostBySlug(params.slug);
-  if (!post) notFound();
+  if (!post) {
+    const mappedRedirect = redirectForSlug(params.slug);
+    if (mappedRedirect?.destination) {
+      redirect(mappedRedirect.destination);
+    }
+    notFound();
+  }
 
   const posts = getPosts();
   const relatedPosts = posts
