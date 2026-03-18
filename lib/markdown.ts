@@ -3,6 +3,7 @@ import path from 'node:path';
 import matter from 'gray-matter';
 import { getAuthorIdForCategory } from '@/lib/authors';
 import { canonicalTopicKey, enhancePost, qualityScore, shouldExcludePost } from '@/lib/blogEnhancer';
+import { shouldDisplayPost } from '@/lib/blogCleanup';
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
@@ -49,7 +50,8 @@ function loadPosts() {
 
       return enhancePost(basePost);
     })
-    .filter((post) => !shouldExcludePost(post));
+    .filter((post) => !shouldExcludePost(post))
+    .filter((post) => shouldDisplayPost(post.slug));
 
   const bestByTopic = new Map<string, BlogPost>();
 

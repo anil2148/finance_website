@@ -1,3 +1,5 @@
+const blogRedirectMap = require('./content/audit/blog-redirect-map.json');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // SEO/performance: Next.js compression enables gzip/brotli in production.
@@ -6,6 +8,14 @@ const nextConfig = {
   swcMinify: true,
   images: {
     remotePatterns: [{ protocol: 'https', hostname: '**' }]
+  },
+
+  async redirects() {
+    return blogRedirectMap.map((entry) => ({
+      source: entry.source,
+      destination: entry.destination,
+      permanent: true
+    }));
   },
   async headers() {
     return [
