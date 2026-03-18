@@ -17,7 +17,9 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
   const [products, setProducts] = useState<FinancialProduct[]>([]);
   const [category, setCategory] = useState<FinancialCategory | 'all'>(defaultCategory);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'rating' | 'apr_apy'>('rating');
+  const [sortBy, setSortBy] = useState<'rating' | 'apr_apy' | 'annual_fee'>('rating');
+  const [recommendedOnly, setRecommendedOnly] = useState(false);
+  const [noAnnualFeeOnly, setNoAnnualFeeOnly] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

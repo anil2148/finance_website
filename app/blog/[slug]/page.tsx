@@ -63,6 +63,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const schema = articleSchema(post.title, post.description, post.slug);
   const toc = getHeadings(post.content);
   const relatedLinks = getRelatedLinks(post.category);
+  const calculatorLinks = calculatorLinksByCategory[post.category.toLowerCase()] ?? defaultCalculatorLinks;
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',

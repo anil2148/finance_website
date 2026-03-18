@@ -7,7 +7,7 @@ type ConsentState = 'accepted' | 'rejected' | null;
 
 declare global {
   interface Window {
-    dataLayer?: unknown[];
+    dataLayer?: Array<Record<string, unknown>>;
     gtag?: (...args: unknown[]) => void;
     __fsTrackingEnabled?: boolean;
   }
@@ -24,7 +24,7 @@ function injectGoogleAnalytics(measurementId: string) {
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = function gtag(...args: unknown[]) {
-    window.dataLayer?.push(args);
+    window.dataLayer?.push({ gtagArgs: args });
   };
   window.gtag('js', new Date());
   window.gtag('config', measurementId, { send_page_view: true });
