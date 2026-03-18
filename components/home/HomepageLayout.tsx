@@ -128,8 +128,8 @@ export function HomepageLayout() {
                 className="object-cover"
               />
             </div>
-            <h2 className="text-xl font-semibold">Start here</h2>
-            <p className="text-sm text-cyan-100">Choose a goal and follow the same workflow our readers use: run your numbers, compare options, then read a practical guide.</p>
+            <h2 className="text-xl font-semibold">Workflow snapshot</h2>
+            <p className="text-sm text-cyan-100">Choose a goal and follow the same path our readers use: run your numbers, compare options, then read a focused guide.</p>
           </div>
         </div>
       </Card>

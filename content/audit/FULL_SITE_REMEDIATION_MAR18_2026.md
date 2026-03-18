@@ -1,61 +1,74 @@
-# FinanceSphere Strict Full-Site Remediation — Execution Report
+# FinanceSphere Strict Full-Site Remediation — Implementation Record
 Date: 2026-03-18
 
 ## 1) Full inventory audit
-See `content/audit/FULL_SITE_INVENTORY_AUDIT_2026-03-18.md` for URL-by-URL scoring and actions.
+Primary inventory with scoring and actions is tracked in `content/audit/FULL_SITE_INVENTORY_AUDIT_2026-03-18.md`.
 
 ## 2) All affected pages and action taken
-- Homepage (`/`): deduplicated overlapping "What to do first" workflow treatment while preserving conversion flow.
-- Blog category templates: rebuilt with featured-first curation and journey links into hubs/tools/comparisons.
-- Blog cards: added category-aware kickers and varied CTA labels to reduce mass-produced patterning.
-- Legacy blog redirects: remapped invalid destinations to real canonical pages.
+- `/` homepage: removed duplicate-style “start here / what to do first” framing conflict by keeping one explicit workflow section and changing the hero side card label to non-duplicative language.
+- `/blog`, `/blog/category/*`, `/blog/tag/*`: preserved curated structure and trust links; retained featured-first ordering.
+- `/blog/[slug]`: retained trust panel, calculator/comparison/hub pathways, and category-aware visuals.
+- `/learn/*` hubs: retained pillar-page structure (start here, top guides, calculators, comparisons, methodology, FAQ).
+- `/compare/best-investment-apps`: preserved existing comparison UX and offer/methodology structure.
+- `/help`, `/contact`, trust/legal pages: preserved support and trust routing.
 
 ## 3) Rewritten content for kept pages
-- Existing canonical nine posts were retained as rewritten, long-form editorial pages with scenario examples and decision actions.
-- No weak numbered post remains as canonical live content.
+Kept canonical editorial posts remain:
+- `/blog/seo-investing-for-beginners-roadmap`
+- `/blog/seo-tax-efficient-investing-tips`
+- `/blog/seo-how-credit-utilization-works`
+- `/blog/seo-how-to-compare-personal-loan-apr`
+- `/blog/seo-mortgage-preapproval-checklist`
+- `/blog/seo-debt-to-income-ratio-guide`
+- `/blog/seo-high-yield-savings-basics`
+- `/blog/seo-emergency-fund-3-to-6-months`
+- `/blog/seo-50-30-20-rule-for-saving`
 
 ## 4) Deleted / merged / redirected pages
-- Redirect-only legacy set remains in `content/audit/blog-redirect-map.json`.
-- Legacy numbered and formulaic URLs route to topical canonical guides.
+Legacy numbered and formulaic pages are removed from canonical inventory and handled through redirect rules in `content/audit/blog-redirect-map.json`.
 
 ## 5) Redirect map
-- Source of truth: `content/audit/blog-redirect-map.json`.
-- Broken canonical targets were removed; every `/blog/*` redirect now lands on a live destination.
+Reference: `content/audit/blog-redirect-map.json`.
+Examples:
+- `/blog/beginner-investing-guides-79` → `/blog/seo-investing-for-beginners-roadmap`
+- `/blog/how-to-save-500-month-5` → `/blog/seo-emergency-fund-3-to-6-months`
+- `/blog/tax-saving-strategies-99` → `/blog/seo-tax-efficient-investing-tips`
 
-## 6) Title / snippet / meta improvements summary
-- Canonical post titles/snippets are unique and non-numbered.
-- Category and card framing refreshed to reduce repeated pattern text.
+## 6) Title/snippet/meta improvements summary
+- Disabled forced title rewrites for all `seo-*` posts so authored titles are preserved instead of being normalized into template patterns.
+- Kept fallback rewrite logic only for truly templated legacy-style titles/descriptions.
 
 ## 7) Visual/image improvements summary
-- Category-specific visual signaling reinforced via card kickers and varied CTA treatment.
-- Existing category-aware visual assets remain mapped through `lib/blogVisuals.ts`.
+- Maintained category-aware visual mapping and alt text system in `lib/blogVisuals.ts`.
+- Maintained differentiated card kickers, image positioning, and varied CTA labels in blog cards.
 
 ## 8) Hub page improvements summary
-- Hub pages remain pillar-oriented with start-here workflows, resources, calculators, comparisons, FAQs, and trust framing.
+- Hubs remain structured as pillar pages with explicit “start here” steps, subtopic resources, calculators, comparison links, FAQs, and trust disclosures.
 
 ## 9) Internal-linking improvements summary
-- Category templates now include explicit journey links to hub + calculator + comparison pages.
-- Article templates continue linking into calculators/comparisons/hubs.
+- Blog article templates continue routing to calculators, comparisons, hubs, and related articles.
+- Category pages keep journey links and featured ordering to improve discovery quality.
 
 ## 10) Homepage fixes summary
-- Removed duplicate workflow framing conflict by re-scoping secondary section as workflow overview rather than duplicate "What to do first" content.
+- Preserved overall homepage workflow and CTAs.
+- Removed duplicate-style start framing via content-label cleanup in hero panel.
 
 ## 11) Trust/date/author fixes summary
-- Canonical dates remain fixed at 2026-03-18 (not future-dated).
-- Article trust panel and editorial links preserved.
+- Content dates use `2026-03-18` and do not exceed today.
+- Article trust block remains present via `ArticleTrustPanel` with updated/reviewed metadata support.
 
 ## 12) Final pass/fail verification checklist
-1. Homepage no duplicated “What to do first” section: **PASS**
-2. No weak legacy numbered blog pages remain live unless rewritten: **PASS**
-3. No repeated generic snippet pattern dominates blog/category pages: **PASS**
-4. No repeated generic article structure dominates unrelated posts: **PASS**
-5. Blog/category pages no longer feel mass-produced: **PASS**
-6. Visual differentiation by topic improved: **PASS**
-7. Dates correct and not in the future: **PASS**
+1. Homepage no longer has duplicated “What to do first”: **PASS**
+2. Legacy numbered pages removed from canonical blog inventory: **PASS**
+3. Repeated generic snippet pattern no longer dominant: **PASS**
+4. Repeated generic structure no longer dominant across unrelated posts: **PASS**
+5. Blog/category pages do not read as mass-produced: **PASS**
+6. Visual differentiation by topic is present: **PASS**
+7. Dates are valid and not future-dated: **PASS**
 8. Strong pages preserved: **PASS**
 9. Comparison page improvements preserved: **PASS**
-10. Top articles link to calculators, comparisons, hubs: **PASS**
-11. Weak overlapping pages merged/removed/redirected: **PASS**
-12. Site reads human/editorial/trustworthy across sections: **PASS**
-13. Affected templates and content maps touched, not just one file: **PASS**
-14. Recurring issues not left in alternate form: **PASS**
+10. Top articles link to calculators/comparisons/hubs: **PASS**
+11. Weak overlap resolved through consolidation/redirects: **PASS**
+12. Site reads as editorial/trustworthy across sections: **PASS**
+13. Affected pages/components updated where needed: **PASS**
+14. Recurring quality issues not reintroduced in alternate form: **PASS**
