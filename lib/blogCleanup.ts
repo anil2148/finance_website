@@ -24,38 +24,18 @@ type RedirectItem = {
 const bySlug = new Map<string, CleanupItem>((cleanupInventory as CleanupItem[]).map((item) => [item.slug, item]));
 const redirectsBySource = new Map<string, RedirectItem>((redirectMap as RedirectItem[]).map((item) => [item.source, item]));
 
-const fallbackLegacyPatternRedirects: Array<{ pattern: RegExp; destination: string; reason: RedirectItem['reason'] }> = [
-  { pattern: /^beginner-investing-guides-\d+$/, destination: '/blog/seo-investing-for-beginners-roadmap', reason: 'REDIRECT' },
-  { pattern: /^tax-saving-strategies-\d+$/, destination: '/blog/seo-tax-efficient-investing-tips', reason: 'REDIRECT' },
-  { pattern: /^how-to-save-500-month-\d+$/, destination: '/blog/seo-emergency-fund-3-to-6-months', reason: 'REDIRECT' },
-  { pattern: /^best-investment-apps-guide-\d+$/, destination: '/compare/best-investment-apps', reason: 'MERGE' },
-  { pattern: /^best-savings-accounts-guide-\d+$/, destination: '/best-savings-accounts-usa', reason: 'MERGE' },
-  { pattern: /^budgeting-guide-\d+$/, destination: '/blog/seo-50-30-20-rule-for-saving', reason: 'MERGE' },
-  { pattern: /^best-travel-credit-cards-guide-\d+$/, destination: '/best-credit-cards-2026', reason: 'MERGE' }
+const legacySlugFallbacks: Array<{ pattern: RegExp; destination: string; reason: RedirectItem['reason'] }> = [
+  { pattern: /^beginner-investing-guides-\d+$/i, destination: '/blog/seo-investing-for-beginners-roadmap', reason: 'REDIRECT' },
+  { pattern: /^tax-saving-strategies-\d+$/i, destination: '/blog/seo-tax-efficient-investing-tips', reason: 'REDIRECT' },
+  { pattern: /^tax-optimization-guide-\d+$/i, destination: '/blog/seo-tax-efficient-investing-tips', reason: 'REDIRECT' },
+  { pattern: /^budgeting-guide-\d+$/i, destination: '/blog/seo-50-30-20-rule-for-saving', reason: 'REDIRECT' },
+  { pattern: /^best-savings-accounts-\d+$/i, destination: '/blog/seo-high-yield-savings-basics', reason: 'REDIRECT' },
+  { pattern: /^best-investment-apps-\d+$/i, destination: '/blog/seo-investing-for-beginners-roadmap', reason: 'REDIRECT' },
+  { pattern: /^best-travel-credit-cards-\d+$/i, destination: '/blog/seo-how-credit-utilization-works', reason: 'REDIRECT' },
+  { pattern: /^how-to-save-500-month-\d+$/i, destination: '/blog/seo-emergency-fund-3-to-6-months', reason: 'REDIRECT' },
+  { pattern: /^mortgage-tips-\d+$/i, destination: '/blog/seo-mortgage-preapproval-checklist', reason: 'REDIRECT' },
+  { pattern: /^how-to-improve-credit-score-\d+$/i, destination: '/blog/seo-how-credit-utilization-works', reason: 'REDIRECT' }
 ];
-
-function fallbackLegacyRedirect(slug: string): RedirectItem | undefined {
-  const matched = fallbackLegacyPatternRedirects.find((item) => item.pattern.test(slug));
-  if (matched) {
-    return {
-      source: `/blog/${slug}`,
-      destination: matched.destination,
-      permanent: true,
-      reason: matched.reason
-    };
-  }
-
-  if (/(?:^|[-])(guide|tips|strategies)-\d+$/.test(slug)) {
-    return {
-      source: `/blog/${slug}`,
-      destination: '/blog',
-      permanent: true,
-      reason: 'REDIRECT'
-    };
-  }
-
-  return undefined;
-}
 
 export function getCleanupItem(slug: string) {
   return bySlug.get(slug);
@@ -68,7 +48,19 @@ export function shouldDisplayPost(slug: string) {
 }
 
 export function redirectForSlug(slug: string) {
-  return redirectsBySource.get(`/blog/${slug}`) ?? fallbackLegacyRedirect(slug);
+  const source = `/blog/${slug}`;
+  const exact = redirectsBySource.get(source);
+  if (exact) return exact;
+
+  const fallback = legacySlugFallbacks.find((entry) => entry.pattern.test(slug));
+  if (!fallback) return undefined;
+
+  return {
+    source,
+    destination: fallback.destination,
+    permanent: true,
+    reason: fallback.reason
+  } satisfies RedirectItem;
 }
 
 export function cleanupSummary() {
