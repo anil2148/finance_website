@@ -6,6 +6,30 @@ import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleC
 import { articleSchema } from '@/lib/seo';
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 
+const calculatorLinksByCategory: Record<string, Array<{ label: string; href: string }>> = {
+  budgeting: [
+    { label: 'Budget Planner', href: '/calculators/budget-planner' },
+    { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' }
+  ],
+  investing: [
+    { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
+    { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' }
+  ],
+  mortgages: [
+    { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
+    { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' }
+  ],
+  'credit cards': [
+    { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
+    { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' }
+  ]
+};
+
+const defaultCalculatorLinks = [
+  { label: 'Explore all calculators', href: '/calculators' },
+  { label: 'Compare products', href: '/comparison' }
+];
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
@@ -35,6 +59,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
   const schema = articleSchema(post.title, post.description, post.slug);
   const toc = getHeadings(post.content);
+  const calculatorLinks = calculatorLinksByCategory[post.category] ?? defaultCalculatorLinks;
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -52,7 +77,11 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <header className="space-y-2">
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <p className="text-slate-600">{post.description}</p>
-        {/* Sharing: social share buttons improve distribution and backlink opportunities. */}
+        <div className="flex flex-wrap gap-2 text-xs text-slate-500">
+          <span className="rounded-full border border-slate-200 px-3 py-1">Published: {post.date}</span>
+          <span className="rounded-full border border-slate-200 px-3 py-1">Reviewed by FinanceSphere editorial team</span>
+          <Link href="/financial-disclaimer" className="rounded-full border border-slate-200 px-3 py-1 hover:text-blue-700">Educational use only</Link>
+        </div>
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
       </header>
 
@@ -73,8 +102,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <section className="rounded-xl bg-blue-600 p-5 text-white">
         <h3 className="text-xl font-semibold">Put this guide into action</h3>
-        <p className="text-sm text-blue-100">Use FinanceSphere calculators and comparison pages to test numbers that match your situation before you make a decision.</p>
-        <a href="/comparison" className="mt-3 inline-flex rounded-lg bg-white px-4 py-2 font-semibold text-blue-700">Compare options</a>
+        <p className="text-sm text-blue-100">Use the matching calculators below first, then compare product options that fit your scenario.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {calculatorLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-700">
+              {item.label}
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section>
@@ -83,6 +118,16 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           <Link className="rounded-full border px-3 py-1" href="/calculators">Financial calculators</Link>
           <Link className="rounded-full border px-3 py-1" href="/tools">Finance tools</Link>
           <Link className="rounded-full border px-3 py-1" href="/comparison">Comparison pages</Link>
+          <Link className="rounded-full border px-3 py-1" href="/help">Help center</Link>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <h2 className="mb-2 text-xl font-semibold">Editorial standards</h2>
+        <p className="text-sm text-slate-700">Our guides are written for educational planning. We review content for clarity, accuracy, and practical action steps, and we disclose partner relationships transparently.</p>
+        <div className="mt-2 flex flex-wrap gap-2 text-sm">
+          <Link href="/affiliate-disclosure" className="font-semibold text-blue-700 hover:underline">Affiliate disclosure</Link>
+          <Link href="/contact" className="font-semibold text-blue-700 hover:underline">Suggest an update</Link>
         </div>
       </section>
 

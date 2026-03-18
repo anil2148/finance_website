@@ -24,8 +24,8 @@ type NewsletterApiResponse =
 const copyBySource: Record<string, { title: string; description: string; button: string }> = {
   homepage: {
     title: 'Get weekly planning ideas',
-    description: 'Receive one short email each week with practical calculator use-cases for debt, savings, and long-term planning.',
-    button: 'Send weekly ideas'
+    description: 'Receive one concise weekly email with calculator walkthroughs, offer updates, and practical actions you can take this week.',
+    button: 'Get weekly ideas'
   },
   blog: {
     title: 'Get new guides in your inbox',
@@ -113,23 +113,27 @@ export function NewsletterForm({ className, source }: NewsletterFormProps) {
   };
 
   return (
-    <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`}>
+    <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`} aria-busy={status === 'loading'}>
       <h3 className="text-lg font-semibold">{copy.title}</h3>
       <p className="text-sm text-slate-600">{copy.description}</p>
-      <input
-        className="input"
-        type="email"
-        autoComplete="email"
-        required
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-        placeholder="you@example.com"
-        aria-label="Email address"
-        aria-invalid={status === 'error'}
-      />
+      <label className="space-y-1 text-sm font-medium text-slate-700">
+        Email address
+        <input
+          className="input"
+          type="email"
+          autoComplete="email"
+          required
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="you@example.com"
+          aria-label="Email address"
+          aria-invalid={status === 'error'}
+        />
+      </label>
       <button className="btn-primary disabled:opacity-70" type="submit" disabled={status === 'loading'}>
         {status === 'loading' ? 'Submitting...' : copy.button}
       </button>
+      <p className="text-xs text-slate-500">No spam. Unsubscribe any time. By subscribing, you agree to our privacy policy.</p>
       {message ? (
         <p className={status === 'success' ? 'alert-success' : status === 'loading' ? 'text-sm text-slate-600' : 'text-sm text-red-600'} role="status" aria-live="polite">
           {message}
