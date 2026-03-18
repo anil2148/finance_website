@@ -24,8 +24,8 @@ const hubs: Record<string, HubConfig> = {
       'Automate contributions and review quarterly—not daily.'
     ],
     resources: [
-      { href: '/blog/seo-investing-for-beginners-roadmap', title: 'Investing for beginners roadmap', description: 'A practical sequence for choosing accounts, funds, and contribution cadence.', tag: 'Start here' },
-      { href: '/blog/seo-tax-efficient-investing-tips', title: 'Tax-efficient investing moves', description: 'Learn how account location and turnover discipline improve after-tax results.' },
+      { href: '/blog/beginner-investing-roadmap-year-one-milestones', title: 'Investing for beginners roadmap', description: 'A practical sequence for choosing accounts, funds, and contribution cadence.', tag: 'Start here' },
+      { href: '/blog/tax-efficient-investing-account-location-decisions', title: 'Tax-efficient investing moves', description: 'Learn how account location and turnover discipline improve after-tax results.' },
       { href: '/best-investment-apps', title: 'Best investment apps comparison', description: 'Compare platforms by fees, account types, and automation support.' }
     ],
     calculators: [
@@ -52,7 +52,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     resources: [
       { href: '/best-credit-cards-2026', title: 'Best credit cards comparison', description: 'Compare reward structures, annual fees, and intro APR terms.', tag: 'Start here' },
-      { href: '/blog/seo-how-credit-utilization-works', title: 'Credit utilization timing tactics', description: 'Use statement timing and per-card management to protect your score.' },
+      { href: '/blog/credit-utilization-statement-cycle-playbook', title: 'Credit utilization timing tactics', description: 'Use statement timing and per-card management to protect your score.' },
       { href: '/best-credit-cards', title: 'Best cards for everyday spending', description: 'Review no-fee and rewards-focused card structures for daily use.' }
     ],
     calculators: [
@@ -78,9 +78,9 @@ const hubs: Record<string, HubConfig> = {
       'Run payoff acceleration scenarios for 12- and 24-month prepayment options.'
     ],
     resources: [
-      { href: '/blog/seo-how-to-compare-personal-loan-apr', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
-      { href: '/blog/seo-mortgage-preapproval-checklist', title: 'Mortgage preapproval checklist', description: 'Prepare documents and timeline expectations to avoid underwriting delays.' },
-      { href: '/blog/seo-debt-to-income-ratio-guide', title: 'Debt-to-income ratio guide', description: 'Use front-end and back-end DTI targets to improve approval odds before applying.' }
+      { href: '/blog/personal-loan-comparison-for-bad-month-resilience', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
+      { href: '/blog/mortgage-preapproval-checklist-underwriting', title: 'Mortgage preapproval checklist', description: 'Prepare documents and timeline expectations to avoid underwriting delays.' },
+      { href: '/blog/debt-to-income-ratio-90-day-plan', title: 'Debt-to-income ratio guide', description: 'Use front-end and back-end DTI targets to improve approval odds before applying.' }
     ],
     calculators: [
       { href: '/calculators/loan-calculator', label: 'Loan calculator' },
@@ -105,9 +105,9 @@ const hubs: Record<string, HubConfig> = {
       'Automate savings and debt payments right after income lands.'
     ],
     resources: [
-      { href: '/blog/seo-50-30-20-rule-for-saving', title: 'How to adapt the 50/30/20 rule', description: 'Use a flexible spending split that still works in high-cost or debt-heavy months.', tag: 'Start here' },
-      { href: '/blog/seo-emergency-fund-3-to-6-months', title: 'Emergency fund target by risk level', description: 'Pick a 3-to-6 month reserve using job stability, dependents, and replacement-time risk.' },
-      { href: '/blog/seo-high-yield-savings-basics', title: 'How to choose a high-yield savings account', description: 'Compare APY quality, transfer speed, and account rules beyond headline rates.' }
+      { href: '/blog/budget-rule-based-reset', title: 'How to adapt the 50/30/20 rule', description: 'Use a flexible spending split that still works in high-cost or debt-heavy months.', tag: 'Start here' },
+      { href: '/blog/emergency-fund-target-by-recovery-timeline', title: 'Emergency fund target by risk level', description: 'Pick a 3-to-6 month reserve using job stability, dependents, and replacement-time risk.' },
+      { href: '/blog/how-to-choose-a-high-yield-savings-account', title: 'How to choose a high-yield savings account', description: 'Compare APY quality, transfer speed, and account rules beyond headline rates.' }
     ],
     calculators: [
       { href: '/calculators/budget-planner', label: 'Budget planner' },
@@ -132,9 +132,9 @@ const hubs: Record<string, HubConfig> = {
       'Track net return after taxes and fees, not gross yield alone.'
     ],
     resources: [
-      { href: '/blog/seo-tax-efficient-investing-tips', title: 'Tax-efficient investing basics', description: 'Improve after-tax outcomes with better asset location and contribution sequencing.', tag: 'Start here' },
-      { href: '/blog/seo-high-yield-savings-basics', title: 'High-yield savings account basics', description: 'Choose accounts by APY, transfer speed, withdrawal rules, and emergency access quality.' },
-      { href: '/blog/seo-investing-for-beginners-roadmap', title: 'Investing roadmap for beginners', description: 'Build a repeatable first-year investing system with realistic contribution pacing.' }
+      { href: '/blog/tax-efficient-investing-account-location-decisions', title: 'Tax-efficient investing basics', description: 'Improve after-tax outcomes with better asset location and contribution sequencing.', tag: 'Start here' },
+      { href: '/blog/how-to-choose-a-high-yield-savings-account', title: 'High-yield savings account basics', description: 'Choose accounts by APY, transfer speed, withdrawal rules, and emergency access quality.' },
+      { href: '/blog/beginner-investing-roadmap-year-one-milestones', title: 'Investing roadmap for beginners', description: 'Build a repeatable first-year investing system with realistic contribution pacing.' }
     ],
     calculators: [
       { href: '/calculators/compound-interest-calculator', label: 'Compound interest calculator' },
