@@ -27,6 +27,7 @@ const links: NavLink[] = [
   { label: 'Tools', children: [{ label: 'Calculators', href: '/calculators' }] },
   { label: 'Blog', href: '/blog' },
   { label: 'About', href: '/about' },
+  { label: 'Help', href: '/help' },
   { label: 'Contact', href: '/contact' }
 ];
 
