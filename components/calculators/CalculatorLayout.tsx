@@ -154,10 +154,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       <SocialShareButtons title={definition.title} url={`https://financesphere.io/calculators/${slug}`} />
 
       {showGuide && (
-        <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900" role="status">
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-100" role="status">
           <p className="font-semibold">{guideMessage.title}</p>
           <p>{guideMessage.body}</p>
-          <button type="button" onClick={dismissGuide} className="mt-2 rounded-lg bg-indigo-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-800">
+          <button type="button" onClick={dismissGuide} className="mt-2 rounded-lg bg-indigo-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
             Dismiss
           </button>
         </div>
@@ -165,10 +165,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
       <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
         <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Calculator Directory</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Calculator Directory</h2>
           <div className="grid gap-1 text-sm">
             {calculatorDefinitions.map((item) => (
-              <Link key={item.slug} href={`/calculators/${item.slug}`} className={`rounded-lg px-2 py-1 transition hover:bg-slate-100 dark:hover:bg-slate-800 ${item.slug === slug ? 'bg-slate-100 font-semibold text-brand dark:bg-slate-800' : ''}`}>
+              <Link key={item.slug} href={`/calculators/${item.slug}`} className={`rounded-lg px-2 py-1 text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 ${item.slug === slug ? 'bg-slate-100 font-semibold text-brand dark:bg-slate-800 dark:text-blue-300' : ''}`}>
                 {item.title}
               </Link>
             ))}
@@ -184,7 +184,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             </div>
 
             <div className="space-y-6">
-              {isRatesLoading && <p className="text-xs text-slate-500">Loading live exchange rates…</p>}
+              {isRatesLoading && <p className="text-xs text-slate-500 dark:text-slate-400">Loading live exchange rates…</p>}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {result.summary.map((item) => (
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`} />
@@ -202,7 +202,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 </button>
                 <DownloadPdfButton targetRef={exportRef} calculatorTitle={definition.title} />
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
-                {savedMessage && <p className="text-xs text-emerald-700" role="status">{savedMessage}</p>}
+                {savedMessage && <p className="text-xs text-emerald-700 dark:text-emerald-300" role="status">{savedMessage}</p>}
               </div>
 
               <div className="grid gap-4 lg:grid-cols-2">
@@ -216,7 +216,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            <h2 className="mb-3 text-lg font-semibold">Breakdown Table</h2>
+            <h2 className="mb-3 text-lg font-semibold text-slate-900 dark:text-slate-100">Breakdown Table</h2>
             <table className="w-full text-sm">
               <tbody>
                 {result.breakdown.map((row) => (
@@ -233,7 +233,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
       <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
         <div>
-          <h2 className="text-xl font-semibold">Frequently Asked Questions</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently Asked Questions</h2>
           <ul className="mt-3 space-y-3 text-sm text-slate-700 dark:text-slate-300">
             {definition.faq.map((item) => (
               <li key={item.question}>
@@ -244,16 +244,16 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </ul>
         </div>
         <div>
-          <h2 className="text-xl font-semibold">Learn More</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Learn More</h2>
           <ul className="mt-3 space-y-2 text-sm">
             {definition.blogLinks.map((link) => (
               <li key={link.href}>
-                <Link className="text-indigo-600 hover:text-indigo-800" href={link.href}>{link.title}</Link>
+                <Link className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200" href={link.href}>{link.title}</Link>
               </li>
             ))}
             <li>
               {/* Internal linking: guide users from calculator results to comparison intent pages. */}
-              <Link className="text-indigo-600 hover:text-indigo-800" href="/comparison">Compare financial products</Link>
+              <Link className="text-indigo-600 hover:text-indigo-800 dark:text-indigo-300 dark:hover:text-indigo-200" href="/comparison">Compare financial products</Link>
             </li>
           </ul>
         </div>

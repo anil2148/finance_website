@@ -38,7 +38,7 @@ function renderInline(text: string) {
         nodes.push(
           <a
             key={`a-${key++}`}
-            className="text-blue-600 underline decoration-blue-300 underline-offset-4 hover:text-blue-700"
+            className="text-blue-600 underline decoration-blue-300 underline-offset-4 hover:text-blue-700 dark:text-blue-300 dark:decoration-blue-500 dark:hover:text-blue-200"
             href={parts[2]}
           >
             {parts[1]}
@@ -98,7 +98,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
           const paragraph = paragraphBuffer.join(' ').trim();
           if (paragraph) {
             elements.push(
-              <p key={`${section.id}-p-${elements.length}`} className="leading-7 text-slate-700">
+              <p key={`${section.id}-p-${elements.length}`} className="leading-7 text-slate-700 dark:text-slate-300">
                 {renderInline(paragraph)}
               </p>
             );
@@ -117,7 +117,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
           if (line.startsWith('### ')) {
             flushParagraph();
             elements.push(
-              <h4 key={`${section.id}-h-${i}`} className="text-base font-semibold text-slate-900">
+              <h4 key={`${section.id}-h-${i}`} className="text-base font-semibold text-slate-900 dark:text-slate-100">
                 {line.replace(/^###\s+/, '').trim()}
               </h4>
             );
@@ -135,7 +135,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             }
 
             elements.push(
-              <ul key={`${section.id}-ul-${i}`} className="list-disc space-y-1 pl-6 text-slate-700">
+              <ul key={`${section.id}-ul-${i}`} className="list-disc space-y-1 pl-6 text-slate-700 dark:text-slate-300">
                 {listItems.map((item) => (
                   <li key={`${section.id}-li-${item}`}>{renderInline(item)}</li>
                 ))}
@@ -157,7 +157,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             }
 
             elements.push(
-              <ol key={`${section.id}-ol-${i}`} className="list-decimal space-y-1 pl-6 text-slate-700">
+              <ol key={`${section.id}-ol-${i}`} className="list-decimal space-y-1 pl-6 text-slate-700 dark:text-slate-300">
                 {listItems.map((item) => (
                   <li key={`${section.id}-oi-${item}`}>{renderInline(item)}</li>
                 ))}
@@ -178,9 +178,9 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             key={section.id}
             id={section.id}
             open={idx === 0}
-            className="rounded-xl border border-slate-200 bg-white p-4 open:shadow-sm"
+            className="rounded-xl border border-slate-200 bg-white p-4 open:shadow-sm dark:border-slate-700 dark:bg-slate-900"
           >
-            <summary className="cursor-pointer list-none text-lg font-semibold text-slate-900">
+            <summary className="cursor-pointer list-none text-lg font-semibold text-slate-900 dark:text-slate-100">
               <span>{section.title}</span>
             </summary>
             <div className="mt-4 space-y-3">{elements}</div>

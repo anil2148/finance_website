@@ -126,11 +126,11 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
   return (
     <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`} aria-busy={status === 'loading'}>
       <h3 className="text-lg font-semibold">{copy.title}</h3>
-      <p className="text-sm text-slate-600">{copy.description}</p>
+      <p className="text-sm text-slate-600 dark:text-slate-300">{copy.description}</p>
 
       {step === 1 ? (
         <div className="space-y-3">
-          <label className="text-sm font-medium" htmlFor="newsletter-persona">What best describes your current goal?</label>
+          <label className="text-sm font-medium text-slate-800 dark:text-slate-100" htmlFor="newsletter-persona">What best describes your current goal?</label>
           <select id="newsletter-persona" className="input" value={persona} onChange={(event) => setPersona(event.target.value)}>
             <option value="beginner">I am building the basics</option>
             <option value="debt-payoff">I am focused on debt payoff</option>
@@ -157,9 +157,9 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
         </>
       )}
 
-      <p className="text-xs text-slate-500">Lead magnet: <span className="font-medium">{leadMagnet.replace(/-/g, ' ')}</span></p>
+      <p className="text-xs text-slate-500 dark:text-slate-400">Lead magnet: <span className="font-medium">{leadMagnet.replace(/-/g, ' ')}</span></p>
       {message ? (
-        <p className={status === 'success' ? 'alert-success' : status === 'loading' ? 'text-sm text-slate-600' : 'text-sm text-red-600'} role="status" aria-live="polite">
+        <p className={status === 'success' ? 'alert-success' : status === 'loading' ? 'text-sm text-slate-600 dark:text-slate-300' : 'text-sm text-red-600 dark:text-red-300'} role="status" aria-live="polite">
           {message}
         </p>
       ) : null}

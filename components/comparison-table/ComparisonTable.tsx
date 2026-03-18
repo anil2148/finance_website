@@ -45,11 +45,11 @@ export function ComparisonTable({ data }: { data: Product[] }) {
           <div className="relative">
             <Listbox.Button className="input flex items-center justify-between">
               <span>{sortBy.label}</span>
-              <ChevronUpDownIcon className="h-5 w-5 text-slate-500" />
+              <ChevronUpDownIcon className="h-5 w-5 text-slate-500 dark:text-slate-400" />
             </Listbox.Button>
-            <Listbox.Options className="absolute z-10 mt-2 w-full rounded-xl border border-slate-200 bg-white p-1 shadow-lg">
+            <Listbox.Options className="absolute z-10 mt-2 w-full rounded-xl border border-slate-200 bg-white p-1 shadow-lg dark:border-slate-600 dark:bg-slate-900">
               {sortOptions.map((option) => (
-                <Listbox.Option key={option.key} value={option} className="cursor-pointer rounded-lg px-3 py-2 hover:bg-slate-100">
+                <Listbox.Option key={option.key} value={option} className="cursor-pointer rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-800">
                   {({ selected }) => (
                     <div className="flex items-center justify-between">
                       <span>{option.label}</span>
@@ -72,7 +72,7 @@ export function ComparisonTable({ data }: { data: Product[] }) {
 
       <div className="table-shell max-h-[32rem]">
         <table className="min-w-full text-sm">
-          <thead className="sticky top-0 z-10 bg-slate-100 text-left">
+          <thead className="sticky top-0 z-10 bg-slate-100 text-left dark:bg-slate-800 dark:text-slate-100">
             <tr>
               <th className="p-3">Name</th>
               <th className="p-3">Rate</th>
@@ -85,7 +85,7 @@ export function ComparisonTable({ data }: { data: Product[] }) {
           </thead>
           <tbody>
             {rows.map((r) => (
-              <tr key={r.name} className="border-t border-slate-200 transition hover:bg-blue-50/50">
+              <tr key={r.name} className="border-t border-slate-200 transition hover:bg-blue-50/50 dark:border-slate-700 dark:hover:bg-blue-500/10">
                 <td className="p-3 font-medium">{r.name}</td>
                 <td className="p-3">{r.interest_rate}%</td>
                 <td className="p-3">${r.annual_fee}</td>
