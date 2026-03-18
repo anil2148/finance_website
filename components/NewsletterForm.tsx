@@ -1,13 +1,25 @@
 'use client';
 
 import { FormEvent, useMemo, useState } from 'react';
+import { isValidEmail, normalizeEmail } from '@/lib/newsletter/validation';
 
 type NewsletterFormProps = {
   className?: string;
   source?: string;
 };
 
-const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+type NewsletterApiResponse =
+  | {
+      success: true;
+      message?: string;
+    }
+  | {
+      success: false;
+      error?: {
+        code?: string;
+        message?: string;
+      };
+    };
 
 const copyBySource: Record<string, { title: string; description: string; button: string }> = {
   homepage: {
@@ -28,6 +40,26 @@ const defaultCopy = {
   button: 'Subscribe'
 };
 
+function getClientErrorMessage(response: NewsletterApiResponse) {
+  if (response.success || !response.error?.code) {
+    return response.success ? response.message ?? 'Check your email to confirm subscription.' : 'Unable to process subscription right now.';
+  }
+
+  switch (response.error.code) {
+    case 'INVALID_EMAIL':
+      return 'Please enter a valid email address.';
+    case 'INVALID_JSON':
+    case 'INVALID_CONTENT_TYPE':
+      return 'Something went wrong while submitting the form. Please refresh and try again.';
+    case 'TOKEN_CONFIG_ERROR':
+      return 'Newsletter setup is currently unavailable. Please try again later.';
+    case 'EMAIL_PROVIDER_ERROR':
+      return 'Unable to send confirmation email right now. Please try again in a moment.';
+    default:
+      return response.error.message ?? 'Unable to process subscription right now.';
+  }
+}
+
 export function NewsletterForm({ className, source }: NewsletterFormProps) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -37,35 +69,43 @@ export function NewsletterForm({ className, source }: NewsletterFormProps) {
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!emailPattern.test(email.trim())) {
+    if (status === 'loading') {
+      return;
+    }
+
+    const normalizedEmail = normalizeEmail(email);
+
+    if (!isValidEmail(normalizedEmail)) {
       setStatus('error');
       setMessage('Please enter a valid email address.');
       return;
     }
 
     setStatus('loading');
-    setMessage('');
+    setMessage('Submitting...');
 
     try {
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Accept: 'application/json'
         },
-        body: JSON.stringify({ email: email.trim() })
+        body: JSON.stringify({ email: normalizedEmail })
       });
 
-      const payload = (await response.json()) as { message?: string; error?: string };
+      const payload = (await response.json()) as NewsletterApiResponse;
 
       if (!response.ok) {
         setStatus('error');
-        setMessage(payload.error ?? 'Unable to subscribe right now.');
+        setMessage(getClientErrorMessage(payload));
         return;
       }
 
+      const successMessage = payload.success ? payload.message : undefined;
       setStatus('success');
       setEmail('');
-      setMessage(payload.message ?? 'Check your email to confirm subscription.');
+      setMessage(successMessage ?? 'Check your email to confirm subscription.');
     } catch {
       setStatus('error');
       setMessage('Network error. Please try again.');
@@ -85,12 +125,13 @@ export function NewsletterForm({ className, source }: NewsletterFormProps) {
         onChange={(event) => setEmail(event.target.value)}
         placeholder="you@example.com"
         aria-label="Email address"
+        aria-invalid={status === 'error'}
       />
       <button className="btn-primary disabled:opacity-70" type="submit" disabled={status === 'loading'}>
         {status === 'loading' ? 'Submitting...' : copy.button}
       </button>
       {message ? (
-        <p className={status === 'success' ? 'alert-success' : 'text-sm text-red-600'} role="status" aria-live="polite">
+        <p className={status === 'success' ? 'alert-success' : status === 'loading' ? 'text-sm text-slate-600' : 'text-sm text-red-600'} role="status" aria-live="polite">
           {message}
         </p>
       ) : null}
