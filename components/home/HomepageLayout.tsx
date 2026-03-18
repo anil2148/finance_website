@@ -31,18 +31,38 @@ const popularCalculators = [
   }
 ];
 
-const quickStartSteps = [
+const goalCards = [
   {
-    title: '1) Run a calculator first',
-    description: 'Start with your immediate decision (mortgage, debt, savings, retirement) to get a realistic range.'
+    title: 'Pay off debt faster',
+    description: 'Estimate payoff dates and interest savings, then compare balance transfer cards or consolidation loans that fit your profile.',
+    primaryLabel: 'Start with the Debt Payoff Calculator',
+    primaryHref: '/calculators/debt-payoff-calculator',
+    secondaryLabel: 'Compare consolidation options',
+    secondaryHref: '/comparison?category=personal_loan'
   },
   {
-    title: '2) Compare products with your numbers',
-    description: 'Filter offers by APR/APY, annual fees, and product fit so recommendations match your constraints.'
+    title: 'Compare investing apps',
+    description: 'Model how much you can invest each month, then review platforms by fees, account types, and beginner-friendly tools.',
+    primaryLabel: 'Run an investment growth projection',
+    primaryHref: '/calculators/investment-growth-calculator',
+    secondaryLabel: 'See best investment apps',
+    secondaryHref: '/best-investment-apps'
   },
   {
-    title: '3) Use a guide to pressure-test your plan',
-    description: 'Read tactical explainers and checklists before taking action to reduce expensive mistakes.'
+    title: 'Estimate mortgage costs',
+    description: 'Test home prices, down payments, and rates to see affordable monthly payments before speaking with lenders.',
+    primaryLabel: 'Use the Mortgage Calculator',
+    primaryHref: '/calculators/mortgage-calculator',
+    secondaryLabel: 'Compare mortgage offers',
+    secondaryHref: '/compare/mortgage-rate-comparison'
+  },
+  {
+    title: 'Plan for retirement',
+    description: 'Estimate how much you may need, where you are today, and account types that can help close the gap.',
+    primaryLabel: 'Check your retirement trajectory',
+    primaryHref: '/calculators/retirement-calculator',
+    secondaryLabel: 'Read retirement planning basics',
+    secondaryHref: '/learn/investing'
   }
 ];
 
@@ -67,7 +87,7 @@ const tools = [
 const trustSignals = [
   { label: 'Educational, not personalized advice', href: '/financial-disclaimer' },
   { label: 'Affiliate transparency and editorial independence', href: '/affiliate-disclosure' },
-  { label: 'How to get help and report issues', href: '/help' }
+  { label: 'How FinanceSphere evaluates products', href: '/editorial-policy' }
 ];
 
 export function HomepageLayout() {
@@ -109,20 +129,28 @@ export function HomepageLayout() {
               />
             </div>
             <h2 className="text-xl font-semibold">What to do first</h2>
-            <p className="text-sm text-cyan-100">Choose your goal below and move through the same workflow our readers use to make faster decisions.</p>
-            <ul className="space-y-2 text-sm text-cyan-50">
-              {quickStartSteps.map((step) => (
-                <li key={step.title} className="rounded-lg border border-white/15 bg-white/5 p-2">
-                  <p className="font-semibold">{step.title}</p>
-                  <p className="text-cyan-100">{step.description}</p>
-                </li>
-              ))}
-            </ul>
+            <p className="text-sm text-cyan-100">Choose a goal and follow the same workflow our readers use: run your numbers, compare options, then read a practical guide.</p>
           </div>
         </div>
       </Card>
 
 
+      <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900">What to do first</h2>
+        <p className="mt-2 text-sm text-slate-600">Pick a goal to start with a calculator, move to comparisons, and finish with a focused guide.</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          {goalCards.map((goal) => (
+            <article key={goal.title} className="rounded-xl border border-slate-200 p-4">
+              <h3 className="text-lg font-semibold text-slate-900">{goal.title}</h3>
+              <p className="mt-2 text-sm text-slate-600">{goal.description}</p>
+              <div className="mt-3 space-y-1 text-sm">
+                <Link href={goal.primaryHref} className="block font-semibold text-blue-700 hover:underline">{goal.primaryLabel}</Link>
+                <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline">{goal.secondaryLabel}</Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
         <Link href="/comparison?category=investment_app" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
