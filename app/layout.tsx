@@ -8,6 +8,7 @@ import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const siteUrl = 'https://financesphere.io';
 const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
@@ -93,6 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <Footer />
         </PreferenceProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
