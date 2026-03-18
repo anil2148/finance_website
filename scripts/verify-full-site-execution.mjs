@@ -27,8 +27,9 @@ const redirects = JSON.parse(fs.readFileSync(redirectMapFile, 'utf8'));
 const redirectSources = new Set(redirects.map((entry) => entry.source));
 
 const requiredLegacy = [
-  ['/blog/beginner-investing-guides-79', '/blog/seo-investing-for-beginners-roadmap'],
-  ['/blog/tax-saving-strategies-99', '/blog/seo-tax-efficient-investing-tips']
+  ['/blog/beginner-investing-guides-79', '/blog/beginner-investing-roadmap-year-one-milestones'],
+  ['/blog/tax-saving-strategies-99', '/blog/tax-efficient-investing-account-location-decisions'],
+  ['/blog/how-to-save-500-month-5', '/blog/how-to-choose-a-high-yield-savings-account']
 ];
 
 for (const [source, destination] of requiredLegacy) {

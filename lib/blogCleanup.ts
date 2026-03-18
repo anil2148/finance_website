@@ -25,16 +25,16 @@ const bySlug = new Map<string, CleanupItem>((cleanupInventory as CleanupItem[]).
 const redirectsBySource = new Map<string, RedirectItem>((redirectMap as RedirectItem[]).map((item) => [item.source, item]));
 
 const legacySlugFallbacks: Array<{ pattern: RegExp; destination: string; reason: RedirectItem['reason'] }> = [
-  { pattern: /^beginner-investing-guides-\d+$/i, destination: '/blog/seo-investing-for-beginners-roadmap', reason: 'REDIRECT' },
-  { pattern: /^tax-saving-strategies-\d+$/i, destination: '/blog/seo-tax-efficient-investing-tips', reason: 'REDIRECT' },
-  { pattern: /^tax-optimization-guide-\d+$/i, destination: '/blog/seo-tax-efficient-investing-tips', reason: 'REDIRECT' },
+  { pattern: /^beginner-investing-guides-\d+$/i, destination: '/blog/beginner-investing-roadmap-year-one-milestones', reason: 'REDIRECT' },
+  { pattern: /^tax-saving-strategies-\d+$/i, destination: '/blog/tax-efficient-investing-account-location-decisions', reason: 'REDIRECT' },
+  { pattern: /^tax-optimization-guide-\d+$/i, destination: '/blog/tax-efficient-investing-account-location-decisions', reason: 'REDIRECT' },
   { pattern: /^budgeting-guide-\d+$/i, destination: '/blog/seo-50-30-20-rule-for-saving', reason: 'REDIRECT' },
-  { pattern: /^best-savings-accounts-\d+$/i, destination: '/blog/seo-high-yield-savings-basics', reason: 'REDIRECT' },
-  { pattern: /^best-investment-apps-\d+$/i, destination: '/blog/seo-investing-for-beginners-roadmap', reason: 'REDIRECT' },
-  { pattern: /^best-travel-credit-cards-\d+$/i, destination: '/blog/seo-how-credit-utilization-works', reason: 'REDIRECT' },
-  { pattern: /^how-to-save-500-month-\d+$/i, destination: '/blog/seo-emergency-fund-3-to-6-months', reason: 'REDIRECT' },
+  { pattern: /^best-savings-accounts-\d+$/i, destination: '/blog/how-to-choose-a-high-yield-savings-account', reason: 'REDIRECT' },
+  { pattern: /^best-investment-apps-\d+$/i, destination: '/blog/beginner-investing-roadmap-year-one-milestones', reason: 'REDIRECT' },
+  { pattern: /^best-travel-credit-cards-\d+$/i, destination: '/blog/credit-utilization-statement-cycle-playbook', reason: 'REDIRECT' },
+  { pattern: /^how-to-save-500-month-\d+$/i, destination: '/blog/how-to-choose-a-high-yield-savings-account', reason: 'REDIRECT' },
   { pattern: /^mortgage-tips-\d+$/i, destination: '/blog/seo-mortgage-preapproval-checklist', reason: 'REDIRECT' },
-  { pattern: /^how-to-improve-credit-score-\d+$/i, destination: '/blog/seo-how-credit-utilization-works', reason: 'REDIRECT' }
+  { pattern: /^how-to-improve-credit-score-\d+$/i, destination: '/blog/credit-utilization-statement-cycle-playbook', reason: 'REDIRECT' }
 ];
 
 export function getCleanupItem(slug: string) {
