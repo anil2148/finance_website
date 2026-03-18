@@ -13,15 +13,15 @@
 
   /* Comparison dropdown styles in the top navbar. */
   .comparison-nav-trigger {
-    @apply cursor-pointer rounded-md px-1 py-0.5 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60;
+    @apply cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60;
   }
 
   .comparison-dropdown {
-    @apply invisible absolute left-0 top-full z-30 mt-2 min-w-52 rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100 dark:border-slate-700 dark:bg-slate-900;
+    @apply invisible absolute left-0 top-full z-30 mt-2 min-w-60 rounded-xl border border-slate-200 bg-white p-2 opacity-0 shadow-lg transition-all duration-150 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 dark:border-slate-700 dark:bg-slate-900;
   }
 
   .comparison-dropdown-link {
-    @apply block rounded-lg px-3 py-2 text-sm hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 dark:hover:bg-slate-800;
+    @apply block rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/60 dark:text-slate-200 dark:hover:bg-slate-800;
   }
 
   /* Comparison category menu styles for the offers page. */
