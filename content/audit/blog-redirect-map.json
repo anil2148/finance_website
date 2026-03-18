@@ -5910,12 +5910,6 @@
     "reason": "MERGE"
   },
   {
-    "source": "/blog/seo-dollar-cost-averaging-guide",
-    "destination": "/blog/beginner-investing-roadmap-year-one-milestones",
-    "permanent": true,
-    "reason": "REDIRECT"
-  },
-  {
     "source": "/blog/seo-emergency-fund-3-to-6-months",
     "destination": "/blog/emergency-fund-target-by-recovery-timeline",
     "permanent": true,
@@ -6163,12 +6157,6 @@
   },
   {
     "source": "/blog/seo-retirement-accounts-101",
-    "destination": "/blog/tax-efficient-investing-account-location-decisions",
-    "permanent": true,
-    "reason": "REDIRECT"
-  },
-  {
-    "source": "/blog/seo-roth-vs-traditional-ira",
     "destination": "/blog/tax-efficient-investing-account-location-decisions",
     "permanent": true,
     "reason": "REDIRECT"
