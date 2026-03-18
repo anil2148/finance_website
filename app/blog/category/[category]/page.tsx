@@ -102,9 +102,9 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     shell: 'from-amber-50 to-orange-50'
   },
   mortgages: {
-    src: '/images/blog-visual-mortgage-home.svg',
-    alt: 'Mortgage planning board with home price, down-payment, and rate range checkpoints',
-    shell: 'from-cyan-50 to-blue-50'
+    src: '/images/comparison-analytics-illustration.svg',
+    alt: 'Mortgage affordability and closing-cost analysis dashboard illustration',
+    shell: 'from-teal-50 to-cyan-50'
   },
   'credit-cards': {
     src: '/images/blog-visual-credit.svg',
