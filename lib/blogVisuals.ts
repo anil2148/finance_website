@@ -73,8 +73,8 @@ const visualPools: Array<{ keyword: string; variants: VisualVariant[] }> = [
     keyword: 'mortgage',
     variants: [
       {
-        src: '/images/blog-visual-mortgage.svg',
-        alt: 'Mortgage planning dashboard showing payment range and preapproval milestones',
+        src: '/images/blog-visual-mortgage-home.svg',
+        alt: 'Mortgage decision dashboard with rate, home price, and payment checkpoints',
         cardClassName: 'from-sky-50 via-blue-50 to-indigo-100',
         heroClassName: 'from-sky-50 via-blue-50 to-indigo-100'
       },
@@ -207,9 +207,9 @@ const slugVisualOverrides: Record<string, BlogVisual> = {
     cardClassName: 'from-teal-50 via-cyan-50 to-sky-100',
     heroClassName: 'from-teal-50 via-cyan-50 to-sky-100'
   },
-  'mortgage-preapproval-checklist-underwriting': {
-    src: '/images/blog-visual-loans-docs.svg',
-    alt: 'Mortgage preapproval document stack organized by underwriter review stages',
+  'seo-mortgage-preapproval-checklist': {
+    src: '/images/blog-visual-mortgage-home.svg',
+    alt: 'Mortgage preapproval planning board linking document readiness to payment affordability targets',
     cardClassName: 'from-sky-50 via-blue-50 to-indigo-100',
     heroClassName: 'from-sky-50 via-blue-50 to-indigo-100'
   },

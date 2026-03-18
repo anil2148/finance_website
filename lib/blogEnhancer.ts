@@ -24,8 +24,7 @@ const THIN_PATTERNS = [
   'Step-by-step plan',
   'Option A',
   'Option B',
-  'with practical steps, examples, and expert tips',
-  'Complete Guide'
+  'with practical steps, examples, and expert tips'
 ];
 
 const REPETITIVE_TITLE_PATTERNS = [/practical\s+\d{4}\s+guide\s*#\d+/i, /complete guide\s*\(\d{4}\)/i, /guide\s*#\d+/i];

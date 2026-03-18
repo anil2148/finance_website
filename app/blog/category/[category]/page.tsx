@@ -64,7 +64,7 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
     { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
   ],
   mortgages: [
-    { href: '/learn/loans', label: 'Home Financing Hub' },
+    { href: '/learn/loans', label: 'Mortgage & Loans Hub' },
     { href: '/calculators/mortgage-calculator', label: 'Mortgage Calculator' },
     { href: '/compare/mortgage-rate-comparison', label: 'Compare Mortgage Rates' }
   ],
@@ -81,17 +81,12 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
   budgeting: [
     { href: '/learn/budgeting', label: 'Budgeting Hub' },
     { href: '/calculators/budget-planner', label: 'Budget Planner' },
-    { href: '/tools', label: 'All tools' }
+    { href: '/compare/high-yield-savings-accounts', label: 'Compare High-Yield Savings' }
   ],
   tax: [
-    { href: '/learn/investing', label: 'Investing Hub' },
-    { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' },
-    { href: '/best-investment-apps', label: 'Best Investment Apps' }
-  ],
-  'passive-income': [
-    { href: '/learn/investing', label: 'Investing Hub' },
-    { href: '/calculators/investment-growth-calculator', label: 'Investment Growth Calculator' },
-    { href: '/comparison', label: 'Comparison Center' }
+    { href: '/learn/investing', label: 'Tax-Aware Investing Hub' },
+    { href: '/calculators/salary-after-tax-calculator', label: 'Salary After-Tax Calculator' },
+    { href: '/best-investment-apps', label: 'Tax-Friendly Brokerage Options' }
   ]
 };
 
@@ -107,9 +102,9 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     shell: 'from-amber-50 to-orange-50'
   },
   mortgages: {
-    src: '/images/comparison-analytics-illustration.svg',
-    alt: 'Mortgage payment and closing-cost comparison dashboard illustration',
-    shell: 'from-teal-50 to-cyan-50'
+    src: '/images/blog-visual-mortgage-home.svg',
+    alt: 'Mortgage planning board with home price, down-payment, and rate range checkpoints',
+    shell: 'from-cyan-50 to-blue-50'
   },
   'credit-cards': {
     src: '/images/blog-visual-credit.svg',
