@@ -143,6 +143,25 @@ const visualPools: Array<{ keyword: string; variants: VisualVariant[] }> = [
       }
     ]
   },
+
+  {
+    keyword: 'passive-income',
+    variants: [
+      {
+        src: '/images/blog-visual-investing-growth.svg',
+        alt: 'Passive-income mix tracker showing dividend, interest, and cash-flow streams',
+        cardClassName: 'from-emerald-50 via-teal-50 to-cyan-100',
+        heroClassName: 'from-emerald-50 via-teal-50 to-cyan-100'
+      },
+      {
+        src: '/images/blog-visual-savings-cashflow.svg',
+        alt: 'Recurring income calendar with cash-flow stability checkpoints',
+        cardClassName: 'from-cyan-50 via-sky-50 to-indigo-100',
+        heroClassName: 'from-cyan-50 via-sky-50 to-indigo-100'
+      }
+    ]
+  },
+
   {
     keyword: 'tax',
     variants: [

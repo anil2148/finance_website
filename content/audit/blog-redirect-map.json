@@ -480,6 +480,18 @@
     "reason": "MERGE"
   },
   {
+    "source": "/blog/seo-automate-your-savings-plan",
+    "destination": "/blog/seo-50-30-20-rule-for-saving",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/seo-avoid-credit-card-interest",
+    "destination": "/blog/seo-how-credit-utilization-works",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
     "source": "/blog/seo-avoid-emotional-investing",
     "destination": "/blog/seo-investing-for-beginners-roadmap",
     "permanent": true,
@@ -490,6 +502,12 @@
     "destination": "/blog/seo-how-credit-utilization-works",
     "permanent": true,
     "reason": "CONVERT_HUB_SUPPORT"
+  },
+  {
+    "source": "/blog/seo-balance-transfer-strategy",
+    "destination": "/blog/seo-how-credit-utilization-works",
+    "permanent": true,
+    "reason": "REDIRECT"
   },
   {
     "source": "/blog/seo-best-cards-for-dining",
@@ -508,6 +526,12 @@
     "destination": "/blog/seo-best-first-credit-card",
     "permanent": true,
     "reason": "MERGE"
+  },
+  {
+    "source": "/blog/seo-best-first-credit-card",
+    "destination": "/blog/seo-how-credit-utilization-works",
+    "permanent": true,
+    "reason": "REDIRECT"
   },
   {
     "source": "/blog/seo-best-savings-goals-by-age",
@@ -648,6 +672,12 @@
     "reason": "MERGE"
   },
   {
+    "source": "/blog/seo-dollar-cost-averaging-guide",
+    "destination": "/blog/seo-investing-for-beginners-roadmap",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
     "source": "/blog/seo-esg-investing-basics",
     "destination": "/blog/seo-investing-for-beginners-roadmap",
     "permanent": true,
@@ -708,6 +738,12 @@
     "reason": "MERGE"
   },
   {
+    "source": "/blog/seo-how-to-read-expense-ratios",
+    "destination": "/blog/seo-investing-for-beginners-roadmap",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
     "source": "/blog/seo-how-to-rebalance-portfolio",
     "destination": "/blog/seo-investing-for-beginners-roadmap",
     "permanent": true,
@@ -730,6 +766,12 @@
     "destination": "/blog/seo-best-first-credit-card",
     "permanent": true,
     "reason": "MERGE"
+  },
+  {
+    "source": "/blog/seo-index-funds-vs-etfs",
+    "destination": "/blog/seo-investing-for-beginners-roadmap",
+    "permanent": true,
+    "reason": "REDIRECT"
   },
   {
     "source": "/blog/seo-international-diversification-guide",
@@ -846,6 +888,18 @@
     "reason": "MERGE"
   },
   {
+    "source": "/blog/seo-retirement-accounts-101",
+    "destination": "/blog/seo-tax-efficient-investing-tips",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/seo-roth-vs-traditional-ira",
+    "destination": "/blog/seo-tax-efficient-investing-tips",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
     "source": "/blog/seo-round-up-saving-apps-guide",
     "destination": "/blog/seo-high-yield-savings-basics",
     "permanent": true,
@@ -874,6 +928,12 @@
     "destination": "/blog/seo-50-30-20-rule-for-saving",
     "permanent": true,
     "reason": "MERGE"
+  },
+  {
+    "source": "/blog/seo-save-money-on-utilities",
+    "destination": "/blog/seo-50-30-20-rule-for-saving",
+    "permanent": true,
+    "reason": "REDIRECT"
   },
   {
     "source": "/blog/seo-sector-funds-risks",
@@ -934,6 +994,12 @@
     "destination": "/blog/seo-best-first-credit-card",
     "permanent": true,
     "reason": "CONVERT_HUB_SUPPORT"
+  },
+  {
+    "source": "/blog/seo-what-lenders-check",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
   },
   {
     "source": "/blog/seo-when-to-move-cash-to-investments",

@@ -9525,9 +9525,9 @@
     "file": "content/blog/seo-automate-your-savings-plan.mdx",
     "category": "savings-accounts",
     "word_count": 210,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-50-30-20-rule-for-saving",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-avoid-credit-card-interest",
@@ -9535,9 +9535,9 @@
     "file": "content/blog/seo-avoid-credit-card-interest.mdx",
     "category": "credit-cards",
     "word_count": 210,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-how-credit-utilization-works",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-avoid-emotional-investing",
@@ -9565,9 +9565,9 @@
     "file": "content/blog/seo-balance-transfer-strategy.mdx",
     "category": "credit-cards",
     "word_count": 208,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-how-credit-utilization-works",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-best-cards-for-dining",
@@ -9605,9 +9605,9 @@
     "file": "content/blog/seo-best-first-credit-card.mdx",
     "category": "credit-cards",
     "word_count": 210,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-how-credit-utilization-works",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-best-savings-goals-by-age",
@@ -9855,9 +9855,9 @@
     "file": "content/blog/seo-dollar-cost-averaging-guide.mdx",
     "category": "investing",
     "word_count": 210,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-investing-for-beginners-roadmap",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-emergency-fund-3-to-6-months",
@@ -10005,9 +10005,9 @@
     "file": "content/blog/seo-how-to-read-expense-ratios.mdx",
     "category": "investing",
     "word_count": 212,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-investing-for-beginners-roadmap",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-how-to-rebalance-portfolio",
@@ -10055,9 +10055,9 @@
     "file": "content/blog/seo-index-funds-vs-etfs.mdx",
     "category": "investing",
     "word_count": 210,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-investing-for-beginners-roadmap",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-international-diversification-guide",
@@ -10275,9 +10275,9 @@
     "file": "content/blog/seo-retirement-accounts-101.mdx",
     "category": "investing",
     "word_count": 208,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-tax-efficient-investing-tips",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-roth-vs-traditional-ira",
@@ -10285,9 +10285,9 @@
     "file": "content/blog/seo-roth-vs-traditional-ira.mdx",
     "category": "investing",
     "word_count": 210,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-tax-efficient-investing-tips",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-round-up-saving-apps-guide",
@@ -10345,9 +10345,9 @@
     "file": "content/blog/seo-save-money-on-utilities.mdx",
     "category": "savings-accounts",
     "word_count": 210,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-50-30-20-rule-for-saving",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-sector-funds-risks",
@@ -10465,9 +10465,9 @@
     "file": "content/blog/seo-what-lenders-check.mdx",
     "category": "loans",
     "word_count": 208,
-    "action": "KEEP_IMPROVE",
-    "destination": "",
-    "reason": "High-intent pillar retained and rewritten for depth/trust."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidated into stronger evergreen editorial page to reduce templated overlap and cannibalization."
   },
   {
     "slug": "seo-when-to-move-cash-to-investments",

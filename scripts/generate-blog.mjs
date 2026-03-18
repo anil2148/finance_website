@@ -1,58 +1,88 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-const topics = [
-  { slug: 'credit-cards', title: 'Credit Cards', tags: ['credit', 'rewards', 'apr'] },
-  { slug: 'saving-money', title: 'Saving Money', tags: ['savings', 'budget', 'cashflow'] },
-  { slug: 'mortgages', title: 'Mortgages', tags: ['home', 'rates', 'down-payment'] },
-  { slug: 'investing', title: 'Investing', tags: ['portfolio', 'etf', 'stocks'] },
-  { slug: 'retirement-planning', title: 'Retirement Planning', tags: ['401k', 'ira', 'fire'] },
-  { slug: 'budgeting', title: 'Budgeting', tags: ['expenses', 'planning', 'goals'] },
-  { slug: 'tax-optimization', title: 'Tax Optimization', tags: ['tax', 'deductions', 'strategy'] }
-];
-
 const outDir = path.join(process.cwd(), 'content/blog');
-fs.mkdirSync(outDir, { recursive: true });
+const allowBulk = process.argv.includes('--allow-bulk-template');
 
-for (let i = 1; i <= 1000; i++) {
-  const topic = topics[(i - 1) % topics.length];
-  const slug = `${topic.slug}-guide-${i}`;
-  const title = `${topic.title}: Practical Money Guide`;
-
-  const content = `---
-title: "${title}"
-seoTitle: "${topic.title} Guide | FinanceSphere"
-metaDescription: "Practical ${topic.slug.replace('-', ' ')} tips, examples, and planning steps for better day-to-day money decisions."
-slug: "${slug}"
-description: "Learn ${topic.slug.replace('-', ' ')} with actionable tactics and smart decision frameworks."
-keywords: ["finance", "${topic.slug}", "comparison"]
-tags: ["${topic.tags.join('", "')}"]
-category: "${topic.slug}"
-date: "2026-01-01"
----
-
-## Why this matters
-${topic.title} can accelerate your long-term wealth strategy when done consistently.
-
-## Compare your options
-| Approach | Helpful when | Watch for |
-|---|---|---|
-| Lower monthly payment | You need breathing room in your budget | Higher total interest over time |
-| Faster payoff plan | You want to lower total borrowing cost | Higher monthly payment commitment |
-
-## Step-by-step plan
-1. Audit your current financial baseline.
-2. Compare total cost and long-term outcomes.
-3. Automate the winning strategy.
-
-## FAQ
-**Is this beginner friendly?** Yes. Start with one simple change and review your progress each month.
-
-## Next steps
-See also: [Calculators](/calculators), [Tools](/tools), and [Comparison guides](/comparison).
-`;
-
-  fs.writeFileSync(path.join(outDir, `${slug}.mdx`), content);
+if (allowBulk) {
+  console.error('Refusing to generate bulk templated posts. This script now supports only curated single-post scaffolds.');
+  process.exit(1);
 }
 
-console.log('Generated 1000 posts.');
+const slug = process.argv[2];
+const title = process.argv[3];
+const category = process.argv[4] ?? 'general';
+
+if (!slug || !title) {
+  console.log('Usage: node scripts/generate-blog.mjs <slug> "<title>" [category]');
+  console.log('Creates a single editorial scaffold with topic-specific sections.');
+  process.exit(0);
+}
+
+const categorySections = {
+  investing: [
+    '## Who this is for',
+    '## Risk and fee tradeoffs',
+    '## Account order of operations',
+    '## Scenario walkthrough',
+    '## Mistakes to avoid',
+    '## What to do next'
+  ],
+  loans: [
+    '## Who this is for',
+    '## Documents and qualification factors',
+    '## Cost comparison framework',
+    '## Timeline and decision checkpoints',
+    '## Common blockers',
+    '## What to do next'
+  ],
+  'savings-accounts': [
+    '## Who this is for',
+    '## Sample monthly budget context',
+    '## Savings tactics by category',
+    '## Automation plan',
+    '## Constraints and tradeoffs',
+    '## What to do next'
+  ]
+};
+
+const sections = categorySections[category] ?? [
+  '## Who this is for',
+  '## Key decisions',
+  '## Tradeoffs',
+  '## Scenario example',
+  '## Mistakes to avoid',
+  '## What to do next'
+];
+
+const today = new Date().toISOString().slice(0, 10);
+const content = `---
+title: "${title}"
+slug: "${slug}"
+description: ""
+keywords: []
+category: "${category}"
+date: "${today}"
+updatedAt: "${today}"
+country: "US"
+seoTitle: "${title} | FinanceSphere"
+metaDescription: ""
+---
+
+> Draft scaffold: replace all placeholders with topic-specific analysis and concrete examples before publishing.
+
+${sections.map((section) => `${section}
+
+`).join('')}
+`;
+
+fs.mkdirSync(outDir, { recursive: true });
+const filePath = path.join(outDir, `${slug}.mdx`);
+
+if (fs.existsSync(filePath)) {
+  console.error(`File already exists: ${filePath}`);
+  process.exit(1);
+}
+
+fs.writeFileSync(filePath, content);
+console.log(`Created curated scaffold: ${filePath}`);
