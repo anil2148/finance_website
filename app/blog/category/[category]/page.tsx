@@ -103,8 +103,8 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
   },
   mortgages: {
     src: '/images/comparison-analytics-illustration.svg',
-    alt: 'Mortgage rate and monthly payment comparison dashboard illustration',
-    shell: 'from-cyan-50 to-blue-50'
+    alt: 'Mortgage affordability and approval analytics illustration',
+    shell: 'from-teal-50 to-sky-50'
   },
   'credit-cards': {
     src: '/images/blog-visual-credit.svg',
