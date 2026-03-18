@@ -39,6 +39,16 @@ const categoryCopy: Record<string, { title: string; description: string; editori
     title: 'Credit Card Articles',
     description: 'APR and fee tradeoffs, utilization strategy, and practical ways to maximize rewards without paying interest.',
     editorialAngle: 'Expect payment-timing tactics and break-even math over promotional marketing language.'
+  },
+  tax: {
+    title: 'Tax Planning Articles',
+    description: 'Tax-efficiency frameworks that prioritize account location and repeatable annual maintenance, not one-off tricks.',
+    editorialAngle: 'Coverage centers on after-tax return outcomes, guardrails, and coordination with long-term investing goals.'
+  },
+  'passive-income': {
+    title: 'Passive Income Articles',
+    description: 'Decision frameworks for building durable recurring income streams without overconcentration risk.',
+    editorialAngle: 'Expect tradeoff-heavy coverage across yield reliability, liquidity, and tax complexity.'
   }
 };
 
@@ -53,6 +63,11 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
     { href: '/calculators/loan-calculator', label: 'Loan Calculator' },
     { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
   ],
+  mortgages: [
+    { href: '/learn/loans', label: 'Home Financing Hub' },
+    { href: '/calculators/mortgage-calculator', label: 'Mortgage Calculator' },
+    { href: '/compare/mortgage-rate-comparison', label: 'Compare Mortgage Rates' }
+  ],
   'credit-cards': [
     { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
     { href: '/calculators/credit-card-payoff-calculator', label: 'Credit Card Payoff Calculator' },
@@ -62,6 +77,21 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
     { href: '/learn/budgeting', label: 'Budgeting Hub' },
     { href: '/calculators/savings-goal-calculator', label: 'Savings Goal Calculator' },
     { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' }
+  ],
+  budgeting: [
+    { href: '/learn/budgeting', label: 'Budgeting Hub' },
+    { href: '/calculators/budget-planner', label: 'Budget Planner' },
+    { href: '/tools', label: 'All tools' }
+  ],
+  tax: [
+    { href: '/learn/investing', label: 'Investing Hub' },
+    { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' },
+    { href: '/best-investment-apps', label: 'Best Investment Apps' }
+  ],
+  'passive-income': [
+    { href: '/learn/investing', label: 'Investing Hub' },
+    { href: '/calculators/investment-growth-calculator', label: 'Investment Growth Calculator' },
+    { href: '/comparison', label: 'Comparison Center' }
   ]
 };
 
@@ -77,8 +107,8 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     shell: 'from-amber-50 to-orange-50'
   },
   mortgages: {
-    src: '/images/blog-visual-mortgage.svg',
-    alt: 'Mortgage planning dashboard illustration with payment trends and approval checklist',
+    src: '/images/comparison-analytics-illustration.svg',
+    alt: 'Mortgage payment and closing-cost comparison dashboard illustration',
     shell: 'from-teal-50 to-cyan-50'
   },
   'credit-cards': {
@@ -100,6 +130,11 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     src: '/images/blog-visual-tax.svg',
     alt: 'Tax planning worksheet and timeline illustration',
     shell: 'from-rose-50 to-pink-50'
+  },
+  'passive-income': {
+    src: '/images/blog-visual-investing-risk.svg',
+    alt: 'Passive income allocation panel with risk and cashflow indicators',
+    shell: 'from-emerald-50 to-teal-50'
   }
 };
 
@@ -178,6 +213,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Featured in this category</h2>
+        <p className="text-sm text-slate-600">Each featured card includes a different decision angle so this category reads like an editorial selection, not a templated list.</p>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {featuredPosts.map((p) => (
             <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
@@ -197,7 +233,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
       )}
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="text-lg font-semibold">Continue your decision path</h2>
+        <h2 className="text-lg font-semibold">What to do next from this category</h2>
         <p className="mt-1 text-sm text-slate-600">Run numbers first, compare offers second, then return to this category for scenario-specific decisions.</p>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           {journeyLinks.map((item) => (
