@@ -220,7 +220,7 @@ const slugVisualOverrides: Record<string, BlogVisual> = {
     heroClassName: 'from-blue-50 via-indigo-50 to-violet-100'
   },
   'seo-debt-to-income-ratio-guide': {
-    src: '/images/blog-visual-credit.svg',
+    src: '/images/blog-visual-credit-utilization.svg',
     alt: 'Debt-to-income underwriting tracker with monthly obligation reduction checkpoints',
     cardClassName: 'from-blue-50 via-indigo-50 to-violet-100',
     heroClassName: 'from-blue-50 via-indigo-50 to-violet-100'
