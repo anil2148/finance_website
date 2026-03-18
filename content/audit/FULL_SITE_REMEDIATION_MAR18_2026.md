@@ -14,15 +14,15 @@ Primary inventory with scoring and actions is tracked in `content/audit/FULL_SIT
 
 ## 3) Rewritten content for kept pages
 Kept canonical editorial posts remain:
-- `/blog/seo-investing-for-beginners-roadmap`
-- `/blog/seo-tax-efficient-investing-tips`
-- `/blog/seo-how-credit-utilization-works`
-- `/blog/seo-how-to-compare-personal-loan-apr`
-- `/blog/seo-mortgage-preapproval-checklist`
-- `/blog/seo-debt-to-income-ratio-guide`
-- `/blog/seo-high-yield-savings-basics`
-- `/blog/seo-emergency-fund-3-to-6-months`
-- `/blog/seo-50-30-20-rule-for-saving`
+- `/blog/beginner-investing-roadmap-year-one-milestones`
+- `/blog/tax-efficient-investing-account-location-decisions`
+- `/blog/credit-utilization-statement-cycle-playbook`
+- `/blog/personal-loan-comparison-for-bad-month-resilience`
+- `/blog/mortgage-preapproval-checklist-underwriting`
+- `/blog/debt-to-income-ratio-90-day-plan`
+- `/blog/how-to-choose-a-high-yield-savings-account`
+- `/blog/emergency-fund-target-by-recovery-timeline`
+- `/blog/budget-rule-based-reset`
 
 ## 4) Deleted / merged / redirected pages
 Legacy numbered and formulaic pages are removed from canonical inventory and handled through redirect rules in `content/audit/blog-redirect-map.json`.
@@ -30,9 +30,9 @@ Legacy numbered and formulaic pages are removed from canonical inventory and han
 ## 5) Redirect map
 Reference: `content/audit/blog-redirect-map.json`.
 Examples:
-- `/blog/beginner-investing-guides-79` → `/blog/seo-investing-for-beginners-roadmap`
-- `/blog/how-to-save-500-month-5` → `/blog/seo-high-yield-savings-basics`
-- `/blog/tax-saving-strategies-99` → `/blog/seo-tax-efficient-investing-tips`
+- `/blog/beginner-investing-guides-79` → `/blog/beginner-investing-roadmap-year-one-milestones`
+- `/blog/how-to-save-500-month-5` → `/blog/how-to-choose-a-high-yield-savings-account`
+- `/blog/tax-saving-strategies-99` → `/blog/tax-efficient-investing-account-location-decisions`
 
 ## 6) Title/snippet/meta improvements summary
 - Rewrote weak comparison metadata language on `/compare/best-credit-cards-2026` and `/compare/best-savings-accounts-usa` to remove low-trust phrasing and improve intent alignment.
