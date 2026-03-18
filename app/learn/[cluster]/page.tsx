@@ -53,7 +53,7 @@ const hubs: Record<string, HubConfig> = {
     resources: [
       { href: '/blog/seo-best-first-credit-card', title: 'Best first credit card checklist', description: 'How to choose a first card with manageable limits and low risk.', tag: 'Start here' },
       { href: '/blog/seo-avoid-credit-card-interest', title: 'How to avoid credit card interest', description: 'Payment timing, statement cycles, and carry-cost prevention.' },
-      { href: '/blog/seo-credit-card-bonus-guide', title: 'Welcome bonus strategy guide', description: 'Capture sign-up value without overspending.' }
+      { href: '/blog/seo-how-credit-utilization-works', title: 'Credit utilization timing tactics', description: 'Use statement-cycle timing and payment controls to protect your score.' }
     ],
     calculators: [
       { href: '/calculators/credit-card-payoff-calculator', label: 'Credit card payoff calculator' },
@@ -78,9 +78,9 @@ const hubs: Record<string, HubConfig> = {
       'Run payoff acceleration scenarios for 12- and 24-month prepayment options.'
     ],
     resources: [
-      { href: '/blog/seo-secured-vs-unsecured-loans', title: 'Secured vs unsecured loans', description: 'Risk, rate, and collateral tradeoffs explained.', tag: 'Start here' },
-      { href: '/blog/seo-fixed-vs-variable-rate-loans', title: 'Fixed vs variable loans', description: 'How rate type affects payment predictability and total cost.' },
-      { href: '/blog/seo-payoff-strategies-for-loans', title: 'Loan payoff strategies', description: 'Use extra payments efficiently without harming cash reserves.' }
+      { href: '/blog/seo-how-to-compare-personal-loan-apr', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
+      { href: '/blog/seo-what-lenders-check', title: 'What lenders check before approval', description: 'See how underwriters evaluate credit, debt, income, and documentation quality.' },
+      { href: '/blog/seo-debt-to-income-ratio-guide', title: 'Debt-to-income ratio guide', description: 'Use front-end and back-end DTI targets to improve approval odds before applying.' }
     ],
     calculators: [
       { href: '/calculators/loan-calculator', label: 'Loan calculator' },
@@ -105,9 +105,9 @@ const hubs: Record<string, HubConfig> = {
       'Automate savings and debt payments right after income lands.'
     ],
     resources: [
-      { href: '/blog/seo-pay-yourself-first-method', title: 'Pay yourself first method', description: 'Build savings consistency before discretionary spending.', tag: 'Start here' },
-      { href: '/blog/seo-sinking-funds-system', title: 'Sinking funds system', description: 'Handle irregular expenses without credit card surprises.' },
-      { href: '/blog/seo-how-to-build-cash-buffer', title: 'How to build a cash buffer', description: 'Avoid overdraft stress and short-term debt cycles.' }
+      { href: '/blog/seo-50-30-20-rule-for-saving', title: 'How to adapt the 50/30/20 rule', description: 'Use a flexible spending split that still works in high-cost or debt-heavy months.', tag: 'Start here' },
+      { href: '/blog/seo-emergency-fund-3-to-6-months', title: 'Emergency fund target by risk level', description: 'Pick a 3-to-6 month reserve using job stability, dependents, and replacement-time risk.' },
+      { href: '/blog/seo-automate-your-savings-plan', title: 'How to automate your savings plan', description: 'Set transfers around paycheck and bill timing so savings continue through uneven months.' }
     ],
     calculators: [
       { href: '/calculators/budget-planner', label: 'Budget planner' },
@@ -132,9 +132,9 @@ const hubs: Record<string, HubConfig> = {
       'Track net return after taxes and fees, not gross yield alone.'
     ],
     resources: [
-      { href: '/blog/seo-building-passive-income-portfolio', title: 'Build a passive-income portfolio', description: 'Balance dividend, bond, and savings yield strategies by risk level.', tag: 'Start here' },
-      { href: '/blog/seo-cd-vs-savings-account', title: 'CDs vs savings accounts', description: 'Compare liquidity, yield stability, and timing fit.' },
-      { href: '/blog/seo-dividend-investing-beginners', title: 'Dividend investing for beginners', description: 'Understand yield traps, payout quality, and diversification basics.' }
+      { href: '/blog/seo-tax-efficient-investing-tips', title: 'Tax-efficient investing basics', description: 'Improve after-tax outcomes with better asset location and contribution sequencing.', tag: 'Start here' },
+      { href: '/blog/seo-high-yield-savings-basics', title: 'High-yield savings account basics', description: 'Choose accounts by APY, transfer speed, withdrawal rules, and emergency access quality.' },
+      { href: '/blog/seo-index-funds-vs-etfs', title: 'Index funds vs ETFs', description: 'Compare automation, tax behavior, and trading flexibility for long-term investing.' }
     ],
     calculators: [
       { href: '/calculators/compound-interest-calculator', label: 'Compound interest calculator' },
@@ -222,6 +222,16 @@ export default function ClusterHubPage({ params }: { params: { cluster: string }
           <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/editorial-policy">Editorial standards</Link>
           <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/how-we-make-money">Affiliate disclosures</Link>
           <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/help">Help center</Link>
+        </div>
+      </section>
+
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-2xl font-semibold">Need help choosing your next step?</h2>
+        <p className="mt-2 text-sm text-slate-600">If you are unsure which calculator or comparison to use, our support pages can route you quickly.</p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/help">Open Help Center</Link>
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/contact">Contact FinanceSphere</Link>
         </div>
       </section>
 

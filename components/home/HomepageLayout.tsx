@@ -170,6 +170,25 @@ export function HomepageLayout() {
         </Link>
       </section>
 
+
+      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
+        <Link href="/blog" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">From guides</p>
+          <h2 className="mt-1 text-lg font-semibold">Read strategy context</h2>
+          <p className="mt-2 text-sm text-slate-600">Use topic-specific explainers before committing to a calculator scenario.</p>
+        </Link>
+        <Link href="/help" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">If stuck</p>
+          <h2 className="mt-1 text-lg font-semibold">Use the Help Center</h2>
+          <p className="mt-2 text-sm text-slate-600">Get routing help if you are unsure which tool, comparison, or guide to open next.</p>
+        </Link>
+        <Link href="/contact" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Need support</p>
+          <h2 className="mt-1 text-lg font-semibold">Contact FinanceSphere</h2>
+          <p className="mt-2 text-sm text-slate-600">Share your scenario and page URL for faster troubleshooting and editorial feedback.</p>
+        </Link>
+      </section>
+
       <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
         {trustSignals.map((signal) => (
           <Link key={signal.label} href={signal.href} className="flex items-start gap-2 rounded-xl border border-slate-100 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50/40">

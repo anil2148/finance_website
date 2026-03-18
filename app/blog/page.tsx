@@ -13,6 +13,24 @@ export const metadata: Metadata = {
   alternates: { canonical: '/blog' }
 };
 
+const startHereGuides = [
+  {
+    title: 'Investing roadmap for beginners',
+    href: '/blog/seo-investing-for-beginners-roadmap',
+    next: '/calculators/investment-growth-calculator'
+  },
+  {
+    title: 'How to compare personal loan APR',
+    href: '/blog/seo-how-to-compare-personal-loan-apr',
+    next: '/calculators/loan-calculator'
+  },
+  {
+    title: 'Emergency fund target (3 to 6 months)',
+    href: '/blog/seo-emergency-fund-3-to-6-months',
+    next: '/calculators/savings-goal-calculator'
+  }
+];
+
 export default function BlogPage() {
   const posts = getPosts();
   const categories = getCategories();
@@ -24,6 +42,11 @@ export default function BlogPage() {
         <div>
           <h1 className="text-3xl font-bold">FinanceSphere Blog</h1>
           <p className="text-slate-600">Read practical explainers tied to real decisions—choosing between loan terms, reducing credit-card interest, building an emergency fund, and improving long-term investing habits.</p>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs">
+            <Link href="/editorial-policy" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Editorial standards</Link>
+            <Link href="/how-we-make-money" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">How we make money</Link>
+            <Link href="/help" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Help center</Link>
+          </div>
         </div>
         <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50 p-4">
           <Image
@@ -36,6 +59,20 @@ export default function BlogPage() {
           />
         </div>
       </div>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-semibold">Start here: high-impact guides</h2>
+        <p className="mt-1 text-sm text-slate-600">Pick one guide, then continue into the linked calculator so you can apply what you read immediately.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {startHereGuides.map((guide) => (
+            <article key={guide.href} className="rounded-xl border border-slate-200 p-4">
+              <Link href={guide.href} className="text-base font-semibold text-slate-900 hover:text-blue-700 hover:underline">{guide.title}</Link>
+              <p className="mt-2 text-xs uppercase tracking-wide text-slate-500">Recommended next step</p>
+              <Link href={guide.next} className="text-sm font-medium text-blue-700 hover:underline">Open matching calculator →</Link>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <div className="flex flex-wrap gap-2 text-sm">
         {categories.map((category) => (
