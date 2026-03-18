@@ -46,7 +46,13 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     .filter((item) => item.slug !== post.slug && (item.category === post.category || item.tags.some((tag) => post.tags.includes(tag))))
     .slice(0, 3);
 
-  const schema = articleSchema(post.title, post.description, post.slug);
+  const schema = articleSchema({
+    title: post.title,
+    description: post.description,
+    slug: post.slug,
+    publishedTime: post.date,
+    modifiedTime: post.updatedAt
+  });
   const toc = getHeadings(post.content);
   const relatedLinks = getRelatedLinks(post.category);
   const calculatorLinks = matchingCalculatorLinksByBlogCategory[post.category] ?? defaultMatchingCalculatorLinks;

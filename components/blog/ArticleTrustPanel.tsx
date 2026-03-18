@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { AUTHOR_PROFILES } from '@/lib/authors';
+import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -23,8 +23,8 @@ function getSafeUpdatedAt(updatedAt: string) {
 }
 
 export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { authorId: string; reviewedById: string; updatedAt: string }) {
-  const author = AUTHOR_PROFILES[authorId];
-  const reviewer = AUTHOR_PROFILES[reviewedById];
+  const author = AUTHOR_PROFILES[authorId] ?? AUTHOR_PROFILES[PRIMARY_AUTHOR_ID];
+  const reviewer = AUTHOR_PROFILES[reviewedById] ?? AUTHOR_PROFILES[EDITORIAL_REVIEWER_ID];
   const safeUpdatedAt = getSafeUpdatedAt(updatedAt);
 
   return (
@@ -35,7 +35,8 @@ export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { autho
           <p>
             <span className="font-semibold">Written by:</span> {author?.name} — {author?.role}
           </p>
-          <p className="text-xs text-slate-600">Credentials: {author?.credentials.join(' • ')}</p>
+          {author?.description ? <p className="text-xs text-slate-600">{author.description}</p> : null}
+          <p className="text-xs text-slate-600">{author?.bio}</p>
         </div>
 
         <div>

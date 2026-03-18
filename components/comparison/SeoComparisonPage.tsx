@@ -39,7 +39,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
       <header className="space-y-3" id="methodology">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{pageTitle}</h1>
         <p className="max-w-3xl text-slate-600 dark:text-slate-300">{intro}</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400">Reviewed by FinanceSphere editorial team • Last updated {formatDate(new Date())}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Reviewed by FinanceSphere Editorial Team • Last updated {formatDate(new Date())}</p>
       </header>
 
       <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-500/40 dark:bg-blue-500/10">
