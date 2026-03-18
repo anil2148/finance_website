@@ -33,11 +33,6 @@ const categoryCopy: Record<string, { title: string; description: string }> = {
 const featuredOrderByCategory: Record<string, string[]> = {
   investing: [
     'seo-investing-for-beginners-roadmap',
-    'seo-index-funds-vs-etfs',
-    'seo-dollar-cost-averaging-guide',
-    'seo-how-to-read-expense-ratios',
-    'seo-retirement-accounts-101',
-    'seo-roth-vs-traditional-ira',
     'seo-tax-efficient-investing-tips'
   ],
   loans: [
@@ -47,17 +42,12 @@ const featuredOrderByCategory: Record<string, string[]> = {
     'seo-how-to-compare-personal-loan-apr'
   ],
   'credit-cards': [
-    'seo-best-first-credit-card',
-    'seo-avoid-credit-card-interest',
-    'seo-how-credit-utilization-works',
-    'seo-balance-transfer-strategy'
+    'seo-how-credit-utilization-works'
   ],
   'savings-accounts': [
     'seo-emergency-fund-3-to-6-months',
     'seo-high-yield-savings-basics',
-    'seo-automate-your-savings-plan',
-    'seo-50-30-20-rule-for-saving',
-    'seo-save-money-on-utilities'
+    'seo-50-30-20-rule-for-saving'
   ]
 };
 

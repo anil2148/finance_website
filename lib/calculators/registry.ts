@@ -203,7 +203,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Salary After Tax Calculator: Estimate Take-Home Pay',
     seoDescription: 'Estimate net salary after taxes and compare nominal income to inflation-adjusted purchasing power.',
     faq: [{ question: 'Is this exact tax advice?', answer: 'No. This is a planning estimate using simplified assumptions, not tax preparation or personalized tax advice.' }],
-    blogLinks: [{ title: 'Tax Saving Strategies', href: '/blog/tax-saving-strategies-99' }],
+    blogLinks: [{ title: 'Tax-Efficient Investing Tips', href: '/blog/seo-tax-efficient-investing-tips' }],
     defaultInputs: { ...defaultInputs, loanAmount: 90000, interestRate: 24, years: 1, monthlyContribution: 0, expectedReturn: 0 },
     compute: (inputs) => {
       const afterTax = inputs.loanAmount * (1 - inputs.interestRate / 100);
@@ -244,7 +244,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Student Loan Calculator: Repayment Plan and Timeline',
     seoDescription: 'Compare repayment scenarios and see how extra payments change total interest and payoff date.',
     faq: [{ question: 'Can I pay student loans early?', answer: 'Yes. Paying above the required amount can reduce interest cost and shorten your repayment timeline.' }],
-    blogLinks: [{ title: 'Loan Documents You Need', href: '/blog/seo-loan-documents-you-need' }],
+    blogLinks: [{ title: 'Debt-to-Income Ratio Guide', href: '/blog/seo-debt-to-income-ratio-guide' }],
     defaultInputs: { ...defaultInputs, loanAmount: 45000, years: 10, interestRate: 5.8 },
     compute: calculateLoan
   },
@@ -255,7 +255,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Debt Payoff Calculator: Custom Repayment Strategy',
     seoDescription: 'Build a debt payoff schedule and compare standard vs accelerated repayment outcomes.',
     faq: [{ question: 'What should I test first in debt payoff planning?', answer: 'Start by increasing your extra monthly payment in small steps and compare how much sooner each option gets you debt-free.' }],
-    blogLinks: [{ title: 'Balance Transfer Strategy', href: '/blog/seo-balance-transfer-strategy' }],
+    blogLinks: [{ title: 'Credit Utilization Explained', href: '/blog/seo-how-credit-utilization-works' }],
     defaultInputs: { ...defaultInputs, loanAmount: 28000, years: 6 },
     compute: (inputs) => debtPayoffResult('Debt Payoff Projection', inputs)
   }
