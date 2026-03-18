@@ -26,7 +26,7 @@ export function BlogSearch({ posts }: { posts: BlogPost[] }) {
         onChange={(e) => setQuery(e.target.value)}
       />
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {results.map((p) => <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} />)}
+        {results.map((p) => <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />)}
       </div>
       {results.length === 0 && <p className="text-sm text-slate-500">No articles available for {country}. Showing global content when available.</p>}
     </div>

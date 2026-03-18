@@ -9,7 +9,7 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
     <section className="space-y-4">
       <h1 className="text-2xl font-bold">Tag: #{decodeURIComponent(params.tag)}</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((p) => <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} />)}
+        {posts.map((p) => <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />)}
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FAQAccordion, JumpNav, ResourceGrid, TrustBar } from '@/components/hubs/PillarPageSections';
 
 export const metadata: Metadata = {
@@ -147,16 +148,30 @@ export default function OptionsTradingPillarPage() {
   return (
     <article className="space-y-10">
       <header className="rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-900 to-blue-900 p-8 text-white md:p-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-200">Options education hub</p>
-        <h1 className="mt-3 text-3xl font-bold leading-tight md:text-5xl">Options Trading Explained: Learn the Basics, Risks, and Platform Fit</h1>
-        <p className="mt-4 max-w-3xl text-base text-slate-100 md:text-lg">
-          Understand how calls and puts work, when common strategies are used, and what to evaluate in an options-capable platform before you trade real capital.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <a href="#calls-puts" className="btn-primary">Learn the Basics</a>
-          <Link href="/comparison?category=investment_app" className="inline-flex items-center justify-center rounded-xl border border-indigo-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
-            Compare Platforms
-          </Link>
+        <div className="grid gap-6 md:grid-cols-[1.25fr_1fr] md:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-200">Options education hub</p>
+            <h1 className="mt-3 text-3xl font-bold leading-tight md:text-5xl">Options Trading Explained: Learn the Basics, Risks, and Platform Fit</h1>
+            <p className="mt-4 max-w-3xl text-base text-slate-100 md:text-lg">
+              Understand how calls and puts work, when common strategies are used, and what to evaluate in an options-capable platform before you trade real capital.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href="#calls-puts" className="btn-primary">Learn the Basics</a>
+              <Link href="/comparison?category=investment_app" className="inline-flex items-center justify-center rounded-xl border border-indigo-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
+                Compare Platforms
+              </Link>
+            </div>
+          </div>
+          <div className="relative h-52 overflow-hidden rounded-2xl border border-white/20">
+            <Image
+              src="/images/options-trading-illustration.svg"
+              alt="Options trading illustration with strike chart, risk controls, and analytical dashboard elements"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 40vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </header>
 
