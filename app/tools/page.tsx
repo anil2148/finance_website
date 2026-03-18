@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 
 const tools = [
@@ -36,9 +37,21 @@ export default function ToolsPage() {
       {/* SEO: JSON-LD schema helps search engines understand tool/software pages. */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolsSchema) }} />
 
-      <div>
-        <h1 className="text-3xl font-bold">Finance tools for planning, not guesswork</h1>
-        <p className="text-slate-600">Each tool is designed to answer a concrete question—how long payoff will take, how much to save monthly, or whether your current plan supports future goals.</p>
+      <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-[1.25fr_1fr] md:items-center">
+        <div>
+          <h1 className="text-3xl font-bold">Finance tools for planning, not guesswork</h1>
+          <p className="text-slate-600">Each tool is designed to answer a concrete question—how long payoff will take, how much to save monthly, or whether your current plan supports future goals.</p>
+        </div>
+        <div className="relative h-44 overflow-hidden rounded-2xl sm:h-52">
+          <Image
+            src="/images/calculator-tools-illustration.svg"
+            alt="Financial calculator tools illustration with planning cards and projected outcome charts"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 40vw"
+            className="object-cover"
+          />
+        </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (

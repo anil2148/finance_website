@@ -7,7 +7,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
     <section className="space-y-4">
       <h1 className="text-2xl font-bold capitalize">Category: {params.category}</h1>
       <div className="grid gap-4 md:grid-cols-2">
-        {posts.map((p) => <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} />)}
+        {posts.map((p) => <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />)}
       </div>
     </section>
   );

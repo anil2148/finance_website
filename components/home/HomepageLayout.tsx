@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import {
   ArrowTrendingUpIcon,
@@ -94,6 +95,16 @@ export function HomepageLayout() {
             <p className="text-xs text-blue-200">Last content review: March 18, 2026 • Coverage includes U.S., UK, Canada, and India contexts.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
+            <div className="relative h-36 overflow-hidden rounded-lg border border-white/20">
+              <Image
+                src="/images/home-hero-finance-dashboard.svg"
+                alt="Finance dashboard illustration showing savings growth, investment trend, and budget goals"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 40vw"
+                className="object-cover"
+              />
+            </div>
             <h2 className="text-xl font-semibold">What to do first</h2>
             <p className="text-sm text-cyan-100">Choose your goal below and move through the same workflow our readers use to make faster decisions.</p>
             <ul className="space-y-2 text-sm text-cyan-50">
