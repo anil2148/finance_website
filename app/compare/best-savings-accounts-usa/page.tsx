@@ -3,14 +3,14 @@ import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
 
 export const metadata: Metadata = {
   title: 'Best Savings Accounts USA | Compare APY & Features',
-  description: 'Find the best savings accounts in the USA with APY, fees, ratings, and side-by-side comparison tables.'
+  description: 'Review U.S. savings accounts using APY durability, transfer speed, account rules, and service quality—not headline rate alone.'
 };
 
 export default function BestSavingsAccountsUSAPage() {
   return (
     <SeoComparisonPage
       pageTitle="Best Savings Accounts USA"
-      intro="Explore top U.S. savings accounts with competitive APYs, low fees, and flexible access so you can grow cash reserves while staying liquid."
+      intro="Evaluate savings accounts by APY quality, transfer reliability, liquidity constraints, and operational controls so emergency cash stays accessible."
       category="savings_account"
       slug="best-savings-accounts-usa"
       faq={[

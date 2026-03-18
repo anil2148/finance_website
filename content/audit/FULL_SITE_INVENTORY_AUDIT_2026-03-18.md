@@ -11,6 +11,7 @@ Scoring rubric: 1 (poor) to 10 (strong). Repetition score: 10 = highly repetitiv
 | /blog/category/loans | Blog category | Loans | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
 | /blog/category/credit-cards | Blog category | Credit cards | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
 | /blog/category/savings-accounts | Blog category | Savings | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
+| /blog/tag/[tag] | Blog taxonomy | Tag discovery | 7 | 5 | 8 | 7 | IMPROVE_UX_ONLY |
 | /blog/seo-investing-for-beginners-roadmap | Blog post | Investing | 9 | 2 | 9 | 9 | KEEP_AS_IS |
 | /blog/seo-tax-efficient-investing-tips | Blog post | Tax & investing | 9 | 2 | 9 | 8 | KEEP_AS_IS |
 | /blog/seo-how-credit-utilization-works | Blog post | Credit cards | 9 | 2 | 9 | 9 | KEEP_AS_IS |
@@ -28,20 +29,29 @@ Scoring rubric: 1 (poor) to 10 (strong). Repetition score: 10 = highly repetitiv
 | /learn/loans | Hub | Loans pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
 | /learn/budgeting | Hub | Budgeting pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
 | /learn/passive-income | Hub | Passive income pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
+| /comparison | Compare index | Product comparison discovery | 8 | 3 | 9 | 9 | KEEP_AS_IS |
 | /compare/best-investment-apps | Comparison | Investment apps | 9 | 2 | 9 | 10 | KEEP_AS_IS |
-| /compare/best-credit-cards-2026 | Comparison | Credit cards | 8 | 3 | 8 | 9 | KEEP_AS_IS |
+| /compare/best-credit-cards-2026 | Comparison | Credit cards | 8 | 3 | 9 | 9 | KEEP_AND_REWRITE |
 | /compare/mortgage-rate-comparison | Comparison | Mortgage rates | 8 | 3 | 8 | 9 | KEEP_AS_IS |
 | /compare/high-yield-savings-accounts | Comparison | Savings accounts | 8 | 3 | 8 | 9 | KEEP_AS_IS |
+| /compare/best-savings-accounts-usa | Comparison | Savings accounts (US) | 8 | 3 | 9 | 9 | KEEP_AND_REWRITE |
 | /tools | Tool index | Calculator discovery | 8 | 2 | 8 | 9 | KEEP_AS_IS |
 | /calculators | Calculator index | All calculators | 9 | 2 | 9 | 10 | KEEP_AS_IS |
+| /calculators/* | Tool pages | Planning calculators | 8 | 2 | 9 | 10 | KEEP_AS_IS |
 | /help | Support | Help & FAQs | 8 | 2 | 9 | 7 | IMPROVE_UX_ONLY |
 | /contact | Support | Contact journey | 8 | 2 | 9 | 7 | IMPROVE_UX_ONLY |
+| /about | Trust/info | Company context | 8 | 2 | 9 | 6 | KEEP_AS_IS |
 | /editorial-policy | Trust/legal | Methodology | 9 | 1 | 10 | 6 | KEEP_AS_IS |
 | /affiliate-disclosure | Trust/legal | Affiliate disclosure | 9 | 1 | 10 | 6 | KEEP_AS_IS |
 | /how-we-make-money | Trust/legal | Revenue disclosures | 9 | 1 | 10 | 6 | KEEP_AS_IS |
 | /financial-disclaimer | Trust/legal | Educational disclaimer | 9 | 1 | 10 | 6 | KEEP_AS_IS |
+| /privacy-policy | Trust/legal | Privacy controls | 9 | 1 | 10 | 5 | KEEP_AS_IS |
+| /terms-and-conditions | Trust/legal | Terms | 9 | 1 | 10 | 5 | KEEP_AS_IS |
+| /cookie-policy | Trust/legal | Cookie policy | 9 | 1 | 10 | 5 | KEEP_AS_IS |
+| /legal | Trust/legal | Legal index | 8 | 1 | 10 | 5 | KEEP_AS_IS |
 
 ## Consolidation outcome
-- Canonical live blog inventory: 9 high-quality articles.
+- Canonical live blog inventory: 9 high-quality editorial articles.
 - Legacy numbered/templated pages: redirected to closest topical canonical destination.
 - Category pages reordered and reinforced with hub/tool/comparison pathways.
+- Comparison metadata copy refreshed on weak legacy-pattern pages to remove low-trust phrasing.
