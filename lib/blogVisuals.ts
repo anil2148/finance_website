@@ -220,10 +220,10 @@ const slugVisualOverrides: Record<string, BlogVisual> = {
     heroClassName: 'from-blue-50 via-indigo-50 to-violet-100'
   },
   'seo-debt-to-income-ratio-guide': {
-    src: '/images/blog-visual-credit.svg',
-    alt: 'Debt-to-income underwriting tracker with monthly obligation reduction checkpoints',
-    cardClassName: 'from-blue-50 via-indigo-50 to-violet-100',
-    heroClassName: 'from-blue-50 via-indigo-50 to-violet-100'
+    src: '/images/comparison-analytics-illustration.svg',
+    alt: 'Debt-to-income analysis board comparing required payments, ratios, and lender thresholds',
+    cardClassName: 'from-indigo-50 via-sky-50 to-cyan-100',
+    heroClassName: 'from-indigo-50 via-sky-50 to-cyan-100'
   },
   'seo-how-credit-utilization-works': {
     src: '/images/blog-visual-credit-utilization.svg',
