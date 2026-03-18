@@ -36,7 +36,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
 
   return (
     <section className="space-y-8">
-      <header className="space-y-3">
+      <header className="space-y-3" id="methodology">
         <h1 className="text-3xl font-bold">{pageTitle}</h1>
         <p className="max-w-3xl text-slate-600">{intro}</p>
         <p className="text-xs text-slate-500">Reviewed by FinanceSphere editorial team • Last updated {formatDate(new Date())}</p>
@@ -55,7 +55,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
         </ul>
       </div>
 
-      <ComparisonEngine defaultCategory={category} />
+      <ComparisonEngine defaultCategory={category} initialProducts={pageProducts} />
 
       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-xl font-semibold">Frequently Asked Questions</h2>
@@ -91,7 +91,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
         </div>
         <div>
           <h2 className="mb-2 text-lg font-semibold">How we review</h2>
-          <p className="text-sm text-slate-600">We score products by fee drag, value, features, and user-fit. Learn our methodology and disclosures before acting.</p>
+          <p className="text-sm text-slate-600">We score products by fee drag, total value, feature depth, and likely user fit. Ratings are editorial and not personalized advice—review full terms and eligibility before applying.</p>
           <div className="mt-2 flex gap-2 text-xs">
             <Link className="rounded-full border px-2 py-1" href="/editorial-policy">Editorial policy</Link>
             <Link className="rounded-full border px-2 py-1" href="/how-we-make-money">How we make money</Link>

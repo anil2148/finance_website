@@ -16,6 +16,16 @@ type NavLink = {
 const links: NavLink[] = [
   { label: 'Home', href: '/' },
   {
+    label: 'Learn',
+    children: [
+      { label: 'Investing Hub', href: '/learn/investing' },
+      { label: 'Credit Cards Hub', href: '/learn/credit-cards' },
+      { label: 'Loans Hub', href: '/learn/loans' },
+      { label: 'Budgeting Hub', href: '/learn/budgeting' },
+      { label: 'Passive Income Hub', href: '/learn/passive-income' }
+    ]
+  },
+  {
     label: 'Compare',
     children: [
       { label: 'Credit Cards', href: '/best-credit-cards-2026' },
@@ -35,7 +45,6 @@ const links: NavLink[] = [
     ]
   },
   { label: 'Blog', href: '/blog' },
-  { label: 'About', href: '/about' },
   { label: 'Help', href: '/help' },
   { label: 'Contact', href: '/contact' }
 ];
@@ -55,7 +64,7 @@ export function Navbar() {
   const { currency, country, darkMode, setCountry, setCurrency, toggleDarkMode } = usePreferences();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
+    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
       <nav className="mx-auto max-w-7xl px-4 py-3" role="navigation" aria-label="Primary">
         <div className="flex items-center justify-between gap-3">
           <Link href="/" className="inline-flex items-center" aria-label="FinanceSphere home">
@@ -77,7 +86,7 @@ export function Navbar() {
                 <li key={item.label} className="group relative" role="none">
                   {item.href ? (
                     <Link
-                      className={`rounded-lg px-3 py-2 font-medium transition ${isActive(pathname, item.href) ? 'bg-blue-50 text-blue-700' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'}`}
+                      className={`rounded-lg px-3 py-2 font-medium transition ${isActive(pathname, item.href) ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'}`}
                       href={item.href}
                       role="menuitem"
                     >
@@ -105,7 +114,7 @@ export function Navbar() {
             </ul>
 
             <Link href="/tools" className="rounded-xl bg-brand px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700">
-              Explore tools
+              Start planning
             </Link>
 
             <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs dark:bg-slate-900" value={country} onChange={(event) => setCountry(event.target.value as (typeof countries)[number])}>
@@ -165,7 +174,7 @@ export function Navbar() {
             </ul>
 
             <Link href="/tools" className="btn-primary w-full text-sm" onClick={() => setOpen(false)}>
-              Explore tools
+              Start planning
             </Link>
           </div>
         )}

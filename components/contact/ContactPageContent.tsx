@@ -170,6 +170,9 @@ export function ContactPageContent() {
             <Link className="inline-flex rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand hover:text-brand dark:border-slate-600 dark:text-slate-200" href="/media-kit">
               Open Media Kit
             </Link>
+            <div className="pt-2 text-xs text-slate-500 dark:text-slate-400">
+              Trust and disclosure: <Link href="/editorial-policy" className="font-semibold text-brand hover:underline">Editorial policy</Link> • <Link href="/how-we-make-money" className="font-semibold text-brand hover:underline">How we make money</Link>
+            </div>
           </Card>
         </div>
       </div>

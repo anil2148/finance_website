@@ -28,6 +28,22 @@ const categoryLinks: Record<string, RelatedLink[]> = {
   ]
 };
 
+const fallbackByKeyword: Array<{ keyword: string; key: keyof typeof categoryLinks }> = [
+  { keyword: 'invest', key: 'investing' },
+  { keyword: 'retirement', key: 'investing' },
+  { keyword: 'credit', key: 'credit-cards' },
+  { keyword: 'loan', key: 'loans' },
+  { keyword: 'mortgage', key: 'loans' },
+  { keyword: 'budget', key: 'budgeting' },
+  { keyword: 'sav', key: 'passive-income' },
+  { keyword: 'tax', key: 'investing' }
+];
+
 export function getRelatedLinks(category: string) {
-  return categoryLinks[category] ?? [];
+  if (categoryLinks[category]) return categoryLinks[category];
+
+  const normalized = category.toLowerCase();
+  const fallback = fallbackByKeyword.find((item) => normalized.includes(item.keyword));
+
+  return fallback ? categoryLinks[fallback.key] : categoryLinks.budgeting;
 }
