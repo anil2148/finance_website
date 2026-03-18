@@ -1,0 +1,51 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Mortgage planning illustration</title>
+  <desc id="desc">A stylized house with a checklist, rate chart, and monthly payment bars representing mortgage planning decisions.</desc>
+  <rect width="1200" height="675" rx="28" fill="url(#bg)"/>
+  <rect x="70" y="78" width="410" height="520" rx="22" fill="#ffffff" fill-opacity="0.88"/>
+  <rect x="120" y="130" width="220" height="26" rx="8" fill="#0F766E" fill-opacity="0.16"/>
+  <rect x="120" y="184" width="300" height="18" rx="9" fill="#334155" fill-opacity="0.24"/>
+  <rect x="120" y="220" width="260" height="18" rx="9" fill="#334155" fill-opacity="0.16"/>
+  <rect x="120" y="270" width="300" height="64" rx="14" fill="#CCFBF1"/>
+  <path d="M145 303L172 330L212 282" stroke="#0F766E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="120" y="360" width="300" height="64" rx="14" fill="#E0F2FE"/>
+  <path d="M145 393L172 420L212 372" stroke="#0369A1" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="120" y="450" width="300" height="64" rx="14" fill="#F1F5F9"/>
+  <path d="M145 483L172 510L212 462" stroke="#334155" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="540" y="120" width="590" height="470" rx="24" fill="#ffffff"/>
+  </g>
+
+  <path d="M675 318L835 190L995 318V500H675V318Z" fill="#E2E8F0"/>
+  <path d="M640 325L835 158L1030 325" stroke="#1E293B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="760" y="360" width="150" height="140" rx="18" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="8"/>
+  <rect x="695" y="360" width="46" height="46" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="6"/>
+  <rect x="929" y="360" width="46" height="46" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="6"/>
+
+  <rect x="575" y="525" width="520" height="38" rx="12" fill="#E2E8F0"/>
+  <rect x="594" y="534" width="170" height="20" rx="10" fill="#0F766E" fill-opacity="0.2"/>
+  <rect x="782" y="534" width="118" height="20" rx="10" fill="#0369A1" fill-opacity="0.2"/>
+  <rect x="915" y="534" width="160" height="20" rx="10" fill="#334155" fill-opacity="0.18"/>
+
+  <path d="M916 228C971 228 1015 273 1015 328" stroke="#0EA5E9" stroke-width="10" stroke-linecap="round" stroke-dasharray="10 16"/>
+  <circle cx="1016" cy="328" r="18" fill="#0EA5E9" fill-opacity="0.8"/>
+
+  <defs>
+    <linearGradient id="bg" x1="80" y1="60" x2="1120" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ECFEFF"/>
+      <stop offset="0.55" stop-color="#DBEAFE"/>
+      <stop offset="1" stop-color="#E0E7FF"/>
+    </linearGradient>
+    <filter id="shadow" x="514" y="96" width="642" height="522" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="6"/>
+      <feGaussianBlur stdDeviation="13"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0588 0 0 0 0 0.0941 0 0 0 0 0.1569 0 0 0 0.2 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+  </defs>
+</svg>
