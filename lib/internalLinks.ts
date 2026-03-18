@@ -17,7 +17,7 @@ const categoryLinks: Record<string, RelatedLink[]> = {
     { label: 'Loans hub', href: '/learn/loans', type: 'hub' },
     { label: 'Personal loan comparisons', href: '/comparison?category=personal_loan', type: 'comparison' },
     { label: 'Loan calculator', href: '/calculators/loan-calculator', type: 'calculator' },
-    { label: 'Loan origination fees explained', href: '/blog/seo-loan-origination-fees-explained', type: 'article' }
+    { label: 'Loan origination fees explained', href: '/blog/seo-how-to-compare-personal-loan-apr', type: 'article' }
   ],
   mortgages: [
     { label: 'Loans hub', href: '/learn/loans', type: 'hub' },
@@ -41,7 +41,7 @@ const categoryLinks: Record<string, RelatedLink[]> = {
     { label: 'Passive income hub', href: '/learn/passive-income', type: 'hub' },
     { label: 'Investment account comparisons', href: '/comparison?category=investment_app', type: 'comparison' },
     { label: 'Compound interest calculator', href: '/calculators/compound-interest-calculator', type: 'calculator' },
-    { label: 'Building a passive income portfolio', href: '/blog/seo-building-passive-income-portfolio', type: 'article' }
+    { label: 'Building a passive income portfolio', href: '/blog/seo-tax-efficient-investing-tips', type: 'article' }
   ],
   'credit cards': [
     { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' },
