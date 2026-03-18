@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
-import { getAuthorIdForCategory } from '@/lib/authors';
+import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, getAuthorIdForCategory } from '@/lib/authors';
 import { canonicalTopicKey, enhancePost, qualityScore, shouldExcludePost } from '@/lib/blogEnhancer';
 import { shouldDisplayPost } from '@/lib/blogCleanup';
 
@@ -43,8 +43,14 @@ function loadPosts() {
         seoTitle: data.seoTitle,
         metaDescription: data.metaDescription,
         content,
-        authorId: data.authorId ?? getAuthorIdForCategory(data.category ?? 'general'),
-        reviewedById: data.reviewedById ?? 'rachel_nguyen',
+        authorId:
+          typeof data.authorId === 'string' && AUTHOR_PROFILES[data.authorId]
+            ? data.authorId
+            : getAuthorIdForCategory(data.category ?? 'general'),
+        reviewedById:
+          typeof data.reviewedById === 'string' && AUTHOR_PROFILES[data.reviewedById]
+            ? data.reviewedById
+            : EDITORIAL_REVIEWER_ID,
         updatedAt: data.updatedAt ?? data.date
       } as BlogPost;
 
