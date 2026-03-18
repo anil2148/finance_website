@@ -188,7 +188,67 @@ const fallbackVisual: BlogVisual = {
   heroClassName: 'from-slate-50 via-blue-50 to-indigo-100'
 };
 
+const slugVisuals: Record<string, BlogVisual> = {
+  'seo-mortgage-preapproval-checklist': {
+    src: '/images/blog-visual-loans-docs.svg',
+    alt: 'Mortgage preapproval document stack with timeline milestones',
+    cardClassName: 'from-indigo-50 via-blue-50 to-sky-100',
+    heroClassName: 'from-indigo-50 via-blue-50 to-sky-100'
+  },
+  'seo-how-to-compare-personal-loan-apr': {
+    src: '/images/blog-visual-credit.svg',
+    alt: 'Personal loan comparison grid showing APR, fees, and terms',
+    cardClassName: 'from-blue-50 via-indigo-50 to-violet-100',
+    heroClassName: 'from-blue-50 via-indigo-50 to-violet-100'
+  },
+  'seo-debt-to-income-ratio-guide': {
+    src: '/images/blog-visual-general.svg',
+    alt: 'Debt-to-income planning board with affordability checkpoints',
+    cardClassName: 'from-slate-50 via-indigo-50 to-blue-100',
+    heroClassName: 'from-slate-50 via-indigo-50 to-blue-100'
+  },
+  'seo-emergency-fund-3-to-6-months': {
+    src: '/images/blog-visual-savings-goals.svg',
+    alt: 'Emergency-fund milestone path across multiple reserve stages',
+    cardClassName: 'from-cyan-50 via-sky-50 to-blue-100',
+    heroClassName: 'from-cyan-50 via-sky-50 to-blue-100'
+  },
+  'seo-high-yield-savings-basics': {
+    src: '/images/blog-visual-savings-cashflow.svg',
+    alt: 'High-yield savings account scorecard with access and APY factors',
+    cardClassName: 'from-sky-50 via-cyan-50 to-teal-100',
+    heroClassName: 'from-sky-50 via-cyan-50 to-teal-100'
+  },
+  'seo-50-30-20-rule-for-saving': {
+    src: '/images/blog-visual-saving.svg',
+    alt: 'Flexible budget worksheet with monthly trigger-based split changes',
+    cardClassName: 'from-teal-50 via-cyan-50 to-sky-100',
+    heroClassName: 'from-teal-50 via-cyan-50 to-sky-100'
+  },
+  'seo-investing-for-beginners-roadmap': {
+    src: '/images/blog-visual-investing-growth.svg',
+    alt: 'First-year investing plan with contribution milestones by quarter',
+    cardClassName: 'from-emerald-50 via-cyan-50 to-sky-100',
+    heroClassName: 'from-emerald-50 via-cyan-50 to-sky-100'
+  },
+  'seo-tax-efficient-investing-tips': {
+    src: '/images/blog-visual-tax.svg',
+    alt: 'Tax-efficient asset-location map across account types',
+    cardClassName: 'from-amber-50 via-orange-50 to-rose-100',
+    heroClassName: 'from-amber-50 via-orange-50 to-rose-100'
+  },
+  'seo-how-credit-utilization-works': {
+    src: '/images/blog-visual-credit-utilization.svg',
+    alt: 'Credit utilization dashboard with per-card concentration trends',
+    cardClassName: 'from-fuchsia-50 via-purple-50 to-violet-100',
+    heroClassName: 'from-fuchsia-50 via-purple-50 to-violet-100'
+  }
+};
+
 export function getBlogVisual(category: string, topic = ''): BlogVisual {
+  const direct = slugVisuals[topic];
+  if (direct) return direct;
+
   const normalized = `${category} ${topic}`.toLowerCase();
   const pool = visualPools.find((entry) => normalized.includes(entry.keyword));
 
