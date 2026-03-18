@@ -137,10 +137,11 @@ export function HomepageLayout() {
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">What to do first</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal to start with a calculator, move to comparisons, and finish with a focused guide.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal and follow one workflow: run your numbers first, compare options second, and read the matching guide before acting.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Calculator → Compare → Learn</p>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{goal.title}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{goal.description}</p>
               <div className="mt-3 space-y-1 text-sm">
@@ -150,25 +151,6 @@ export function HomepageLayout() {
             </article>
           ))}
         </div>
-      </section>
-
-      <section aria-labelledby="workflow-overview" className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
-        <h2 id="workflow-overview" className="sr-only">How the FinanceSphere workflow works</h2>
-        <Link href="/comparison?category=investment_app" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Step 1</p>
-          <h2 className="mt-1 text-lg font-semibold dark:text-slate-100">Compare options</h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">See fees, yields, and bonuses side by side before you commit.</p>
-        </Link>
-        <Link href="/calculators" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Step 2</p>
-          <h2 className="mt-1 text-lg font-semibold dark:text-slate-100">Run your numbers</h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Use calculators to test affordability, payoff speed, and growth assumptions.</p>
-        </Link>
-        <Link href="/blog" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Step 3</p>
-          <h2 className="mt-1 text-lg font-semibold dark:text-slate-100">Read the playbook</h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Use practical guides to avoid common mistakes and choose with confidence.</p>
-        </Link>
       </section>
 
       <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">

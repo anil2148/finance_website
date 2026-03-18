@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { BlogCard } from '@/components/ui/BlogCard';
 import { getPosts } from '@/lib/markdown';
 
@@ -64,6 +65,44 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
   ]
 };
 
+const categoryVisuals: Record<string, { src: string; alt: string; shell: string }> = {
+  investing: {
+    src: '/images/blog-visual-investing-growth.svg',
+    alt: 'Investment portfolio growth chart and allocation visuals',
+    shell: 'from-blue-50 to-indigo-50'
+  },
+  loans: {
+    src: '/images/blog-visual-loans-docs.svg',
+    alt: 'Loan paperwork and approval checklist illustration',
+    shell: 'from-amber-50 to-orange-50'
+  },
+  mortgages: {
+    src: '/images/blog-visual-loans-docs.svg',
+    alt: 'Mortgage document prep illustration',
+    shell: 'from-teal-50 to-cyan-50'
+  },
+  'credit-cards': {
+    src: '/images/blog-visual-credit.svg',
+    alt: 'Credit card rewards and billing cycle illustration',
+    shell: 'from-violet-50 to-fuchsia-50'
+  },
+  'savings-accounts': {
+    src: '/images/blog-visual-savings-cashflow.svg',
+    alt: 'Savings cashflow and emergency fund illustration',
+    shell: 'from-emerald-50 to-lime-50'
+  },
+  budgeting: {
+    src: '/images/blog-visual-savings-goals.svg',
+    alt: 'Budgeting envelope and goal-tracking illustration',
+    shell: 'from-sky-50 to-cyan-50'
+  },
+  tax: {
+    src: '/images/blog-visual-tax.svg',
+    alt: 'Tax planning worksheet and timeline illustration',
+    shell: 'from-rose-50 to-pink-50'
+  }
+};
+
 const featuredOrderByCategory: Record<string, string[]> = {
   investing: ['seo-investing-for-beginners-roadmap', 'seo-tax-efficient-investing-tips'],
   loans: ['seo-mortgage-preapproval-checklist', 'seo-how-to-compare-personal-loan-apr', 'seo-debt-to-income-ratio-guide'],
@@ -104,6 +143,11 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
     return a.date < b.date ? 1 : -1;
   });
   const copy = getCategoryContent(params.category);
+  const visual = categoryVisuals[params.category] ?? {
+    src: '/images/blog-visual-general.svg',
+    alt: 'FinanceSphere editorial topic illustration',
+    shell: 'from-slate-50 to-blue-50'
+  };
   const journeyLinks = categoryJourneyLinks[params.category] ?? [
     { href: '/learn/investing', label: 'Learn hubs' },
     { href: '/calculators', label: 'Calculator suite' },
@@ -114,15 +158,21 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
 
   return (
     <section className="space-y-5">
-      <header className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h1 className="text-2xl font-bold">{copy.title}</h1>
-        <p className="mt-2 text-slate-600">{copy.description}</p>
-        <p className="mt-2 text-sm text-slate-500">{copy.editorialAngle}</p>
-        <div className="mt-3 flex flex-wrap gap-2 text-xs">
-          {journeyLinks.map((item) => (
-            <Link key={item.href} href={item.href} className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">{item.label}</Link>
-          ))}
-          <Link href="/blog" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">All blog topics</Link>
+      <header className="grid gap-5 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-[1.25fr_1fr] md:items-center">
+        <div>
+          <h1 className="text-2xl font-bold">{copy.title}</h1>
+          <p className="mt-2 text-slate-600">{copy.description}</p>
+          <p className="mt-2 text-sm text-slate-500">{copy.editorialAngle}</p>
+          <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Editorial curation: strongest execution-oriented guides first.</p>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs">
+            {journeyLinks.map((item) => (
+              <Link key={item.href} href={item.href} className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">{item.label}</Link>
+            ))}
+            <Link href="/blog" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">All blog topics</Link>
+          </div>
+        </div>
+        <div className={`relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${visual.shell} p-3`}>
+          <Image src={visual.src} alt={visual.alt} fill sizes="(max-width: 768px) 100vw, 40vw" className="object-contain p-3 sm:p-5" />
         </div>
       </header>
 
