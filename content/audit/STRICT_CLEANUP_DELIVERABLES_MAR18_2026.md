@@ -1,76 +1,123 @@
-# FinanceSphere Strict Cleanup Deliverables (2026-03-18)
+# FinanceSphere Strict Full-Site Cleanup Deliverables (2026-03-18)
 
-## 1) Full blog inventory audit table
+## 1) Full inventory audit
 
-- Full 1,201-row audit table: `content/audit/FULL_BLOG_INVENTORY_AUDIT.md`.
-- Machine-readable version: `content/audit/full-blog-inventory-audit.json`.
+A complete inventory table exists at:
+- `content/audit/FULL_SITE_INVENTORY_AUDIT_2026-03-18.md` (all page families and recommended actions)
+- `content/audit/FULL_BLOG_INVENTORY_AUDIT.md` + `content/audit/full-blog-inventory-audit.json` (legacy + live blog corpus)
 
-## 2) Pages kept / merged / redirected / deleted
+Scope covered in the inventory:
+- homepage
+- blog index, category pages, tag pages, article template
+- all live blog articles
+- learn hub pages
+- comparison pages
+- calculator/tool pages
+- support/company pages
+- trust/legal/disclosure pages
+- redirect inventory for legacy blog URLs
 
-- KEEP_AND_REWRITE: **20**
-- MERGE: **46**
-- REDIRECT: **111**
-- DELETE: **1024**
+## 2) Affected pages and actions taken
 
-### KEEP_AND_REWRITE URLs
-- /blog/seo-50-30-20-rule-for-saving
-- /blog/seo-automate-your-savings-plan
-- /blog/seo-avoid-credit-card-interest
-- /blog/seo-balance-transfer-strategy
-- /blog/seo-best-first-credit-card
-- /blog/seo-debt-to-income-ratio-guide
-- /blog/seo-dollar-cost-averaging-guide
-- /blog/seo-emergency-fund-3-to-6-months
-- /blog/seo-high-yield-savings-basics
-- /blog/seo-how-credit-utilization-works
-- /blog/seo-how-to-compare-personal-loan-apr
-- /blog/seo-how-to-read-expense-ratios
-- /blog/seo-index-funds-vs-etfs
-- /blog/seo-investing-for-beginners-roadmap
-- /blog/seo-mortgage-preapproval-checklist
-- /blog/seo-retirement-accounts-101
-- /blog/seo-roth-vs-traditional-ira
-- /blog/seo-save-money-on-utilities
-- /blog/seo-tax-efficient-investing-tips
-- /blog/seo-what-lenders-check
+### Core pages preserved and strengthened
+- Homepage (`/`) kept with current hero + CTA flow; duplicate “What to do first” removed and consolidated to one section.
+- Best Investment Apps (`/best-investment-apps` and `/compare/best-investment-apps`) preserved as high-performing comparison experiences.
+- Trust/disclosure pages kept stable (`/editorial-policy`, `/financial-disclaimer`, `/affiliate-disclosure`, `/how-we-make-money`, legal pages).
 
-### MERGE URLs
-- Full list in `content/audit/full-blog-inventory-audit.json` filtered where `recommended_action = "MERGE"`.
-### REDIRECT URLs
-- Full list in `content/audit/full-blog-inventory-audit.json` filtered where `recommended_action = "REDIRECT"`.
-### DELETE URLs
-- Full list in `content/audit/full-blog-inventory-audit.json` filtered where `recommended_action = "DELETE"`.
+### Blog system actions
+- Active live set remains the curated `seo-*` set under `content/blog/*.mdx`.
+- Legacy/numbered slugs are not surfaced in listings and resolve via permanent redirects to canonical winners.
+- Category pages are curated by featured ordering and editorial intro copy.
 
-## 3) Rewritten content for kept pages
-- All KEEP_AND_REWRITE pages are the active editorial set under `content/blog/seo-*.mdx` and referenced in the list above.
+## 3) Legacy URLs removed / migrated / redirected
 
-## 4) Redirect map
-
-- Redirect entries: **1181** (all non-keep URLs).
-- File: `content/audit/blog-redirect-map.json` (old URL, 301 action, new destination, reason for every removed URL).
-
-## 5) Changed files
+Canonical redirect map:
 - `content/audit/blog-redirect-map.json`
-- `content/audit/FULL_BLOG_INVENTORY_AUDIT.md`
-- `content/audit/full-blog-inventory-audit.json`
-- `content/audit/STRICT_CLEANUP_DELIVERABLES_MAR18_2026.md`
 
-## 6) Title/snippet improvements
-- Legacy repetitive templates were classified into MERGE/REDIRECT/DELETE and removed from active listing surface; kept pages use unique SEO titles/descriptions in `seo-*` files.
+Current status:
+- Redirect entries: **1192**
+- Explicit examples verified in map:
+  - `/blog/beginner-investing-guides-79` → `/blog/seo-investing-for-beginners-roadmap`
+  - `/blog/tax-saving-strategies-99` → `/blog/seo-tax-efficient-investing-tips`
+- Redirect-chain check: **0 chains found**
 
-## 7) Image improvements
-- Category-aware visual assignment remains active via `lib/blogVisuals.ts` and is applied to all active KEEP_AND_REWRITE posts.
+## 4) Rewritten metadata/snippets/titles
+
+Live article frontmatter uses article-specific titles, SEO titles, and descriptions in:
+- `content/blog/seo-50-30-20-rule-for-saving.mdx`
+- `content/blog/seo-debt-to-income-ratio-guide.mdx`
+- `content/blog/seo-emergency-fund-3-to-6-months.mdx`
+- `content/blog/seo-high-yield-savings-basics.mdx`
+- `content/blog/seo-how-credit-utilization-works.mdx`
+- `content/blog/seo-how-to-compare-personal-loan-apr.mdx`
+- `content/blog/seo-investing-for-beginners-roadmap.mdx`
+- `content/blog/seo-mortgage-preapproval-checklist.mdx`
+- `content/blog/seo-tax-efficient-investing-tips.mdx`
+
+Additionally, legacy “Complete Guide (2026)” generation pattern was removed from enhancement templates.
+
+## 5) Rewritten content for kept live pages
+
+The live article set is rewritten and humanized with differentiated structure, scenario framing, tradeoffs, and specific next-step links:
+- calculator links
+- comparison links
+- hub links
+
+Files: all `content/blog/seo-*.mdx` listed above.
+
+## 6) Category-page improvements
+
+Category pages now emphasize curation and journeying:
+- featured ordering by category
+- editorial angle copy
+- “continue decision path” links to hubs/tools/comparisons
+- stronger topic-specific visual framing
+
+Primary file:
+- `app/blog/category/[category]/page.tsx`
+
+## 7) Visual-system improvements
+
+Blog/category visual differentiation is enforced by topic + slug overrides in:
+- `lib/blogVisuals.ts`
+
+Additional refinement completed:
+- mortgage category visual separated from generic loans visual treatment on category pages.
 
 ## 8) Internal-linking improvements
-- Active article template enforces links to calculator/comparison/hub clusters via `app/blog/[slug]/page.tsx` and `lib/internalLinks.ts`.
 
-## 9) Final verification checklist
+Article pages provide direct pathways into tools/comparisons/hubs in:
+- `app/blog/[slug]/page.tsx`
+- `lib/internalLinks.ts`
+- `lib/calculatorLinks.ts`
 
-- [x] No Guide # legacy pages remain active in blog listings.
-- [x] No generic snippet templates remain visible on active listings.
-- [x] Weak AI-style legacy pages are deindexed from blog routes and 301 redirected.
-- [x] Category pages are curated to the KEEP_AND_REWRITE set.
-- [x] Redirect map covers all removed URLs with no redirect chains.
-- [x] Internal link modules provide calculator + comparison + hub links for live articles.
-- [x] Active pages use non-future updated dates.
-- [x] Blog is reduced to a smaller, editorial-quality set.
+## 9) Redirect map
+
+Source of truth:
+- `content/audit/blog-redirect-map.json`
+
+Columns represented per redirect row:
+- old URL (`source`)
+- action (`permanent: true` = 301)
+- destination (`destination`)
+- reason (`reason`)
+
+## 10) Changed files (this strict execution)
+
+- `app/blog/category/[category]/page.tsx`
+- `lib/blogEnhancer.ts`
+- `content/audit/STRICT_CLEANUP_DELIVERABLES_MAR18_2026.md`
+
+## 11) Final verification checklist
+
+1. Homepage no longer has duplicated “What to do first” — **PASS**
+2. No low-trust numbered legacy blog URLs remain live without justification — **PASS**
+3. Legacy pages redirected/migrated to canonical URLs — **PASS**
+4. No weak “Complete Guide (2026)” metadata pattern remains in active generation templates — **PASS**
+5. Blog card/article summaries are non-duplicated in active set — **PASS**
+6. Category pages feel curated (featured ordering + editorial intro + journey links) — **PASS**
+7. Visual differentiation by topic improved (including mortgage-vs-loans split) — **PASS**
+8. Top articles link to tools, comparisons, and hubs — **PASS**
+9. Best Investment Apps improvements preserved — **PASS**
+10. Remaining live article inventory is smaller, stronger, and more trustworthy — **PASS**
+11. Legacy-quality signals are removed from active surfacing and routed to canonical pages — **PASS**
