@@ -77,8 +77,8 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     shell: 'from-amber-50 to-orange-50'
   },
   mortgages: {
-    src: '/images/blog-visual-loans-docs.svg',
-    alt: 'Mortgage document prep illustration',
+    src: '/images/blog-visual-mortgage.svg',
+    alt: 'Mortgage planning dashboard illustration with payment trends and approval checklist',
     shell: 'from-teal-50 to-cyan-50'
   },
   'credit-cards': {
