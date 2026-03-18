@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { BlogSearch } from '@/components/ui/BlogSearch';
 import { getCategories, getPosts, getTags } from '@/lib/markdown';
 import { NewsletterForm } from '@/components/NewsletterForm';
@@ -19,9 +20,21 @@ export default function BlogPage() {
 
   return (
     <section className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">FinanceSphere Blog</h1>
-        <p className="text-slate-600">Read practical explainers tied to real decisions—choosing between loan terms, reducing credit-card interest, building an emergency fund, and improving long-term investing habits.</p>
+      <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-[1.25fr_1fr] md:items-center">
+        <div>
+          <h1 className="text-3xl font-bold">FinanceSphere Blog</h1>
+          <p className="text-slate-600">Read practical explainers tied to real decisions—choosing between loan terms, reducing credit-card interest, building an emergency fund, and improving long-term investing habits.</p>
+        </div>
+        <div className="relative h-44 overflow-hidden rounded-2xl sm:h-52">
+          <Image
+            src="/images/blog-visual-general.svg"
+            alt="Editorial-style personal finance dashboard illustration for the FinanceSphere blog"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 40vw"
+            className="object-cover"
+          />
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm">

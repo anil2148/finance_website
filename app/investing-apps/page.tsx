@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { FAQAccordion, JumpNav, ResourceGrid, TrustBar } from '@/components/hubs/PillarPageSections';
 import { getFinancialProducts } from '@/lib/financialProducts';
 
@@ -114,16 +115,30 @@ export default function InvestingAppsPillarPage() {
   return (
     <article className="space-y-10">
       <header className="rounded-3xl bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 p-8 text-white md:p-10">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-200">Investing hub</p>
-        <h1 className="mt-3 text-3xl font-bold leading-tight md:text-5xl">Investing Apps: How to Compare Platforms, Costs, and Features</h1>
-        <p className="mt-4 max-w-3xl text-base text-slate-100 md:text-lg">
-          This hub helps you shortlist investing apps by your goals, experience level, and feature needs—then move to FinanceSphere&rsquo;s live comparison data for platform-by-platform decisions.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/best-investment-apps" className="btn-primary">Compare Investment Apps</Link>
-          <Link href="/blog/seo-investing-for-beginners-roadmap" className="inline-flex items-center justify-center rounded-xl border border-blue-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
-            Explore Investing Guides
-          </Link>
+        <div className="grid gap-6 md:grid-cols-[1.25fr_1fr] md:items-center">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-200">Investing hub</p>
+            <h1 className="mt-3 text-3xl font-bold leading-tight md:text-5xl">Investing Apps: How to Compare Platforms, Costs, and Features</h1>
+            <p className="mt-4 max-w-3xl text-base text-slate-100 md:text-lg">
+              This hub helps you shortlist investing apps by your goals, experience level, and feature needs—then move to FinanceSphere&rsquo;s live comparison data for platform-by-platform decisions.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link href="/best-investment-apps" className="btn-primary">Compare Investment Apps</Link>
+              <Link href="/blog/seo-investing-for-beginners-roadmap" className="inline-flex items-center justify-center rounded-xl border border-blue-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
+                Explore Investing Guides
+              </Link>
+            </div>
+          </div>
+          <div className="relative h-52 overflow-hidden rounded-2xl border border-white/20">
+            <Image
+              src="/images/investing-hub-illustration.svg"
+              alt="Illustration of a mobile investing app interface with watchlist, portfolio trend, and ETF allocation"
+              fill
+              priority
+              sizes="(max-width: 768px) 100vw, 40vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </header>
 

@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
@@ -8,6 +9,7 @@ import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
 import { getRelatedLinks } from '@/lib/internalLinks';
 import { NewsletterForm } from '@/components/NewsletterForm';
+import { getBlogVisual } from '@/lib/blogVisuals';
 
 const calculatorLinksByCategory: Record<string, Array<{ label: string; href: string }>> = {
   budgeting: [
@@ -63,6 +65,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const schema = articleSchema(post.title, post.description, post.slug);
   const toc = getHeadings(post.content);
   const relatedLinks = getRelatedLinks(post.category);
+  const calculatorLinks = calculatorLinksByCategory[post.category] ?? defaultCalculatorLinks;
+  const visual = getBlogVisual(post.category);
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -77,9 +81,12 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
-      <header className="space-y-2">
+      <header className="space-y-4">
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <p className="text-slate-600">{post.description}</p>
+        <div className="relative h-56 overflow-hidden rounded-2xl border border-slate-200 sm:h-64">
+          <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-cover" />
+        </div>
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
       </header>
 

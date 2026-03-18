@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: 'About FinanceSphere | Practical Financial Planning Tools and Guides',
@@ -13,12 +14,24 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <article className="mx-auto max-w-4xl space-y-10">
-      <header className="space-y-4">
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">About FinanceSphere: Clear tools for real money decisions</h1>
-        <p className="max-w-3xl text-lg text-slate-600">
-          FinanceSphere helps you plan major financial choices with practical calculators and plain-language guides, so you can compare options and move
-          forward with confidence.
-        </p>
+      <header className="grid gap-6 md:grid-cols-[1.2fr_1fr] md:items-center">
+        <div className="space-y-4">
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">About FinanceSphere: Clear tools for real money decisions</h1>
+          <p className="max-w-3xl text-lg text-slate-600">
+            FinanceSphere helps you plan major financial choices with practical calculators and plain-language guides, so you can compare options and move
+            forward with confidence.
+          </p>
+        </div>
+        <div className="relative h-52 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+          <Image
+            src="/images/about-mission-illustration.svg"
+            alt="FinanceSphere mission illustration showing a planning dashboard, growth graph, and trust badge"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 35vw"
+            className="object-cover"
+          />
+        </div>
       </header>
 
       <section className="space-y-4">
