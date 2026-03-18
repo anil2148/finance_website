@@ -10,30 +10,7 @@ import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
 import { getRelatedLinks } from '@/lib/internalLinks';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { getBlogVisual } from '@/lib/blogVisuals';
-
-const calculatorLinksByCategory: Record<string, Array<{ label: string; href: string }>> = {
-  budgeting: [
-    { label: 'Budget Planner', href: '/calculators/budget-planner' },
-    { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' }
-  ],
-  investing: [
-    { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
-    { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' }
-  ],
-  mortgages: [
-    { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
-    { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' }
-  ],
-  'credit cards': [
-    { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
-    { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' }
-  ]
-};
-
-const defaultCalculatorLinks = [
-  { label: 'Explore all calculators', href: '/calculators' },
-  { label: 'Compare products', href: '/comparison' }
-];
+import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByBlogCategory, resolveCalculatorHref } from '@/lib/calculatorLinks';
 
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
@@ -65,7 +42,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const schema = articleSchema(post.title, post.description, post.slug);
   const toc = getHeadings(post.content);
   const relatedLinks = getRelatedLinks(post.category);
-  const calculatorLinks = calculatorLinksByCategory[post.category] ?? defaultCalculatorLinks;
+  const calculatorLinks = matchingCalculatorLinksByBlogCategory[post.category] ?? defaultMatchingCalculatorLinks;
   const visual = getBlogVisual(post.category);
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -113,11 +90,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         <h3 className="text-xl font-semibold">Put this guide into action</h3>
         <p className="text-sm text-blue-100">Use the matching calculators below first, then compare product options that fit your scenario.</p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {calculatorLinks.map((item) => (
-            <Link key={item.href} href={item.href} className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-700">
-              {item.label}
-            </Link>
-          ))}
+          {calculatorLinks.map((item) => {
+            const href = resolveCalculatorHref(item.href);
+            return (
+              <Link key={`${item.label}-${href}`} href={href} className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-700">
+                {item.label}
+              </Link>
+            );
+          })}
         </div>
       </section>
 
