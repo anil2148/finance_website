@@ -31,10 +31,11 @@ Legacy numbered and formulaic pages are removed from canonical inventory and han
 Reference: `content/audit/blog-redirect-map.json`.
 Examples:
 - `/blog/beginner-investing-guides-79` → `/blog/seo-investing-for-beginners-roadmap`
-- `/blog/how-to-save-500-month-5` → `/blog/seo-emergency-fund-3-to-6-months`
+- `/blog/how-to-save-500-month-5` → `/blog/seo-high-yield-savings-basics`
 - `/blog/tax-saving-strategies-99` → `/blog/seo-tax-efficient-investing-tips`
 
 ## 6) Title/snippet/meta improvements summary
+- Rewrote weak comparison metadata language on `/compare/best-credit-cards-2026` and `/compare/best-savings-accounts-usa` to remove low-trust phrasing and improve intent alignment.
 - Disabled forced title rewrites for all `seo-*` posts so authored titles are preserved instead of being normalized into template patterns.
 - Kept fallback rewrite logic only for truly templated legacy-style titles/descriptions.
 
