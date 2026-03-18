@@ -3535,9 +3535,9 @@
     "file": "content/blog/how-to-save-500-month-14.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-23",
@@ -3545,9 +3545,9 @@
     "file": "content/blog/how-to-save-500-month-23.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-32",
@@ -3555,9 +3555,9 @@
     "file": "content/blog/how-to-save-500-month-32.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-41",
@@ -3565,9 +3565,9 @@
     "file": "content/blog/how-to-save-500-month-41.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-5",
@@ -3575,9 +3575,9 @@
     "file": "content/blog/how-to-save-500-month-5.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-50",
@@ -3585,9 +3585,9 @@
     "file": "content/blog/how-to-save-500-month-50.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-59",
@@ -3595,9 +3595,9 @@
     "file": "content/blog/how-to-save-500-month-59.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-68",
@@ -3605,9 +3605,9 @@
     "file": "content/blog/how-to-save-500-month-68.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-77",
@@ -3615,9 +3615,9 @@
     "file": "content/blog/how-to-save-500-month-77.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-86",
@@ -3625,9 +3625,9 @@
     "file": "content/blog/how-to-save-500-month-86.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "how-to-save-500-month-95",
@@ -3635,9 +3635,9 @@
     "file": "content/blog/how-to-save-500-month-95.mdx",
     "category": "how",
     "word_count": 58,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "reason": "Consolidate thin numbered savings variants into a stronger canonical savings workflow article."
   },
   {
     "slug": "investing-guide-102",
@@ -5075,9 +5075,9 @@
     "file": "content/blog/mortgage-tips-17.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-26",
@@ -5085,9 +5085,9 @@
     "file": "content/blog/mortgage-tips-26.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-35",
@@ -5095,9 +5095,9 @@
     "file": "content/blog/mortgage-tips-35.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-44",
@@ -5105,9 +5105,9 @@
     "file": "content/blog/mortgage-tips-44.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-53",
@@ -5115,9 +5115,9 @@
     "file": "content/blog/mortgage-tips-53.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-62",
@@ -5125,9 +5125,9 @@
     "file": "content/blog/mortgage-tips-62.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-71",
@@ -5135,9 +5135,9 @@
     "file": "content/blog/mortgage-tips-71.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-8",
@@ -5145,9 +5145,9 @@
     "file": "content/blog/mortgage-tips-8.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-80",
@@ -5155,9 +5155,9 @@
     "file": "content/blog/mortgage-tips-80.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-89",
@@ -5165,9 +5165,9 @@
     "file": "content/blog/mortgage-tips-89.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgage-tips-98",
@@ -5175,9 +5175,9 @@
     "file": "content/blog/mortgage-tips-98.mdx",
     "category": "mortgage",
     "word_count": 55,
-    "action": "DELETE_REMOVE",
-    "destination": "",
-    "reason": "Thin templated post with repetitive structure and no unique insight."
+    "action": "REDIRECT",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "reason": "Consolidate thin numbered mortgage tips variants into the preapproval checklist canonical page."
   },
   {
     "slug": "mortgages-guide-10",

@@ -30,6 +30,37 @@ const categoryCopy: Record<string, { title: string; description: string }> = {
   }
 };
 
+const featuredOrderByCategory: Record<string, string[]> = {
+  investing: [
+    'seo-investing-for-beginners-roadmap',
+    'seo-index-funds-vs-etfs',
+    'seo-dollar-cost-averaging-guide',
+    'seo-how-to-read-expense-ratios',
+    'seo-retirement-accounts-101',
+    'seo-roth-vs-traditional-ira',
+    'seo-tax-efficient-investing-tips'
+  ],
+  loans: [
+    'seo-mortgage-preapproval-checklist',
+    'seo-what-lenders-check',
+    'seo-debt-to-income-ratio-guide',
+    'seo-how-to-compare-personal-loan-apr'
+  ],
+  'credit-cards': [
+    'seo-best-first-credit-card',
+    'seo-avoid-credit-card-interest',
+    'seo-how-credit-utilization-works',
+    'seo-balance-transfer-strategy'
+  ],
+  'savings-accounts': [
+    'seo-emergency-fund-3-to-6-months',
+    'seo-high-yield-savings-basics',
+    'seo-automate-your-savings-plan',
+    'seo-50-30-20-rule-for-saving',
+    'seo-save-money-on-utilities'
+  ]
+};
+
 function getCategoryContent(category: string) {
   return (
     categoryCopy[category] ?? {
@@ -50,6 +81,17 @@ export function generateMetadata({ params }: { params: { category: string } }): 
 
 export default function BlogCategoryPage({ params }: { params: { category: string } }) {
   const posts = getPosts().filter((post) => post.category === params.category);
+  const featuredOrder = featuredOrderByCategory[params.category] ?? [];
+  const featuredIndex = new Map(featuredOrder.map((slug, index) => [slug, index]));
+  const sortedPosts = [...posts].sort((a, b) => {
+    const aRank = featuredIndex.get(a.slug);
+    const bRank = featuredIndex.get(b.slug);
+
+    if (aRank !== undefined && bRank !== undefined) return aRank - bRank;
+    if (aRank !== undefined) return -1;
+    if (bRank !== undefined) return 1;
+    return a.date < b.date ? 1 : -1;
+  });
   const copy = getCategoryContent(params.category);
 
   return (
@@ -57,6 +99,9 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
       <header className="rounded-2xl border border-slate-200 bg-white p-5">
         <h1 className="text-2xl font-bold">{copy.title}</h1>
         <p className="mt-2 text-slate-600">{copy.description}</p>
+        <p className="mt-2 text-sm text-slate-500">
+          Curated to prioritize the strongest editorial guides first, with practical calculators, comparison pages, and hub links in each article.
+        </p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
           <Link href="/calculators" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">Related tools</Link>
           <Link href="/comparison" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">Compare options</Link>
@@ -64,7 +109,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
         </div>
       </header>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((p) => (
+        {sortedPosts.map((p) => (
           <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
         ))}
       </div>
