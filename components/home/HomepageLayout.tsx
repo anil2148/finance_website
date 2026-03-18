@@ -135,82 +135,63 @@ export function HomepageLayout() {
       </Card>
 
 
-      <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900">What to do first</h2>
-        <p className="mt-2 text-sm text-slate-600">Pick a goal to start with a calculator, move to comparisons, and finish with a focused guide.</p>
+      <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">What to do first</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal to start with a calculator, move to comparisons, and finish with a focused guide.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
-            <article key={goal.title} className="rounded-xl border border-slate-200 p-4">
-              <h3 className="text-lg font-semibold text-slate-900">{goal.title}</h3>
-              <p className="mt-2 text-sm text-slate-600">{goal.description}</p>
+            <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{goal.title}</h3>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{goal.description}</p>
               <div className="mt-3 space-y-1 text-sm">
-                <Link href={goal.primaryHref} className="block font-semibold text-blue-700 hover:underline">{goal.primaryLabel}</Link>
-                <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline">{goal.secondaryLabel}</Link>
+                <Link href={goal.primaryHref} className="block font-semibold text-blue-700 hover:underline dark:text-blue-300">{goal.primaryLabel}</Link>
+                <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline dark:text-slate-200 dark:hover:text-blue-300">{goal.secondaryLabel}</Link>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
-        <Link href="/comparison?category=investment_app" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">First step</p>
-          <h2 className="mt-1 text-lg font-semibold">Compare options</h2>
-          <p className="mt-2 text-sm text-slate-600">See fees, yields, and bonuses side by side before you commit.</p>
+      <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+        <Link href="/comparison?category=investment_app" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">First step</p>
+          <h2 className="mt-1 text-lg font-semibold dark:text-slate-100">Compare options</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">See fees, yields, and bonuses side by side before you commit.</p>
         </Link>
-        <Link href="/calculators" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Second step</p>
-          <h2 className="mt-1 text-lg font-semibold">Run your numbers</h2>
-          <p className="mt-2 text-sm text-slate-600">Use calculators to test affordability, payoff speed, and growth assumptions.</p>
+        <Link href="/calculators" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Second step</p>
+          <h2 className="mt-1 text-lg font-semibold dark:text-slate-100">Run your numbers</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Use calculators to test affordability, payoff speed, and growth assumptions.</p>
         </Link>
-        <Link href="/blog" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Third step</p>
-          <h2 className="mt-1 text-lg font-semibold">Read the playbook</h2>
-          <p className="mt-2 text-sm text-slate-600">Use practical guides to avoid common mistakes and choose with confidence.</p>
-        </Link>
-      </section>
-
-
-      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
-        <Link href="/blog" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">From guides</p>
-          <h2 className="mt-1 text-lg font-semibold">Read strategy context</h2>
-          <p className="mt-2 text-sm text-slate-600">Use topic-specific explainers before committing to a calculator scenario.</p>
-        </Link>
-        <Link href="/help" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">If stuck</p>
-          <h2 className="mt-1 text-lg font-semibold">Use the Help Center</h2>
-          <p className="mt-2 text-sm text-slate-600">Get routing help if you are unsure which tool, comparison, or guide to open next.</p>
-        </Link>
-        <Link href="/contact" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Need support</p>
-          <h2 className="mt-1 text-lg font-semibold">Contact FinanceSphere</h2>
-          <p className="mt-2 text-sm text-slate-600">Share your scenario and page URL for faster troubleshooting and editorial feedback.</p>
+        <Link href="/blog" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Third step</p>
+          <h2 className="mt-1 text-lg font-semibold dark:text-slate-100">Read the playbook</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Use practical guides to avoid common mistakes and choose with confidence.</p>
         </Link>
       </section>
 
-      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
+      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
         {trustSignals.map((signal) => (
-          <Link key={signal.label} href={signal.href} className="flex items-start gap-2 rounded-xl border border-slate-100 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50/40">
-            <ShieldCheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-blue-700" />
-            <span className="font-medium text-slate-700">{signal.label}</span>
+          <Link key={signal.label} href={signal.href} className="flex items-start gap-2 rounded-xl border border-slate-100 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
+            <ShieldCheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-blue-300" />
+            <span className="font-medium text-slate-700 dark:text-slate-200">{signal.label}</span>
           </Link>
         ))}
       </section>
 
       <section>
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-2xl font-semibold text-slate-900">Popular calculators</h2>
-          <Link href="/calculators" className="text-sm font-semibold text-blue-700 hover:underline">See all calculators</Link>
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Popular calculators</h2>
+          <Link href="/calculators" className="text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">See all calculators</Link>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {popularCalculators.map((calculator) => (
             <motion.div key={calculator.href} whileHover={{ y: -4 }}>
               <Link href={calculator.href}>
                 <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)]">
-                  <ChartBarIcon className="h-6 w-6 text-blue-700" />
-                  <h3 className="mt-2 text-lg font-semibold text-slate-900">{calculator.title}</h3>
-                  <p className="text-sm leading-6 text-slate-700">{calculator.description}</p>
+                  <ChartBarIcon className="h-6 w-6 text-blue-700 dark:text-blue-300" />
+                  <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{calculator.title}</h3>
+                  <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{calculator.description}</p>
                 </Card>
               </Link>
             </motion.div>
@@ -221,25 +202,25 @@ export function HomepageLayout() {
       <section className="grid gap-4 lg:grid-cols-3">
         {tools.map((tool) => (
           <Card key={tool.title} className="rounded-2xl border-slate-200/90 bg-gradient-to-b from-white to-slate-50 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-            <h3 className="text-lg font-semibold text-slate-900">{tool.title}</h3>
-            <p className="mt-2 text-sm leading-6 text-slate-700">{tool.desc}</p>
-            <Link href={tool.href} className="mt-3 inline-block text-sm font-semibold text-blue-700">Open section →</Link>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{tool.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">{tool.desc}</p>
+            <Link href={tool.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 dark:text-blue-300">Open section →</Link>
           </Card>
         ))}
       </section>
 
-      <Card className="border-slate-200/90 bg-white/90">
-        <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900">
-          <ArrowTrendingUpIcon className="h-5 w-5 text-blue-700" /> Decide with confidence
+      <Card className="border-slate-200/90 bg-white/90 dark:border-slate-700 dark:bg-slate-900/90">
+        <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
+          <ArrowTrendingUpIcon className="h-5 w-5 text-blue-700 dark:text-blue-300" /> Decide with confidence
         </h3>
-        <p className="text-sm leading-6 text-slate-700">
+        <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">
           FinanceSphere blends calculators, product comparisons, and editorial guides into one decision workflow so you can explain your plan before committing.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <Link href="/compare/best-credit-cards-2026" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700">
+          <Link href="/compare/best-credit-cards-2026" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
             <CheckBadgeIcon className="mr-2 inline h-4 w-4" /> Best credit cards with transparent trade-offs
           </Link>
-          <Link href="/compare/best-investment-apps" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700">
+          <Link href="/compare/best-investment-apps" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
             <SparklesIcon className="mr-2 inline h-4 w-4" /> Investment app comparison with fit guidance
           </Link>
         </div>

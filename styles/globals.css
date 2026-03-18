@@ -4,12 +4,12 @@
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-blue-700 px-4 py-2 font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md;
+    @apply inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-blue-700 px-4 py-2 font-medium text-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-70 dark:focus-visible:ring-offset-slate-950;
   }
-  .card {@apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900;}
-  .table-shell {@apply overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900;}
-  .input {@apply w-full rounded-xl border border-slate-300 px-3 py-2 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-900;}
-  .alert-success {@apply rounded-md bg-emerald-100 px-3 py-2 text-emerald-800;}
+  .card {@apply rounded-2xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100;}
+  .table-shell {@apply overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900;}
+  .input {@apply w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/30 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-400;}
+  .alert-success {@apply rounded-md border border-emerald-200 bg-emerald-100 px-3 py-2 text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/15 dark:text-emerald-200;}
 
   /* Comparison dropdown styles in the top navbar. */
   .comparison-nav-trigger {
@@ -63,14 +63,14 @@ body {
 
 @layer components {
   .offer-card {
-    @apply flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:flex-row md:items-center md:justify-between;
+    @apply flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 text-slate-900 shadow-sm md:flex-row md:items-center md:justify-between dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100;
   }
 
   .comparison-filter-grid {
-    @apply grid gap-2 rounded-2xl border border-slate-200 bg-white p-4 md:grid-cols-[auto_1fr_auto_1fr] md:items-center;
+    @apply grid gap-2 rounded-2xl border border-slate-200 bg-white p-4 text-slate-900 shadow-sm md:grid-cols-[auto_1fr_auto_1fr] md:items-center dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100;
   }
 
   .related-links-grid {
-    @apply grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3;
+    @apply grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900;
   }
 }

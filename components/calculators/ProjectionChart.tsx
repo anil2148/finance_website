@@ -46,7 +46,7 @@ const CHART_COPY: Record<ChartKind, ChartCopy> = {
 };
 
 export function ProjectionChart({ chartKind, projection }: { chartKind: ChartKind; projection: ProjectionPoint[] }) {
-  const { formatCurrency } = usePreferences();
+  const { formatCurrency, darkMode } = usePreferences();
 
   const stepSize = useMemo(() => {
     if (projection.length <= 10) return 1;
@@ -71,6 +71,12 @@ export function ProjectionChart({ chartKind, projection }: { chartKind: ChartKin
     if (Math.abs(value) >= 1_000) return `${(value / 1_000).toFixed(0)}K`;
     return `${Math.round(value)}`;
   };
+
+  const axisColor = darkMode ? '#cbd5e1' : '#334155';
+  const gridColor = darkMode ? '#334155' : '#e2e8f0';
+  const tooltipStyle = darkMode
+    ? { borderRadius: 10, borderColor: '#475569', backgroundColor: '#0f172a', color: '#e2e8f0' }
+    : { borderRadius: 10, borderColor: '#cbd5e1', backgroundColor: '#ffffff', color: '#0f172a' };
 
   if (!projection.length) {
     return (
@@ -98,33 +104,33 @@ export function ProjectionChart({ chartKind, projection }: { chartKind: ChartKin
                   <stop offset="95%" stopColor="#06b6d4" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" tick={{ fontSize: 12 }} tickMargin={8} />
-              <YAxis tickFormatter={formatAxisCurrency} tick={{ fontSize: 12 }} width={50} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="year" tick={{ fontSize: 12, fill: axisColor }} stroke={axisColor} tickMargin={8} />
+              <YAxis tickFormatter={formatAxisCurrency} tick={{ fontSize: 12, fill: axisColor }} stroke={axisColor} width={50} />
               <Tooltip
                 formatter={(value: number) => formatCurrencyValue(value)}
                 labelFormatter={(label) => `Year ${label}`}
-                contentStyle={{ borderRadius: 10, borderColor: '#cbd5e1' }}
+                contentStyle={tooltipStyle}
               />
               <Area name="Balance" dataKey="balance" stroke="#0891b2" fill="url(#growthGradient)" strokeWidth={2} />
               <Legend />
             </AreaChart>
           ) : chartKind === 'amortization' ? (
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 4, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" tick={{ fontSize: 12 }} tickMargin={8} />
-              <YAxis tickFormatter={formatAxisCurrency} tick={{ fontSize: 12 }} width={50} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="year" tick={{ fontSize: 12, fill: axisColor }} stroke={axisColor} tickMargin={8} />
+              <YAxis tickFormatter={formatAxisCurrency} tick={{ fontSize: 12, fill: axisColor }} stroke={axisColor} width={50} />
               <Tooltip
                 formatter={(value: number) => formatCurrencyValue(value)}
                 labelFormatter={(label) => `Year ${label}`}
-                contentStyle={{ borderRadius: 10, borderColor: '#cbd5e1' }}
+                contentStyle={tooltipStyle}
               />
               <Area name="Remaining balance" dataKey="balance" stroke="#4f46e5" fill="#818cf8" fillOpacity={0.2} strokeWidth={2} />
               <Legend />
             </AreaChart>
           ) : chartKind === 'pie' ? (
             <PieChart>
-              <Tooltip formatter={(value: number) => formatCurrencyValue(value)} contentStyle={{ borderRadius: 10, borderColor: '#cbd5e1' }} />
+              <Tooltip formatter={(value: number) => formatCurrencyValue(value)} contentStyle={tooltipStyle} />
               <Legend verticalAlign="bottom" height={36} />
               <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="46%" outerRadius={88}>
                 {pieData.map((entry, index) => (
@@ -134,13 +140,13 @@ export function ProjectionChart({ chartKind, projection }: { chartKind: ChartKin
             </PieChart>
           ) : (
             <BarChart data={chartData} margin={{ top: 10, right: 10, left: 4, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="year" tick={{ fontSize: 12 }} tickMargin={8} />
-              <YAxis tickFormatter={formatAxisCurrency} tick={{ fontSize: 12 }} width={50} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="year" tick={{ fontSize: 12, fill: axisColor }} stroke={axisColor} tickMargin={8} />
+              <YAxis tickFormatter={formatAxisCurrency} tick={{ fontSize: 12, fill: axisColor }} stroke={axisColor} width={50} />
               <Tooltip
                 formatter={(value: number) => formatCurrencyValue(value)}
                 labelFormatter={(label) => `Year ${label}`}
-                contentStyle={{ borderRadius: 10, borderColor: '#cbd5e1' }}
+                contentStyle={tooltipStyle}
               />
               <Legend />
               <Bar name="Balance" dataKey="balance" fill="#14b8a6" radius={[6, 6, 0, 0]} />

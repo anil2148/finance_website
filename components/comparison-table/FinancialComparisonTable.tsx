@@ -37,10 +37,10 @@ export function FinancialComparisonTable({ data, defaultCategory, hideControls =
   return (
     <section className="space-y-4 pb-16 md:pb-0">
       {topPick ? (
-        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Top Pick</p>
-          <h3 className="text-lg font-semibold text-emerald-900">{topPick.name}</h3>
-          <p className="text-sm text-emerald-900">Best for: {bestForSegment(topPick)} • {topPick.bonus_offer}</p>
+        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-500/40 dark:bg-emerald-500/10">
+          <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-300">Top Pick</p>
+          <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100">{topPick.name}</h3>
+          <p className="text-sm text-emerald-900 dark:text-emerald-100">Best for: {bestForSegment(topPick)} • {topPick.bonus_offer}</p>
         </div>
       ) : null}
 
@@ -61,17 +61,17 @@ export function FinancialComparisonTable({ data, defaultCategory, hideControls =
 
       <div className="table-shell">
         <table className="min-w-full text-sm">
-          <thead className="bg-slate-100 text-left">
+          <thead className="bg-slate-100 text-left dark:bg-slate-800 dark:text-slate-100">
             <tr>
               <th className="p-3">Name</th><th className="p-3">Bank</th><th className="p-3">Best For</th><th className="p-3">Rating</th><th className="p-3">APR/APY</th><th className="p-3">Annual Fee</th><th className="p-3">Pros</th><th className="p-3">Cons</th><th className="p-3">Offer</th>
             </tr>
           </thead>
           <tbody>
             {rows.map((product) => (
-              <tr key={product.id} className="border-t border-slate-200 align-top">
-                <td className="p-3 font-semibold">{product.name} {product.recommended_flag && <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs text-emerald-800">Recommended</span>}</td>
+              <tr key={product.id} className="border-t border-slate-200 align-top dark:border-slate-700 dark:text-slate-100">
+                <td className="p-3 font-semibold">{product.name} {product.recommended_flag && <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-200">Recommended</span>}</td>
                 <td className="p-3">{product.bank}</td>
-                <td className="p-3 text-slate-600">{bestForSegment(product)}</td>
+                <td className="p-3 text-slate-600 dark:text-slate-300">{bestForSegment(product)}</td>
                 <td className="p-3"><RatingStars rating={product.rating} /></td>
                 <td className="p-3">{product.apr_apy}</td>
                 <td className="p-3">{product.annual_fee}</td>
@@ -85,9 +85,9 @@ export function FinancialComparisonTable({ data, defaultCategory, hideControls =
       </div>
 
       {topPick ? (
-        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 p-3 backdrop-blur md:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-20 border-t border-slate-200 bg-white/95 p-3 backdrop-blur md:hidden dark:border-slate-700 dark:bg-slate-900/95">
           <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
-            <p className="text-xs"><span className="font-semibold">Top pick:</span> {topPick.name}</p>
+            <p className="text-xs text-slate-700 dark:text-slate-200"><span className="font-semibold">Top pick:</span> {topPick.name}</p>
             <a className="btn-primary !px-3 !py-1.5 text-xs" href={`/go/${topPick.id}`} onClick={() => trackEvent({ event: 'sticky_cta_click', category: 'comparison', label: topPick.id })}>Claim Offer</a>
           </div>
         </div>

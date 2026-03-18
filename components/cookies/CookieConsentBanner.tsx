@@ -83,7 +83,7 @@ export function CookieConsentBanner({ gaMeasurementId, gtmId }: { gaMeasurementI
   return (
     <>
       {showNotice && (
-        <div className="fixed bottom-28 right-4 z-50 max-w-xs rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-lg md:right-6">
+        <div className="fixed bottom-28 right-4 z-50 max-w-xs rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900 shadow-lg md:right-6 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">
           Affiliate tracking links are disabled until you accept non-essential cookies.
         </div>
       )}

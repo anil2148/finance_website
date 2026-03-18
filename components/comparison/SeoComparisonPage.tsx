@@ -37,19 +37,19 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
   return (
     <section className="space-y-8">
       <header className="space-y-3" id="methodology">
-        <h1 className="text-3xl font-bold">{pageTitle}</h1>
-        <p className="max-w-3xl text-slate-600">{intro}</p>
-        <p className="text-xs text-slate-500">Reviewed by FinanceSphere editorial team • Last updated {formatDate(new Date())}</p>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{pageTitle}</h1>
+        <p className="max-w-3xl text-slate-600 dark:text-slate-300">{intro}</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400">Reviewed by FinanceSphere editorial team • Last updated {formatDate(new Date())}</p>
       </header>
 
-      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm">
-        <p className="font-semibold text-blue-900">Top picks by use case</p>
+      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm dark:border-blue-500/40 dark:bg-blue-500/10">
+        <p className="font-semibold text-blue-900 dark:text-blue-100">Top picks by use case</p>
         <ul className="mt-2 grid gap-2 md:grid-cols-3">
           {topRated.map((item, index) => (
-            <li key={item.id} className="rounded-lg border border-blue-100 bg-white p-3">
-              <p className="text-xs text-blue-600">#{index + 1} Rated</p>
-              <p className="font-medium text-slate-900">{item.name}</p>
-              <p className="text-xs text-slate-600">Best for: {item.pros[0]}</p>
+            <li key={item.id} className="rounded-lg border border-blue-100 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+              <p className="text-xs text-blue-600 dark:text-blue-300">#{index + 1} Rated</p>
+              <p className="font-medium text-slate-900 dark:text-slate-100">{item.name}</p>
+              <p className="text-xs text-slate-600 dark:text-slate-300">Best for: {item.pros[0]}</p>
             </li>
           ))}
         </ul>
@@ -57,23 +57,23 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
 
       <ComparisonEngine defaultCategory={category} initialProducts={pageProducts} />
 
-      <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="text-xl font-semibold">Frequently Asked Questions</h2>
+      <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently Asked Questions</h2>
         {faq.map((item) => (
-          <details key={item.question} className="rounded-lg border border-slate-200 p-3">
-            <summary className="cursor-pointer font-medium">{item.question}</summary>
-            <p className="mt-2 text-sm text-slate-600">{item.answer}</p>
+          <details key={item.question} className="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+            <summary className="cursor-pointer font-medium text-slate-900 dark:text-slate-100">{item.question}</summary>
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.answer}</p>
           </details>
         ))}
-        <details className="rounded-lg border border-slate-200 p-3">
-          <summary className="cursor-pointer font-medium">How should I choose between similar offers?</summary>
-          <p className="mt-2 text-sm text-slate-600">Prioritize the total annual value for your usage pattern: expected rewards or yield minus fees, then validate terms and eligibility criteria.</p>
+        <details className="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+          <summary className="cursor-pointer font-medium text-slate-900 dark:text-slate-100">How should I choose between similar offers?</summary>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Prioritize the total annual value for your usage pattern: expected rewards or yield minus fees, then validate terms and eligibility criteria.</p>
         </details>
       </div>
 
       <section className="related-links-grid">
         <div>
-          <h2 className="mb-2 text-lg font-semibold">Related tools and guides</h2>
+          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Related tools and guides</h2>
           <ul className="space-y-1 text-sm">
             {relatedCalculators.map((item) => {
               const href = resolveCalculatorHref(item.href);
@@ -84,7 +84,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
           </ul>
         </div>
         <div>
-          <h2 className="mb-2 text-lg font-semibold">Alternatives to compare</h2>
+          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Alternatives to compare</h2>
           <ul className="space-y-1 text-sm">
             <li><Link href="/best-savings-accounts-usa" className="text-brand hover:underline">Best savings accounts</Link></li>
             <li><Link href="/best-investment-apps" className="text-brand hover:underline">Best investment apps</Link></li>
@@ -92,13 +92,11 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
           </ul>
         </div>
         <div>
-          <h2 className="mb-2 text-lg font-semibold">How we review</h2>
-          <p className="text-sm text-slate-600">We score products by fee drag, account protection, usability, account types, feature depth, and likely user fit. Ratings are editorial and not personalized advice—review full terms and eligibility before applying.</p>
-          <div className="mt-2 flex flex-wrap gap-2 text-xs">
-            <Link className="rounded-full border px-2 py-1" href="/editorial-policy">Editorial policy</Link>
-            <Link className="rounded-full border px-2 py-1" href="/how-we-make-money">How we make money</Link>
-            <Link className="rounded-full border px-2 py-1" href="/help">Help center</Link>
-            <Link className="rounded-full border px-2 py-1" href="/contact">Contact support</Link>
+          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">How we review</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-300">We score products by fee drag, account protection, usability, account types, feature depth, and likely user fit. Ratings are editorial and not personalized advice—review full terms and eligibility before applying.</p>
+          <div className="mt-2 flex gap-2 text-xs">
+            <Link className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600" href="/editorial-policy">Editorial policy</Link>
+            <Link className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600" href="/how-we-make-money">How we make money</Link>
           </div>
         </div>
       </section>

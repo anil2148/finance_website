@@ -106,11 +106,11 @@ export function ComparisonEngine({ defaultCategory = 'all', initialProducts = []
           <option value="annual_fee">Sort by Annual Fee</option>
         </select>
         <div className="grid gap-2 sm:grid-cols-2">
-          <label className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700">
+          <label className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 dark:border-slate-600 dark:text-slate-200">
             <input type="checkbox" checked={recommendedOnly} onChange={(event) => setRecommendedOnly(event.target.checked)} />
             Recommended only
           </label>
-          <label className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700">
+          <label className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-3 py-2 text-xs font-medium text-slate-700 dark:border-slate-600 dark:text-slate-200">
             <input type="checkbox" checked={noAnnualFeeOnly} onChange={(event) => setNoAnnualFeeOnly(event.target.checked)} />
             No annual fee
           </label>
@@ -118,21 +118,21 @@ export function ComparisonEngine({ defaultCategory = 'all', initialProducts = []
       </div>
 
       {sourceWarning ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{sourceWarning}</div>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-100">{sourceWarning}</div>
       ) : null}
 
       {!loading && (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+        <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
           Showing <strong>{filtered.length}</strong> of <strong>{products.length}</strong> offers. Always review full terms before you apply.
         </div>
       )}
 
-      {loading ? <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">Loading comparison data…</p> : null}
+      {loading ? <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">Loading comparison data…</p> : null}
 
       {!loading && filtered.length === 0 ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm">
+        <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
           <p className="font-medium">No offers match these filters.</p>
-          <p className="mt-1 text-slate-600">
+          <p className="mt-1 text-slate-600 dark:text-slate-300">
             {hasActiveFilters
               ? 'Reset filters to view our default selection, or continue with editor top picks below.'
               : 'Showing editor top picks while provider data is refreshed.'}
@@ -145,7 +145,7 @@ export function ComparisonEngine({ defaultCategory = 'all', initialProducts = []
                 setRecommendedOnly(false);
                 setNoAnnualFeeOnly(false);
               }}
-              className="mt-3 rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-700"
+              className="mt-3 rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300"
             >
               Clear filters
             </button>
