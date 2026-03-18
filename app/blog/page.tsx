@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 const startHereGuides = [
   {
     title: 'Investing roadmap for beginners',
-    href: '/blog/seo-investing-for-beginners-roadmap',
+    href: '/blog/beginner-investing-roadmap-year-one-milestones',
     next: '/calculators/investment-growth-calculator',
     angle: 'Build a year-one contribution system you can sustain in volatile markets.'
   },
@@ -28,7 +28,7 @@ const startHereGuides = [
   },
   {
     title: 'Emergency fund target (3 to 6 months)',
-    href: '/blog/seo-emergency-fund-3-to-6-months',
+    href: '/blog/emergency-fund-target-by-recovery-timeline',
     next: '/calculators/savings-goal-calculator',
     angle: 'Set your reserve target by recovery timeline and household risk.'
   }
