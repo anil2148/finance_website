@@ -5,10 +5,10 @@ import { loans } from '@/data/loans';
 export const revalidate = 3600;
 
 const featuredGuides = [
-  { href: '/blog/seo-debt-to-income-ratio-guide', label: 'Debt-to-Income Ratio Guide' },
-  { href: '/blog/seo-how-to-compare-personal-loan-apr', label: 'How to Compare Personal Loan APR' },
-  { href: '/blog/seo-fixed-vs-variable-rate-loans', label: 'Fixed vs Variable Rate Loans' },
-  { href: '/blog/seo-prepayment-penalty-guide', label: 'Prepayment Penalty Guide' }
+  { href: '/blog/debt-to-income-ratio-90-day-plan', label: 'Debt-to-Income Ratio Guide' },
+  { href: '/blog/how-to-compare-personal-loan-apr', label: 'How to Compare Personal Loan APR' },
+  { href: '/blog/mortgage-preapproval-checklist', label: 'Mortgage Preapproval Checklist' },
+  { href: '/learn/loans', label: 'Loans hub: compare fixed vs variable and prepayment tradeoffs' }
 ];
 
 export default function LoansPage() {

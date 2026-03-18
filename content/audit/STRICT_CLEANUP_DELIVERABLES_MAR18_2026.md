@@ -13,25 +13,25 @@
 - DELETE: **1024**
 
 ### KEEP_AND_REWRITE URLs
-- /blog/seo-50-30-20-rule-for-saving
+- /blog/budget-reset-when-50-30-20-breaks
 - /blog/seo-automate-your-savings-plan
 - /blog/seo-avoid-credit-card-interest
 - /blog/seo-balance-transfer-strategy
 - /blog/seo-best-first-credit-card
-- /blog/seo-debt-to-income-ratio-guide
+- /blog/debt-to-income-ratio-90-day-plan
 - /blog/seo-dollar-cost-averaging-guide
-- /blog/seo-emergency-fund-3-to-6-months
-- /blog/seo-high-yield-savings-basics
-- /blog/seo-how-credit-utilization-works
-- /blog/seo-how-to-compare-personal-loan-apr
+- /blog/emergency-fund-by-recovery-timeline
+- /blog/how-to-choose-a-high-yield-savings-account
+- /blog/credit-utilization-statement-cycle-playbook
+- /blog/how-to-compare-personal-loan-apr
 - /blog/seo-how-to-read-expense-ratios
 - /blog/seo-index-funds-vs-etfs
-- /blog/seo-investing-for-beginners-roadmap
-- /blog/seo-mortgage-preapproval-checklist
+- /blog/investing-for-beginners-roadmap
+- /blog/mortgage-preapproval-checklist
 - /blog/seo-retirement-accounts-101
 - /blog/seo-roth-vs-traditional-ira
 - /blog/seo-save-money-on-utilities
-- /blog/seo-tax-efficient-investing-tips
+- /blog/tax-efficient-investing-playbook
 - /blog/seo-what-lenders-check
 
 ### MERGE URLs

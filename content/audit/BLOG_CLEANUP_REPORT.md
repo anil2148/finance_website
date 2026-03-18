@@ -94,17 +94,17 @@ Total posts audited: **1201**
 ## Full inventory
 | Slug | Category | Words | Action | Destination | Reason |
 |---|---:|---:|---|---|---|
-| `beginner-investing-guides-16` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-25` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-34` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-43` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-52` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-61` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-7` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-70` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-79` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-88` | beginner | 356 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `beginner-investing-guides-97` | beginner | 265 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-16` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-25` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-34` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-43` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-52` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-61` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-7` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-70` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-79` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-88` | beginner | 356 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `beginner-investing-guides-97` | beginner | 265 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-cashback-credit-cards-1` | best | 349 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-cashback-credit-cards-10` | best | 348 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-cashback-credit-cards-100` | best | 339 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
@@ -117,28 +117,28 @@ Total posts audited: **1201**
 | `best-cashback-credit-cards-73` | best | 355 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-cashback-credit-cards-82` | best | 371 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-cashback-credit-cards-91` | best | 352 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-15` | best | 342 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-24` | best | 343 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-15` | best | 342 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-24` | best | 343 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-investment-apps-33` | best | 343 | REDIRECT | /blog/seo-retirement-accounts-101 | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-42` | best | 348 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-51` | best | 339 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-6` | best | 346 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-60` | best | 351 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-42` | best | 348 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-51` | best | 339 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-6` | best | 346 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-60` | best | 351 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-investment-apps-69` | best | 330 | REDIRECT | /blog/seo-roth-vs-traditional-ira | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-78` | best | 299 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-87` | best | 301 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-investment-apps-96` | best | 394 | REDIRECT | /blog/seo-investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-12` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-21` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-3` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-30` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-39` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-48` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-57` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-66` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-75` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-84` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
-| `best-savings-accounts-93` | best | 492 | REDIRECT | /blog/seo-high-yield-savings-basics | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-78` | best | 299 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-87` | best | 301 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-investment-apps-96` | best | 394 | REDIRECT | /blog/investing-for-beginners-roadmap | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-12` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-21` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-3` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-30` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-39` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-48` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-57` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-66` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-75` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-84` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `best-savings-accounts-93` | best | 492 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-travel-credit-cards-11` | best | 473 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-travel-credit-cards-2` | best | 473 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `best-travel-credit-cards-20` | best | 473 | REDIRECT | /blog/seo-best-first-credit-card | Legacy/numbered variant; consolidate signals to stronger canonical article. |
@@ -184,7 +184,7 @@ Total posts audited: **1201**
 | `budgeting-guide-293` | budgeting | 101 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `budgeting-guide-300` | budgeting | 101 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `budgeting-guide-307` | budgeting | 101 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
-| `budgeting-guide-314` | budgeting | 590 | REDIRECT | /blog/seo-50-30-20-rule-for-saving | Legacy/numbered variant; consolidate signals to stronger canonical article. |
+| `budgeting-guide-314` | budgeting | 590 | REDIRECT | /blog/budget-reset-when-50-30-20-breaks | Legacy/numbered variant; consolidate signals to stronger canonical article. |
 | `budgeting-guide-321` | budgeting | 101 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `budgeting-guide-328` | budgeting | 101 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `budgeting-guide-335` | budgeting | 101 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
@@ -1042,106 +1042,106 @@ Total posts audited: **1201**
 | `saving-money-guide-989` | saving-money | 102 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `saving-money-guide-996` | saving-money | 102 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `seo-0-apr-offers-explained` | credit-cards | 210 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-50-30-20-rule-for-saving` | savings-accounts | 214 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-asset-allocation-by-risk` | investing | 210 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `budget-reset-when-50-30-20-breaks` | savings-accounts | 214 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-asset-allocation-by-risk` | investing | 210 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-authorized-user-strategy` | credit-cards | 208 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-auto-loan-term-length` | loans | 210 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-auto-loan-term-length` | loans | 210 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-automate-your-savings-plan` | savings-accounts | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
 | `seo-avoid-credit-card-interest` | credit-cards | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-avoid-emotional-investing` | investing | 1002 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-bad-credit-loan-alternatives` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/seo-how-credit-utilization-works | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-avoid-emotional-investing` | investing | 1002 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-bad-credit-loan-alternatives` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/credit-utilization-statement-cycle-playbook | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-balance-transfer-strategy` | credit-cards | 208 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
 | `seo-best-cards-for-dining` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-best-cards-for-gas` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-best-cards-for-groceries` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-best-first-credit-card` | credit-cards | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-best-savings-goals-by-age` | savings-accounts | 212 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-bond-investing-explained` | investing | 208 | CONVERT_HUB_SUPPORT | /blog/seo-investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-bridge-loans-explained` | loans | 208 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-brokerage-account-checklist` | investing | 208 | CONVERT_HUB_SUPPORT | /blog/seo-investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-building-passive-income-portfolio` | investing | 210 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-best-savings-goals-by-age` | savings-accounts | 212 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-bond-investing-explained` | investing | 208 | CONVERT_HUB_SUPPORT | /blog/investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-bridge-loans-explained` | loans | 208 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-brokerage-account-checklist` | investing | 208 | CONVERT_HUB_SUPPORT | /blog/investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-building-passive-income-portfolio` | investing | 210 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-business-credit-cards-startups` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-buy-now-pay-later-vs-loans` | loans | 214 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-buy-now-pay-later-vs-loans` | loans | 214 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-card-benefits-you-should-use` | credit-cards | 212 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-cash-back-vs-travel-rewards` | credit-cards | 212 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-cd-vs-savings-account` | savings-accounts | 210 | CONVERT_HUB_SUPPORT | /blog/seo-high-yield-savings-basics | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-cd-vs-savings-account` | savings-accounts | 210 | CONVERT_HUB_SUPPORT | /blog/how-to-choose-a-high-yield-savings-account | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-co-branded-credit-cards-explained` | credit-cards | 212 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-co-signer-risks-and-benefits` | loans | 212 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-common-investing-mistakes` | investing | 1008 | CONVERT_HUB_SUPPORT | /blog/seo-investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-common-loan-mistakes` | loans | 208 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-common-savings-mistakes` | savings-accounts | 208 | CONVERT_HUB_SUPPORT | /blog/seo-high-yield-savings-basics | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-co-signer-risks-and-benefits` | loans | 212 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-common-investing-mistakes` | investing | 1008 | CONVERT_HUB_SUPPORT | /blog/investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-common-loan-mistakes` | loans | 208 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-common-savings-mistakes` | savings-accounts | 208 | CONVERT_HUB_SUPPORT | /blog/how-to-choose-a-high-yield-savings-account | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-credit-card-annual-fee-worth-it` | credit-cards | 214 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-credit-card-application-timing` | credit-cards | 210 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-credit-card-bonus-guide` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-credit-card-mistakes-to-avoid` | credit-cards | 490 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-credit-card-rewards-tax-rules` | credit-cards | 212 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-credit-card-security-tips` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-debt-consolidation-loans-guide` | loans | 210 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-debt-to-income-ratio-guide` | loans | 408 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-dividend-investing-beginners` | investing | 208 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-debt-consolidation-loans-guide` | loans | 210 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `debt-to-income-ratio-90-day-plan` | loans | 408 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-dividend-investing-beginners` | investing | 208 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-dollar-cost-averaging-guide` | investing | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-emergency-fund-3-to-6-months` | savings-accounts | 422 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-esg-investing-basics` | investing | 208 | CONVERT_HUB_SUPPORT | /blog/seo-investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-family-savings-plan` | savings-accounts | 208 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-fixed-vs-variable-rate-loans` | loans | 341 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `emergency-fund-by-recovery-timeline` | savings-accounts | 422 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-esg-investing-basics` | investing | 208 | CONVERT_HUB_SUPPORT | /blog/investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-family-savings-plan` | savings-accounts | 208 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-fixed-vs-variable-rate-loans` | loans | 341 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-foreign-transaction-fees-guide` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-growth-vs-value-stocks` | investing | 210 | CONVERT_HUB_SUPPORT | /blog/seo-investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-heloc-vs-home-equity-loan` | loans | 212 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-high-yield-savings-basics` | savings-accounts | 305 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-how-credit-utilization-works` | credit-cards | 335 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-how-loan-interest-works` | loans | 210 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-how-often-interest-compounds` | savings-accounts | 210 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-how-to-build-cash-buffer` | savings-accounts | 212 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-how-to-compare-apr` | loans | 210 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-how-to-compare-personal-loan-apr` | loans | 362 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-growth-vs-value-stocks` | investing | 210 | CONVERT_HUB_SUPPORT | /blog/investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-heloc-vs-home-equity-loan` | loans | 212 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `how-to-choose-a-high-yield-savings-account` | savings-accounts | 305 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `credit-utilization-statement-cycle-playbook` | credit-cards | 335 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-how-loan-interest-works` | loans | 210 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-how-often-interest-compounds` | savings-accounts | 210 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-how-to-build-cash-buffer` | savings-accounts | 212 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-how-to-compare-apr` | loans | 210 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `how-to-compare-personal-loan-apr` | loans | 362 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
 | `seo-how-to-read-expense-ratios` | investing | 212 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-how-to-rebalance-portfolio` | investing | 210 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-improve-approval-odds` | loans | 208 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-how-to-rebalance-portfolio` | investing | 210 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-improve-approval-odds` | loans | 208 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-improve-credit-score-with-cards` | credit-cards | 212 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-increase-credit-limit-responsibly` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-index-funds-vs-etfs` | investing | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-international-diversification-guide` | investing | 208 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-investing-during-volatility` | investing | 208 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-investing-for-beginners-roadmap` | investing | 438 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-investing-goals-and-timelines` | investing | 210 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-joint-savings-accounts-pros-cons` | savings-accounts | 212 | CONVERT_HUB_SUPPORT | /blog/seo-high-yield-savings-basics | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-laddering-cds-for-beginners` | savings-accounts | 210 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-loan-documents-you-need` | loans | 210 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-loan-origination-fees-explained` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-loan-scams-red-flags` | loans | 210 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-long-term-investing-mindset` | investing | 210 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-medical-loans-vs-payment-plans` | loans | 212 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-money-market-vs-savings` | savings-accounts | 210 | CONVERT_HUB_SUPPORT | /blog/seo-high-yield-savings-basics | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-mortgage-preapproval-checklist` | loans | 390 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-online-bank-vs-traditional-bank` | savings-accounts | 212 | CONVERT_HUB_SUPPORT | /blog/seo-high-yield-savings-basics | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-pay-yourself-first-method` | savings-accounts | 210 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-payoff-strategies-for-loans` | loans | 210 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-international-diversification-guide` | investing | 208 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-investing-during-volatility` | investing | 208 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `investing-for-beginners-roadmap` | investing | 438 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-investing-goals-and-timelines` | investing | 210 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-joint-savings-accounts-pros-cons` | savings-accounts | 212 | CONVERT_HUB_SUPPORT | /blog/how-to-choose-a-high-yield-savings-account | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-laddering-cds-for-beginners` | savings-accounts | 210 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-loan-documents-you-need` | loans | 210 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-loan-origination-fees-explained` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-loan-scams-red-flags` | loans | 210 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-long-term-investing-mindset` | investing | 210 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-medical-loans-vs-payment-plans` | loans | 212 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-money-market-vs-savings` | savings-accounts | 210 | CONVERT_HUB_SUPPORT | /blog/how-to-choose-a-high-yield-savings-account | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `mortgage-preapproval-checklist` | loans | 390 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-online-bank-vs-traditional-bank` | savings-accounts | 212 | CONVERT_HUB_SUPPORT | /blog/how-to-choose-a-high-yield-savings-account | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-pay-yourself-first-method` | savings-accounts | 210 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-payoff-strategies-for-loans` | loans | 210 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-personal-loan-vs-credit-card` | loans | 212 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-premium-credit-cards-value` | credit-cards | 210 | MERGE | /blog/seo-best-first-credit-card | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-prepayment-penalty-guide` | loans | 249 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-real-estate-investing-alternatives` | investing | 210 | CONVERT_HUB_SUPPORT | /blog/seo-investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-refinancing-student-loans` | loans | 208 | MERGE | /blog/seo-how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-prepayment-penalty-guide` | loans | 249 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-real-estate-investing-alternatives` | investing | 210 | CONVERT_HUB_SUPPORT | /blog/investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-refinancing-student-loans` | loans | 208 | MERGE | /blog/how-to-compare-personal-loan-apr | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-retirement-accounts-101` | investing | 208 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
 | `seo-roth-vs-traditional-ira` | investing | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-round-up-saving-apps-guide` | savings-accounts | 212 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-save-for-car-replacement` | savings-accounts | 210 | MERGE | /blog/seo-50-30-20-rule-for-saving | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-save-for-down-payment-faster` | savings-accounts | 212 | MERGE | /blog/seo-50-30-20-rule-for-saving | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-save-for-holiday-spending` | savings-accounts | 210 | MERGE | /blog/seo-50-30-20-rule-for-saving | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-save-money-on-groceries` | savings-accounts | 210 | MERGE | /blog/seo-50-30-20-rule-for-saving | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-round-up-saving-apps-guide` | savings-accounts | 212 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-save-for-car-replacement` | savings-accounts | 210 | MERGE | /blog/budget-reset-when-50-30-20-breaks | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-save-for-down-payment-faster` | savings-accounts | 212 | MERGE | /blog/budget-reset-when-50-30-20-breaks | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-save-for-holiday-spending` | savings-accounts | 210 | MERGE | /blog/budget-reset-when-50-30-20-breaks | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-save-money-on-groceries` | savings-accounts | 210 | MERGE | /blog/budget-reset-when-50-30-20-breaks | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-save-money-on-utilities` | savings-accounts | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-sector-funds-risks` | investing | 208 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-secured-vs-unsecured-loans` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-short-term-vs-long-term-savings` | savings-accounts | 214 | CONVERT_HUB_SUPPORT | /blog/seo-high-yield-savings-basics | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-sinking-funds-system` | savings-accounts | 208 | MERGE | /blog/seo-high-yield-savings-basics | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-small-business-loan-basics` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/seo-how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-small-cap-vs-large-cap` | investing | 212 | CONVERT_HUB_SUPPORT | /blog/seo-investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-sector-funds-risks` | investing | 208 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-secured-vs-unsecured-loans` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-short-term-vs-long-term-savings` | savings-accounts | 214 | CONVERT_HUB_SUPPORT | /blog/how-to-choose-a-high-yield-savings-account | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-sinking-funds-system` | savings-accounts | 208 | MERGE | /blog/how-to-choose-a-high-yield-savings-account | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-small-business-loan-basics` | loans | 210 | CONVERT_HUB_SUPPORT | /blog/how-to-compare-personal-loan-apr | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
+| `seo-small-cap-vs-large-cap` | investing | 212 | CONVERT_HUB_SUPPORT | /blog/investing-for-beginners-roadmap | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-student-credit-card-checklist` | credit-cards | 210 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
-| `seo-target-date-funds-guide` | investing | 210 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
-| `seo-tax-efficient-investing-tips` | investing | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-taxes-on-savings-interest` | savings-accounts | 210 | MERGE | /blog/seo-tax-efficient-investing-tips | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-target-date-funds-guide` | investing | 210 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `tax-efficient-investing-playbook` | investing | 210 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
+| `seo-taxes-on-savings-interest` | savings-accounts | 210 | MERGE | /blog/tax-efficient-investing-playbook | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `seo-travel-insurance-card-benefits` | credit-cards | 210 | CONVERT_HUB_SUPPORT | /blog/seo-best-first-credit-card | Useful supporting angle; convert into subsection in hub/pillar instead of standalone URL. |
 | `seo-what-lenders-check` | loans | 208 | KEEP_IMPROVE | — | High-intent pillar retained and rewritten for depth/trust. |
-| `seo-when-to-move-cash-to-investments` | savings-accounts | 214 | MERGE | /blog/seo-investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
+| `seo-when-to-move-cash-to-investments` | savings-accounts | 214 | MERGE | /blog/investing-for-beginners-roadmap | Useful subtopic but cannibalizes pillar intent; fold unique points into canonical guide. |
 | `tax-optimization-guide-105` | tax-optimization | 102 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `tax-optimization-guide-112` | tax-optimization | 102 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |
 | `tax-optimization-guide-119` | tax-optimization | 102 | DELETE_REMOVE | — | Thin templated post with repetitive structure and no unique insight. |

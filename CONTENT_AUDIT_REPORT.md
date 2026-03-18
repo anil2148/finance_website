@@ -51,10 +51,10 @@ A scan across `content/blog/*.mdx` found very high repetition patterns:
 
 ### B) Key “money pages” rewritten manually (`content/blog/*.mdx`)
 Rebuilt high-intent cornerstone posts with deeper, non-template content:
-- `seo-investing-for-beginners-roadmap`
-- `seo-mortgage-preapproval-checklist`
-- `seo-how-credit-utilization-works`
-- Updated internal links in `seo-emergency-fund-3-to-6-months`
+- `investing-for-beginners-roadmap`
+- `mortgage-preapproval-checklist`
+- `credit-utilization-statement-cycle-playbook`
+- Updated internal links in `emergency-fund-by-recovery-timeline`
 
 These updates now include practical examples, clear tradeoffs, scenario-driven steps, and stronger topic-specific “what to do next” flows.
 

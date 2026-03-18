@@ -56,27 +56,27 @@
 - **Net remaining live editorial blog articles:** 9
 
 ### Kept and fully rewritten winners
-- /blog/seo-50-30-20-rule-for-saving → rewritten in `content/blog/seo-50-30-20-rule-for-saving.mdx`
-- /blog/seo-debt-to-income-ratio-guide → rewritten in `content/blog/seo-debt-to-income-ratio-guide.mdx`
-- /blog/seo-emergency-fund-3-to-6-months → rewritten in `content/blog/seo-emergency-fund-3-to-6-months.mdx`
-- /blog/seo-high-yield-savings-basics → rewritten in `content/blog/seo-high-yield-savings-basics.mdx`
-- /blog/seo-how-credit-utilization-works → rewritten in `content/blog/seo-how-credit-utilization-works.mdx`
-- /blog/seo-how-to-compare-personal-loan-apr → rewritten in `content/blog/seo-how-to-compare-personal-loan-apr.mdx`
-- /blog/seo-investing-for-beginners-roadmap → rewritten in `content/blog/seo-investing-for-beginners-roadmap.mdx`
-- /blog/seo-mortgage-preapproval-checklist → rewritten in `content/blog/seo-mortgage-preapproval-checklist.mdx`
-- /blog/seo-tax-efficient-investing-tips → rewritten in `content/blog/seo-tax-efficient-investing-tips.mdx`
+- /blog/budget-reset-when-50-30-20-breaks → rewritten in `content/blog/budget-reset-when-50-30-20-breaks.mdx`
+- /blog/debt-to-income-ratio-90-day-plan → rewritten in `content/blog/debt-to-income-ratio-90-day-plan.mdx`
+- /blog/emergency-fund-by-recovery-timeline → rewritten in `content/blog/emergency-fund-by-recovery-timeline.mdx`
+- /blog/how-to-choose-a-high-yield-savings-account → rewritten in `content/blog/how-to-choose-a-high-yield-savings-account.mdx`
+- /blog/credit-utilization-statement-cycle-playbook → rewritten in `content/blog/credit-utilization-statement-cycle-playbook.mdx`
+- /blog/how-to-compare-personal-loan-apr → rewritten in `content/blog/how-to-compare-personal-loan-apr.mdx`
+- /blog/investing-for-beginners-roadmap → rewritten in `content/blog/investing-for-beginners-roadmap.mdx`
+- /blog/mortgage-preapproval-checklist → rewritten in `content/blog/mortgage-preapproval-checklist.mdx`
+- /blog/tax-efficient-investing-playbook → rewritten in `content/blog/tax-efficient-investing-playbook.mdx`
 
 ## 4) Rewritten content for all kept pages
 All winner pages were fully rewritten in-place with new intros, scenario-specific guidance, tradeoffs, practical examples, and topic-specific next steps:
-- `content/blog/seo-50-30-20-rule-for-saving.mdx`
-- `content/blog/seo-debt-to-income-ratio-guide.mdx`
-- `content/blog/seo-emergency-fund-3-to-6-months.mdx`
-- `content/blog/seo-high-yield-savings-basics.mdx`
-- `content/blog/seo-how-credit-utilization-works.mdx`
-- `content/blog/seo-how-to-compare-personal-loan-apr.mdx`
-- `content/blog/seo-investing-for-beginners-roadmap.mdx`
-- `content/blog/seo-mortgage-preapproval-checklist.mdx`
-- `content/blog/seo-tax-efficient-investing-tips.mdx`
+- `content/blog/budget-reset-when-50-30-20-breaks.mdx`
+- `content/blog/debt-to-income-ratio-90-day-plan.mdx`
+- `content/blog/emergency-fund-by-recovery-timeline.mdx`
+- `content/blog/how-to-choose-a-high-yield-savings-account.mdx`
+- `content/blog/credit-utilization-statement-cycle-playbook.mdx`
+- `content/blog/how-to-compare-personal-loan-apr.mdx`
+- `content/blog/investing-for-beginners-roadmap.mdx`
+- `content/blog/mortgage-preapproval-checklist.mdx`
+- `content/blog/tax-efficient-investing-playbook.mdx`
 
 ## 5) Redirect map
 - Canonical redirect file: `content/audit/blog-redirect-map.json`.

@@ -26,7 +26,7 @@ const useCases = [
   {
     audience: 'Beginners',
     fit: 'Prioritize clean onboarding, plain-English education, and fractional shares so you can start small while learning.',
-    nextStep: '/blog/seo-investing-for-beginners-roadmap'
+    nextStep: '/blog/investing-for-beginners-roadmap'
   },
   {
     audience: 'Students',
@@ -41,12 +41,12 @@ const useCases = [
   {
     audience: 'ETF investors',
     fit: 'Filter for broad ETF access, fractional purchasing, and low expense-ratio fund discovery tools.',
-    nextStep: '/blog/seo-index-funds-vs-etfs'
+    nextStep: '/blog/investing-for-beginners-roadmap'
   },
   {
     audience: 'Dividend investors',
     fit: 'Evaluate dividend reinvestment availability (DRIP), income tracking, and tax-lot visibility.',
-    nextStep: '/blog/seo-dividend-investing-beginners'
+    nextStep: '/blog/tax-efficient-investing-playbook'
   },
   {
     audience: 'Active traders',
@@ -124,7 +124,7 @@ export default function InvestingAppsPillarPage() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/best-investment-apps" className="btn-primary">Compare Investment Apps</Link>
-              <Link href="/blog/seo-investing-for-beginners-roadmap" className="inline-flex items-center justify-center rounded-xl border border-blue-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
+              <Link href="/blog/investing-for-beginners-roadmap" className="inline-flex items-center justify-center rounded-xl border border-blue-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
                 Explore Investing Guides
               </Link>
             </div>
@@ -315,21 +315,21 @@ export default function InvestingAppsPillarPage() {
               tag: 'Calculator'
             },
             {
-              href: '/blog/seo-investing-for-beginners-roadmap',
+              href: '/blog/investing-for-beginners-roadmap',
               title: 'Investing for Beginners Roadmap',
               description: 'Step-by-step guide for building a long-term investing process.',
               tag: 'Guide'
             },
             {
-              href: '/blog/seo-brokerage-account-checklist',
-              title: 'Brokerage Account Checklist',
+              href: '/blog/investing-for-beginners-roadmap',
+              title: 'Beginner Investing Roadmap',
               description: 'Practical checklist for evaluating platform rules, costs, and account settings.',
               tag: 'Guide'
             },
             {
-              href: '/blog/seo-common-investing-mistakes',
-              title: 'Common Investing Mistakes',
-              description: 'Avoid behavioral and tactical errors that can erode long-term returns.',
+              href: '/blog/tax-efficient-investing-playbook',
+              title: 'Tax-Efficient Investing Playbook',
+              description: 'Avoid tax-drag mistakes and build a repeatable account-location process.',
               tag: 'Guide'
             }
           ]}

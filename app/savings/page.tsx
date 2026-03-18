@@ -5,8 +5,8 @@ import { savingsAccounts } from '@/data/savingsAccounts';
 export const revalidate = 3600;
 
 const featuredGuides = [
-  { href: '/blog/seo-emergency-fund-3-to-6-months', label: 'Emergency Fund Guide (2026)' },
-  { href: '/blog/seo-high-yield-savings-basics', label: 'High-Yield Savings Accounts in 2026' }
+  { href: '/blog/emergency-fund-by-recovery-timeline', label: 'Emergency Fund Guide (2026)' },
+  { href: '/blog/how-to-choose-a-high-yield-savings-account', label: 'High-Yield Savings Accounts in 2026' }
 ];
 
 export default function SavingsPage() {

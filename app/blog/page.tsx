@@ -16,17 +16,17 @@ export const metadata: Metadata = {
 const startHereGuides = [
   {
     title: 'Investing roadmap for beginners',
-    href: '/blog/seo-investing-for-beginners-roadmap',
+    href: '/blog/investing-for-beginners-roadmap',
     next: '/calculators/investment-growth-calculator'
   },
   {
     title: 'How to compare personal loan APR',
-    href: '/blog/seo-how-to-compare-personal-loan-apr',
+    href: '/blog/how-to-compare-personal-loan-apr',
     next: '/calculators/loan-calculator'
   },
   {
     title: 'Emergency fund target (3 to 6 months)',
-    href: '/blog/seo-emergency-fund-3-to-6-months',
+    href: '/blog/emergency-fund-by-recovery-timeline',
     next: '/calculators/savings-goal-calculator'
   }
 ];
