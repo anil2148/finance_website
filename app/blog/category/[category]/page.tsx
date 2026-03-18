@@ -37,9 +37,8 @@ const featuredOrderByCategory: Record<string, string[]> = {
   ],
   loans: [
     'seo-mortgage-preapproval-checklist',
-    'seo-what-lenders-check',
-    'seo-debt-to-income-ratio-guide',
-    'seo-how-to-compare-personal-loan-apr'
+    'seo-how-to-compare-personal-loan-apr',
+    'seo-debt-to-income-ratio-guide'
   ],
   'credit-cards': [
     'seo-how-credit-utilization-works'

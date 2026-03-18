@@ -25,8 +25,8 @@ const hubs: Record<string, HubConfig> = {
     ],
     resources: [
       { href: '/blog/seo-investing-for-beginners-roadmap', title: 'Investing for beginners roadmap', description: 'A practical sequence for choosing accounts, funds, and contribution cadence.', tag: 'Start here' },
-      { href: '/blog/seo-index-funds-vs-etfs', title: 'Index funds vs ETFs', description: 'Understand structure, fees, and when each approach fits best.' },
-      { href: '/blog/seo-how-to-read-expense-ratios', title: 'How to read expense ratios', description: 'Translate small percentage fees into long-term dollar impact.' }
+      { href: '/blog/seo-tax-efficient-investing-tips', title: 'Tax-efficient investing moves', description: 'Learn how account location and turnover discipline improve after-tax results.' },
+      { href: '/best-investment-apps', title: 'Best investment apps comparison', description: 'Compare platforms by fees, account types, and automation support.' }
     ],
     calculators: [
       { href: '/calculators/investment-growth-calculator', label: 'Investment growth calculator' },
@@ -51,9 +51,9 @@ const hubs: Record<string, HubConfig> = {
       'Set autopay and utilization targets before applying for additional cards.'
     ],
     resources: [
-      { href: '/blog/seo-best-first-credit-card', title: 'Best first credit card checklist', description: 'How to choose a first card with manageable limits and low risk.', tag: 'Start here' },
-      { href: '/blog/seo-avoid-credit-card-interest', title: 'How to avoid credit card interest', description: 'Payment timing, statement cycles, and carry-cost prevention.' },
-      { href: '/blog/seo-how-credit-utilization-works', title: 'Credit utilization timing tactics', description: 'Use statement-cycle timing and payment controls to protect your score.' }
+      { href: '/best-credit-cards-2026', title: 'Best credit cards comparison', description: 'Compare reward structures, annual fees, and intro APR terms.', tag: 'Start here' },
+      { href: '/blog/seo-how-credit-utilization-works', title: 'Credit utilization timing tactics', description: 'Use statement timing and per-card management to protect your score.' },
+      { href: '/best-credit-cards', title: 'Best cards for everyday spending', description: 'Review no-fee and rewards-focused card structures for daily use.' }
     ],
     calculators: [
       { href: '/calculators/credit-card-payoff-calculator', label: 'Credit card payoff calculator' },
@@ -79,7 +79,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     resources: [
       { href: '/blog/seo-how-to-compare-personal-loan-apr', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
-      { href: '/blog/seo-what-lenders-check', title: 'What lenders check before approval', description: 'See how underwriters evaluate credit, debt, income, and documentation quality.' },
+      { href: '/blog/seo-mortgage-preapproval-checklist', title: 'Mortgage preapproval checklist', description: 'Prepare documents and timeline expectations to avoid underwriting delays.' },
       { href: '/blog/seo-debt-to-income-ratio-guide', title: 'Debt-to-income ratio guide', description: 'Use front-end and back-end DTI targets to improve approval odds before applying.' }
     ],
     calculators: [
@@ -88,7 +88,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     comparisons: [
       { href: '/comparison?category=personal_loan', label: 'Personal loan comparisons' },
-      { href: '/compare/mortgage-rate-comparison', label: 'Mortgage rate comparisons' }
+      { href: '/mortgage-rate-comparison', label: 'Mortgage rate comparisons' }
     ],
     faqs: [
       { question: 'What APR range is considered reasonable?', answer: 'Reasonable depends on credit profile and loan type. Benchmark at least 3 lenders with identical term requests.' },
@@ -107,7 +107,7 @@ const hubs: Record<string, HubConfig> = {
     resources: [
       { href: '/blog/seo-50-30-20-rule-for-saving', title: 'How to adapt the 50/30/20 rule', description: 'Use a flexible spending split that still works in high-cost or debt-heavy months.', tag: 'Start here' },
       { href: '/blog/seo-emergency-fund-3-to-6-months', title: 'Emergency fund target by risk level', description: 'Pick a 3-to-6 month reserve using job stability, dependents, and replacement-time risk.' },
-      { href: '/blog/seo-automate-your-savings-plan', title: 'How to automate your savings plan', description: 'Set transfers around paycheck and bill timing so savings continue through uneven months.' }
+      { href: '/blog/seo-high-yield-savings-basics', title: 'How to choose a high-yield savings account', description: 'Compare APY quality, transfer speed, and account rules beyond headline rates.' }
     ],
     calculators: [
       { href: '/calculators/budget-planner', label: 'Budget planner' },
@@ -134,7 +134,7 @@ const hubs: Record<string, HubConfig> = {
     resources: [
       { href: '/blog/seo-tax-efficient-investing-tips', title: 'Tax-efficient investing basics', description: 'Improve after-tax outcomes with better asset location and contribution sequencing.', tag: 'Start here' },
       { href: '/blog/seo-high-yield-savings-basics', title: 'High-yield savings account basics', description: 'Choose accounts by APY, transfer speed, withdrawal rules, and emergency access quality.' },
-      { href: '/blog/seo-index-funds-vs-etfs', title: 'Index funds vs ETFs', description: 'Compare automation, tax behavior, and trading flexibility for long-term investing.' }
+      { href: '/blog/seo-investing-for-beginners-roadmap', title: 'Investing roadmap for beginners', description: 'Build a repeatable first-year investing system with realistic contribution pacing.' }
     ],
     calculators: [
       { href: '/calculators/compound-interest-calculator', label: 'Compound interest calculator' },
@@ -142,7 +142,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     comparisons: [
       { href: '/best-savings-accounts-usa', label: 'Best savings accounts' },
-      { href: '/high-yield-savings-accounts', label: 'High-yield savings guide' }
+      { href: '/best-investment-apps', label: 'Investment app comparisons' }
     ],
     faqs: [
       { question: 'Is passive income truly hands-off?', answer: 'Most strategies are semi-passive. They need setup, monitoring, and occasional rebalancing.' },
