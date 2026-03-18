@@ -462,7 +462,7 @@ function buildEnhancedBody(post: BlogPost, topicLabel: string, blueprint: TopicB
 }
 
 function normalizeTitle(post: BlogPost, topicLabel: string, blueprint: TopicBlueprint) {
-  if (post.slug.startsWith('seo-') || hasTemplatedTitle(post.title) || /\(\d{4}\)/.test(post.title)) {
+  if (hasTemplatedTitle(post.title) || /\(\d{4}\)/.test(post.title)) {
     const template = pick(blueprint.titleTemplates, post.slug);
     return template.replace('%TOPIC%', titleCase(topicLabel));
   }
@@ -473,8 +473,9 @@ function normalizeTitle(post: BlogPost, topicLabel: string, blueprint: TopicBlue
 function normalizeDescription(post: BlogPost, topicLabel: string, blueprint: TopicBlueprint) {
   if (
     post.description.length < 90 ||
-    /practical steps, examples, and expert tips/i.test(post.description) ||
-    /actionable tactics and smart decision frameworks/i.test(post.description)
+    /with practical steps, examples, and expert tips/i.test(post.description) ||
+    /actionable tactics and smart decision frameworks/i.test(post.description) ||
+    /^learn\b/i.test(post.description)
   ) {
     return pick(blueprint.descriptionTemplates, `${post.slug}-description`)
       .replace('%TOPIC_LOWER%', topicLabel.toLowerCase())
