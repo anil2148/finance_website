@@ -78,8 +78,8 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
   },
   mortgages: {
     src: '/images/blog-visual-mortgage.svg',
-    alt: 'Mortgage planning illustration with home affordability checklist and monthly payment bars',
-    shell: 'from-cyan-50 to-blue-50'
+    alt: 'Mortgage planning dashboard illustration with payment trends and approval checklist',
+    shell: 'from-teal-50 to-cyan-50'
   },
   'credit-cards': {
     src: '/images/blog-visual-credit.svg',
