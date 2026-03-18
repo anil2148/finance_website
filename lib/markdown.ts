@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { getAuthorIdForCategory } from '@/lib/authors';
+import { enhancePost } from '@/lib/blogEnhancer';
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
@@ -21,14 +22,16 @@ export type BlogPost = {
   updatedAt: string;
 };
 
-export function getPosts(): BlogPost[] {
+let postsCache: BlogPost[] | null = null;
+
+function loadPosts() {
   return fs
     .readdirSync(contentDir)
     .filter((f) => f.endsWith('.mdx'))
     .map((file) => {
       const raw = fs.readFileSync(path.join(contentDir, file), 'utf8');
       const { data, content } = matter(raw);
-      return {
+      const basePost = {
         title: data.title,
         slug: data.slug,
         description: data.description,
@@ -43,8 +46,18 @@ export function getPosts(): BlogPost[] {
         reviewedById: data.reviewedById ?? 'rachel_nguyen',
         updatedAt: data.updatedAt ?? data.date
       } as BlogPost;
+
+      return enhancePost(basePost);
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+
+export function getPosts(): BlogPost[] {
+  if (!postsCache) {
+    postsCache = loadPosts();
+  }
+
+  return postsCache;
 }
 
 export function getPostBySlug(slug: string) {

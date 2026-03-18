@@ -19,27 +19,27 @@ export default function BlogPage() {
   const tags = getTags().slice(0, 12);
 
   return (
-    <section className="space-y-6">
-      <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-[1.25fr_1fr] md:items-center">
+    <section className="space-y-7">
+      <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-[1.25fr_1fr] md:items-center">
         <div>
           <h1 className="text-3xl font-bold">FinanceSphere Blog</h1>
           <p className="text-slate-600">Read practical explainers tied to real decisions—choosing between loan terms, reducing credit-card interest, building an emergency fund, and improving long-term investing habits.</p>
         </div>
-        <div className="relative h-44 overflow-hidden rounded-2xl sm:h-52">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50 p-4">
           <Image
             src="/images/blog-visual-general.svg"
             alt="Editorial-style personal finance dashboard illustration for the FinanceSphere blog"
             fill
             priority
             sizes="(max-width: 768px) 100vw, 40vw"
-            className="object-cover"
+            className="object-contain p-4"
           />
         </div>
       </div>
 
       <div className="flex flex-wrap gap-2 text-sm">
         {categories.map((category) => (
-          <Link key={category} href={`/blog/category/${category}`} className="rounded-full bg-slate-100 px-3 py-1">
+          <Link key={category} href={`/blog/category/${category}`} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-700 transition hover:border-blue-200 hover:bg-blue-50">
             {category}
           </Link>
         ))}
@@ -47,7 +47,7 @@ export default function BlogPage() {
 
       <div className="flex flex-wrap gap-2 text-xs">
         {tags.map((tag) => (
-          <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-full border px-3 py-1 text-slate-600">
+          <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-full border border-slate-200 px-3 py-1 text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
             #{tag}
           </Link>
         ))}

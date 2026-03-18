@@ -48,8 +48,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: [
-      { '@type': 'Question', name: `What is the best way to start with ${post.category}?`, acceptedAnswer: { '@type': 'Answer', text: 'Start by setting a goal, comparing options, and automating your strategy.' } },
-      { '@type': 'Question', name: 'How often should I review my plan?', acceptedAnswer: { '@type': 'Answer', text: 'Review monthly for budgeting and quarterly for long-term investments.' } }
+      { '@type': 'Question', name: `What should I prioritize first in ${post.category}?`, acceptedAnswer: { '@type': 'Answer', text: 'Prioritize the decision with the largest impact on cash flow or risk, then automate what you choose.' } },
+      { '@type': 'Question', name: 'How often should I review my plan?', acceptedAnswer: { '@type': 'Answer', text: 'Review monthly for budget or debt topics and quarterly for long-term investing topics.' } }
     ]
   };
 
@@ -61,8 +61,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <header className="space-y-4">
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <p className="text-slate-600">{post.description}</p>
-        <div className="relative h-56 overflow-hidden rounded-2xl border border-slate-200 sm:h-64">
-          <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-cover" />
+        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50 p-4">
+          <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-contain p-6" />
         </div>
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
       </header>
@@ -112,10 +112,10 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <section>
         <h2 className="mb-3 text-xl font-semibold">Related articles</h2>
-        <ul className="grid gap-2 text-sm">
+        <ul className="grid gap-3 text-sm md:grid-cols-2">
           {relatedPosts.map((related) => (
             <li key={related.slug}>
-              <Link href={`/blog/${related.slug}`} className="text-blue-700 hover:underline">
+              <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-slate-200 bg-white px-3 py-2 text-blue-700 transition hover:border-blue-200 hover:bg-blue-50/40 hover:text-blue-800">
                 {related.title}
               </Link>
             </li>
