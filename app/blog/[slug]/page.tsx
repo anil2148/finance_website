@@ -9,6 +9,30 @@ import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
 import { getRelatedLinks } from '@/lib/internalLinks';
 import { NewsletterForm } from '@/components/NewsletterForm';
 
+const calculatorLinksByCategory: Record<string, Array<{ label: string; href: string }>> = {
+  budgeting: [
+    { label: 'Budget Planner', href: '/calculators/budget-planner' },
+    { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' }
+  ],
+  investing: [
+    { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
+    { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' }
+  ],
+  mortgages: [
+    { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
+    { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' }
+  ],
+  'credit cards': [
+    { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
+    { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' }
+  ]
+};
+
+const defaultCalculatorLinks = [
+  { label: 'Explore all calculators', href: '/calculators' },
+  { label: 'Compare products', href: '/comparison' }
+];
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
@@ -80,8 +104,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <section className="rounded-xl bg-blue-600 p-5 text-white">
         <h3 className="text-xl font-semibold">Put this guide into action</h3>
-        <p className="text-sm text-blue-100">Use FinanceSphere calculators and comparison pages to test numbers that match your situation before you make a decision.</p>
-        <a href="/comparison" className="mt-3 inline-flex rounded-lg bg-white px-4 py-2 font-semibold text-blue-700">Compare options</a>
+        <p className="text-sm text-blue-100">Use the matching calculators below first, then compare product options that fit your scenario.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {calculatorLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-700">
+              {item.label}
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section>

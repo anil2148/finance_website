@@ -26,8 +26,8 @@ type NewsletterApiResponse =
 const copyBySource: Record<string, { title: string; description: string; button: string }> = {
   homepage: {
     title: 'Get weekly planning ideas',
-    description: 'Receive one short email each week with practical calculator use-cases for debt, savings, and long-term planning.',
-    button: 'Send weekly ideas'
+    description: 'Receive one concise weekly email with calculator walkthroughs, offer updates, and practical actions you can take this week.',
+    button: 'Get weekly ideas'
   },
   blog: {
     title: 'Get new guides in your inbox',
@@ -124,7 +124,7 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
   };
 
   return (
-    <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`}>
+    <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`} aria-busy={status === 'loading'}>
       <h3 className="text-lg font-semibold">{copy.title}</h3>
       <p className="text-sm text-slate-600">{copy.description}</p>
 

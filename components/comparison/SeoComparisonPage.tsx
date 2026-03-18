@@ -63,15 +63,19 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
             <p className="mt-2 text-sm text-slate-600">{item.answer}</p>
           </details>
         ))}
+        <details className="rounded-lg border border-slate-200 p-3">
+          <summary className="cursor-pointer font-medium">How should I choose between similar offers?</summary>
+          <p className="mt-2 text-sm text-slate-600">Prioritize the total annual value for your usage pattern: expected rewards or yield minus fees, then validate terms and eligibility criteria.</p>
+        </details>
       </div>
 
       <section className="related-links-grid">
         <div>
           <h2 className="mb-2 text-lg font-semibold">Related calculators</h2>
           <ul className="space-y-1 text-sm">
-            <li><Link href="/calculators/credit-card-payoff-calculator" className="text-brand hover:underline">Credit Card Payoff Calculator</Link></li>
-            <li><Link href="/calculators/mortgage-calculator" className="text-brand hover:underline">Mortgage Calculator</Link></li>
-            <li><Link href="/calculators/savings-goal-calculator" className="text-brand hover:underline">Savings Goal Calculator</Link></li>
+            {related.calculators.map((item) => (
+              <li key={item.href}><Link href={item.href} className="text-brand hover:underline">{item.label}</Link></li>
+            ))}
           </ul>
         </div>
         <div>
