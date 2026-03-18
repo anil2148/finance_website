@@ -1,0 +1,34 @@
+<svg width="1200" height="720" viewBox="0 0 1200 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Mortgage planning dashboard illustration</title>
+  <desc id="desc">Home purchase planning panel with mortgage rate trend, down payment tracker, and monthly payment breakdown cards.</desc>
+  <rect width="1200" height="720" rx="36" fill="url(#bg)"/>
+  <rect x="70" y="70" width="1060" height="580" rx="26" fill="#ffffff" fill-opacity="0.86"/>
+  <rect x="120" y="128" width="290" height="210" rx="18" fill="#EFF6FF"/>
+  <path d="M164 255L264 172L364 255V306H304V247H224V306H164V255Z" fill="#2563EB" fill-opacity="0.8"/>
+  <rect x="458" y="128" width="290" height="210" rx="18" fill="#F0FDFA"/>
+  <path d="M492 296C552 212 629 214 712 166" stroke="#0D9488" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="712" cy="166" r="15" fill="#0F766E"/>
+  <text x="500" y="318" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Rate trend</text>
+  <rect x="796" y="128" width="284" height="210" rx="18" fill="#F5F3FF"/>
+  <rect x="834" y="172" width="206" height="22" rx="11" fill="#C4B5FD"/>
+  <rect x="834" y="212" width="168" height="22" rx="11" fill="#A78BFA"/>
+  <rect x="834" y="252" width="122" height="22" rx="11" fill="#8B5CF6"/>
+  <text x="834" y="306" fill="#5B21B6" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Down payment</text>
+  <rect x="120" y="374" width="960" height="226" rx="22" fill="#EEF2FF"/>
+  <rect x="162" y="420" width="272" height="136" rx="16" fill="#ffffff"/>
+  <text x="184" y="468" fill="#1E3A8A" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">P&amp;I</text>
+  <text x="184" y="520" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">$2,184</text>
+  <rect x="466" y="420" width="272" height="136" rx="16" fill="#ffffff"/>
+  <text x="488" y="468" fill="#0F766E" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Taxes + Ins.</text>
+  <text x="488" y="520" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">$612</text>
+  <rect x="770" y="420" width="272" height="136" rx="16" fill="#ffffff"/>
+  <text x="792" y="468" fill="#7C3AED" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Total payment</text>
+  <text x="792" y="520" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">$2,796</text>
+  <defs>
+    <linearGradient id="bg" x1="120" y1="64" x2="1080" y2="670" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#DBEAFE"/>
+      <stop offset="0.55" stop-color="#E0F2FE"/>
+      <stop offset="1" stop-color="#EDE9FE"/>
+    </linearGradient>
+  </defs>
+</svg>

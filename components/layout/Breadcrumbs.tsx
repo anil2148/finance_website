@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 
 const toLabel = (segment: string) =>
   segment
-    .replace(/^seo-/, '')
+    
     .split('-')
     .map((word) => word[0]?.toUpperCase() + word.slice(1))
     .join(' ');

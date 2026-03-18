@@ -1,0 +1,26 @@
+<svg width="1200" height="675" viewBox="0 0 1200 675" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Mortgage planning illustration</title>
+  <desc id="desc">An editorial-style mortgage planning dashboard with a home outline, payment trend, and approval checklist cards.</desc>
+  <rect width="1200" height="675" rx="28" fill="url(#bg)"/>
+  <rect x="88" y="78" width="1024" height="519" rx="26" fill="white" fill-opacity="0.92"/>
+  <path d="M256 368L428 226L600 368" stroke="#0F766E" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="308" y="350" width="238" height="174" rx="20" stroke="#0F766E" stroke-width="16"/>
+  <rect x="410" y="412" width="68" height="112" rx="12" fill="#A7F3D0"/>
+  <rect x="652" y="208" width="356" height="146" rx="18" fill="#ECFEFF" stroke="#22D3EE" stroke-width="4"/>
+  <text x="682" y="256" fill="#0C4A6E" font-size="34" font-family="Inter, Arial, sans-serif" font-weight="700">Payment trend</text>
+  <path d="M690 316C742 286 780 300 826 262C858 236 900 238 952 244" stroke="#0284C7" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="952" cy="244" r="12" fill="#0284C7"/>
+  <rect x="652" y="386" width="356" height="138" rx="18" fill="#F0FDFA" stroke="#2DD4BF" stroke-width="4"/>
+  <text x="682" y="432" fill="#134E4A" font-size="30" font-family="Inter, Arial, sans-serif" font-weight="700">Approval checklist</text>
+  <rect x="688" y="454" width="16" height="16" rx="4" fill="#14B8A6"/>
+  <rect x="724" y="454" width="196" height="10" rx="5" fill="#5EEAD4"/>
+  <rect x="688" y="482" width="16" height="16" rx="4" fill="#14B8A6"/>
+  <rect x="724" y="482" width="238" height="10" rx="5" fill="#99F6E4"/>
+  <defs>
+    <linearGradient id="bg" x1="120" y1="80" x2="1080" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E0F2FE"/>
+      <stop offset="0.48" stop-color="#CCFBF1"/>
+      <stop offset="1" stop-color="#DBEAFE"/>
+    </linearGradient>
+  </defs>
+</svg>
