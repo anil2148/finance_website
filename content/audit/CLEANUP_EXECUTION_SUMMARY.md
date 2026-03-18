@@ -1,37 +1,37 @@
 # FinanceSphere Cleanup Execution Summary
 
 ## Kept + rewritten pillar posts
-- `seo-50-30-20-rule-for-saving`
+- `budget-rule-based-reset`
 - `seo-automate-your-savings-plan`
 - `seo-avoid-credit-card-interest`
 - `seo-balance-transfer-strategy`
 - `seo-best-first-credit-card`
-- `seo-debt-to-income-ratio-guide`
+- `debt-to-income-ratio-90-day-plan`
 - `seo-dollar-cost-averaging-guide`
-- `seo-emergency-fund-3-to-6-months`
-- `seo-high-yield-savings-basics`
-- `seo-how-credit-utilization-works`
-- `seo-how-to-compare-personal-loan-apr`
+- `emergency-fund-target-by-recovery-timeline`
+- `how-to-choose-a-high-yield-savings-account`
+- `credit-utilization-statement-cycle-playbook`
+- `personal-loan-comparison-for-bad-month-resilience`
 - `seo-how-to-read-expense-ratios`
 - `seo-index-funds-vs-etfs`
-- `seo-investing-for-beginners-roadmap`
-- `seo-mortgage-preapproval-checklist`
+- `beginner-investing-roadmap-year-one-milestones`
+- `mortgage-preapproval-checklist-underwriting`
 - `seo-retirement-accounts-101`
 - `seo-roth-vs-traditional-ira`
 - `seo-save-money-on-utilities`
-- `seo-tax-efficient-investing-tips`
+- `tax-efficient-investing-account-location-decisions`
 - `seo-what-lenders-check`
 
 ## Merge strategy and canonical winners
-- Canonical winner: `/blog/seo-50-30-20-rule-for-saving`
+- Canonical winner: `/blog/budget-rule-based-reset`
 - Canonical winner: `/blog/seo-best-first-credit-card`
-- Canonical winner: `/blog/seo-high-yield-savings-basics`
-- Canonical winner: `/blog/seo-how-credit-utilization-works`
-- Canonical winner: `/blog/seo-how-to-compare-personal-loan-apr`
-- Canonical winner: `/blog/seo-investing-for-beginners-roadmap`
+- Canonical winner: `/blog/how-to-choose-a-high-yield-savings-account`
+- Canonical winner: `/blog/credit-utilization-statement-cycle-playbook`
+- Canonical winner: `/blog/personal-loan-comparison-for-bad-month-resilience`
+- Canonical winner: `/blog/beginner-investing-roadmap-year-one-milestones`
 - Canonical winner: `/blog/seo-retirement-accounts-101`
 - Canonical winner: `/blog/seo-roth-vs-traditional-ira`
-- Canonical winner: `/blog/seo-tax-efficient-investing-tips`
+- Canonical winner: `/blog/tax-efficient-investing-account-location-decisions`
 
 ## Category/archive cleanup implemented
 - Blog rendering now displays only `KEEP_IMPROVE` posts through cleanup gating.
