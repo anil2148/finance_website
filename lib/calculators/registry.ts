@@ -70,7 +70,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     ],
     blogLinks: [
       { title: 'Mortgage Preapproval Checklist', href: '/blog/seo-mortgage-preapproval-checklist' },
-      { title: 'Save for a Down Payment Faster', href: '/blog/seo-save-for-down-payment-faster' }
+      { title: 'Save for a Down Payment Faster', href: '/blog/seo-mortgage-preapproval-checklist' }
     ],
     defaultInputs,
     compute: calculateMortgage
@@ -82,7 +82,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Loan Calculator: Monthly EMI & Interest Breakdown',
     seoDescription: 'Calculate monthly installment payments with a year-by-year amortization schedule and total interest breakdown.',
     faq: [{ question: 'How can this help me compare two loan offers?', answer: 'Enter each offer separately and compare the monthly installment, total interest, and payoff length to see the real trade-off.' }],
-    blogLinks: [{ title: 'How Loan Interest Works', href: '/blog/seo-how-loan-interest-works' }],
+    blogLinks: [{ title: 'How Loan Interest Works', href: '/blog/seo-how-to-compare-personal-loan-apr' }],
     defaultInputs: { ...defaultInputs, years: 7 },
     compute: calculateLoan
   },
@@ -93,7 +93,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Compound Interest Calculator: Future Value Projection',
     seoDescription: 'Estimate future portfolio value from a starting balance, recurring contributions, and expected annual return.',
     faq: [{ question: 'Do small monthly contributions really make a difference?', answer: 'Yes. Even modest recurring deposits can materially increase your ending balance when compounding has years to work.' }],
-    blogLinks: [{ title: 'Dollar-Cost Averaging Guide', href: '/blog/seo-dollar-cost-averaging-guide' }],
+    blogLinks: [{ title: 'Dollar-Cost Averaging Guide', href: '/blog/seo-investing-for-beginners-roadmap' }],
     defaultInputs: { ...defaultInputs, loanAmount: 15000, years: 20 },
     compute: calculateCompoundInterest
   },
@@ -104,7 +104,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Retirement Calculator: Inflation-Adjusted Savings Plan',
     seoDescription: 'Project retirement account growth and estimate potential annual withdrawals using common planning rules.',
     faq: [{ question: 'How should I use this for retirement planning?', answer: 'Treat the results as a planning baseline, then test conservative and optimistic scenarios to set a contribution target you can maintain.' }],
-    blogLinks: [{ title: 'Retirement Accounts 101', href: '/blog/seo-retirement-accounts-101' }],
+    blogLinks: [{ title: 'Retirement Accounts 101', href: '/blog/seo-tax-efficient-investing-tips' }],
     defaultInputs,
     compute: calculateRetirement
   },
@@ -115,7 +115,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Credit Card Payoff Calculator: Debt-Free Timeline',
     seoDescription: 'Estimate card payoff month, total interest, and repayment impact when you raise monthly payments.',
     faq: [{ question: 'Does paying more each month help?', answer: 'Yes. Higher monthly payments reduce principal sooner, which lowers interest and shortens payoff time.' }],
-    blogLinks: [{ title: 'Avoid Credit Card Interest', href: '/blog/seo-avoid-credit-card-interest' }],
+    blogLinks: [{ title: 'Avoid Credit Card Interest', href: '/blog/seo-how-credit-utilization-works' }],
     defaultInputs: { ...defaultInputs, loanAmount: 15000, interestRate: 19.9, years: 5 },
     compute: (inputs) => debtPayoffResult('Credit Card Payoff Plan', inputs)
   },
@@ -126,7 +126,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Savings Goal Calculator: Reach Milestones Faster',
     seoDescription: 'Calculate monthly savings needed for a target date and track projected progress year by year.',
     faq: [{ question: 'Can I include inflation?', answer: 'Yes. Inflation assumptions help you test whether your target still holds purchasing power in future years.' }],
-    blogLinks: [{ title: 'Best Savings Goals by Age', href: '/blog/seo-best-savings-goals-by-age' }],
+    blogLinks: [{ title: 'Best Savings Goals by Age', href: '/blog/seo-emergency-fund-3-to-6-months' }],
     defaultInputs: { ...defaultInputs, loanAmount: 10000, years: 10 },
     compute: (inputs) => growthResult('Savings Goal Projection', inputs)
   },
@@ -148,7 +148,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Debt Avalanche Calculator: Minimize Interest Paid',
     seoDescription: 'Model debt avalanche payoff and compare savings across repayment plans.',
     faq: [{ question: 'What is debt avalanche?', answer: 'It focuses extra payments on the highest-interest debt first.' }],
-    blogLinks: [{ title: 'Personal Loan vs Credit Card', href: '/blog/seo-personal-loan-vs-credit-card' }],
+    blogLinks: [{ title: 'Personal Loan vs Credit Card', href: '/blog/seo-how-to-compare-personal-loan-apr' }],
     defaultInputs: { ...defaultInputs, loanAmount: 40000, years: 8 },
     compute: (inputs) => debtPayoffResult('Debt Avalanche Projection', inputs)
   },
@@ -170,7 +170,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'FIRE Calculator: Financial Independence Timeline',
     seoDescription: 'Estimate your path to financial independence by modeling savings rate, investment return, and target spending.',
     faq: [{ question: 'How does this calculator support FIRE planning?', answer: 'It helps you test how savings rate, expected return, and time horizon interact so you can set a realistic independence target.' }],
-    blogLinks: [{ title: 'Long-Term Investing Mindset', href: '/blog/seo-long-term-investing-mindset' }],
+    blogLinks: [{ title: 'Long-Term Investing Mindset', href: '/blog/seo-investing-for-beginners-roadmap' }],
     defaultInputs: { ...defaultInputs, loanAmount: 120000, monthlyContribution: 1800, years: 20 },
     compute: (inputs) => growthResult('FIRE Projection', inputs)
   },
@@ -181,7 +181,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Net Worth Calculator: Track Financial Progress',
     seoDescription: 'Calculate current net worth and project forward based on contribution and growth assumptions.',
     faq: [{ question: 'What should I include in net worth?', answer: 'Include major assets like cash, investments, and home equity, then subtract liabilities such as credit cards, loans, and mortgage balance.' }],
-    blogLinks: [{ title: 'How to Build a Cash Buffer', href: '/blog/seo-how-to-build-cash-buffer' }],
+    blogLinks: [{ title: 'How to Build a Cash Buffer', href: '/blog/seo-emergency-fund-3-to-6-months' }],
     defaultInputs: { ...defaultInputs, loanAmount: 50000, years: 15 },
     compute: (inputs) => growthResult('Net Worth Projection', inputs)
   },
@@ -233,7 +233,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Auto Loan Calculator: Car Payment and Interest Breakdown',
     seoDescription: 'Model auto-loan payments, cumulative interest, and payoff timing across different terms and APRs.',
     faq: [{ question: 'How much should a car payment be?', answer: 'A common rule of thumb is keeping auto costs manageable relative to take-home pay, but the right cap depends on your budget.' }],
-    blogLinks: [{ title: 'Auto Loan Term Length', href: '/blog/seo-auto-loan-term-length' }],
+    blogLinks: [{ title: 'Auto Loan Term Length', href: '/blog/seo-how-to-compare-personal-loan-apr' }],
     defaultInputs: { ...defaultInputs, loanAmount: 32000, years: 6, interestRate: 7.1 },
     compute: calculateLoan
   },

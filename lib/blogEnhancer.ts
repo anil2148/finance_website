@@ -137,7 +137,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         calculator: { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
         comparison: { label: 'Best investment apps', href: '/best-investment-apps' },
         hub: { label: 'Investing hub', href: '/learn/investing' },
-        related: { label: 'Dollar-cost averaging guide', href: '/blog/seo-dollar-cost-averaging-guide' }
+        related: { label: 'Dollar-cost averaging guide', href: '/blog/seo-investing-for-beginners-roadmap' }
       },
       titleTemplates: [
         '%TOPIC%: Risk, Fees, and Allocation Choices That Matter',
@@ -161,7 +161,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         calculator: { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
         comparison: { label: 'Investment account comparisons', href: '/comparison?category=investment_app' },
         hub: { label: 'Investing hub', href: '/learn/investing' },
-        related: { label: 'Roth vs Traditional IRA', href: '/blog/seo-roth-vs-traditional-ira' }
+        related: { label: 'Roth vs Traditional IRA', href: '/blog/seo-tax-efficient-investing-tips' }
       },
       titleTemplates: [
         '%TOPIC%: Account Choices That Keep More of Your Return',
@@ -207,7 +207,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
       calculator: { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
       comparison: { label: 'Best savings accounts', href: '/best-savings-accounts-usa' },
       hub: { label: 'Budgeting hub', href: '/learn/budgeting' },
-      related: { label: 'Automate your savings plan', href: '/blog/seo-automate-your-savings-plan' }
+      related: { label: 'Automate your savings plan', href: '/blog/seo-emergency-fund-3-to-6-months' }
     },
     titleTemplates: ['%TOPIC%: Clear Priorities and Smart Next Steps'],
     descriptionTemplates: ['Get practical %TOPIC_LOWER% guidance with examples, tradeoffs, and next-step tools.']
