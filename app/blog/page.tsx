@@ -64,10 +64,28 @@ const curatedCollections = [
   }
 ];
 
+const featuredCategoryOrder = [
+  'savings-accounts',
+  'credit-cards',
+  'investing',
+  'loans',
+  'budgeting',
+  'retirement-planning',
+  'tax',
+  'saving-money',
+  'mortgages'
+];
+
 export default function BlogPage() {
   const posts = getPosts();
   const categories = getCategories();
   const tags = getTags().slice(0, 12);
+  const featuredAcrossCategories = featuredCategoryOrder
+    .map((category) => {
+      const topPost = posts.find((post) => post.category === category);
+      return topPost ? { category, post: topPost } : null;
+    })
+    .filter((item): item is { category: string; post: (typeof posts)[number] } => Boolean(item));
 
   return (
     <section className="space-y-7">
@@ -121,6 +139,21 @@ export default function BlogPage() {
                   <Link key={link.href} href={link.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">{link.label}</Link>
                 ))}
               </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-semibold">Featured across categories</h2>
+        <p className="mt-1 text-sm text-slate-600">Start with one high-quality article from each non-empty category instead of browsing only loans and investing.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {featuredAcrossCategories.map(({ category, post }) => (
+            <article key={`${category}-${post.slug}`} className="rounded-xl border border-slate-200 p-4">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{category.replace(/-/g, ' ')}</p>
+              <Link href={`/blog/${post.slug}`} className="mt-1 block text-base font-semibold text-slate-900 hover:text-blue-700 hover:underline">{post.title}</Link>
+              <p className="mt-2 line-clamp-3 text-sm text-slate-600">{post.description}</p>
+              <Link href={`/blog/category/${category}`} className="mt-2 inline-block text-sm font-medium text-blue-700 hover:underline">View {category.replace(/-/g, ' ')} →</Link>
             </article>
           ))}
         </div>

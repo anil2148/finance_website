@@ -25,6 +25,11 @@ const categoryCopy: Record<string, { title: string; description: string; editori
     description: 'Category-based budgeting systems, automation tactics, and realistic spending plans for uneven monthly expenses.',
     editorialAngle: 'Articles in this cluster focus on decision rules that still hold during irregular income months.'
   },
+  'retirement-planning': {
+    title: 'Retirement Planning Articles',
+    description: 'Workplace plan contribution strategy, IRA decision rules, and practical retirement savings escalation frameworks.',
+    editorialAngle: 'Expect contribution-rate sequencing, tax-bracket tradeoffs, and long-horizon compounding discipline.'
+  },
   savings: {
     title: 'Savings Articles',
     description: 'Emergency fund planning, savings account choices, and practical plans to build cash reserves with consistency.',
@@ -44,6 +49,11 @@ const categoryCopy: Record<string, { title: string; description: string; editori
     title: 'Tax Planning Articles',
     description: 'Tax-efficiency frameworks that prioritize account location and repeatable annual maintenance, not one-off tricks.',
     editorialAngle: 'Coverage centers on after-tax return outcomes, guardrails, and coordination with long-term investing goals.'
+  },
+  'saving-money': {
+    title: 'Saving Money Articles',
+    description: 'Practical cost-cutting systems, recurring-expense controls, and implementation checklists that free up monthly cash flow.',
+    editorialAngle: 'Coverage is process-first: repeatable audits, automation, and redirection of savings to higher-priority goals.'
   },
   'passive-income': {
     title: 'Passive Income Articles',
@@ -83,10 +93,20 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
     { href: '/calculators/budget-planner', label: 'Budget Planner' },
     { href: '/compare/high-yield-savings-accounts', label: 'Compare High-Yield Savings' }
   ],
+  'retirement-planning': [
+    { href: '/learn/investing', label: 'Retirement & Investing Hub' },
+    { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' },
+    { href: '/calculators/investment-growth-calculator', label: 'Investment Growth Calculator' }
+  ],
   tax: [
     { href: '/learn/investing', label: 'Tax-Aware Investing Hub' },
     { href: '/calculators/salary-after-tax-calculator', label: 'Salary After-Tax Calculator' },
     { href: '/best-investment-apps', label: 'Tax-Friendly Brokerage Options' }
+  ],
+  'saving-money': [
+    { href: '/learn/budgeting', label: 'Budgeting Hub' },
+    { href: '/calculators/savings-goal-calculator', label: 'Savings Goal Calculator' },
+    { href: '/compare/best-savings-accounts-usa', label: 'Best Savings Accounts USA' }
   ]
 };
 
@@ -125,6 +145,16 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     src: '/images/blog-visual-tax.svg',
     alt: 'Tax planning worksheet and timeline illustration',
     shell: 'from-rose-50 to-pink-50'
+  },
+  'retirement-planning': {
+    src: '/images/blog-visual-investing-growth.svg',
+    alt: 'Retirement contribution and long-horizon growth planning illustration',
+    shell: 'from-indigo-50 to-blue-50'
+  },
+  'saving-money': {
+    src: '/images/blog-visual-saving.svg',
+    alt: 'Household savings checklist and recurring expense controls illustration',
+    shell: 'from-emerald-50 to-teal-50'
   },
   'passive-income': {
     src: '/images/blog-visual-investing-risk.svg',
