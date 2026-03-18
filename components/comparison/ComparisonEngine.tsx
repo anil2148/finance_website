@@ -4,6 +4,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { OfferCard } from '@/components/comparison-table/OfferCard';
 import type { FinancialCategory, FinancialProduct } from '@/lib/financialProducts';
 
+type ComparisonEngineProps = {
+  defaultCategory?: FinancialCategory | 'all';
+  initialProducts?: FinancialProduct[];
+};
+
 function extractRate(value: string) {
   return Number(value.match(/[\d.]+/)?.[0] ?? 0);
 }
@@ -13,22 +18,24 @@ function parseAnnualFee(value: string) {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
-export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?: FinancialCategory | 'all' }) {
-  const [products, setProducts] = useState<FinancialProduct[]>([]);
+export function ComparisonEngine({ defaultCategory = 'all', initialProducts = [] }: ComparisonEngineProps) {
+  const [products, setProducts] = useState<FinancialProduct[]>(initialProducts);
   const [category, setCategory] = useState<FinancialCategory | 'all'>(defaultCategory);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'apr_apy' | 'annual_fee'>('rating');
   const [recommendedOnly, setRecommendedOnly] = useState(false);
   const [noAnnualFeeOnly, setNoAnnualFeeOnly] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialProducts.length === 0);
 
   useEffect(() => {
+    if (initialProducts.length > 0) return;
+
     fetch('/api/products')
       .then((res) => res.json())
-      .then((data) => setProducts(data))
+      .then((data) => setProducts(Array.isArray(data) ? data : []))
       .catch(() => setProducts([]))
       .finally(() => setLoading(false));
-  }, []);
+  }, [initialProducts.length]);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -46,6 +53,8 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
         return extractRate(b.apr_apy) - extractRate(a.apr_apy);
       });
   }, [category, products, recommendedOnly, noAnnualFeeOnly, search, sortBy]);
+
+  const hasActiveFilters = Boolean(search.trim()) || recommendedOnly || noAnnualFeeOnly;
 
   return (
     <section className="space-y-5">
@@ -76,27 +85,42 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
-        Showing <strong>{filtered.length}</strong> of <strong>{products.length}</strong> offers. Always review full terms before you apply.
-      </div>
+      {!loading && (
+        <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
+          Showing <strong>{filtered.length}</strong> of <strong>{products.length}</strong> offers. Always review full terms before you apply.
+        </div>
+      )}
 
-      {loading ? <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">Loading comparison data...</p> : null}
+      {loading ? <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">Loading comparison data…</p> : null}
 
       {!loading && filtered.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm">
-          <p className="font-medium">No products matched your filters.</p>
-          <p className="mt-1 text-slate-600">Try clearing search, switching categories, or exploring our full comparison page.</p>
+          <p className="font-medium">No products matched your current filters.</p>
+          <p className="mt-1 text-slate-600">
+            {hasActiveFilters
+              ? 'Try clearing search or one filter to view more options.'
+              : 'Data may be temporarily unavailable. Please refresh or visit the full comparison page.'}
+          </p>
+          {hasActiveFilters ? (
+            <button
+              type="button"
+              onClick={() => {
+                setSearch('');
+                setRecommendedOnly(false);
+                setNoAnnualFeeOnly(false);
+              }}
+              className="mt-3 rounded-lg border border-slate-300 px-3 py-1.5 font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-700"
+            >
+              Clear filters
+            </button>
+          ) : null}
         </div>
       ) : null}
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {filtered.map((product) => <OfferCard key={product.id} product={product} />)}
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-          No matching products found. Try removing one filter or searching by a broader term.
-        </p>
+      {filtered.length > 0 ? (
+        <div className="grid gap-4 md:grid-cols-2">
+          {filtered.map((product) => <OfferCard key={product.id} product={product} />)}
+        </div>
       ) : null}
     </section>
   );

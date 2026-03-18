@@ -1,7 +1,10 @@
-import { ComparisonEngine } from '@/components/comparison/ComparisonEngine';
 import Image from 'next/image';
+import { ComparisonEngine } from '@/components/comparison/ComparisonEngine';
+import { getFinancialProducts } from '@/lib/financialProducts';
 
 export function ComparisonPageClient() {
+  const products = getFinancialProducts();
+
   return (
     <section className="space-y-6">
       <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-[1.3fr_1fr] md:items-center">
@@ -20,7 +23,7 @@ export function ComparisonPageClient() {
           />
         </div>
       </div>
-      <ComparisonEngine />
+      <ComparisonEngine initialProducts={products} />
     </section>
   );
 }

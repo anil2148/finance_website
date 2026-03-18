@@ -2,8 +2,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { getBlogVisual } from '@/lib/blogVisuals';
 
+function hashNumber(value: string) {
+  return [...value].reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
+}
+
+const imagePositions = ['center', 'left center', 'right center'] as const;
+
 export function BlogCard({ title, excerpt, slug, category = 'general' }: { title: string; excerpt: string; slug: string; category?: string }) {
   const visual = getBlogVisual(category);
+  const visualPosition = imagePositions[Math.abs(hashNumber(slug)) % imagePositions.length];
 
   return (
     <article className="card flex h-full flex-col overflow-hidden p-0 transition duration-200 hover:-translate-y-0.5 hover:shadow-md">
@@ -14,11 +21,13 @@ export function BlogCard({ title, excerpt, slug, category = 'general' }: { title
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-contain p-4"
+          style={{ objectPosition: visualPosition }}
           loading="lazy"
         />
       </div>
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="text-lg font-semibold leading-snug text-slate-900">{title}</h3>
+        <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{category.replace(/-/g, ' ')}</p>
+        <h3 className="mt-1 text-lg font-semibold leading-snug text-slate-900">{title}</h3>
         <p className="mt-2 line-clamp-4 text-sm leading-6 text-slate-600">{excerpt}</p>
         <Link className="mt-4 inline-flex w-fit items-center gap-1 text-sm font-semibold text-brand hover:text-blue-700" href={`/blog/${slug}`}>
           Read article

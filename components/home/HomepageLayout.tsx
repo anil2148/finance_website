@@ -86,10 +86,13 @@ export function HomepageLayout() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">
-                Explore calculators
+                Run a calculator
               </Link>
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/comparison">
                 Compare products
+              </Link>
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/learn/investing">
+                Start with a guide
               </Link>
             </div>
             <p className="text-xs text-blue-200">Last content review: March 18, 2026 • Coverage includes U.S., UK, Canada, and India contexts.</p>
@@ -118,6 +121,26 @@ export function HomepageLayout() {
           </div>
         </div>
       </Card>
+
+
+
+      <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
+        <Link href="/comparison?category=investment_app" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">First step</p>
+          <h2 className="mt-1 text-lg font-semibold">Compare options</h2>
+          <p className="mt-2 text-sm text-slate-600">See fees, yields, and bonuses side by side before you commit.</p>
+        </Link>
+        <Link href="/calculators" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Second step</p>
+          <h2 className="mt-1 text-lg font-semibold">Run your numbers</h2>
+          <p className="mt-2 text-sm text-slate-600">Use calculators to test affordability, payoff speed, and growth assumptions.</p>
+        </Link>
+        <Link href="/blog" className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+          <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">Third step</p>
+          <h2 className="mt-1 text-lg font-semibold">Read the playbook</h2>
+          <p className="mt-2 text-sm text-slate-600">Use practical guides to avoid common mistakes and choose with confidence.</p>
+        </Link>
+      </section>
 
       <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3">
         {trustSignals.map((signal) => (

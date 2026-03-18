@@ -101,12 +101,30 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         </div>
       </section>
 
-      <section>
-        <h3 className="mb-2 font-semibold">You may also like</h3>
-        <div className="flex flex-wrap gap-2 text-sm">
-          {relatedLinks.map((link) => (
-            <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
-          ))}
+      <section className="grid gap-4 md:grid-cols-3">
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <h3 className="mb-2 font-semibold">Related tools</h3>
+          <div className="flex flex-wrap gap-2 text-sm">
+            {relatedLinks.filter((link) => link.type === 'calculator').map((link) => (
+              <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <h3 className="mb-2 font-semibold">Compare options</h3>
+          <div className="flex flex-wrap gap-2 text-sm">
+            {relatedLinks.filter((link) => link.type === 'comparison').map((link) => (
+              <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <h3 className="mb-2 font-semibold">Continue learning</h3>
+          <div className="flex flex-wrap gap-2 text-sm">
+            {relatedLinks.filter((link) => link.type === 'hub' || link.type === 'article').map((link) => (
+              <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
+            ))}
+          </div>
         </div>
       </section>
 

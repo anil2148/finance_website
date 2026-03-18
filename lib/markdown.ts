@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { getAuthorIdForCategory } from '@/lib/authors';
-import { enhancePost } from '@/lib/blogEnhancer';
+import { canonicalTopicKey, enhancePost, qualityScore, shouldExcludePost } from '@/lib/blogEnhancer';
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
@@ -25,7 +25,7 @@ export type BlogPost = {
 let postsCache: BlogPost[] | null = null;
 
 function loadPosts() {
-  return fs
+  const loadedPosts = fs
     .readdirSync(contentDir)
     .filter((f) => f.endsWith('.mdx'))
     .map((file) => {
@@ -49,7 +49,20 @@ function loadPosts() {
 
       return enhancePost(basePost);
     })
-    .sort((a, b) => (a.date < b.date ? 1 : -1));
+    .filter((post) => !shouldExcludePost(post));
+
+  const bestByTopic = new Map<string, BlogPost>();
+
+  for (const post of loadedPosts) {
+    const topic = canonicalTopicKey(post);
+    const current = bestByTopic.get(topic);
+
+    if (!current || qualityScore(post) > qualityScore(current) || post.date > current.date) {
+      bestByTopic.set(topic, post);
+    }
+  }
+
+  return [...bestByTopic.values()].sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 export function getPosts(): BlogPost[] {
