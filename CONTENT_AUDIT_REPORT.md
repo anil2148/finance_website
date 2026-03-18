@@ -1,59 +1,80 @@
-# FinanceSphere Content Audit Report
+# FinanceSphere Blog Audit & Remediation Report
 
-## Goal
-Replace generic, boilerplate, and template-like copy with specific, finance-focused language while keeping existing layouts, components, and routes intact.
+## Audit scope
+- Blog listing page (`/blog`), category pages, tag pages, and article detail pages.
+- Post metadata (title, description, SEO title/meta description), snippets, related links, and image strategy.
+- Internal-linking flow from articles to calculators, comparison pages, and hub pages.
 
-## What Changed and Why
+## Core issues found
 
-### 1) Homepage messaging (`components/home/HomepageLayout.tsx`)
-- **Changed:** Hero headline, hero paragraph, “what you can do” block, tool-card descriptions, popular calculator supporting copy, and decision-support callout.
-- **Why:** The prior copy was broad (“simple calculators”, “better decisions, faster”). New copy describes concrete tasks users do on FinanceSphere: stress-testing rates, comparing payoff speed, and evaluating trade-offs.
+### 1) Template-heavy content footprint
+A scan across `content/blog/*.mdx` found very high repetition patterns:
+- **1,201** total post files.
+- **1,091** titles matching repetitive patterns (e.g., `Complete Guide (2026)` / `Practical 2026 Guide #...`).
+- **1,051** posts with repeated `## Why this matters` section phrasing.
+- **999** posts with repeated `## Step-by-step plan` blocks.
+- **89** posts with repeated snippet pattern: `with practical steps, examples, and expert tips`.
 
-### 2) Calculators hub and calculator reusable content
-- **Files:**
-  - `app/calculators/page.tsx`
-  - `components/calculators/CalculatorPage.tsx`
-  - `lib/calculators/registry.ts`
-- **Changed:**
-  - Calculators landing metadata + hero copy now emphasizes real planning use-cases and scenario analysis.
-  - Reusable HowTo schema steps updated from generic instructions to finance-specific workflow (input assumptions → evaluate costs/timelines → compare scenarios).
-  - Calculator descriptions, SEO descriptions, FAQ answers, and result-card help text rewritten across registry entries to be more practical and specific.
-- **Why:** These texts are reused across most calculator pages; improving them removes boilerplate at scale and strengthens relevance for users comparing loans, savings, retirement, and debt strategies.
+### 2) Weak SEO specificity
+- Many meta titles and descriptions were generic and not aligned to topic intent.
+- Snippets on cards were often interchangeable across unrelated topics.
+- Several “important” posts used non-specific descriptions despite high-intent keywords.
 
-### 3) Blog landing copy (`app/blog/page.tsx`)
-- **Changed:** Blog metadata description and intro paragraph.
-- **Why:** Reframed from generic “educational articles” language to explicit outcomes: lowering interest, selecting products, improving credit, and planning wealth.
+### 3) Internal linking gaps
+- Some posts linked to generic hubs only (or broken/non-canonical tool paths).
+- Category mappings were inconsistent (`credit cards` vs `credit-cards`) causing weak calculator matching for some posts.
+- Article body links did not consistently include the expected journey:
+  article → calculator → comparison page → related guide/hub.
 
-### 4) Tools and comparison pages
-- **Files:**
-  - `app/tools/page.tsx`
-  - `app/comparison/page.tsx`
-  - `components/comparison/ComparisonPageClient.tsx`
-- **Changed:** Page metadata and section descriptions rewritten to focus on tangible comparison criteria (APR/APY, fees, bonuses, fit by goal).
-- **Why:** Removes SEO-template phrasing and better matches user intent when choosing financial products.
+### 4) Visual repetition and card consistency issues
+- Image selection relied mostly on category-only mapping, so many cards looked identical.
+- Visual differentiation by subtopic was weak.
+- Hero and card presentations lacked consistent topical color treatment.
 
-### 5) Shared product card content
-- **Files:**
-  - `data/financial-products.json`
-  - `components/comparison-table/OfferCard.tsx`
-- **Changed:**
-  - Product pros/cons and bonus text made more concrete (caps, fee conditions, support limitations, feature clarity).
-  - CTA label changed from generic “View Offer” to “View terms & offer.”
-- **Why:** Shared descriptions are rendered in comparison cards; improving this copy raises trust and usefulness where users evaluate options.
+### 5) Trust and editorial quality
+- Generic FAQ and section scaffolding made posts feel machine-produced.
+- A few high-visibility posts had forward dates and repetitive language that reduced credibility.
 
-### 6) Reusable newsletter and trust/disclosure text
-- **Files:**
-  - `components/NewsletterForm.tsx`
-  - `components/ui/NewsletterSignup.tsx`
-  - `components/footer/Footer.tsx`
-- **Changed:** Newsletter value proposition and success/error messaging; footer disclosure language clarified for editorial independence.
-- **Why:** Reusable blocks appeared across multiple pages and previously used broad, generic copy.
+## Remediation implemented
 
-### 7) Global metadata tone (`app/layout.tsx`)
-- **Changed:** Site title, global description, Open Graph/Twitter text, and site name normalization.
-- **Why:** Global metadata sets brand voice across the entire site; updates align it with practical, calculator-first finance guidance.
+### A) Content quality engine upgraded (`lib/blogEnhancer.ts`)
+- Replaced one-size-fits-all generated body template with **archetype-specific editorial structures**:
+  - investing,
+  - loans/mortgages,
+  - budgeting/savings,
+  - credit cards,
+  - tax.
+- Each archetype now uses topic-appropriate sections (e.g., fee/risk tradeoffs for investing, document checklist + approval timeline for loans, realistic monthly category splits for budgeting).
+- Reworked title normalization with varied title templates by archetype.
+- Reworked description normalization with topic-specific snippet templates.
+- Maintained dedupe and quality scoring logic, but improved low-value replacement depth and relevance.
 
-## Scope Notes
-- Preserved component structure, visual design, and route architecture.
-- Focused on visible copy and reusable content blocks rather than layout/style changes.
-- No new UX patterns were introduced; copy-only refactor across priority areas.
+### B) Key “money pages” rewritten manually (`content/blog/*.mdx`)
+Rebuilt high-intent cornerstone posts with deeper, non-template content:
+- `seo-investing-for-beginners-roadmap`
+- `seo-mortgage-preapproval-checklist`
+- `seo-how-credit-utilization-works`
+- Updated internal links in `seo-emergency-fund-3-to-6-months`
+
+These updates now include practical examples, clear tradeoffs, scenario-driven steps, and stronger topic-specific “what to do next” flows.
+
+### C) Internal-linking system strengthened (`lib/internalLinks.ts`, `lib/calculatorLinks.ts`)
+- Expanded and normalized category link maps for calculators, comparison pages, hubs, and related articles.
+- Fixed category key mismatch (`credit-cards`) so calculator links resolve correctly.
+- Added richer category coverage for loans/mortgages/savings/passive-income.
+
+### D) Article page SEO & relevance improvements (`app/blog/[slug]/page.tsx`)
+- Article OG/Twitter metadata now prefers `seoTitle` + `metaDescription`.
+- Removed generic global FAQ schema injection from all articles.
+- Upgraded related article cards to include category + snippet context (not title-only links).
+
+### E) Image/layout strategy updated (`lib/blogVisuals.ts`, `components/ui/BlogCard.tsx`, `app/blog/[slug]/page.tsx`)
+- Added keyword-aware visual selection (category + topic slug), not category only.
+- Added differentiated gradients and alt text by topic family.
+- Improved card and hero visual presentation for more consistent alignment and mobile rendering.
+
+## Recommended follow-up (next phase)
+1. Continue manual rewrites for top-traffic posts in each category.
+2. Add redirect/merge plan for near-duplicate slugs (especially numeric-tail legacy posts).
+3. Introduce editorial review status in frontmatter (`draft`, `reviewed`, `factCheckedAt`) for trust transparency.
+4. Add automated content-quality linting (frontmatter + phrase repetition checks) in CI.

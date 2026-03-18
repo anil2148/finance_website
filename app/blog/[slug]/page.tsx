@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: post.seoTitle ?? post.title,
     description: post.metaDescription ?? post.description,
     alternates: { canonical: canonicalPath },
-    openGraph: { title: post.title, description: post.description, type: 'article', url: `https://financesphere.io${canonicalPath}` },
-    twitter: { card: 'summary_large_image', title: post.title, description: post.description }
+    openGraph: { title: post.seoTitle ?? post.title, description: post.metaDescription ?? post.description, type: 'article', url: `https://financesphere.io${canonicalPath}` },
+    twitter: { card: 'summary_large_image', title: post.seoTitle ?? post.title, description: post.metaDescription ?? post.description }
   };
 }
 
@@ -43,26 +43,17 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const toc = getHeadings(post.content);
   const relatedLinks = getRelatedLinks(post.category);
   const calculatorLinks = matchingCalculatorLinksByBlogCategory[post.category] ?? defaultMatchingCalculatorLinks;
-  const visual = getBlogVisual(post.category);
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      { '@type': 'Question', name: `What should I prioritize first in ${post.category}?`, acceptedAnswer: { '@type': 'Answer', text: 'Prioritize the decision with the largest impact on cash flow or risk, then automate what you choose.' } },
-      { '@type': 'Question', name: 'How often should I review my plan?', acceptedAnswer: { '@type': 'Answer', text: 'Review monthly for budget or debt topics and quarterly for long-term investing topics.' } }
-    ]
-  };
+  const visual = getBlogVisual(post.category, post.slug);
 
   return (
     <article className="space-y-6 rounded-xl bg-white p-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
       <header className="space-y-4">
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <p className="text-slate-600">{post.description}</p>
-        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50 p-4">
-          <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-contain p-6" />
+        <div className={`relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${visual.heroClassName} p-4 sm:p-6`}>
+          <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-cover p-4 sm:p-6" />
         </div>
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
       </header>
@@ -133,8 +124,10 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         <ul className="grid gap-3 text-sm md:grid-cols-2">
           {relatedPosts.map((related) => (
             <li key={related.slug}>
-              <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-slate-200 bg-white px-3 py-2 text-blue-700 transition hover:border-blue-200 hover:bg-blue-50/40 hover:text-blue-800">
-                {related.title}
+              <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{related.category.replace(/-/g, ' ')}</p>
+                <h3 className="mt-1 text-base font-semibold text-slate-900">{related.title}</h3>
+                <p className="mt-1 line-clamp-2 text-sm text-slate-600">{related.description}</p>
               </Link>
             </li>
           ))}
