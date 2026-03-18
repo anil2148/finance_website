@@ -9,6 +9,8 @@ type ComparisonEngineProps = {
   initialProducts?: FinancialProduct[];
 };
 
+const LOADING_TIMEOUT_MS = 4000;
+
 function extractRate(value: string) {
   return Number(value.match(/[\d.]+/)?.[0] ?? 0);
 }
@@ -18,26 +20,56 @@ function parseAnnualFee(value: string) {
   return Number.isNaN(parsed) ? 0 : parsed;
 }
 
+function hasCompleteFinancialData(item: FinancialProduct) {
+  return Boolean(item.apr_apy?.trim()) && Boolean(item.annual_fee?.trim()) && item.rating > 0;
+}
+
 export function ComparisonEngine({ defaultCategory = 'all', initialProducts = [] }: ComparisonEngineProps) {
-  const [products, setProducts] = useState<FinancialProduct[]>(initialProducts);
+  const [products, setProducts] = useState<FinancialProduct[]>(initialProducts.filter(hasCompleteFinancialData));
   const [category, setCategory] = useState<FinancialCategory | 'all'>(defaultCategory);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<'rating' | 'apr_apy' | 'annual_fee'>('rating');
   const [recommendedOnly, setRecommendedOnly] = useState(false);
   const [noAnnualFeeOnly, setNoAnnualFeeOnly] = useState(false);
   const [loading, setLoading] = useState(initialProducts.length === 0);
+  const [sourceWarning, setSourceWarning] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialProducts.length > 0) return;
 
+    const timeout = setTimeout(() => {
+      setLoading(false);
+      setSourceWarning('We are showing a fallback view because live comparison data took too long to load.');
+    }, LOADING_TIMEOUT_MS);
+
     fetch('/api/products')
       .then((res) => res.json())
-      .then((data) => setProducts(Array.isArray(data) ? data : []))
-      .catch(() => setProducts([]))
-      .finally(() => setLoading(false));
+      .then((data) => {
+        const loadedProducts = (Array.isArray(data) ? data : []).filter(hasCompleteFinancialData);
+        setProducts(loadedProducts);
+        if (loadedProducts.length === 0) {
+          setSourceWarning('Some providers are temporarily unavailable. We only show offers with complete, verified data.');
+        }
+      })
+      .catch(() => {
+        setProducts([]);
+        setSourceWarning('Some providers are temporarily unavailable. We only show offers with complete, verified data.');
+      })
+      .finally(() => {
+        clearTimeout(timeout);
+        setLoading(false);
+      });
+
+    return () => clearTimeout(timeout);
   }, [initialProducts.length]);
 
+  const canFilter = products.length > 0;
+
   const filtered = useMemo(() => {
+    if (!canFilter) {
+      return [];
+    }
+
     const query = search.trim().toLowerCase();
     return [...products]
       .filter((item) => category === 'all' || item.category === category)
@@ -52,7 +84,7 @@ export function ComparisonEngine({ defaultCategory = 'all', initialProducts = []
         if (sortBy === 'annual_fee') return parseAnnualFee(a.annual_fee) - parseAnnualFee(b.annual_fee);
         return extractRate(b.apr_apy) - extractRate(a.apr_apy);
       });
-  }, [category, products, recommendedOnly, noAnnualFeeOnly, search, sortBy]);
+  }, [canFilter, category, products, recommendedOnly, noAnnualFeeOnly, search, sortBy]);
 
   const hasActiveFilters = Boolean(search.trim()) || recommendedOnly || noAnnualFeeOnly;
 
@@ -85,6 +117,10 @@ export function ComparisonEngine({ defaultCategory = 'all', initialProducts = []
         </div>
       </div>
 
+      {sourceWarning ? (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">{sourceWarning}</div>
+      ) : null}
+
       {!loading && (
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
           Showing <strong>{filtered.length}</strong> of <strong>{products.length}</strong> offers. Always review full terms before you apply.
@@ -95,11 +131,11 @@ export function ComparisonEngine({ defaultCategory = 'all', initialProducts = []
 
       {!loading && filtered.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm">
-          <p className="font-medium">No products matched your current filters.</p>
+          <p className="font-medium">No offers match these filters.</p>
           <p className="mt-1 text-slate-600">
             {hasActiveFilters
-              ? 'Try clearing search or one filter to view more options.'
-              : 'Data may be temporarily unavailable. Please refresh or visit the full comparison page.'}
+              ? 'Reset filters to view our default selection, or continue with editor top picks below.'
+              : 'Showing editor top picks while provider data is refreshed.'}
           </p>
           {hasActiveFilters ? (
             <button

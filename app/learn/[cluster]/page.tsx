@@ -178,7 +178,7 @@ export default function ClusterHubPage({ params }: { params: { cluster: string }
         <p className="mt-2 max-w-3xl text-slate-600">{data.description}</p>
       </header>
 
-      <JumpNav links={[{ href: '#start-here', label: 'Start here' }, { href: '#top-guides', label: 'Top guides' }, { href: '#tools', label: 'Tools and comparisons' }, { href: '#faq', label: 'FAQ' }]} />
+      <JumpNav links={[{ href: '#start-here', label: 'Start here' }, { href: '#top-guides', label: 'Top guides' }, { href: '#tools', label: 'Tools and comparisons' }, { href: '#methodology', label: 'Methodology' }, { href: '#faq', label: 'FAQ' }]} />
 
       <TrustBar updatedAt={data.updatedAt} disclaimer="Some links are affiliate links, but rankings and guides follow editorial methodology." methodologyAnchor="/editorial-policy" />
 
@@ -212,6 +212,16 @@ export default function ClusterHubPage({ params }: { params: { cluster: string }
               <li key={item.href}><Link className="font-semibold text-blue-700 hover:underline" href={item.href}>{item.label}</Link></li>
             ))}
           </ul>
+        </div>
+      </section>
+
+      <section id="methodology" className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-2xl font-semibold">Our methodology and disclosures</h2>
+        <p className="mt-2 text-sm text-slate-600">FinanceSphere reviews product categories using fee impact, feature fit, account protections, and usability. Content is educational and does not provide personalized financial advice.</p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/editorial-policy">Editorial standards</Link>
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/how-we-make-money">Affiliate disclosures</Link>
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/help">Help center</Link>
         </div>
       </section>
 

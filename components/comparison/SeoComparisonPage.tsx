@@ -73,12 +73,14 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
 
       <section className="related-links-grid">
         <div>
-          <h2 className="mb-2 text-lg font-semibold">Related calculators</h2>
+          <h2 className="mb-2 text-lg font-semibold">Related tools and guides</h2>
           <ul className="space-y-1 text-sm">
             {relatedCalculators.map((item) => {
               const href = resolveCalculatorHref(item.href);
               return <li key={`${item.label}-${href}`}><Link href={href} className="text-brand hover:underline">{item.label}</Link></li>;
             })}
+            <li><Link href="/learn/investing" className="text-brand hover:underline">Investing hub</Link></li>
+            <li><Link href="/blog/seo-how-much-to-invest-each-month" className="text-brand hover:underline">How much should I invest each month?</Link></li>
           </ul>
         </div>
         <div>
@@ -91,7 +93,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
         </div>
         <div>
           <h2 className="mb-2 text-lg font-semibold">How we review</h2>
-          <p className="text-sm text-slate-600">We score products by fee drag, total value, feature depth, and likely user fit. Ratings are editorial and not personalized advice—review full terms and eligibility before applying.</p>
+          <p className="text-sm text-slate-600">We score products by fee drag, account protection, usability, account types, feature depth, and likely user fit. Ratings are editorial and not personalized advice—review full terms and eligibility before applying.</p>
           <div className="mt-2 flex gap-2 text-xs">
             <Link className="rounded-full border px-2 py-1" href="/editorial-policy">Editorial policy</Link>
             <Link className="rounded-full border px-2 py-1" href="/how-we-make-money">How we make money</Link>
