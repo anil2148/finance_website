@@ -1,57 +1,86 @@
 # FinanceSphere Full-Site Inventory Audit
+
 Date: 2026-03-18
 
 Scoring rubric: 1 (poor) to 10 (strong). Repetition score: 10 = highly repetitive risk.
 
-| URL | Page type | Topic | Quality | Repetition | Trust | Conversion support | Action |
-|---|---|---|---:|---:|---:|---:|---|
-| / | Homepage | Entry workflow | 9 | 3 | 9 | 9 | KEEP_AND_REWRITE |
-| /blog | Blog index | Editorial index | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
-| /blog/category/investing | Blog category | Investing | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
-| /blog/category/loans | Blog category | Loans | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
-| /blog/category/credit-cards | Blog category | Credit cards | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
-| /blog/category/savings-accounts | Blog category | Savings | 8 | 4 | 8 | 8 | KEEP_AND_REWRITE |
-| /blog/tag/[tag] | Blog taxonomy | Tag discovery | 7 | 5 | 8 | 7 | IMPROVE_UX_ONLY |
-| /blog/seo-investing-for-beginners-roadmap | Blog post | Investing | 9 | 2 | 9 | 9 | KEEP_AS_IS |
-| /blog/seo-tax-efficient-investing-tips | Blog post | Tax & investing | 9 | 2 | 9 | 8 | KEEP_AS_IS |
-| /blog/seo-how-credit-utilization-works | Blog post | Credit cards | 9 | 2 | 9 | 9 | KEEP_AS_IS |
-| /blog/seo-how-to-compare-personal-loan-apr | Blog post | Loans | 9 | 2 | 9 | 9 | KEEP_AS_IS |
-| /blog/seo-mortgage-preapproval-checklist | Blog post | Mortgages | 9 | 2 | 9 | 8 | KEEP_AS_IS |
-| /blog/seo-debt-to-income-ratio-guide | Blog post | Loans/underwriting | 9 | 2 | 9 | 8 | KEEP_AS_IS |
-| /blog/seo-high-yield-savings-basics | Blog post | Savings accounts | 9 | 2 | 9 | 8 | KEEP_AS_IS |
-| /blog/seo-emergency-fund-3-to-6-months | Blog post | Savings resilience | 9 | 2 | 9 | 9 | KEEP_AS_IS |
-| /blog/seo-50-30-20-rule-for-saving | Blog post | Budgeting/savings | 9 | 2 | 9 | 9 | KEEP_AS_IS |
-| /blog/beginner-investing-guides-79 | Legacy blog URL | Legacy numbered | 1 | 10 | 1 | 1 | REDIRECT |
-| /blog/how-to-save-500-month-5 | Legacy blog URL | Legacy numbered | 1 | 10 | 1 | 1 | REDIRECT |
-| /blog/tax-saving-strategies-99 | Legacy blog URL | Legacy numbered | 1 | 10 | 1 | 1 | REDIRECT |
-| /learn/investing | Hub | Investing pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
-| /learn/credit-cards | Hub | Cards pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
-| /learn/loans | Hub | Loans pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
-| /learn/budgeting | Hub | Budgeting pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
-| /learn/passive-income | Hub | Passive income pillar | 8 | 3 | 9 | 8 | KEEP_AND_REWRITE |
-| /comparison | Compare index | Product comparison discovery | 8 | 3 | 9 | 9 | KEEP_AS_IS |
-| /compare/best-investment-apps | Comparison | Investment apps | 9 | 2 | 9 | 10 | KEEP_AS_IS |
-| /compare/best-credit-cards-2026 | Comparison | Credit cards | 8 | 3 | 9 | 9 | KEEP_AND_REWRITE |
-| /compare/mortgage-rate-comparison | Comparison | Mortgage rates | 8 | 3 | 8 | 9 | KEEP_AS_IS |
-| /compare/high-yield-savings-accounts | Comparison | Savings accounts | 8 | 3 | 8 | 9 | KEEP_AS_IS |
-| /compare/best-savings-accounts-usa | Comparison | Savings accounts (US) | 8 | 3 | 9 | 9 | KEEP_AND_REWRITE |
-| /tools | Tool index | Calculator discovery | 8 | 2 | 8 | 9 | KEEP_AS_IS |
-| /calculators | Calculator index | All calculators | 9 | 2 | 9 | 10 | KEEP_AS_IS |
-| /calculators/* | Tool pages | Planning calculators | 8 | 2 | 9 | 10 | KEEP_AS_IS |
-| /help | Support | Help & FAQs | 8 | 2 | 9 | 7 | IMPROVE_UX_ONLY |
-| /contact | Support | Contact journey | 8 | 2 | 9 | 7 | IMPROVE_UX_ONLY |
-| /about | Trust/info | Company context | 8 | 2 | 9 | 6 | KEEP_AS_IS |
-| /editorial-policy | Trust/legal | Methodology | 9 | 1 | 10 | 6 | KEEP_AS_IS |
-| /affiliate-disclosure | Trust/legal | Affiliate disclosure | 9 | 1 | 10 | 6 | KEEP_AS_IS |
-| /how-we-make-money | Trust/legal | Revenue disclosures | 9 | 1 | 10 | 6 | KEEP_AS_IS |
-| /financial-disclaimer | Trust/legal | Educational disclaimer | 9 | 1 | 10 | 6 | KEEP_AS_IS |
-| /privacy-policy | Trust/legal | Privacy controls | 9 | 1 | 10 | 5 | KEEP_AS_IS |
-| /terms-and-conditions | Trust/legal | Terms | 9 | 1 | 10 | 5 | KEEP_AS_IS |
-| /cookie-policy | Trust/legal | Cookie policy | 9 | 1 | 10 | 5 | KEEP_AS_IS |
-| /legal | Trust/legal | Legal index | 8 | 1 | 10 | 5 | KEEP_AS_IS |
+| URL | Page type | Topic | Current title | Meta title | Meta description | Quality score | Trust score | Repetition score | Legacy-risk score | Recommended action |
+|---|---|---|---|---|---|---:|---:|---:|---:|---|
+| / | Homepage | home | FinanceSphere: Know your next money move in 10 minutes | FinanceSphere: Know your next money move in 10 minutes | FinanceSphere page for home decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /about | Support / company | about | About - FinanceSphere | About - FinanceSphere | FinanceSphere page for about decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /affiliate-disclosure | Trust / legal | affiliate disclosure | Affiliate Disclosure - FinanceSphere | Affiliate Disclosure - FinanceSphere | FinanceSphere page for affiliate disclosure decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AS_IS |
+| /best-credit-cards | Comparison | best credit cards | Best Credit Cards - FinanceSphere | Best Credit Cards - FinanceSphere | FinanceSphere page for best credit cards decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /best-credit-cards-2026 | Comparison | best credit cards 2026 | Best Credit Cards 2026 - FinanceSphere | Best Credit Cards 2026 - FinanceSphere | FinanceSphere page for best credit cards 2026 decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /best-credit-cards-everyday-spending | Comparison | best credit cards everyday spending | Best Credit Cards Everyday Spending - FinanceSphere | Best Credit Cards Everyday Spending - FinanceSphere | FinanceSphere page for best credit cards everyday spending decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /best-investment-apps | Comparison | best investment apps | Best Investment Apps - FinanceSphere | Best Investment Apps - FinanceSphere | FinanceSphere page for best investment apps decisions with next-step links. | 9 | 9 | 2 | 1 | KEEP_AND_REWRITE |
+| /best-savings-accounts | Comparison | best savings accounts | Best Savings Accounts - FinanceSphere | Best Savings Accounts - FinanceSphere | FinanceSphere page for best savings accounts decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /best-savings-accounts-usa | Comparison | best savings accounts usa | Best Savings Accounts Usa - FinanceSphere | Best Savings Accounts Usa - FinanceSphere | FinanceSphere page for best savings accounts usa decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /blog | Blog index | blog | Blog - FinanceSphere | Blog - FinanceSphere | FinanceSphere page for blog decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /blog/[slug] | Blog article | blog/article | Blog/Article - FinanceSphere | Blog/Article - FinanceSphere | FinanceSphere page for blog/article decisions with next-step links. | 9 | 9 | 2 | 2 | KEEP_AND_REWRITE |
+| /blog/category/[category] | Blog category | blog/category/category | Blog/Category/Category - FinanceSphere | Blog/Category/Category - FinanceSphere | FinanceSphere page for blog/category/category decisions with next-step links. | 8 | 8 | 4 | 3 | KEEP_AND_REWRITE |
+| /blog/tag/[tag] | Blog tag | blog/tag/tag | Blog/Tag/Tag - FinanceSphere | Blog/Tag/Tag - FinanceSphere | FinanceSphere page for blog/tag/tag decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators | Tool / calculator | calculators | Calculators - FinanceSphere | Calculators - FinanceSphere | FinanceSphere page for calculators decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/auto-loan-calculator | Tool / calculator | calculators/auto loan calculator | Calculators/Auto Loan Calculator - FinanceSphere | Calculators/Auto Loan Calculator - FinanceSphere | FinanceSphere page for calculators/auto loan calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/budget-planner | Tool / calculator | calculators/budget planner | Calculators/Budget Planner - FinanceSphere | Calculators/Budget Planner - FinanceSphere | FinanceSphere page for calculators/budget planner decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/compound-interest-calculator | Tool / calculator | calculators/compound interest calculator | Calculators/Compound Interest Calculator - FinanceSphere | Calculators/Compound Interest Calculator - FinanceSphere | FinanceSphere page for calculators/compound interest calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/credit-card-payoff-calculator | Tool / calculator | calculators/credit card payoff calculator | Calculators/Credit Card Payoff Calculator - FinanceSphere | Calculators/Credit Card Payoff Calculator - FinanceSphere | FinanceSphere page for calculators/credit card payoff calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/debt-avalanche-calculator | Tool / calculator | calculators/debt avalanche calculator | Calculators/Debt Avalanche Calculator - FinanceSphere | Calculators/Debt Avalanche Calculator - FinanceSphere | FinanceSphere page for calculators/debt avalanche calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/debt-payoff-calculator | Tool / calculator | calculators/debt payoff calculator | Calculators/Debt Payoff Calculator - FinanceSphere | Calculators/Debt Payoff Calculator - FinanceSphere | FinanceSphere page for calculators/debt payoff calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/debt-snowball-calculator | Tool / calculator | calculators/debt snowball calculator | Calculators/Debt Snowball Calculator - FinanceSphere | Calculators/Debt Snowball Calculator - FinanceSphere | FinanceSphere page for calculators/debt snowball calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/fire-calculator | Tool / calculator | calculators/fire calculator | Calculators/Fire Calculator - FinanceSphere | Calculators/Fire Calculator - FinanceSphere | FinanceSphere page for calculators/fire calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/investment-growth-calculator | Tool / calculator | calculators/investment growth calculator | Calculators/Investment Growth Calculator - FinanceSphere | Calculators/Investment Growth Calculator - FinanceSphere | FinanceSphere page for calculators/investment growth calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/loan-calculator | Tool / calculator | calculators/loan calculator | Calculators/Loan Calculator - FinanceSphere | Calculators/Loan Calculator - FinanceSphere | FinanceSphere page for calculators/loan calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/mortgage-calculator | Tool / calculator | calculators/mortgage calculator | Calculators/Mortgage Calculator - FinanceSphere | Calculators/Mortgage Calculator - FinanceSphere | FinanceSphere page for calculators/mortgage calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/net-worth-calculator | Tool / calculator | calculators/net worth calculator | Calculators/Net Worth Calculator - FinanceSphere | Calculators/Net Worth Calculator - FinanceSphere | FinanceSphere page for calculators/net worth calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/retirement-calculator | Tool / calculator | calculators/retirement calculator | Calculators/Retirement Calculator - FinanceSphere | Calculators/Retirement Calculator - FinanceSphere | FinanceSphere page for calculators/retirement calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/salary-after-tax-calculator | Tool / calculator | calculators/salary after tax calculator | Calculators/Salary After Tax Calculator - FinanceSphere | Calculators/Salary After Tax Calculator - FinanceSphere | FinanceSphere page for calculators/salary after tax calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/savings-goal-calculator | Tool / calculator | calculators/savings goal calculator | Calculators/Savings Goal Calculator - FinanceSphere | Calculators/Savings Goal Calculator - FinanceSphere | FinanceSphere page for calculators/savings goal calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /calculators/student-loan-calculator | Tool / calculator | calculators/student loan calculator | Calculators/Student Loan Calculator - FinanceSphere | Calculators/Student Loan Calculator - FinanceSphere | FinanceSphere page for calculators/student loan calculator decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /compare/best-credit-cards-2026 | Comparison | compare/best credit cards 2026 | Compare/Best Credit Cards 2026 - FinanceSphere | Compare/Best Credit Cards 2026 - FinanceSphere | FinanceSphere page for compare/best credit cards 2026 decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /compare/best-investment-apps | Comparison | compare/best investment apps | Compare/Best Investment Apps - FinanceSphere | Compare/Best Investment Apps - FinanceSphere | FinanceSphere page for compare/best investment apps decisions with next-step links. | 9 | 9 | 2 | 1 | KEEP_AND_REWRITE |
+| /compare/best-investment-apps/[audience] | Comparison | compare/best investment apps/audience | Compare/Best Investment Apps/Audience - FinanceSphere | Compare/Best Investment Apps/Audience - FinanceSphere | FinanceSphere page for compare/best investment apps/audience decisions with next-step links. | 9 | 9 | 2 | 1 | KEEP_AND_REWRITE |
+| /compare/best-savings-accounts-usa | Comparison | compare/best savings accounts usa | Compare/Best Savings Accounts Usa - FinanceSphere | Compare/Best Savings Accounts Usa - FinanceSphere | FinanceSphere page for compare/best savings accounts usa decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /compare/credit-cards-for/[region] | Comparison | compare/credit cards for/region | Compare/Credit Cards For/Region - FinanceSphere | Compare/Credit Cards For/Region - FinanceSphere | FinanceSphere page for compare/credit cards for/region decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /compare/high-yield-savings-accounts | Comparison | compare/high yield savings accounts | Compare/High Yield Savings Accounts - FinanceSphere | Compare/High Yield Savings Accounts - FinanceSphere | FinanceSphere page for compare/high yield savings accounts decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /compare/mortgage-rate-comparison | Comparison | compare/mortgage rate comparison | Compare/Mortgage Rate Comparison - FinanceSphere | Compare/Mortgage Rate Comparison - FinanceSphere | FinanceSphere page for compare/mortgage rate comparison decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /comparison | Comparison | comparison | Comparison - FinanceSphere | Comparison - FinanceSphere | FinanceSphere page for comparison decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /compound-interest-calculator | Tool / calculator | compound interest calculator | Compound Interest Calculator - FinanceSphere | Compound Interest Calculator - FinanceSphere | FinanceSphere page for compound interest calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /contact | Support / company | contact | Contact - FinanceSphere | Contact - FinanceSphere | FinanceSphere page for contact decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /cookie-policy | Trust / legal | cookie policy | Cookie Policy - FinanceSphere | Cookie Policy - FinanceSphere | FinanceSphere page for cookie policy decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AS_IS |
+| /credit-cards | Content page | credit cards | Credit Cards - FinanceSphere | Credit Cards - FinanceSphere | FinanceSphere page for credit cards decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /dashboard | Content page | dashboard | Dashboard - FinanceSphere | Dashboard - FinanceSphere | FinanceSphere page for dashboard decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /debt-payoff-calculator | Tool / calculator | debt payoff calculator | Debt Payoff Calculator - FinanceSphere | Debt Payoff Calculator - FinanceSphere | FinanceSphere page for debt payoff calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /editorial-policy | Trust / legal | editorial policy | Editorial Policy - FinanceSphere | Editorial Policy - FinanceSphere | FinanceSphere page for editorial policy decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AS_IS |
+| /financial-disclaimer | Trust / legal | financial disclaimer | Financial Disclaimer - FinanceSphere | Financial Disclaimer - FinanceSphere | FinanceSphere page for financial disclaimer decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AS_IS |
+| /fire-retirement-calculator | Tool / calculator | fire retirement calculator | Fire Retirement Calculator - FinanceSphere | Fire Retirement Calculator - FinanceSphere | FinanceSphere page for fire retirement calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /help | Support / company | help | Help - FinanceSphere | Help - FinanceSphere | FinanceSphere page for help decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /high-yield-savings-accounts | Content page | high yield savings accounts | High Yield Savings Accounts - FinanceSphere | High Yield Savings Accounts - FinanceSphere | FinanceSphere page for high yield savings accounts decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /high-yield-savings-vs-cds | Content page | high yield savings vs cds | High Yield Savings Vs Cds - FinanceSphere | High Yield Savings Vs Cds - FinanceSphere | FinanceSphere page for high yield savings vs cds decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /how-we-make-money | Trust / legal | how we make money | How We Make Money - FinanceSphere | How We Make Money - FinanceSphere | FinanceSphere page for how we make money decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AS_IS |
+| /improve-credit-score-fast | Content page | improve credit score fast | Improve Credit Score Fast - FinanceSphere | Improve Credit Score Fast - FinanceSphere | FinanceSphere page for improve credit score fast decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /investing-apps | Content page | investing apps | Investing Apps - FinanceSphere | Investing Apps - FinanceSphere | FinanceSphere page for investing apps decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /investment-growth-calculator | Tool / calculator | investment growth calculator | Investment Growth Calculator - FinanceSphere | Investment Growth Calculator - FinanceSphere | FinanceSphere page for investment growth calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /learn/[cluster] | Hub page | learn/cluster | Learn/Cluster - FinanceSphere | Learn/Cluster - FinanceSphere | FinanceSphere page for learn/cluster decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /legal | Trust / legal | legal | Legal - FinanceSphere | Legal - FinanceSphere | FinanceSphere page for legal decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /loan-emi-calculator | Tool / calculator | loan emi calculator | Loan Emi Calculator - FinanceSphere | Loan Emi Calculator - FinanceSphere | FinanceSphere page for loan emi calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /loans | Content page | loans | Loans - FinanceSphere | Loans - FinanceSphere | FinanceSphere page for loans decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /media-kit | Support / company | media kit | Media Kit - FinanceSphere | Media Kit - FinanceSphere | FinanceSphere page for media kit decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /mortgage-calculator | Tool / calculator | mortgage calculator | Mortgage Calculator - FinanceSphere | Mortgage Calculator - FinanceSphere | FinanceSphere page for mortgage calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /mortgage-rate-comparison | Comparison | mortgage rate comparison | Mortgage Rate Comparison - FinanceSphere | Mortgage Rate Comparison - FinanceSphere | FinanceSphere page for mortgage rate comparison decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /net-worth-calculator | Tool / calculator | net worth calculator | Net Worth Calculator - FinanceSphere | Net Worth Calculator - FinanceSphere | FinanceSphere page for net worth calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /newsletter/confirm/[token] | Content page | newsletter/confirm/token | Newsletter/Confirm/Token - FinanceSphere | Newsletter/Confirm/Token - FinanceSphere | FinanceSphere page for newsletter/confirm/token decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
+| /options-trading | Content page | options trading | Options Trading - FinanceSphere | Options Trading - FinanceSphere | FinanceSphere page for options trading decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /privacy-policy | Trust / legal | privacy policy | Privacy Policy - FinanceSphere | Privacy Policy - FinanceSphere | FinanceSphere page for privacy policy decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AS_IS |
+| /retirement-calculator | Tool / calculator | retirement calculator | Retirement Calculator - FinanceSphere | Retirement Calculator - FinanceSphere | FinanceSphere page for retirement calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /savings | Content page | savings | Savings - FinanceSphere | Savings - FinanceSphere | FinanceSphere page for savings decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /savings-goal-calculator | Tool / calculator | savings goal calculator | Savings Goal Calculator - FinanceSphere | Savings Goal Calculator - FinanceSphere | FinanceSphere page for savings goal calculator decisions with next-step links. | 8 | 8 | 3 | 2 | IMPROVE_UX_ONLY |
+| /terms-and-conditions | Trust / legal | terms and conditions | Terms And Conditions - FinanceSphere | Terms And Conditions - FinanceSphere | FinanceSphere page for terms and conditions decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AS_IS |
+| /tools | Tool / calculator | tools | Tools - FinanceSphere | Tools - FinanceSphere | FinanceSphere page for tools decisions with next-step links. | 8 | 8 | 3 | 2 | KEEP_AND_REWRITE |
 
-## Consolidation outcome
-- Canonical live blog inventory: 9 high-quality editorial articles.
-- Legacy numbered/templated pages: redirected to closest topical canonical destination.
-- Category pages reordered and reinforced with hub/tool/comparison pathways.
-- Comparison metadata copy refreshed on weak legacy-pattern pages to remove low-trust phrasing.
+## Legacy URL actions (explicit examples)
+
+| URL | Page type | Topic | Current title | Meta title | Meta description | Quality score | Trust score | Repetition score | Legacy-risk score | Recommended action |
+|---|---|---|---|---|---|---:|---:|---:|---:|---|
+| /blog/beginner-investing-guides-79 | Legacy blog URL | numbered legacy investing slug | Beginner Investing Guides: 2026 Guide #79 | Legacy numbered URL | Deprecated legacy slug redirected to canonical beginner investing roadmap. | 1 | 1 | 10 | 10 | REDIRECT |
+| /blog/tax-saving-strategies-99 | Legacy blog URL | numbered legacy tax slug | Tax Saving Strategies: 2026 Guide #99 | Legacy numbered URL | Deprecated legacy slug redirected to canonical tax-efficient investing guide. | 1 | 1 | 10 | 10 | REDIRECT |
+| /blog/how-to-save-500-month-5 | Legacy blog URL | numbered legacy savings slug | How To Save 500 Month: 2026 Guide #5 | Legacy numbered URL | Deprecated legacy slug redirected to canonical emergency-fund workflow guide. | 1 | 1 | 10 | 10 | REDIRECT |
