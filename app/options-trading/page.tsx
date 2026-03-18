@@ -286,9 +286,9 @@ export default function OptionsTradingPillarPage() {
           <li>Compare brokers for education quality, risk controls, and total fees.</li>
         </ol>
         <div className="flex flex-wrap gap-2 text-sm">
-          <Link href="/blog/seo-investing-for-beginners-roadmap" className="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-100">Investing roadmap</Link>
-          <Link href="/blog/seo-common-investing-mistakes" className="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-100">Avoid common mistakes</Link>
-          <Link href="/blog/seo-investing-during-volatility" className="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-100">Volatility playbook</Link>
+          <Link href="/blog/beginner-investing-roadmap-year-one" className="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-100">Investing roadmap</Link>
+          <Link href="/blog/tax-efficient-investing-account-location-playbook" className="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-100">Avoid common mistakes</Link>
+          <Link href="/blog/beginner-investing-roadmap-year-one" className="rounded-full border border-slate-300 px-3 py-1 hover:bg-slate-100">Volatility playbook</Link>
         </div>
       </section>
 
@@ -326,7 +326,7 @@ export default function OptionsTradingPillarPage() {
               tag: 'Calculator'
             },
             {
-              href: '/blog/seo-brokerage-account-checklist',
+              href: '/blog/beginner-investing-roadmap-year-one',
               title: 'Brokerage Account Checklist',
               description: 'Evaluate setup decisions, permissions, and fee disclosures.',
               tag: 'Guide'

@@ -89,7 +89,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         calculator: { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
         comparison: { label: 'Credit card comparisons', href: '/comparison?category=credit_card' },
         hub: { label: 'Credit cards hub', href: '/learn/credit-cards' },
-        related: { label: 'How credit utilization works', href: '/blog/seo-how-credit-utilization-works' }
+        related: { label: 'How credit utilization works', href: '/blog/credit-utilization-statement-cycle-playbook' }
       },
       titleTemplates: [
         '%TOPIC%: How to Compare Offers Without Overpaying',
@@ -113,7 +113,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         calculator: { label: 'Loan Calculator', href: '/calculators/loan-calculator' },
         comparison: { label: 'Personal loan comparisons', href: '/comparison?category=personal_loan' },
         hub: { label: 'Loans hub', href: '/learn/loans' },
-        related: { label: 'Debt-to-income ratio guide', href: '/blog/seo-debt-to-income-ratio-guide' }
+        related: { label: 'Debt-to-income ratio guide', href: '/blog/debt-to-income-ratio-90-day-plan' }
       },
       titleTemplates: [
         '%TOPIC%: Cost, Approval, and Timeline Checklist',
@@ -137,7 +137,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         calculator: { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
         comparison: { label: 'Best investment apps', href: '/best-investment-apps' },
         hub: { label: 'Investing hub', href: '/learn/investing' },
-        related: { label: 'Dollar-cost averaging guide', href: '/blog/seo-investing-for-beginners-roadmap' }
+        related: { label: 'Dollar-cost averaging guide', href: '/blog/beginner-investing-roadmap-year-one' }
       },
       titleTemplates: [
         '%TOPIC%: Risk, Fees, and Allocation Choices That Matter',
@@ -161,7 +161,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         calculator: { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
         comparison: { label: 'Investment account comparisons', href: '/comparison?category=investment_app' },
         hub: { label: 'Investing hub', href: '/learn/investing' },
-        related: { label: 'Roth vs Traditional IRA', href: '/blog/seo-tax-efficient-investing-tips' }
+        related: { label: 'Roth vs Traditional IRA', href: '/blog/tax-efficient-investing-account-location-playbook' }
       },
       titleTemplates: [
         '%TOPIC%: Account Choices That Keep More of Your Return',
@@ -185,7 +185,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         calculator: { label: 'Budget Planner', href: '/calculators/budget-planner' },
         comparison: { label: 'Best savings accounts', href: '/best-savings-accounts-usa' },
         hub: { label: 'Budgeting hub', href: '/learn/budgeting' },
-        related: { label: 'Emergency fund guide', href: '/blog/seo-emergency-fund-3-to-6-months' }
+        related: { label: 'Emergency fund guide', href: '/blog/emergency-fund-target-by-recovery-time' }
       },
       titleTemplates: [
         '%TOPIC%: A Monthly System That Actually Works',
@@ -207,7 +207,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
       calculator: { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
       comparison: { label: 'Best savings accounts', href: '/best-savings-accounts-usa' },
       hub: { label: 'Budgeting hub', href: '/learn/budgeting' },
-      related: { label: 'Automate your savings plan', href: '/blog/seo-emergency-fund-3-to-6-months' }
+      related: { label: 'Automate your savings plan', href: '/blog/emergency-fund-target-by-recovery-time' }
     },
     titleTemplates: ['%TOPIC%: Clear Priorities and Smart Next Steps'],
     descriptionTemplates: ['Get practical %TOPIC_LOWER% guidance with examples, tradeoffs, and next-step tools.']

@@ -2,17 +2,17 @@
 
 | URL | Current title | Primary topic | Estimated search intent | Content quality (1-10) | Repetition (1-10) | Trust (1-10) | Visual quality (1-10) | Internal linking (1-10) | Recommended action | Canonical destination |
 |---|---|---|---|---:|---:|---:|---:|---:|---|---|
-| /blog/beginner-investing-guides-16 | Beginner Investing Guides: 2026 Guide #16 for Side Hustlers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-25 | Beginner Investing Guides: 2026 Guide #25 for Busy Parents | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-34 | Beginner Investing Guides: 2026 Guide #34 for Freelancers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-43 | Beginner Investing Guides: 2026 Guide #43 for Late Starters | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-52 | Beginner Investing Guides: 2026 Guide #52 for Military Families | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-61 | Beginner Investing Guides: 2026 Guide #61 for First-Gen Wealth Builders | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-7 | Beginner Investing Guides: 2026 Guide #7 for College Grads | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-70 | Beginner Investing Guides: 2026 Guide #70 for Career Changers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-79 | Beginner Investing Guides: 2026 Guide #79 for High Earners | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-88 | Beginner Investing Guides: 2026 Guide #88 for Women Investors | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/beginner-investing-guides-97 | Beginner Investing Guides: 2026 Guide #97 for Gig Workers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
+| /blog/beginner-investing-guides-16 | Beginner Investing Guides: 2026 Guide #16 for Side Hustlers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-25 | Beginner Investing Guides: 2026 Guide #25 for Busy Parents | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-34 | Beginner Investing Guides: 2026 Guide #34 for Freelancers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-43 | Beginner Investing Guides: 2026 Guide #43 for Late Starters | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-52 | Beginner Investing Guides: 2026 Guide #52 for Military Families | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-61 | Beginner Investing Guides: 2026 Guide #61 for First-Gen Wealth Builders | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-7 | Beginner Investing Guides: 2026 Guide #7 for College Grads | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-70 | Beginner Investing Guides: 2026 Guide #70 for Career Changers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-79 | Beginner Investing Guides: 2026 Guide #79 for High Earners | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-88 | Beginner Investing Guides: 2026 Guide #88 for Women Investors | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-guides-97 | Beginner Investing Guides: 2026 Guide #97 for Gig Workers | beginner | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
 | /blog/best-cashback-credit-cards-1 | Best Cashback Credit Cards for Beginners (2026) | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
 | /blog/best-cashback-credit-cards-10 | Best Cashback Credit Cards for Families (2026) | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
 | /blog/best-cashback-credit-cards-100 | Best Cashback Credit Cards Overall (2026) | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
@@ -25,28 +25,28 @@
 | /blog/best-cashback-credit-cards-73 | Best Cashback Credit Cards for Fair Credit (2026) | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
 | /blog/best-cashback-credit-cards-82 | Best Premium Cashback Credit Cards (2026) | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
 | /blog/best-cashback-credit-cards-91 | Best 0% Intro APR + Cashback Cards (2026) | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
-| /blog/best-investment-apps-15 | Best Investment Apps for Active Traders: 2026 Guide #15 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/best-investment-apps-24 | Best Investment Apps for Hands-Off Investors: 2026 Guide #24 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
+| /blog/best-investment-apps-15 | Best Investment Apps for Active Traders: 2026 Guide #15 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/best-investment-apps-24 | Best Investment Apps for Hands-Off Investors: 2026 Guide #24 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
 | /blog/best-investment-apps-33 | Best Investment Apps for Retirement Accounts: 2026 Guide #33 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-retirement-accounts-101 |
-| /blog/best-investment-apps-42 | Best Investment Apps for Fractional Shares: 2026 Guide #42 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/best-investment-apps-51 | Best Investment Apps for Students: 2026 Guide #51 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/best-investment-apps-6 | Best Investment Apps for Beginners: 2026 Guide #6 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/best-investment-apps-60 | Best Investment Apps for DIY Investors: 2026 Guide #60 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
+| /blog/best-investment-apps-42 | Best Investment Apps for Fractional Shares: 2026 Guide #42 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/best-investment-apps-51 | Best Investment Apps for Students: 2026 Guide #51 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/best-investment-apps-6 | Best Investment Apps for Beginners: 2026 Guide #6 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/best-investment-apps-60 | Best Investment Apps for DIY Investors: 2026 Guide #60 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
 | /blog/best-investment-apps-69 | Best Investment Apps for Roth IRA Beginners: 2026 Guide #69 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-roth-vs-traditional-ira |
-| /blog/best-investment-apps-78 | Best Investment Apps for Automatic Investing: 2026 Guide #78 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/best-investment-apps-87 | Best Investment Apps for Fractional Shares: 2026 Guide #87 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/best-investment-apps-96 | Best Investment Apps: 2026 Guide #96 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/best-savings-accounts-12 | Best Savings Accounts: 2026 Guide #12 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-21 | Best Savings Accounts: 2026 Guide #21 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-3 | Best Savings Accounts: 2026 Guide #3 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-30 | Best Savings Accounts: 2026 Guide #30 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-39 | Best Savings Accounts: 2026 Guide #39 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-48 | Best Savings Accounts: 2026 Guide #48 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-57 | Best Savings Accounts: 2026 Guide #57 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-66 | Best Savings Accounts: 2026 Guide #66 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-75 | Best Savings Accounts: 2026 Guide #75 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-84 | Best Savings Accounts: 2026 Guide #84 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
-| /blog/best-savings-accounts-93 | Best Savings Accounts: 2026 Guide #93 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-high-yield-savings-basics |
+| /blog/best-investment-apps-78 | Best Investment Apps for Automatic Investing: 2026 Guide #78 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/best-investment-apps-87 | Best Investment Apps for Fractional Shares: 2026 Guide #87 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/best-investment-apps-96 | Best Investment Apps: 2026 Guide #96 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/best-savings-accounts-12 | Best Savings Accounts: 2026 Guide #12 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-21 | Best Savings Accounts: 2026 Guide #21 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-3 | Best Savings Accounts: 2026 Guide #3 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-30 | Best Savings Accounts: 2026 Guide #30 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-39 | Best Savings Accounts: 2026 Guide #39 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-48 | Best Savings Accounts: 2026 Guide #48 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-57 | Best Savings Accounts: 2026 Guide #57 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-66 | Best Savings Accounts: 2026 Guide #66 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-75 | Best Savings Accounts: 2026 Guide #75 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-84 | Best Savings Accounts: 2026 Guide #84 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/best-savings-accounts-93 | Best Savings Accounts: 2026 Guide #93 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/how-to-choose-a-high-yield-savings-account |
 | /blog/best-travel-credit-cards-11 | Best Travel Credit Cards: 2026 Guide #11 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
 | /blog/best-travel-credit-cards-2 | Best Travel Credit Cards: 2026 Guide #2 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
 | /blog/best-travel-credit-cards-20 | Best Travel Credit Cards: 2026 Guide #20 | best | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-best-first-credit-card |
@@ -92,7 +92,7 @@
 | /blog/budgeting-guide-293 | Budgeting: Practical 2026 Guide #293 | budgeting | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/budgeting-guide-300 | Budgeting: Practical 2026 Guide #300 | budgeting | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/budgeting-guide-307 | Budgeting: Practical 2026 Guide #307 | budgeting | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
-| /blog/budgeting-guide-314 | Zero-Based Budgeting for Real Life (2026 Playbook) | budgeting | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-50-30-20-rule-for-saving |
+| /blog/budgeting-guide-314 | Zero-Based Budgeting for Real Life (2026 Playbook) | budgeting | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/flex-budget-reset-rules |
 | /blog/budgeting-guide-321 | Budgeting: Practical 2026 Guide #321 | budgeting | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/budgeting-guide-328 | Budgeting: Practical 2026 Guide #328 | budgeting | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/budgeting-guide-335 | Budgeting: Practical 2026 Guide #335 | budgeting | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
@@ -509,17 +509,17 @@
 | /blog/investing-guide-984 | Investing: Practical 2026 Guide #984 | investing | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/investing-guide-991 | Investing: Practical 2026 Guide #991 | investing | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/investing-guide-998 | Investing: Practical 2026 Guide #998 | investing | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
-| /blog/mortgage-tips-17 | Mortgage Tips: 2026 Guide #17 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-26 | Mortgage Tips: 2026 Guide #26 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-35 | Mortgage Tips: 2026 Guide #35 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-44 | Mortgage Tips: 2026 Guide #44 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-53 | Mortgage Tips: 2026 Guide #53 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-62 | Mortgage Tips: 2026 Guide #62 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-71 | Mortgage Tips: 2026 Guide #71 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-8 | Mortgage Tips: 2026 Guide #8 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-80 | Mortgage Tips: 2026 Guide #80 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-89 | Mortgage Tips: 2026 Guide #89 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/mortgage-tips-98 | Mortgage Tips: 2026 Guide #98 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
+| /blog/mortgage-tips-17 | Mortgage Tips: 2026 Guide #17 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-26 | Mortgage Tips: 2026 Guide #26 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-35 | Mortgage Tips: 2026 Guide #35 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-44 | Mortgage Tips: 2026 Guide #44 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-53 | Mortgage Tips: 2026 Guide #53 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-62 | Mortgage Tips: 2026 Guide #62 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-71 | Mortgage Tips: 2026 Guide #71 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-8 | Mortgage Tips: 2026 Guide #8 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-80 | Mortgage Tips: 2026 Guide #80 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-89 | Mortgage Tips: 2026 Guide #89 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/mortgage-tips-98 | Mortgage Tips: 2026 Guide #98 | mortgage | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
 | /blog/mortgages-guide-10 | Mortgages: Practical 2026 Guide #10 | mortgages | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/mortgages-guide-101 | Mortgages: Practical 2026 Guide #101 | mortgages | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/mortgages-guide-108 | Mortgages: Practical 2026 Guide #108 | mortgages | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
@@ -950,106 +950,106 @@
 | /blog/saving-money-guide-989 | Saving Money: Practical 2026 Guide #989 | saving-money | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/saving-money-guide-996 | Saving Money: Practical 2026 Guide #996 | saving-money | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/seo-0-apr-offers-explained | 0 Apr Offers Explained: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
-| /blog/seo-50-30-20-rule-for-saving | 50 30 20 Rule For Saving: Complete Guide (2026) | savings-accounts | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-asset-allocation-by-risk | Asset Allocation By Risk: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
+| /blog/flex-budget-reset-rules | 50 30 20 Rule For Saving: Complete Guide (2026) | savings-accounts | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-asset-allocation-by-risk | Asset Allocation By Risk: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
 | /blog/seo-authorized-user-strategy | Authorized User Strategy: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
-| /blog/seo-auto-loan-term-length | Auto Loan Term Length: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-automate-your-savings-plan | Automate Your Savings Plan: Complete Guide (2026) | savings-accounts | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-50-30-20-rule-for-saving |
-| /blog/seo-avoid-credit-card-interest | Avoid Credit Card Interest: Complete Guide (2026) | credit-cards | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-how-credit-utilization-works |
-| /blog/seo-avoid-emotional-investing | Avoid Emotional Investing: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-bad-credit-loan-alternatives | Bad Credit Loan Alternatives: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-credit-utilization-works |
-| /blog/seo-balance-transfer-strategy | Balance Transfer Strategy: Complete Guide (2026) | credit-cards | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-how-credit-utilization-works |
+| /blog/seo-auto-loan-term-length | Auto Loan Term Length: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-automate-your-savings-plan | Automate Your Savings Plan: Complete Guide (2026) | savings-accounts | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/flex-budget-reset-rules |
+| /blog/seo-avoid-credit-card-interest | Avoid Credit Card Interest: Complete Guide (2026) | credit-cards | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/credit-utilization-statement-cycle-playbook |
+| /blog/seo-avoid-emotional-investing | Avoid Emotional Investing: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-bad-credit-loan-alternatives | Bad Credit Loan Alternatives: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/credit-utilization-statement-cycle-playbook |
+| /blog/seo-balance-transfer-strategy | Balance Transfer Strategy: Complete Guide (2026) | credit-cards | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/credit-utilization-statement-cycle-playbook |
 | /blog/seo-best-cards-for-dining | Best Cards For Dining: Complete Guide (2026) | credit-cards | Commercial investigation | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
 | /blog/seo-best-cards-for-gas | Best Cards For Gas: Complete Guide (2026) | credit-cards | Commercial investigation | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
 | /blog/seo-best-cards-for-groceries | Best Cards For Groceries: Complete Guide (2026) | credit-cards | Commercial investigation | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
-| /blog/seo-best-first-credit-card | Best First Credit Card: Complete Guide (2026) | credit-cards | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-how-credit-utilization-works |
-| /blog/seo-best-savings-goals-by-age | Best Savings Goals By Age: Complete Guide (2026) | savings-accounts | Commercial investigation | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-bond-investing-explained | Bond Investing Explained: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-bridge-loans-explained | Bridge Loans Explained: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-brokerage-account-checklist | Brokerage Account Checklist: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-building-passive-income-portfolio | Building Passive Income Portfolio: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
+| /blog/seo-best-first-credit-card | Best First Credit Card: Complete Guide (2026) | credit-cards | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/credit-utilization-statement-cycle-playbook |
+| /blog/seo-best-savings-goals-by-age | Best Savings Goals By Age: Complete Guide (2026) | savings-accounts | Commercial investigation | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-bond-investing-explained | Bond Investing Explained: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-bridge-loans-explained | Bridge Loans Explained: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-brokerage-account-checklist | Brokerage Account Checklist: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-building-passive-income-portfolio | Building Passive Income Portfolio: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
 | /blog/seo-business-credit-cards-startups | Business Credit Cards Startups: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
-| /blog/seo-buy-now-pay-later-vs-loans | Buy Now Pay Later Vs Loans: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
+| /blog/seo-buy-now-pay-later-vs-loans | Buy Now Pay Later Vs Loans: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
 | /blog/seo-card-benefits-you-should-use | Card Benefits You Should Use: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
 | /blog/seo-cash-back-vs-travel-rewards | Cash Back Vs Travel Rewards: Complete Guide (2026) | credit-cards | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
-| /blog/seo-cd-vs-savings-account | Cd Vs Savings Account: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-high-yield-savings-basics |
+| /blog/seo-cd-vs-savings-account | Cd Vs Savings Account: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/how-to-choose-a-high-yield-savings-account |
 | /blog/seo-co-branded-credit-cards-explained | Co Branded Credit Cards Explained: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
-| /blog/seo-co-signer-risks-and-benefits | Co Signer Risks And Benefits: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-common-investing-mistakes | Common Investing Mistakes: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-common-loan-mistakes | Common Loan Mistakes: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-common-savings-mistakes | Common Savings Mistakes: Complete Guide (2026) | savings-accounts | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-high-yield-savings-basics |
+| /blog/seo-co-signer-risks-and-benefits | Co Signer Risks And Benefits: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-common-investing-mistakes | Common Investing Mistakes: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-common-loan-mistakes | Common Loan Mistakes: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-common-savings-mistakes | Common Savings Mistakes: Complete Guide (2026) | savings-accounts | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/how-to-choose-a-high-yield-savings-account |
 | /blog/seo-credit-card-annual-fee-worth-it | Credit Card Annual Fee Worth It: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
 | /blog/seo-credit-card-application-timing | Credit Card Application Timing: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
 | /blog/seo-credit-card-bonus-guide | Credit Card Bonus Guide: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
 | /blog/seo-credit-card-mistakes-to-avoid | Credit Card Mistakes To Avoid: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
 | /blog/seo-credit-card-rewards-tax-rules | Credit Card Rewards Tax Rules: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
 | /blog/seo-credit-card-security-tips | Credit Card Security Tips: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
-| /blog/seo-debt-consolidation-loans-guide | Debt Consolidation Loans Guide: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-debt-to-income-ratio-guide | Debt-to-Income Ratio (DTI): How to Calculate It and Improve Approval Odds (2026) | loans | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-dividend-investing-beginners | Dividend Investing Beginners: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-dollar-cost-averaging-guide | Dollar Cost Averaging Guide: Complete Guide (2026) | investing | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-emergency-fund-3-to-6-months | Emergency Fund: How Much to Save, Where to Keep It, and When to Use It (2026) | savings-accounts | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-esg-investing-basics | Esg Investing Basics: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-family-savings-plan | Family Savings Plan: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-fixed-vs-variable-rate-loans | Fixed vs Variable Rate Loans: How to Choose in 2026 | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
+| /blog/seo-debt-consolidation-loans-guide | Debt Consolidation Loans Guide: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/debt-to-income-ratio-90-day-plan | Debt-to-Income Ratio (DTI): How to Calculate It and Improve Approval Odds (2026) | loans | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-dividend-investing-beginners | Dividend Investing Beginners: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-dollar-cost-averaging-guide | Dollar Cost Averaging Guide: Complete Guide (2026) | investing | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/emergency-fund-target-by-recovery-time | Emergency Fund: How Much to Save, Where to Keep It, and When to Use It (2026) | savings-accounts | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-esg-investing-basics | Esg Investing Basics: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-family-savings-plan | Family Savings Plan: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-fixed-vs-variable-rate-loans | Fixed vs Variable Rate Loans: How to Choose in 2026 | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
 | /blog/seo-foreign-transaction-fees-guide | Foreign Transaction Fees Guide: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
-| /blog/seo-growth-vs-value-stocks | Growth Vs Value Stocks: Complete Guide (2026) | investing | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-heloc-vs-home-equity-loan | Heloc Vs Home Equity Loan: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-high-yield-savings-basics | High-Yield Savings Accounts in 2026: How to Compare APY, Fees, and Access | savings-accounts | Commercial investigation | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-how-credit-utilization-works | How Credit Utilization Works (and How to Lower It Without Closing Cards) | credit-cards | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-how-loan-interest-works | How Loan Interest Works: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-how-often-interest-compounds | How Often Interest Compounds: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-how-to-build-cash-buffer | How To Build Cash Buffer: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-how-to-compare-apr | How To Compare Apr: Complete Guide (2026) | loans | Commercial investigation | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-how-to-compare-personal-loan-apr | How to Compare Personal Loan APR in 2026 (With Real Cost Examples) | loans | Commercial investigation | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-how-to-read-expense-ratios | How To Read Expense Ratios: Complete Guide (2026) | investing | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-how-to-rebalance-portfolio | How To Rebalance Portfolio: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-improve-approval-odds | Improve Approval Odds: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
+| /blog/seo-growth-vs-value-stocks | Growth Vs Value Stocks: Complete Guide (2026) | investing | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-heloc-vs-home-equity-loan | Heloc Vs Home Equity Loan: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/how-to-choose-a-high-yield-savings-account | High-Yield Savings Accounts in 2026: How to Compare APY, Fees, and Access | savings-accounts | Commercial investigation | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/credit-utilization-statement-cycle-playbook | How Credit Utilization Works (and How to Lower It Without Closing Cards) | credit-cards | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-how-loan-interest-works | How Loan Interest Works: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-how-often-interest-compounds | How Often Interest Compounds: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-how-to-build-cash-buffer | How To Build Cash Buffer: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-how-to-compare-apr | How To Compare Apr: Complete Guide (2026) | loans | Commercial investigation | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/personal-loan-comparison-for-resilience | How to Compare Personal Loan APR in 2026 (With Real Cost Examples) | loans | Commercial investigation | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-how-to-read-expense-ratios | How To Read Expense Ratios: Complete Guide (2026) | investing | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-how-to-rebalance-portfolio | How To Rebalance Portfolio: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-improve-approval-odds | Improve Approval Odds: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
 | /blog/seo-improve-credit-score-with-cards | Improve Credit Score With Cards: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
 | /blog/seo-increase-credit-limit-responsibly | Increase Credit Limit Responsibly: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
-| /blog/seo-index-funds-vs-etfs | Index Funds Vs Etfs: Complete Guide (2026) | investing | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-international-diversification-guide | International Diversification Guide: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-investing-during-volatility | Investing During Volatility: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-investing-for-beginners-roadmap | Beginner Investing Roadmap: Your First 12 Months, Step by Step | investing | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-investing-goals-and-timelines | Investing Goals And Timelines: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-joint-savings-accounts-pros-cons | Joint Savings Accounts Pros Cons: Complete Guide (2026) | savings-accounts | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-high-yield-savings-basics |
-| /blog/seo-laddering-cds-for-beginners | Laddering Cds For Beginners: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-loan-documents-you-need | Loan Documents You Need: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-loan-origination-fees-explained | Loan Origination Fees Explained: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-loan-scams-red-flags | Loan Scams Red Flags: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-long-term-investing-mindset | Long Term Investing Mindset: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-medical-loans-vs-payment-plans | Medical Loans Vs Payment Plans: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-money-market-vs-savings | Money Market Vs Savings: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-high-yield-savings-basics |
-| /blog/seo-mortgage-preapproval-checklist | Mortgage Preapproval Checklist: Documents, Timeline, and Red Flags | loans | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-online-bank-vs-traditional-bank | Online Bank Vs Traditional Bank: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-high-yield-savings-basics |
-| /blog/seo-pay-yourself-first-method | Pay Yourself First Method: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-payoff-strategies-for-loans | Payoff Strategies For Loans: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
+| /blog/seo-index-funds-vs-etfs | Index Funds Vs Etfs: Complete Guide (2026) | investing | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-international-diversification-guide | International Diversification Guide: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-investing-during-volatility | Investing During Volatility: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/beginner-investing-roadmap-year-one | Beginner Investing Roadmap: Your First 12 Months, Step by Step | investing | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-investing-goals-and-timelines | Investing Goals And Timelines: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-joint-savings-accounts-pros-cons | Joint Savings Accounts Pros Cons: Complete Guide (2026) | savings-accounts | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-laddering-cds-for-beginners | Laddering Cds For Beginners: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-loan-documents-you-need | Loan Documents You Need: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-loan-origination-fees-explained | Loan Origination Fees Explained: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-loan-scams-red-flags | Loan Scams Red Flags: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-long-term-investing-mindset | Long Term Investing Mindset: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-medical-loans-vs-payment-plans | Medical Loans Vs Payment Plans: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-money-market-vs-savings | Money Market Vs Savings: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/mortgage-preapproval-checklist | Mortgage Preapproval Checklist: Documents, Timeline, and Red Flags | loans | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-online-bank-vs-traditional-bank | Online Bank Vs Traditional Bank: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-pay-yourself-first-method | Pay Yourself First Method: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-payoff-strategies-for-loans | Payoff Strategies For Loans: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
 | /blog/seo-personal-loan-vs-credit-card | Personal Loan Vs Credit Card: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
 | /blog/seo-premium-credit-cards-value | Premium Credit Cards Value: Complete Guide (2026) | credit-cards | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-best-first-credit-card |
-| /blog/seo-prepayment-penalty-guide | Prepayment Penalty Guide: How Early Payoff Fees Work (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-real-estate-investing-alternatives | Real Estate Investing Alternatives: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-refinancing-student-loans | Refinancing Student Loans: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-retirement-accounts-101 | Retirement Accounts 101: Complete Guide (2026) | investing | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-tax-efficient-investing-tips |
-| /blog/seo-roth-vs-traditional-ira | Roth Vs Traditional Ira: Complete Guide (2026) | investing | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-tax-efficient-investing-tips |
-| /blog/seo-round-up-saving-apps-guide | Round Up Saving Apps Guide: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-save-for-car-replacement | Save For Car Replacement: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-50-30-20-rule-for-saving |
-| /blog/seo-save-for-down-payment-faster | Save For Down Payment Faster: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-50-30-20-rule-for-saving |
-| /blog/seo-save-for-holiday-spending | Save For Holiday Spending: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-50-30-20-rule-for-saving |
-| /blog/seo-save-money-on-groceries | Save Money On Groceries: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-50-30-20-rule-for-saving |
-| /blog/seo-save-money-on-utilities | Save Money On Utilities: Complete Guide (2026) | savings-accounts | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-50-30-20-rule-for-saving |
-| /blog/seo-sector-funds-risks | Sector Funds Risks: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-secured-vs-unsecured-loans | Secured Vs Unsecured Loans: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-short-term-vs-long-term-savings | Short Term Vs Long Term Savings: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-high-yield-savings-basics |
-| /blog/seo-sinking-funds-system | Sinking Funds System: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-high-yield-savings-basics |
-| /blog/seo-small-business-loan-basics | Small Business Loan Basics: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-how-to-compare-personal-loan-apr |
-| /blog/seo-small-cap-vs-large-cap | Small Cap Vs Large Cap: Complete Guide (2026) | investing | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-investing-for-beginners-roadmap |
+| /blog/seo-prepayment-penalty-guide | Prepayment Penalty Guide: How Early Payoff Fees Work (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-real-estate-investing-alternatives | Real Estate Investing Alternatives: Complete Guide (2026) | investing | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-refinancing-student-loans | Refinancing Student Loans: Complete Guide (2026) | loans | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-retirement-accounts-101 | Retirement Accounts 101: Complete Guide (2026) | investing | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/tax-efficient-investing-account-location-playbook |
+| /blog/seo-roth-vs-traditional-ira | Roth Vs Traditional Ira: Complete Guide (2026) | investing | Commercial investigation | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/tax-efficient-investing-account-location-playbook |
+| /blog/seo-round-up-saving-apps-guide | Round Up Saving Apps Guide: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-save-for-car-replacement | Save For Car Replacement: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/flex-budget-reset-rules |
+| /blog/seo-save-for-down-payment-faster | Save For Down Payment Faster: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/flex-budget-reset-rules |
+| /blog/seo-save-for-holiday-spending | Save For Holiday Spending: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/flex-budget-reset-rules |
+| /blog/seo-save-money-on-groceries | Save Money On Groceries: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/flex-budget-reset-rules |
+| /blog/seo-save-money-on-utilities | Save Money On Utilities: Complete Guide (2026) | savings-accounts | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/flex-budget-reset-rules |
+| /blog/seo-sector-funds-risks | Sector Funds Risks: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/seo-secured-vs-unsecured-loans | Secured Vs Unsecured Loans: Complete Guide (2026) | loans | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-short-term-vs-long-term-savings | Short Term Vs Long Term Savings: Complete Guide (2026) | savings-accounts | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-sinking-funds-system | Sinking Funds System: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/how-to-choose-a-high-yield-savings-account |
+| /blog/seo-small-business-loan-basics | Small Business Loan Basics: Complete Guide (2026) | loans | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/personal-loan-comparison-for-resilience |
+| /blog/seo-small-cap-vs-large-cap | Small Cap Vs Large Cap: Complete Guide (2026) | investing | Commercial investigation | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/beginner-investing-roadmap-year-one |
 | /blog/seo-student-credit-card-checklist | Student Credit Card Checklist: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
-| /blog/seo-target-date-funds-guide | Target Date Funds Guide: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
-| /blog/seo-tax-efficient-investing-tips | Tax Efficient Investing Tips: Complete Guide (2026) | investing | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
-| /blog/seo-taxes-on-savings-interest | Taxes On Savings Interest: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-tax-efficient-investing-tips |
+| /blog/seo-target-date-funds-guide | Target Date Funds Guide: Complete Guide (2026) | investing | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
+| /blog/tax-efficient-investing-account-location-playbook | Tax Efficient Investing Tips: Complete Guide (2026) | investing | Informational | 9 | 2 | 9 | 8 | 8 | KEEP_AND_REWRITE | — |
+| /blog/seo-taxes-on-savings-interest | Taxes On Savings Interest: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/tax-efficient-investing-account-location-playbook |
 | /blog/seo-travel-insurance-card-benefits | Travel Insurance Card Benefits: Complete Guide (2026) | credit-cards | Informational | 5 | 6 | 5 | 4 | 4 | CONVERT_TO_HUB_SECTION | /blog/seo-best-first-credit-card |
-| /blog/seo-what-lenders-check | What Lenders Check: Complete Guide (2026) | loans | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/seo-mortgage-preapproval-checklist |
-| /blog/seo-when-to-move-cash-to-investments | When To Move Cash To Investments: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/seo-investing-for-beginners-roadmap |
+| /blog/seo-what-lenders-check | What Lenders Check: Complete Guide (2026) | loans | Informational | 3 | 8 | 4 | 2 | 2 | REDIRECT | /blog/mortgage-preapproval-checklist |
+| /blog/seo-when-to-move-cash-to-investments | When To Move Cash To Investments: Complete Guide (2026) | savings-accounts | Informational | 4 | 7 | 4 | 3 | 3 | MERGE | /blog/beginner-investing-roadmap-year-one |
 | /blog/tax-optimization-guide-105 | Tax Optimization: Practical 2026 Guide #105 | tax-optimization | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/tax-optimization-guide-112 | Tax Optimization: Practical 2026 Guide #112 | tax-optimization | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |
 | /blog/tax-optimization-guide-119 | Tax Optimization: Practical 2026 Guide #119 | tax-optimization | Informational | 1 | 10 | 1 | 1 | 1 | DELETE | — |

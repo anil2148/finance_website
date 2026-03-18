@@ -59,8 +59,8 @@ The blog is intentionally reduced to 20 stronger, maintained articles (fully rew
 
 ## 4) Redirect strategy highlights
 Key low-trust families now consolidated:
-- `beginner-investing-guides-*` → `/blog/seo-investing-for-beginners-roadmap`
+- `beginner-investing-guides-*` → `/blog/beginner-investing-roadmap-year-one`
 - `how-to-save-500-month-*` → `/blog/seo-automate-your-savings-plan`
-- `mortgage-tips-*` → `/blog/seo-mortgage-preapproval-checklist`
+- `mortgage-tips-*` → `/blog/mortgage-preapproval-checklist`
 
 This avoids redirect chains and sends each legacy URL to the closest intent match.

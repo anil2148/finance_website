@@ -12,15 +12,15 @@
 - DELETE_REMOVE: 1024
 
 ## KEEP + REWRITE canonical posts
-- /blog/seo-50-30-20-rule-for-saving — 50 30 20 Rule For Saving: Complete Guide (2026)
-- /blog/seo-debt-to-income-ratio-guide — Debt-to-Income Ratio (DTI): How to Calculate It and Improve Approval Odds (2026)
-- /blog/seo-emergency-fund-3-to-6-months — Emergency Fund: How Much to Save, Where to Keep It, and When to Use It (2026)
-- /blog/seo-high-yield-savings-basics — High-Yield Savings Accounts in 2026: How to Compare APY, Fees, and Access
-- /blog/seo-how-credit-utilization-works — How Credit Utilization Works (and How to Lower It Without Closing Cards)
-- /blog/seo-how-to-compare-personal-loan-apr — How to Compare Personal Loan APR in 2026 (With Real Cost Examples)
-- /blog/seo-investing-for-beginners-roadmap — Beginner Investing Roadmap: Your First 12 Months, Step by Step
-- /blog/seo-mortgage-preapproval-checklist — Mortgage Preapproval Checklist: Documents, Timeline, and Red Flags
-- /blog/seo-tax-efficient-investing-tips — Tax Efficient Investing Tips: Complete Guide (2026)
+- /blog/flex-budget-reset-rules — 50 30 20 Rule For Saving: Complete Guide (2026)
+- /blog/debt-to-income-ratio-90-day-plan — Debt-to-Income Ratio (DTI): How to Calculate It and Improve Approval Odds (2026)
+- /blog/emergency-fund-target-by-recovery-time — Emergency Fund: How Much to Save, Where to Keep It, and When to Use It (2026)
+- /blog/how-to-choose-a-high-yield-savings-account — High-Yield Savings Accounts in 2026: How to Compare APY, Fees, and Access
+- /blog/credit-utilization-statement-cycle-playbook — How Credit Utilization Works (and How to Lower It Without Closing Cards)
+- /blog/personal-loan-comparison-for-resilience — How to Compare Personal Loan APR in 2026 (With Real Cost Examples)
+- /blog/beginner-investing-roadmap-year-one — Beginner Investing Roadmap: Your First 12 Months, Step by Step
+- /blog/mortgage-preapproval-checklist — Mortgage Preapproval Checklist: Documents, Timeline, and Red Flags
+- /blog/tax-efficient-investing-account-location-playbook — Tax Efficient Investing Tips: Complete Guide (2026)
 
 ## Ranked low-trust / repetitive posts (priority removals)
 1. /blog/tax-saving-strategies-18 (56 words) — Thin templated post with repetitive structure and no unique insight.
@@ -65,17 +65,17 @@
 40. /blog/budgeting-guide-188 (101 words) — Thin templated post with repetitive structure and no unique insight.
 
 ## Redirect changes added in this remediation
-- /blog/seo-automate-your-savings-plan -> /blog/seo-50-30-20-rule-for-saving (REDIRECT)
-- /blog/seo-avoid-credit-card-interest -> /blog/seo-how-credit-utilization-works (REDIRECT)
-- /blog/seo-balance-transfer-strategy -> /blog/seo-how-credit-utilization-works (REDIRECT)
-- /blog/seo-best-first-credit-card -> /blog/seo-how-credit-utilization-works (REDIRECT)
-- /blog/seo-dollar-cost-averaging-guide -> /blog/seo-investing-for-beginners-roadmap (REDIRECT)
-- /blog/seo-how-to-read-expense-ratios -> /blog/seo-investing-for-beginners-roadmap (REDIRECT)
-- /blog/seo-index-funds-vs-etfs -> /blog/seo-investing-for-beginners-roadmap (REDIRECT)
-- /blog/seo-retirement-accounts-101 -> /blog/seo-tax-efficient-investing-tips (REDIRECT)
-- /blog/seo-roth-vs-traditional-ira -> /blog/seo-tax-efficient-investing-tips (REDIRECT)
-- /blog/seo-save-money-on-utilities -> /blog/seo-50-30-20-rule-for-saving (REDIRECT)
-- /blog/seo-what-lenders-check -> /blog/seo-mortgage-preapproval-checklist (REDIRECT)
+- /blog/seo-automate-your-savings-plan -> /blog/flex-budget-reset-rules (REDIRECT)
+- /blog/seo-avoid-credit-card-interest -> /blog/credit-utilization-statement-cycle-playbook (REDIRECT)
+- /blog/seo-balance-transfer-strategy -> /blog/credit-utilization-statement-cycle-playbook (REDIRECT)
+- /blog/seo-best-first-credit-card -> /blog/credit-utilization-statement-cycle-playbook (REDIRECT)
+- /blog/seo-dollar-cost-averaging-guide -> /blog/beginner-investing-roadmap-year-one (REDIRECT)
+- /blog/seo-how-to-read-expense-ratios -> /blog/beginner-investing-roadmap-year-one (REDIRECT)
+- /blog/seo-index-funds-vs-etfs -> /blog/beginner-investing-roadmap-year-one (REDIRECT)
+- /blog/seo-retirement-accounts-101 -> /blog/tax-efficient-investing-account-location-playbook (REDIRECT)
+- /blog/seo-roth-vs-traditional-ira -> /blog/tax-efficient-investing-account-location-playbook (REDIRECT)
+- /blog/seo-save-money-on-utilities -> /blog/flex-budget-reset-rules (REDIRECT)
+- /blog/seo-what-lenders-check -> /blog/mortgage-preapproval-checklist (REDIRECT)
 
 ## Editorial cleanup goals addressed
 - Reduced templated surface area by consolidating thin evergreen variants into stronger canonical pages.

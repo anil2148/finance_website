@@ -80,7 +80,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
               return <li key={`${item.label}-${href}`}><Link href={href} className="text-brand hover:underline">{item.label}</Link></li>;
             })}
             <li><Link href="/learn/investing" className="text-brand hover:underline">Investing hub</Link></li>
-            <li><Link href="/blog/seo-investing-for-beginners-roadmap" className="text-brand hover:underline">Investing for beginners roadmap</Link></li>
+            <li><Link href="/blog/beginner-investing-roadmap-year-one" className="text-brand hover:underline">Investing for beginners roadmap</Link></li>
           </ul>
         </div>
         <div>

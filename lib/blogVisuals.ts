@@ -189,55 +189,55 @@ const fallbackVisual: BlogVisual = {
 };
 
 const slugVisualOverrides: Record<string, BlogVisual> = {
-  'seo-50-30-20-rule-for-saving': {
+  'flex-budget-reset-rules': {
     src: '/images/blog-visual-savings-cashflow.svg',
     alt: 'Flexible paycheck budget map with needs, wants, and goals reallocation paths',
     cardClassName: 'from-cyan-50 via-sky-50 to-blue-100',
     heroClassName: 'from-cyan-50 via-sky-50 to-blue-100'
   },
-  'seo-emergency-fund-3-to-6-months': {
+  'emergency-fund-target-by-recovery-time': {
     src: '/images/blog-visual-savings-goals.svg',
     alt: 'Emergency-fund milestone ladder with layered reserve targets',
     cardClassName: 'from-sky-50 via-cyan-50 to-teal-100',
     heroClassName: 'from-sky-50 via-cyan-50 to-teal-100'
   },
-  'seo-high-yield-savings-basics': {
+  'how-to-choose-a-high-yield-savings-account': {
     src: '/images/blog-visual-saving.svg',
     alt: 'Savings account operations checklist comparing APY, transfer speed, and rules',
     cardClassName: 'from-teal-50 via-cyan-50 to-sky-100',
     heroClassName: 'from-teal-50 via-cyan-50 to-sky-100'
   },
-  'seo-mortgage-preapproval-checklist': {
+  'mortgage-preapproval-checklist': {
     src: '/images/blog-visual-loans-docs.svg',
     alt: 'Mortgage preapproval document stack organized by underwriter review stages',
     cardClassName: 'from-sky-50 via-blue-50 to-indigo-100',
     heroClassName: 'from-sky-50 via-blue-50 to-indigo-100'
   },
-  'seo-how-to-compare-personal-loan-apr': {
+  'personal-loan-comparison-for-resilience': {
     src: '/images/blog-visual-credit.svg',
     alt: 'Personal loan offer comparison worksheet with APR, fee, and payment stress columns',
     cardClassName: 'from-blue-50 via-indigo-50 to-violet-100',
     heroClassName: 'from-blue-50 via-indigo-50 to-violet-100'
   },
-  'seo-debt-to-income-ratio-guide': {
+  'debt-to-income-ratio-90-day-plan': {
     src: '/images/comparison-analytics-illustration.svg',
     alt: 'Debt-to-income analysis board comparing required payments, ratios, and lender thresholds',
     cardClassName: 'from-indigo-50 via-sky-50 to-cyan-100',
     heroClassName: 'from-indigo-50 via-sky-50 to-cyan-100'
   },
-  'seo-how-credit-utilization-works': {
+  'credit-utilization-statement-cycle-playbook': {
     src: '/images/blog-visual-credit-utilization.svg',
     alt: 'Credit utilization trend dashboard with per-card concentration controls',
     cardClassName: 'from-fuchsia-50 via-purple-50 to-violet-100',
     heroClassName: 'from-fuchsia-50 via-purple-50 to-violet-100'
   },
-  'seo-investing-for-beginners-roadmap': {
+  'beginner-investing-roadmap-year-one': {
     src: '/images/blog-visual-investing-growth.svg',
     alt: 'Quarter-by-quarter investing roadmap with contribution growth milestones',
     cardClassName: 'from-emerald-50 via-cyan-50 to-sky-100',
     heroClassName: 'from-emerald-50 via-cyan-50 to-sky-100'
   },
-  'seo-tax-efficient-investing-tips': {
+  'tax-efficient-investing-account-location-playbook': {
     src: '/images/blog-visual-tax.svg',
     alt: 'Tax-efficient investing checklist for asset location and rebalance sequencing',
     cardClassName: 'from-amber-50 via-orange-50 to-rose-100',
