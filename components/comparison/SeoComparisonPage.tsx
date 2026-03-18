@@ -10,6 +10,29 @@ type SeoComparisonPageProps = {
   slug: string;
 };
 
+const relatedCalculatorsByCategory: Partial<Record<FinancialCategory, Array<{ label: string; href: string }>>> = {
+  credit_card: [
+    { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
+    { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' }
+  ],
+  savings_account: [
+    { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
+    { label: 'Emergency Fund Calculator', href: '/calculators/emergency-fund-calculator' }
+  ],
+  investment_app: [
+    { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
+    { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' }
+  ],
+  mortgage_lender: [
+    { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
+    { label: 'Refinance Calculator', href: '/calculators/refinance-calculator' }
+  ],
+  personal_loan: [
+    { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' },
+    { label: 'Loan Repayment Calculator', href: '/calculators/loan-repayment-calculator' }
+  ]
+};
+
 function formatDate(date: Date) {
   return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
@@ -17,6 +40,7 @@ function formatDate(date: Date) {
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: SeoComparisonPageProps) {
   const pageProducts = getFinancialProducts().filter((item) => item.category === category);
   const topRated = [...pageProducts].sort((a, b) => b.rating - a.rating).slice(0, 3);
+  const relatedCalculators = relatedCalculatorsByCategory[category] ?? [{ label: 'Explore all calculators', href: '/calculators' }];
 
   const schemaProducts = pageProducts.map((item) => ({
     '@type': 'Product',
@@ -73,7 +97,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
         <div>
           <h2 className="mb-2 text-lg font-semibold">Related calculators</h2>
           <ul className="space-y-1 text-sm">
-            {related.calculators.map((item) => (
+            {relatedCalculators.map((item) => (
               <li key={item.href}><Link href={item.href} className="text-brand hover:underline">{item.label}</Link></li>
             ))}
           </ul>
