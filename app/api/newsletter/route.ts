@@ -2,9 +2,13 @@ import { NextResponse } from 'next/server';
 import { sendConfirmationEmail } from '@/lib/newsletter/mailchimp';
 import { generateConfirmationToken } from '@/lib/newsletter/token';
 import { isValidEmail, maskEmail, normalizeEmail } from '@/lib/newsletter/validation';
+import { appendSignupLog } from '@/lib/newsletter/storage';
 
 type NewsletterPayload = {
   email?: string;
+  source?: string;
+  persona?: string;
+  leadMagnet?: string;
 };
 
 type ErrorCode =
@@ -40,7 +44,7 @@ function errorResponse(status: number, code: ErrorCode, message: string) {
   );
 }
 
-function parseRequestBody(request: Request) {
+async function parseRequestBody(request: Request): Promise<NewsletterPayload> {
   const contentType = request.headers.get('content-type') ?? '';
 
   if (!contentType.includes('application/json')) {
@@ -72,6 +76,10 @@ export async function POST(request: Request) {
       return errorResponse(400, 'INVALID_EMAIL', 'Please enter a valid email address.');
     }
 
+    const source = payload.source ?? 'unknown';
+    const persona = payload.persona ?? 'unspecified';
+    const leadMagnet = payload.leadMagnet ?? 'none';
+
     let token: string;
 
     try {
@@ -96,6 +104,24 @@ export async function POST(request: Request) {
         error: message
       });
       return errorResponse(502, 'EMAIL_PROVIDER_ERROR', 'Unable to send confirmation email right now. Please try again.');
+    }
+
+    try {
+      appendSignupLog({
+        email_hash_hint: maskEmail(normalizedEmail),
+        source,
+        persona,
+        lead_magnet: leadMagnet,
+        timestamp: new Date().toISOString()
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to append signup log';
+      console.error('[newsletter-subscribe:log-write-error]', {
+        email: maskEmail(normalizedEmail),
+        source,
+        persona,
+        error: message
+      });
     }
 
     return NextResponse.json({

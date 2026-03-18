@@ -2,10 +2,12 @@
 
 import { FormEvent, useMemo, useState } from 'react';
 import { isValidEmail, normalizeEmail } from '@/lib/newsletter/validation';
+import { trackEvent } from '@/lib/analytics';
 
 type NewsletterFormProps = {
   className?: string;
   source?: string;
+  leadMagnet?: string;
 };
 
 type NewsletterApiResponse =
@@ -29,8 +31,8 @@ const copyBySource: Record<string, { title: string; description: string; button:
   },
   blog: {
     title: 'Get new guides in your inbox',
-    description: 'Get updates when we publish practical explainers on mortgages, credit cards, saving, and investing basics.',
-    button: 'Send blog updates'
+    description: 'Choose a focus area and get playbooks, checklists, and monthly updates.',
+    button: 'Unlock free guide'
   }
 };
 
@@ -60,9 +62,11 @@ function getClientErrorMessage(response: NewsletterApiResponse) {
   }
 }
 
-export function NewsletterForm({ className, source }: NewsletterFormProps) {
+export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance-playbook' }: NewsletterFormProps) {
   const [email, setEmail] = useState('');
+  const [persona, setPersona] = useState('beginner');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [step, setStep] = useState<1 | 2>(1);
   const [message, setMessage] = useState('');
   const copy = useMemo(() => (source ? copyBySource[source] ?? defaultCopy : defaultCopy), [source]);
 
@@ -91,7 +95,7 @@ export function NewsletterForm({ className, source }: NewsletterFormProps) {
           'Content-Type': 'application/json',
           Accept: 'application/json'
         },
-        body: JSON.stringify({ email: normalizedEmail })
+        body: JSON.stringify({ email: normalizedEmail, source: source ?? 'unknown', persona, leadMagnet })
       });
 
       const payload = (await response.json()) as NewsletterApiResponse;
@@ -101,6 +105,13 @@ export function NewsletterForm({ className, source }: NewsletterFormProps) {
         setMessage(getClientErrorMessage(payload));
         return;
       }
+
+      trackEvent({
+        event: 'newsletter_signup',
+        category: 'lead_capture',
+        label: source ?? 'unknown',
+        metadata: { persona, lead_magnet: leadMagnet }
+      });
 
       const successMessage = payload.success ? payload.message : undefined;
       setStatus('success');
@@ -116,24 +127,37 @@ export function NewsletterForm({ className, source }: NewsletterFormProps) {
     <form onSubmit={submit} className={`card space-y-3 ${className ?? ''}`} aria-busy={status === 'loading'}>
       <h3 className="text-lg font-semibold">{copy.title}</h3>
       <p className="text-sm text-slate-600">{copy.description}</p>
-      <label className="space-y-1 text-sm font-medium text-slate-700">
-        Email address
-        <input
-          className="input"
-          type="email"
-          autoComplete="email"
-          required
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="you@example.com"
-          aria-label="Email address"
-          aria-invalid={status === 'error'}
-        />
-      </label>
-      <button className="btn-primary disabled:opacity-70" type="submit" disabled={status === 'loading'}>
-        {status === 'loading' ? 'Submitting...' : copy.button}
-      </button>
-      <p className="text-xs text-slate-500">No spam. Unsubscribe any time. By subscribing, you agree to our privacy policy.</p>
+
+      {step === 1 ? (
+        <div className="space-y-3">
+          <label className="text-sm font-medium" htmlFor="newsletter-persona">What best describes your current goal?</label>
+          <select id="newsletter-persona" className="input" value={persona} onChange={(event) => setPersona(event.target.value)}>
+            <option value="beginner">I am building the basics</option>
+            <option value="debt-payoff">I am focused on debt payoff</option>
+            <option value="investing">I am focused on investing</option>
+          </select>
+          <button type="button" className="btn-primary" onClick={() => setStep(2)}>Continue</button>
+        </div>
+      ) : (
+        <>
+          <input
+            className="input"
+            type="email"
+            autoComplete="email"
+            required
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            placeholder="you@example.com"
+            aria-label="Email address"
+            aria-invalid={status === 'error'}
+          />
+          <button className="btn-primary disabled:opacity-70" type="submit" disabled={status === 'loading'}>
+            {status === 'loading' ? 'Submitting...' : copy.button}
+          </button>
+        </>
+      )}
+
+      <p className="text-xs text-slate-500">Lead magnet: <span className="font-medium">{leadMagnet.replace(/-/g, ' ')}</span></p>
       {message ? (
         <p className={status === 'success' ? 'alert-success' : status === 'loading' ? 'text-sm text-slate-600' : 'text-sm text-red-600'} role="status" aria-live="polite">
           {message}

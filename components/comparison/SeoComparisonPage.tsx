@@ -10,46 +10,13 @@ type SeoComparisonPageProps = {
   slug: string;
 };
 
-const relatedContent: Record<string, { calculators: Array<{ label: string; href: string }>; guides: Array<{ label: string; href: string }> }> = {
-  'best-credit-cards-2026': {
-    calculators: [
-      { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
-      { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' },
-      { label: 'Budget Planner', href: '/calculators/budget-planner' }
-    ],
-    guides: [
-      { label: 'Best first credit card guide', href: '/blog/seo-best-first-credit-card' },
-      { label: 'Common loan mistakes to avoid', href: '/blog/seo-common-loan-mistakes' }
-    ]
-  },
-  'best-investment-apps': {
-    calculators: [
-      { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
-      { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
-      { label: 'FIRE Calculator', href: '/calculators/fire-calculator' }
-    ],
-    guides: [
-      { label: 'Retirement planning guide', href: '/blog/retirement-planning-guide-873' },
-      { label: 'Budgeting guide for higher savings rates', href: '/blog/budgeting-guide-314' }
-    ]
-  }
-};
-
-const defaultRelated = {
-  calculators: [
-    { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
-    { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
-    { label: 'Loan Calculator', href: '/calculators/loan-calculator' }
-  ],
-  guides: [
-    { label: 'Online bank vs traditional bank', href: '/blog/seo-online-bank-vs-traditional-bank' },
-    { label: 'Loan scam red flags', href: '/blog/seo-loan-scams-red-flags' }
-  ]
-};
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+}
 
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: SeoComparisonPageProps) {
   const pageProducts = getFinancialProducts().filter((item) => item.category === category);
-  const related = relatedContent[slug] ?? defaultRelated;
+  const topRated = [...pageProducts].sort((a, b) => b.rating - a.rating).slice(0, 3);
 
   const schemaProducts = pageProducts.map((item) => ({
     '@type': 'Product',
@@ -70,32 +37,23 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
       <header className="space-y-3">
         <h1 className="text-3xl font-bold">{pageTitle}</h1>
         <p className="max-w-3xl text-slate-600">{intro}</p>
-        <div className="flex flex-wrap gap-2 text-xs text-slate-500">
-          <span className="rounded-full border border-slate-200 px-3 py-1">Last updated: March 18, 2026</span>
-          <span className="rounded-full border border-slate-200 px-3 py-1">Educational content — not individualized advice</span>
-          <Link href="/affiliate-disclosure" className="rounded-full border border-slate-200 px-3 py-1 hover:text-blue-700">Editorial & affiliate disclosure</Link>
-        </div>
+        <p className="text-xs text-slate-500">Reviewed by FinanceSphere editorial team • Last updated {formatDate(new Date())}</p>
       </header>
 
-      <div className="grid gap-4 lg:grid-cols-[1fr_300px] lg:items-start">
-        <ComparisonEngine defaultCategory={category} />
-        <aside className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 lg:sticky lg:top-24">
-          <h2 className="text-base font-semibold">Need a faster decision?</h2>
-          <p className="text-sm text-slate-600">Shortlist 2–3 offers, run the matching calculator, and check product terms before submitting any application.</p>
-          <Link href="/calculators" className="btn-primary w-full">Run matching calculator</Link>
-          <Link href="/help" className="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-700">See comparison methodology</Link>
-        </aside>
-      </div>
-
-      <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="text-xl font-semibold">How we rank these products</h2>
-        <p className="text-sm text-slate-600">Ratings are based on cost (APR/APY and annual fees), core features, customer usability, and fit for common financial goals. Partner relationships do not directly set rankings.</p>
-        <ul className="list-disc space-y-1 pl-5 text-sm text-slate-600">
-          <li>Cost metrics: APR/APY, fees, and bonus conditions.</li>
-          <li>Product fit: who benefits most based on common user goals.</li>
-          <li>Experience factors: app usability, support quality, and account flexibility.</li>
+      <div className="rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm">
+        <p className="font-semibold text-blue-900">Top picks by use case</p>
+        <ul className="mt-2 grid gap-2 md:grid-cols-3">
+          {topRated.map((item, index) => (
+            <li key={item.id} className="rounded-lg border border-blue-100 bg-white p-3">
+              <p className="text-xs text-blue-600">#{index + 1} Rated</p>
+              <p className="font-medium text-slate-900">{item.name}</p>
+              <p className="text-xs text-slate-600">Best for: {item.pros[0]}</p>
+            </li>
+          ))}
         </ul>
       </div>
+
+      <ComparisonEngine defaultCategory={category} />
 
       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-xl font-semibold">Frequently Asked Questions</h2>
@@ -121,17 +79,20 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
           </ul>
         </div>
         <div>
-          <h2 className="mb-2 text-lg font-semibold">Related reading</h2>
+          <h2 className="mb-2 text-lg font-semibold">Alternatives to compare</h2>
           <ul className="space-y-1 text-sm">
-            {related.guides.map((item) => (
-              <li key={item.href}><Link href={item.href} className="text-brand hover:underline">{item.label}</Link></li>
-            ))}
+            <li><Link href="/best-savings-accounts-usa" className="text-brand hover:underline">Best savings accounts</Link></li>
+            <li><Link href="/best-investment-apps" className="text-brand hover:underline">Best investment apps</Link></li>
+            <li><Link href="/comparison" className="text-brand hover:underline">Full comparison engine</Link></li>
           </ul>
         </div>
         <div>
-          <h2 className="mb-2 text-lg font-semibold">Need support?</h2>
-          <p className="text-sm text-slate-600">Have a scenario that is not covered by filters? We can help you pick the right tools and pages.</p>
-          <Link href="/contact" className="mt-3 inline-block text-sm font-semibold text-brand hover:underline">Contact the FinanceSphere team →</Link>
+          <h2 className="mb-2 text-lg font-semibold">How we review</h2>
+          <p className="text-sm text-slate-600">We score products by fee drag, value, features, and user-fit. Learn our methodology and disclosures before acting.</p>
+          <div className="mt-2 flex gap-2 text-xs">
+            <Link className="rounded-full border px-2 py-1" href="/editorial-policy">Editorial policy</Link>
+            <Link className="rounded-full border px-2 py-1" href="/how-we-make-money">How we make money</Link>
+          </div>
         </div>
       </section>
 

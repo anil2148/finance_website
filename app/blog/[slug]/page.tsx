@@ -5,6 +5,9 @@ import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
 import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
 import { articleSchema } from '@/lib/seo';
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
+import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
+import { getRelatedLinks } from '@/lib/internalLinks';
+import { NewsletterForm } from '@/components/NewsletterForm';
 
 const calculatorLinksByCategory: Record<string, Array<{ label: string; href: string }>> = {
   budgeting: [
@@ -59,7 +62,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
   const schema = articleSchema(post.title, post.description, post.slug);
   const toc = getHeadings(post.content);
-  const calculatorLinks = calculatorLinksByCategory[post.category] ?? defaultCalculatorLinks;
+  const relatedLinks = getRelatedLinks(post.category);
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -77,13 +80,10 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <header className="space-y-2">
         <h1 className="text-3xl font-bold">{post.title}</h1>
         <p className="text-slate-600">{post.description}</p>
-        <div className="flex flex-wrap gap-2 text-xs text-slate-500">
-          <span className="rounded-full border border-slate-200 px-3 py-1">Published: {post.date}</span>
-          <span className="rounded-full border border-slate-200 px-3 py-1">Reviewed by FinanceSphere editorial team</span>
-          <Link href="/financial-disclaimer" className="rounded-full border border-slate-200 px-3 py-1 hover:text-blue-700">Educational use only</Link>
-        </div>
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
       </header>
+
+      <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />
 
       <section className="rounded-lg border bg-slate-50 p-4">
         <h2 className="font-semibold">Table of contents</h2>
@@ -100,6 +100,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <InteractiveArticleContent content={post.content} />
 
+      <NewsletterForm source="blog" leadMagnet="7-day-money-reset-checklist" className="max-w-2xl border-2 border-blue-100" />
+
       <section className="rounded-xl bg-blue-600 p-5 text-white">
         <h3 className="text-xl font-semibold">Put this guide into action</h3>
         <p className="text-sm text-blue-100">Use the matching calculators below first, then compare product options that fit your scenario.</p>
@@ -113,21 +115,11 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       </section>
 
       <section>
-        <h3 className="mb-2 font-semibold">Helpful next steps</h3>
+        <h3 className="mb-2 font-semibold">You may also like</h3>
         <div className="flex flex-wrap gap-2 text-sm">
-          <Link className="rounded-full border px-3 py-1" href="/calculators">Financial calculators</Link>
-          <Link className="rounded-full border px-3 py-1" href="/tools">Finance tools</Link>
-          <Link className="rounded-full border px-3 py-1" href="/comparison">Comparison pages</Link>
-          <Link className="rounded-full border px-3 py-1" href="/help">Help center</Link>
-        </div>
-      </section>
-
-      <section className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <h2 className="mb-2 text-xl font-semibold">Editorial standards</h2>
-        <p className="text-sm text-slate-700">Our guides are written for educational planning. We review content for clarity, accuracy, and practical action steps, and we disclose partner relationships transparently.</p>
-        <div className="mt-2 flex flex-wrap gap-2 text-sm">
-          <Link href="/affiliate-disclosure" className="font-semibold text-blue-700 hover:underline">Affiliate disclosure</Link>
-          <Link href="/contact" className="font-semibold text-blue-700 hover:underline">Suggest an update</Link>
+          {relatedLinks.map((link) => (
+            <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
+          ))}
         </div>
       </section>
 

@@ -17,12 +17,15 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
   const [products, setProducts] = useState<FinancialProduct[]>([]);
   const [category, setCategory] = useState<FinancialCategory | 'all'>(defaultCategory);
   const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'rating' | 'apr_apy' | 'annual_fee'>('rating');
-  const [recommendedOnly, setRecommendedOnly] = useState(false);
-  const [noAnnualFeeOnly, setNoAnnualFeeOnly] = useState(false);
+  const [sortBy, setSortBy] = useState<'rating' | 'apr_apy'>('rating');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/products').then((res) => res.json()).then(setProducts).catch(() => setProducts([]));
+    fetch('/api/products')
+      .then((res) => res.json())
+      .then((data) => setProducts(data))
+      .catch(() => setProducts([]))
+      .finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
@@ -74,6 +77,15 @@ export function ComparisonEngine({ defaultCategory = 'all' }: { defaultCategory?
       <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
         Showing <strong>{filtered.length}</strong> of <strong>{products.length}</strong> offers. Always review full terms before you apply.
       </div>
+
+      {loading ? <p className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">Loading comparison data...</p> : null}
+
+      {!loading && filtered.length === 0 ? (
+        <div className="rounded-xl border border-slate-200 bg-white p-5 text-sm">
+          <p className="font-medium">No products matched your filters.</p>
+          <p className="mt-1 text-slate-600">Try clearing search, switching categories, or exploring our full comparison page.</p>
+        </div>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
         {filtered.map((product) => <OfferCard key={product.id} product={product} />)}

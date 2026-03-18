@@ -4,6 +4,8 @@ const legalLinks = [
   { href: '/privacy-policy', label: 'Privacy Policy' },
   { href: '/terms-and-conditions', label: 'Terms & Conditions' },
   { href: '/affiliate-disclosure', label: 'Affiliate Disclosure' },
+  { href: '/how-we-make-money', label: 'How We Make Money' },
+  { href: '/editorial-policy', label: 'Editorial Policy' },
   { href: '/cookie-policy', label: 'Cookie Policy' },
   { href: '/financial-disclaimer', label: 'Financial Disclaimer' },
   { href: '/help', label: 'Help Center' },
