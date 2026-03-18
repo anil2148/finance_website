@@ -5,9 +5,27 @@ function formatDate(date: string) {
   return new Date(date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 }
 
+function getSafeUpdatedAt(updatedAt: string) {
+  const parsedDate = new Date(updatedAt);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return null;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  if (parsedDate > today) {
+    return null;
+  }
+
+  return parsedDate.toISOString();
+}
+
 export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { authorId: string; reviewedById: string; updatedAt: string }) {
   const author = AUTHOR_PROFILES[authorId];
   const reviewer = AUTHOR_PROFILES[reviewedById];
+  const safeUpdatedAt = getSafeUpdatedAt(updatedAt);
 
   return (
     <aside className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
@@ -27,9 +45,11 @@ export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { autho
           <p className="text-xs text-slate-600">Fact-check and compliance review completed before publication updates.</p>
         </div>
 
-        <p>
-          <span className="font-semibold">Last updated:</span> {formatDate(updatedAt)}
-        </p>
+        {safeUpdatedAt ? (
+          <p>
+            <span className="font-semibold">Last updated:</span> {formatDate(safeUpdatedAt)}
+          </p>
+        ) : null}
 
         <p className="text-xs text-slate-600">
           FinanceSphere content is educational and does not constitute personalized financial advice.
