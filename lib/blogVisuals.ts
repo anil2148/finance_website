@@ -7,6 +7,60 @@ export type BlogVisual = {
 
 const visuals: Array<{ keyword: string; visual: BlogVisual }> = [
   {
+    keyword: 'dollar-cost-averaging',
+    visual: {
+      src: '/images/blog-visual-investing-growth.svg',
+      alt: 'Contribution schedule chart comparing monthly investing versus one-time investing',
+      cardClassName: 'from-emerald-50 via-cyan-50 to-sky-100',
+      heroClassName: 'from-emerald-50 via-cyan-50 to-sky-100'
+    }
+  },
+  {
+    keyword: 'expense-ratios',
+    visual: {
+      src: '/images/blog-visual-investing-risk.svg',
+      alt: 'Fund fee comparison panel showing long-term cost drag across portfolios',
+      cardClassName: 'from-teal-50 via-emerald-50 to-lime-100',
+      heroClassName: 'from-teal-50 via-emerald-50 to-lime-100'
+    }
+  },
+  {
+    keyword: 'credit-utilization',
+    visual: {
+      src: '/images/blog-visual-credit-utilization.svg',
+      alt: 'Credit utilization dashboard with statement timing and limit usage indicators',
+      cardClassName: 'from-fuchsia-50 via-purple-50 to-violet-100',
+      heroClassName: 'from-fuchsia-50 via-purple-50 to-violet-100'
+    }
+  },
+  {
+    keyword: 'automate-your-savings',
+    visual: {
+      src: '/images/blog-visual-savings-cashflow.svg',
+      alt: 'Paycheck-based transfer schedule for emergency, bills, and sinking funds',
+      cardClassName: 'from-cyan-50 via-sky-50 to-blue-100',
+      heroClassName: 'from-cyan-50 via-sky-50 to-blue-100'
+    }
+  },
+  {
+    keyword: 'emergency-fund',
+    visual: {
+      src: '/images/blog-visual-savings-goals.svg',
+      alt: 'Emergency fund target tracker with monthly progress and reserve milestones',
+      cardClassName: 'from-sky-50 via-cyan-50 to-teal-100',
+      heroClassName: 'from-sky-50 via-cyan-50 to-teal-100'
+    }
+  },
+  {
+    keyword: 'mortgage-preapproval',
+    visual: {
+      src: '/images/blog-visual-loans-docs.svg',
+      alt: 'Mortgage document checklist board with underwriting timeline markers',
+      cardClassName: 'from-indigo-50 via-blue-50 to-sky-100',
+      heroClassName: 'from-indigo-50 via-blue-50 to-sky-100'
+    }
+  },
+  {
     keyword: 'invest',
     visual: {
       src: '/images/blog-visual-investing.svg',

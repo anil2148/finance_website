@@ -324,6 +324,138 @@
     "reason": "REDIRECT"
   },
   {
+    "source": "/blog/how-to-save-500-month-14",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-23",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-32",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-41",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-5",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-50",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-59",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-68",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-77",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-86",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/how-to-save-500-month-95",
+    "destination": "/blog/seo-automate-your-savings-plan",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-17",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-26",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-35",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-44",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-53",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-62",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-71",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-8",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-80",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-89",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/mortgage-tips-98",
+    "destination": "/blog/seo-mortgage-preapproval-checklist",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
     "source": "/blog/seo-0-apr-offers-explained",
     "destination": "/blog/seo-best-first-credit-card",
     "permanent": true,
