@@ -2,15 +2,15 @@
 
 ## Phase 1 — Full Inventory (live blog pages)
 
-1. seo-50-30-20-rule-for-saving
-2. seo-debt-to-income-ratio-guide
-3. seo-emergency-fund-3-to-6-months
-4. seo-high-yield-savings-basics
-5. seo-how-credit-utilization-works
-6. seo-how-to-compare-personal-loan-apr
-7. seo-investing-for-beginners-roadmap
-8. seo-mortgage-preapproval-checklist
-9. seo-tax-efficient-investing-tips
+1. budget-rule-based-reset
+2. debt-to-income-ratio-90-day-plan
+3. emergency-fund-target-by-recovery-timeline
+4. how-to-choose-a-high-yield-savings-account
+5. credit-utilization-statement-cycle-playbook
+6. personal-loan-comparison-for-bad-month-resilience
+7. beginner-investing-roadmap-year-one-milestones
+8. mortgage-preapproval-checklist-underwriting
+9. tax-efficient-investing-account-location-decisions
 
 Inventory source: `node scripts/verify-blog-quality.mjs`.
 

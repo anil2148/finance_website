@@ -139,10 +139,10 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
 };
 
 const featuredOrderByCategory: Record<string, string[]> = {
-  investing: ['seo-investing-for-beginners-roadmap', 'seo-tax-efficient-investing-tips'],
-  loans: ['seo-mortgage-preapproval-checklist', 'seo-how-to-compare-personal-loan-apr', 'seo-debt-to-income-ratio-guide'],
-  'credit-cards': ['seo-how-credit-utilization-works'],
-  'savings-accounts': ['seo-emergency-fund-3-to-6-months', 'seo-high-yield-savings-basics', 'seo-50-30-20-rule-for-saving']
+  investing: ['beginner-investing-roadmap-year-one-milestones', 'tax-efficient-investing-account-location-decisions'],
+  loans: ['mortgage-preapproval-checklist-underwriting', 'personal-loan-comparison-for-bad-month-resilience', 'debt-to-income-ratio-90-day-plan'],
+  'credit-cards': ['credit-utilization-statement-cycle-playbook'],
+  'savings-accounts': ['emergency-fund-target-by-recovery-timeline', 'how-to-choose-a-high-yield-savings-account', 'budget-rule-based-reset']
 };
 
 function getCategoryContent(category: string) {
