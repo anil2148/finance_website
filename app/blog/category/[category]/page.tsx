@@ -41,6 +41,29 @@ const categoryCopy: Record<string, { title: string; description: string; editori
   }
 };
 
+const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }>> = {
+  investing: [
+    { href: '/learn/investing', label: 'Investing Hub' },
+    { href: '/calculators/investment-growth-calculator', label: 'Investment Growth Calculator' },
+    { href: '/best-investment-apps', label: 'Best Investment Apps' }
+  ],
+  loans: [
+    { href: '/learn/loans', label: 'Loans Hub' },
+    { href: '/calculators/loan-calculator', label: 'Loan Calculator' },
+    { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
+  ],
+  'credit-cards': [
+    { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
+    { href: '/calculators/credit-card-payoff-calculator', label: 'Credit Card Payoff Calculator' },
+    { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' }
+  ],
+  'savings-accounts': [
+    { href: '/learn/budgeting', label: 'Budgeting Hub' },
+    { href: '/calculators/savings-goal-calculator', label: 'Savings Goal Calculator' },
+    { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' }
+  ]
+};
+
 const featuredOrderByCategory: Record<string, string[]> = {
   investing: ['seo-investing-for-beginners-roadmap', 'seo-tax-efficient-investing-tips'],
   loans: ['seo-mortgage-preapproval-checklist', 'seo-how-to-compare-personal-loan-apr', 'seo-debt-to-income-ratio-guide'],
@@ -81,6 +104,13 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
     return a.date < b.date ? 1 : -1;
   });
   const copy = getCategoryContent(params.category);
+  const journeyLinks = categoryJourneyLinks[params.category] ?? [
+    { href: '/learn/investing', label: 'Learn hubs' },
+    { href: '/calculators', label: 'Calculator suite' },
+    { href: '/comparison', label: 'Comparison center' }
+  ];
+  const featuredPosts = sortedPosts.slice(0, 3);
+  const morePosts = sortedPosts.slice(3);
 
   return (
     <section className="space-y-5">
@@ -89,16 +119,42 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
         <p className="mt-2 text-slate-600">{copy.description}</p>
         <p className="mt-2 text-sm text-slate-500">{copy.editorialAngle}</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
-          <Link href="/calculators" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">Related tools</Link>
-          <Link href="/comparison" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">Compare options</Link>
+          {journeyLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">{item.label}</Link>
+          ))}
           <Link href="/blog" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">All blog topics</Link>
         </div>
       </header>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {sortedPosts.map((p) => (
-          <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
-        ))}
-      </div>
+
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Featured in this category</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {featuredPosts.map((p) => (
+            <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
+          ))}
+        </div>
+      </section>
+
+      {morePosts.length > 0 && (
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold">More guides</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {morePosts.map((p) => (
+              <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-lg font-semibold">Continue your decision path</h2>
+        <p className="mt-1 text-sm text-slate-600">Run numbers first, compare offers second, then return to this category for scenario-specific decisions.</p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          {journeyLinks.map((item) => (
+            <Link key={`${item.href}-path`} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700">{item.label}</Link>
+          ))}
+        </div>
+      </section>
     </section>
   );
 }
