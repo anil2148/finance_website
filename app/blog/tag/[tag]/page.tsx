@@ -4,7 +4,7 @@ import { BlogCard } from '@/components/ui/BlogCard';
 import { getPosts, normalizeTag } from '@/lib/markdown';
 
 export function generateMetadata({ params }: { params: { tag: string } }): Metadata {
-  const tag = decodeURIComponent(params.tag);
+  const tag = params.tag;
   return {
     title: `#${tag} Articles | FinanceSphere Blog`,
     description: `Browse FinanceSphere articles tagged with ${tag}, including related tools and comparison guides.`,
@@ -19,7 +19,7 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
   return (
     <section className="space-y-5">
       <header className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h1 className="text-2xl font-bold">Tag: #{decodeURIComponent(params.tag)}</h1>
+        <h1 className="text-2xl font-bold">Tag: #{params.tag}</h1>
         <p className="mt-2 text-slate-600">Articles grouped by this theme with practical actions and related tools.</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
           <Link href="/calculators" className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">Related tools</Link>

@@ -103,8 +103,16 @@ export function getPostBySlug(slug: string) {
   return getPosts().find((p) => p.slug === slug);
 }
 
+function decodeUriComponentSafe(value: string) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 export function normalizeTag(tag: string) {
-  return decodeURIComponent(tag).trim().toLowerCase();
+  return decodeUriComponentSafe(tag).trim().toLowerCase();
 }
 
 export function getCategories() {
