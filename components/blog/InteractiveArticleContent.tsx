@@ -8,6 +8,11 @@ type Section = {
   lines: string[];
 };
 
+type TableData = {
+  headers: string[];
+  rows: string[][];
+};
+
 function toId(value: string) {
   return value
     .toLowerCase()
@@ -38,7 +43,7 @@ function renderInline(text: string) {
         nodes.push(
           <a
             key={`a-${key++}`}
-            className="text-blue-600 underline decoration-blue-300 underline-offset-4 hover:text-blue-700 dark:text-blue-300 dark:decoration-blue-500 dark:hover:text-blue-200"
+            className="text-blue-600 underline decoration-blue-300 underline-offset-4 hover:text-blue-700 dark:text-blue-400 dark:decoration-blue-500 dark:hover:text-blue-300"
             href={parts[2]}
           >
             {parts[1]}
@@ -84,11 +89,25 @@ function parseSections(content: string): Section[] {
   return sections.filter((section) => section.lines.some((line) => line.trim().length > 0));
 }
 
+function parseTable(lines: string[]): TableData {
+  const parsedRows = lines.map((line) =>
+    line
+      .trim()
+      .replace(/^\||\|$/g, '')
+      .split('|')
+      .map((cell) => cell.trim())
+  );
+
+  const headers = parsedRows[0] ?? [];
+  const rows = parsedRows.slice(2);
+  return { headers, rows };
+}
+
 export function InteractiveArticleContent({ content }: { content: string }) {
   const sections = useMemo(() => parseSections(content), [content]);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-8">
       {sections.map((section, idx) => {
         const paragraphBuffer: string[] = [];
         const elements: JSX.Element[] = [];
@@ -98,7 +117,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
           const paragraph = paragraphBuffer.join(' ').trim();
           if (paragraph) {
             elements.push(
-              <p key={`${section.id}-p-${elements.length}`} className="leading-7 text-slate-700 dark:text-slate-300">
+              <p key={`${section.id}-p-${elements.length}`} className="leading-relaxed text-gray-900 dark:text-gray-100">
                 {renderInline(paragraph)}
               </p>
             );
@@ -117,10 +136,77 @@ export function InteractiveArticleContent({ content }: { content: string }) {
           if (line.startsWith('### ')) {
             flushParagraph();
             elements.push(
-              <h4 key={`${section.id}-h-${i}`} className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              <h3 key={`${section.id}-h-${i}`} className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {line.replace(/^###\s+/, '').trim()}
-              </h4>
+              </h3>
             );
+            continue;
+          }
+
+          if (line.startsWith(':::insight') || line.startsWith(':::takeaway')) {
+            flushParagraph();
+            const variant = line.includes('insight') ? 'Insight' : 'Key takeaway';
+            const calloutLines: string[] = [];
+            let cursor = i + 1;
+            while (cursor < section.lines.length && section.lines[cursor].trim() !== ':::') {
+              calloutLines.push(section.lines[cursor].trim());
+              cursor += 1;
+            }
+
+            const message = calloutLines.join(' ');
+            elements.push(
+              <div
+                key={`${section.id}-callout-${i}`}
+                className="rounded-lg border-l-4 border-blue-500 bg-blue-50 px-4 py-3 dark:bg-blue-900/20"
+              >
+                <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{variant}</p>
+                <p className="mt-1 leading-relaxed text-gray-900 dark:text-gray-100">{renderInline(message)}</p>
+              </div>
+            );
+
+            i = cursor;
+            continue;
+          }
+
+          if (line.startsWith('|')) {
+            flushParagraph();
+            const tableLines: string[] = [];
+            let cursor = i;
+
+            while (cursor < section.lines.length && section.lines[cursor].trim().startsWith('|')) {
+              tableLines.push(section.lines[cursor].trim());
+              cursor += 1;
+            }
+
+            const table = parseTable(tableLines);
+            elements.push(
+              <div key={`${section.id}-table-${i}`} className="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+                <table className="min-w-full border-collapse bg-white text-sm dark:bg-gray-900">
+                  <thead>
+                    <tr className="bg-gray-100 dark:bg-gray-800">
+                      {table.headers.map((header, headerIndex) => (
+                        <th key={`${section.id}-th-${headerIndex}`} className="border border-gray-200 px-4 py-2 text-left font-semibold text-gray-900 dark:border-gray-700 dark:text-gray-100">
+                          {renderInline(header)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {table.rows.map((row, rowIndex) => (
+                      <tr key={`${section.id}-tr-${rowIndex}`} className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800/60">
+                        {row.map((cell, cellIndex) => (
+                          <td key={`${section.id}-td-${rowIndex}-${cellIndex}`} className="border border-gray-200 px-4 py-2 align-top text-gray-900 dark:border-gray-700 dark:text-gray-100">
+                            {renderInline(cell)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            );
+
+            i = cursor - 1;
             continue;
           }
 
@@ -135,7 +221,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             }
 
             elements.push(
-              <ul key={`${section.id}-ul-${i}`} className="list-disc space-y-1 pl-6 text-slate-700 dark:text-slate-300">
+              <ul key={`${section.id}-ul-${i}`} className="list-disc space-y-2 pl-6 text-gray-900 dark:text-gray-100">
                 {listItems.map((item) => (
                   <li key={`${section.id}-li-${item}`}>{renderInline(item)}</li>
                 ))}
@@ -157,7 +243,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             }
 
             elements.push(
-              <ol key={`${section.id}-ol-${i}`} className="list-decimal space-y-1 pl-6 text-slate-700 dark:text-slate-300">
+              <ol key={`${section.id}-ol-${i}`} className="list-decimal space-y-2 pl-6 text-gray-900 dark:text-gray-100">
                 {listItems.map((item) => (
                   <li key={`${section.id}-oi-${item}`}>{renderInline(item)}</li>
                 ))}
@@ -174,17 +260,14 @@ export function InteractiveArticleContent({ content }: { content: string }) {
         flushParagraph();
 
         return (
-          <details
+          <section
             key={section.id}
             id={section.id}
-            open={idx === 0}
-            className="rounded-xl border border-slate-200 bg-white p-4 open:shadow-sm dark:border-slate-700 dark:bg-slate-900"
+            className="space-y-5 rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-900"
           >
-            <summary className="cursor-pointer list-none text-lg font-semibold text-slate-900 dark:text-slate-100">
-              <span>{section.title}</span>
-            </summary>
-            <div className="mt-4 space-y-3">{elements}</div>
-          </details>
+            <h2 className="text-2xl font-semibold leading-tight text-gray-900 dark:text-gray-100">{section.title}</h2>
+            <div className="space-y-4">{elements}</div>
+          </section>
         );
       })}
     </div>

@@ -54,6 +54,39 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     modifiedTime: post.updatedAt
   });
   const toc = getHeadings(post.content);
+  const isTaxBracketArticle = post.slug === '2026-federal-tax-brackets-marginal-rate-decisions';
+  const faqSchema = isTaxBracketArticle
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: 'What is a marginal tax rate?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'A marginal tax rate is the tax rate applied to your next dollar of taxable ordinary income.'
+            }
+          },
+          {
+            '@type': 'Question',
+            name: 'How do tax brackets work?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Federal tax brackets are progressive, so each band of income is taxed at its own rate instead of your entire income being taxed at the top rate.'
+            }
+          },
+          {
+            '@type': 'Question',
+            name: 'Should I choose Roth or pre-tax contributions?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'The best choice depends on your current marginal bracket, expected future tax rate, and current cash-flow flexibility. Many households use a blend for tax diversification.'
+            }
+          }
+        ]
+      }
+    : null;
   const relatedLinks = getRelatedLinks(post.category);
   const calculatorLinks = matchingCalculatorLinksByBlogCategory[post.category] ?? defaultMatchingCalculatorLinks;
   const visual = getBlogVisual(post.category, post.slug);
@@ -81,13 +114,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   );
 
   return (
-    <article className="space-y-6 rounded-xl bg-white p-6">
+    <article className="mx-auto max-w-4xl space-y-8 rounded-xl bg-white p-5 sm:p-6 lg:p-8 dark:bg-gray-950">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      {faqSchema ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /> : null}
 
       <header className="space-y-4">
-        <h1 className="text-3xl font-bold">{post.title}</h1>
-        <p className="text-slate-600">{post.description}</p>
-        <div className={`relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${visual.heroClassName} p-4 sm:p-6`}>
+        <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-gray-100">{post.title}</h1>
+        <p className="max-w-3xl leading-relaxed text-gray-600 dark:text-gray-400">{post.description}</p>
+        <div className={`relative aspect-[16/9] overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br ${visual.heroClassName} p-4 sm:p-6 dark:border-gray-700`}>
           <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-cover p-4 sm:p-6" />
         </div>
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
@@ -95,12 +129,15 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />
 
-      <section className="rounded-lg border bg-slate-50 p-4">
-        <h2 className="font-semibold">Table of contents</h2>
-        <ul className="mt-2 list-disc pl-5 text-sm text-slate-700">
+      <section className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+        <h2 className="font-semibold text-gray-900 dark:text-gray-100">Table of contents</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-600 dark:text-gray-400">
           {toc.map((item) => (
             <li key={item}>
-              <a className="hover:text-slate-900 hover:underline" href={`#${item.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')}`}>
+              <a
+                className="text-blue-600 hover:underline dark:text-blue-400"
+                href={`#${item.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')}`}
+              >
                 {item}
               </a>
             </li>
@@ -127,27 +164,27 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       )}
 
       {comparisonLinks.length > 0 && (
-        <section className="rounded-xl border border-slate-200 bg-white p-4">
-          <h3 className="mb-2 font-semibold">Compare options</h3>
+        <section className="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-900">
+          <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Compare options</h3>
           <div className="flex flex-wrap gap-2 text-sm">
             {comparisonLinks.map((link) => (
-              <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
+              <Link key={link.href} className="rounded-full border border-gray-300 px-3 py-1 text-gray-900 dark:border-gray-600 dark:text-gray-100" href={link.href}>{link.label}</Link>
             ))}
           </div>
         </section>
       )}
 
       {(continueLearningLinks.length > 0 || relatedPosts.length > 0) && (
-        <section className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
-          <h2 className="text-xl font-semibold">Continue learning</h2>
+        <section className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Continue learning</h2>
           {relatedPosts.length > 0 && (
             <ul className="grid gap-3 text-sm md:grid-cols-2">
               {relatedPosts.map((related) => (
                 <li key={related.slug}>
-                  <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{related.category.replace(/-/g, ' ')}</p>
-                    <h3 className="mt-1 text-base font-semibold text-slate-900">{related.title}</h3>
-                    <p className="mt-1 line-clamp-2 text-sm text-slate-600">{related.description}</p>
+                  <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-gray-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-gray-700 dark:bg-gray-950 dark:hover:border-blue-500/50 dark:hover:bg-blue-900/20">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{related.category.replace(/-/g, ' ')}</p>
+                    <h3 className="mt-1 text-base font-semibold text-gray-900 dark:text-gray-100">{related.title}</h3>
+                    <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{related.description}</p>
                   </Link>
                 </li>
               ))}
@@ -156,12 +193,12 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           {continueLearningLinks.length > 0 && (
             <div className="flex flex-wrap gap-2 text-sm">
               {continueLearningLinks.map((link) => (
-                <Link key={link.href} className="rounded-full border border-slate-300 bg-white px-3 py-1" href={link.href}>{link.label}</Link>
+                <Link key={link.href} className="rounded-full border border-gray-300 bg-white px-3 py-1 text-blue-600 hover:underline dark:border-gray-600 dark:bg-gray-950 dark:text-blue-400" href={link.href}>{link.label}</Link>
               ))}
             </div>
           )}
           {relatedPosts.length === 0 && continueLearningLinks.length === 0 && (
-            <p className="text-slate-500">More related guides coming soon.</p>
+            <p className="text-gray-600 dark:text-gray-400">More related guides coming soon.</p>
           )}
         </section>
       )}
