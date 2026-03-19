@@ -14,20 +14,33 @@ export function ContactPageContent() {
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<'idle' | 'submitted'>('idle');
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const subject = `[${topic}] Support request from ${name || 'FinanceSphere user'}`;
-    const body = [
-      `Name: ${name || 'N/A'}`,
-      `Email: ${email || 'N/A'}`,
-      `Topic: ${topic}`,
-      '',
-      message || 'No message entered.'
-    ].join('\n');
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          topic,
+          message
+        })
+      });
 
-    window.location.href = `mailto:${supportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setStatus('submitted');
+      if (!response.ok) {
+        throw new Error('Contact request failed.');
+      }
+
+      setStatus('submitted');
+      setName('');
+      setEmail('');
+      setTopic('General support');
+      setMessage('');
+    } catch (error) {
+      console.error('[contact] submit failed:', error);
+    }
   };
 
   return (
