@@ -70,10 +70,10 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           },
           {
             '@type': 'Question',
-            name: 'How do tax brackets work?',
+            name: 'Do tax brackets apply to all of my income?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Federal tax brackets are progressive, so each band of income is taxed at its own rate instead of your entire income being taxed at the top rate.'
+              text: 'No. Federal tax brackets are progressive, so only the portion of income inside each bracket is taxed at that bracket’s rate.'
             }
           },
           {
@@ -81,7 +81,23 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
             name: 'Should I choose Roth or pre-tax contributions?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'The best choice depends on your current marginal bracket, expected future tax rate, and current cash-flow flexibility. Many households use a blend for tax diversification.'
+              text: 'It depends on whether your future tax rate will likely be higher or lower than your current one. Many households use a blend for flexibility.'
+            }
+          },
+          {
+            '@type': 'Question',
+            name: 'When does a Roth conversion make sense?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Roth conversions are often most attractive in temporarily low-income years, especially when the conversion can stay within a target bracket and tax can be paid from outside cash.'
+            }
+          },
+          {
+            '@type': 'Question',
+            name: 'Can I really realize long-term capital gains at 0%?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'In some cases, yes. If taxable income falls within the 0% long-term capital-gains range for your filing status, some or all gains may be taxed at 0% federally.'
             }
           }
         ]
@@ -114,14 +130,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   );
 
   return (
-    <article className="mx-auto max-w-4xl space-y-8 rounded-xl bg-white p-5 sm:p-6 lg:p-8 dark:bg-gray-950">
+    <article className="mx-auto max-w-4xl space-y-8 rounded-xl bg-white p-5 sm:p-6 lg:p-8 dark:bg-neutral-900">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
       {faqSchema ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /> : null}
 
       <header className="space-y-4">
-        <h1 className="text-3xl font-bold leading-tight text-gray-900 dark:text-gray-100">{post.title}</h1>
-        <p className="max-w-3xl leading-relaxed text-gray-600 dark:text-gray-400">{post.description}</p>
-        <div className={`relative aspect-[16/9] overflow-hidden rounded-2xl border border-gray-200 bg-gradient-to-br ${visual.heroClassName} p-4 sm:p-6 dark:border-gray-700`}>
+        <h1 className="text-3xl font-bold leading-tight text-neutral-900 dark:text-neutral-100">{post.title}</h1>
+        <p className="max-w-3xl leading-relaxed text-neutral-600 dark:text-neutral-400">{post.description}</p>
+        <div className={`relative aspect-[16/9] overflow-hidden rounded-2xl border border-neutral-200 bg-gradient-to-br ${visual.heroClassName} p-4 sm:p-6 dark:border-neutral-700`}>
           <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-cover p-4 sm:p-6" />
         </div>
         <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
@@ -129,9 +145,9 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />
 
-      <section className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
-        <h2 className="font-semibold text-gray-900 dark:text-gray-100">Table of contents</h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-600 dark:text-gray-400">
+      <section className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800/50">
+        <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Table of contents</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-600 dark:text-neutral-400">
           {toc.map((item) => (
             <li key={item}>
               <a
