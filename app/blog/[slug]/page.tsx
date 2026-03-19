@@ -57,6 +57,28 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const relatedLinks = getRelatedLinks(post.category);
   const calculatorLinks = matchingCalculatorLinksByBlogCategory[post.category] ?? defaultMatchingCalculatorLinks;
   const visual = getBlogVisual(post.category, post.slug);
+  const calculatorSupportLinks = Array.from(
+    new Map(
+      [
+        ...calculatorLinks.map((item) => ({ label: item.label, href: resolveCalculatorHref(item.href) })),
+        ...relatedLinks.filter((link) => link.type === 'calculator').map((link) => ({ label: link.label, href: link.href }))
+      ].map((link) => [link.href, link])
+    ).values()
+  );
+  const comparisonLinks = Array.from(
+    new Map(
+      relatedLinks
+        .filter((link) => link.type === 'comparison')
+        .map((link) => [link.href, link] as const)
+    ).values()
+  );
+  const continueLearningLinks = Array.from(
+    new Map(
+      relatedLinks
+        .filter((link) => link.type === 'hub' || link.type === 'article')
+        .map((link) => [link.href, link] as const)
+    ).values()
+  );
 
   return (
     <article className="space-y-6 rounded-xl bg-white p-6">
@@ -90,63 +112,59 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <NewsletterForm source="blog" leadMagnet="7-day-money-reset-checklist" className="max-w-2xl border-2 border-blue-100" />
 
-      <section className="rounded-xl bg-blue-600 p-5 text-white">
-        <h3 className="text-xl font-semibold">Put this guide into action</h3>
-        <p className="text-sm text-blue-100">Use the matching calculators below first, then compare product options that fit your scenario.</p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {calculatorLinks.map((item) => {
-            const href = resolveCalculatorHref(item.href);
-            return (
-              <Link key={`${item.label}-${href}`} href={href} className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-700">
+      {calculatorSupportLinks.length > 0 && (
+        <section className="rounded-xl bg-blue-600 p-5 text-white">
+          <h3 className="text-xl font-semibold">Related tools</h3>
+          <p className="text-sm text-blue-100">Run your numbers first so the next decision is based on your actual scenario, not averages.</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {calculatorSupportLinks.map((item) => (
+              <Link key={item.href} href={item.href} className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-blue-700">
                 {item.label}
               </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <h3 className="mb-2 font-semibold">Related tools</h3>
-          <div className="flex flex-wrap gap-2 text-sm">
-            {relatedLinks.filter((link) => link.type === 'calculator').map((link) => (
-              <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
             ))}
           </div>
-        </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
+        </section>
+      )}
+
+      {comparisonLinks.length > 0 && (
+        <section className="rounded-xl border border-slate-200 bg-white p-4">
           <h3 className="mb-2 font-semibold">Compare options</h3>
           <div className="flex flex-wrap gap-2 text-sm">
-            {relatedLinks.filter((link) => link.type === 'comparison').map((link) => (
+            {comparisonLinks.map((link) => (
               <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
             ))}
           </div>
-        </div>
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <h3 className="mb-2 font-semibold">Continue learning</h3>
-          <div className="flex flex-wrap gap-2 text-sm">
-            {relatedLinks.filter((link) => link.type === 'hub' || link.type === 'article').map((link) => (
-              <Link key={link.href} className="rounded-full border px-3 py-1" href={link.href}>{link.label}</Link>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section>
-        <h2 className="mb-3 text-xl font-semibold">Related articles</h2>
-        <ul className="grid gap-3 text-sm md:grid-cols-2">
-          {relatedPosts.map((related) => (
-            <li key={related.slug}>
-              <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
-                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{related.category.replace(/-/g, ' ')}</p>
-                <h3 className="mt-1 text-base font-semibold text-slate-900">{related.title}</h3>
-                <p className="mt-1 line-clamp-2 text-sm text-slate-600">{related.description}</p>
-              </Link>
-            </li>
-          ))}
-          {relatedPosts.length === 0 && <li className="text-slate-500">More related guides coming soon.</li>}
-        </ul>
-      </section>
+      {(continueLearningLinks.length > 0 || relatedPosts.length > 0) && (
+        <section className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <h2 className="text-xl font-semibold">Continue learning</h2>
+          {relatedPosts.length > 0 && (
+            <ul className="grid gap-3 text-sm md:grid-cols-2">
+              {relatedPosts.map((related) => (
+                <li key={related.slug}>
+                  <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/40">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">{related.category.replace(/-/g, ' ')}</p>
+                    <h3 className="mt-1 text-base font-semibold text-slate-900">{related.title}</h3>
+                    <p className="mt-1 line-clamp-2 text-sm text-slate-600">{related.description}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          {continueLearningLinks.length > 0 && (
+            <div className="flex flex-wrap gap-2 text-sm">
+              {continueLearningLinks.map((link) => (
+                <Link key={link.href} className="rounded-full border border-slate-300 bg-white px-3 py-1" href={link.href}>{link.label}</Link>
+              ))}
+            </div>
+          )}
+          {relatedPosts.length === 0 && continueLearningLinks.length === 0 && (
+            <p className="text-slate-500">More related guides coming soon.</p>
+          )}
+        </section>
+      )}
     </article>
   );
 }
