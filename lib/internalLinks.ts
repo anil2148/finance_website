@@ -5,7 +5,15 @@ const categoryLinks: Record<string, RelatedLink[]> = {
     { label: 'Investing hub', href: '/learn/investing', type: 'hub' },
     { label: 'Best investment apps', href: '/best-investment-apps', type: 'comparison' },
     { label: 'Investment growth calculator', href: '/calculators/investment-growth-calculator', type: 'calculator' },
-    { label: 'Tax-efficient investing rules', href: '/blog/tax-efficient-investing-account-location-decisions', type: 'article' }
+    { label: 'Tax-efficient investing rules', href: '/blog/seo-tax-efficient-investing-tips', type: 'article' }
+  ],
+  tax: [
+    { label: '2026 federal tax brackets guide', href: '/blog/2026-federal-tax-brackets-marginal-rate-decisions', type: 'hub' },
+    { label: 'Roth vs traditional 401(k)', href: '/blog/roth-vs-traditional-401k-decision-guide', type: 'article' },
+    { label: 'Lower tax bracket strategy', href: '/blog/how-to-stay-in-a-lower-tax-bracket', type: 'article' },
+    { label: 'Capital gains 0% harvesting', href: '/blog/capital-gains-tax-strategy-0-percent-harvesting-2026', type: 'article' },
+    { label: 'Pre-tax vs post-tax contributions', href: '/blog/pre-tax-vs-post-tax-contributions-simple-guide', type: 'article' },
+    { label: 'Salary after-tax calculator', href: '/calculators/salary-after-tax-calculator', type: 'calculator' }
   ],
   'credit-cards': [
     { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' },
@@ -47,7 +55,7 @@ const categoryLinks: Record<string, RelatedLink[]> = {
     { label: 'Passive income hub', href: '/learn/passive-income', type: 'hub' },
     { label: 'Investment account comparisons', href: '/comparison?category=investment_app', type: 'comparison' },
     { label: 'Compound interest calculator', href: '/calculators/compound-interest-calculator', type: 'calculator' },
-    { label: 'Tax-efficient investing rules', href: '/blog/tax-efficient-investing-account-location-decisions', type: 'article' }
+    { label: 'Tax-efficient investing rules', href: '/blog/seo-tax-efficient-investing-tips', type: 'article' }
   ],
   'credit cards': [
     { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' },
