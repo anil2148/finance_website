@@ -13,6 +13,8 @@ import { getBlogVisual } from '@/lib/blogVisuals';
 import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByBlogCategory, resolveCalculatorHref } from '@/lib/calculatorLinks';
 import { redirectForSlug } from '@/lib/blogCleanup';
 
+export const dynamic = 'force-dynamic';
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
