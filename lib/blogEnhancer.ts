@@ -28,6 +28,9 @@ const THIN_PATTERNS = [
 ];
 
 const REPETITIVE_TITLE_PATTERNS = [/practical\s+\d{4}\s+guide\s*#\d+/i, /complete guide\s*\(\d{4}\)/i, /guide\s*#\d+/i];
+const PRESERVE_SOURCE_CONTENT_SLUGS = new Set([
+  '2026-federal-tax-brackets-marginal-rate-decisions'
+]);
 
 function hashNumber(value: string) {
   return [...value].reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
@@ -511,7 +514,7 @@ export function enhancePost(post: BlogPost): BlogPost {
   const blueprint = inferBlueprint(`${post.category} ${post.slug}`.toLowerCase());
   const title = normalizeTitle(post, topicLabel, blueprint);
   const description = normalizeDescription(post, topicLabel, blueprint);
-  const lowValue = isLowValueContent(post.content);
+  const lowValue = !PRESERVE_SOURCE_CONTENT_SLUGS.has(post.slug) && isLowValueContent(post.content);
 
   return {
     ...post,
