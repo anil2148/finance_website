@@ -22,6 +22,23 @@ export default function BestInvestmentAppsPage() {
         </p>
       </section>
 
+      <section className="rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
+        <h3 className="text-lg font-semibold text-slate-900">How to choose the best investment app for you</h3>
+        <p className="mt-2 text-sm text-slate-700">
+          If you feel stuck comparing features, focus on decision fit instead of hype. The best app is the one you will keep funding consistently, with fees and tools that match your real investing style.
+        </p>
+        <p className="mt-2 text-sm text-slate-700">
+          Decision framing: prioritize account type support, total annual cost, automation quality, and whether the interface helps you stay long-term. Fancy features matter less than repeatable behavior.
+        </p>
+        <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-slate-700">
+          <li>Choose your primary use case (retirement, taxable investing, or both).</li>
+          <li>Compare total cost, including advisory fees and fund expense ratios.</li>
+          <li>Verify core features: recurring buys, fractional shares, and account transfers.</li>
+          <li>Check tax tools and reporting quality if you invest in taxable accounts.</li>
+          <li>Pick one platform and automate contributions before optimizing anything else.</li>
+        </ol>
+      </section>
+
       <SeoComparisonPage
         pageTitle="Best Investment Apps"
         intro="Compare beginner-friendly and advanced investing apps by cost, account tools, automation features, and user experience to choose the right platform."
