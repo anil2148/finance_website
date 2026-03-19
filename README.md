@@ -1,4 +1,4 @@
-# FinanceSphere – Modern Personal Finance Platform
+# FinanceSphere – Modern Personal Finance Platform 
 
 FinanceSphere is a JAMstack + serverless personal finance platform built with **Next.js App Router**, **TypeScript**, **TailwindCSS**, **Framer Motion**, **Recharts**, **NextAuth**, and **Prisma/PostgreSQL**.
 
