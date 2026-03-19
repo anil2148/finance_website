@@ -213,7 +213,7 @@ const slugVisualOverrides: Record<string, BlogVisual> = {
     cardClassName: 'from-sky-50 via-blue-50 to-indigo-100',
     heroClassName: 'from-sky-50 via-blue-50 to-indigo-100'
   },
-  'personal-loan-comparison-for-bad-month-resilience': {
+  'seo-how-to-compare-personal-loan-apr': {
     src: '/images/blog-visual-credit.svg',
     alt: 'Personal loan offer comparison worksheet with APR, fee, and payment stress columns',
     cardClassName: 'from-blue-50 via-indigo-50 to-violet-100',

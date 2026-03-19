@@ -6,9 +6,9 @@ export const revalidate = 3600;
 
 const featuredGuides = [
   { href: '/blog/debt-to-income-ratio-90-day-plan', label: 'Debt-to-Income Ratio Guide' },
-  { href: '/blog/personal-loan-comparison-for-bad-month-resilience', label: 'How to Compare Personal Loan APR' },
-  { href: '/blog/personal-loan-comparison-for-bad-month-resilience', label: 'Fixed vs Variable Rate Loans' },
-  { href: '/blog/personal-loan-comparison-for-bad-month-resilience', label: 'Prepayment Penalty Guide' }
+  { href: '/blog/seo-how-to-compare-personal-loan-apr', label: 'How to Compare Personal Loan APR' },
+  { href: '/blog/seo-how-to-compare-personal-loan-apr', label: 'Fixed vs Variable Rate Loans' },
+  { href: '/blog/seo-how-to-compare-personal-loan-apr', label: 'Prepayment Penalty Guide' }
 ];
 
 export default function LoansPage() {

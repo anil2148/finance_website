@@ -78,7 +78,7 @@ const hubs: Record<string, HubConfig> = {
       'Run payoff acceleration scenarios for 12- and 24-month prepayment options.'
     ],
     resources: [
-      { href: '/blog/personal-loan-comparison-for-bad-month-resilience', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
+      { href: '/blog/seo-how-to-compare-personal-loan-apr', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
       { href: '/blog/mortgage-preapproval-checklist-underwriting', title: 'Mortgage preapproval checklist', description: 'Prepare documents and timeline expectations to avoid underwriting delays.' },
       { href: '/blog/debt-to-income-ratio-90-day-plan', title: 'Debt-to-income ratio guide', description: 'Use front-end and back-end DTI targets to improve approval odds before applying.' }
     ],
