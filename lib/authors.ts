@@ -20,8 +20,8 @@ export const AUTHOR_PROFILES: Record<string, AuthorProfile> = {
   [EDITORIAL_REVIEWER_ID]: {
     id: EDITORIAL_REVIEWER_ID,
     name: 'FinanceSphere Editorial Team',
-    role: 'Editorial Review Team',
-    bio: 'Editorial quality checks are performed by the FinanceSphere Editorial Team before major updates are published.'
+    role: 'FinanceSphere Editorial Team',
+    bio: 'Fact-check and compliance review completed before publication updates.'
   }
 };
 
