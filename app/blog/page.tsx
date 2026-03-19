@@ -89,14 +89,16 @@ export default function BlogPage() {
 
   return (
     <section className="space-y-7">
-      <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-[1.25fr_1fr] md:items-center">
+      <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-[1.25fr_1fr] md:items-center dark:border-slate-700 dark:bg-slate-900">
         <div>
-          <h1 className="text-3xl font-bold">FinanceSphere Blog</h1>
-          <p className="text-slate-600">Read practical explainers tied to real decisions—choosing between loan terms, reducing credit-card interest, building an emergency fund, and improving long-term investing habits.</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">FinanceSphere Blog</h1>
+          <p className="text-slate-600 dark:text-slate-300">Read practical explainers tied to real decisions—choosing between loan terms, reducing credit-card interest, building an emergency fund, and improving long-term investing habits.</p>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Every article is reviewed for clarity, responsible framing, and real-world usability before publication.</p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <Link href="/editorial-policy" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Editorial standards</Link>
-            <Link href="/how-we-make-money" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">How we make money</Link>
-            <Link href="/help" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Help center</Link>
+            <Link href="/editorial-policy" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">Editorial standards</Link>
+            <Link href="/how-we-make-money" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">How we make money</Link>
+            <Link href="/financial-disclaimer" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">Financial disclaimer</Link>
+            <Link href="/help" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">Help center</Link>
           </div>
         </div>
         <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-slate-50 to-blue-50 p-4">

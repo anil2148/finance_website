@@ -165,6 +165,25 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <InteractiveArticleContent content={post.content} />
 
+      <section className="rounded-xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-500/50 dark:bg-amber-950/30">
+        <h2 className="text-xl font-semibold text-amber-900 dark:text-amber-100">Before you act on this guide</h2>
+        <p className="mt-2 text-sm leading-6 text-amber-900 dark:text-amber-100">
+          FinanceSphere articles are for informational and educational purposes only and are not individualized investment, tax, legal, or accounting advice.
+          Run your own numbers, verify product terms, and consider speaking with a qualified professional for your situation.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          <Link href="/editorial-policy" className="rounded-full border border-amber-300 bg-white/70 px-3 py-1 font-medium text-amber-900 hover:bg-white dark:border-amber-400/60 dark:bg-amber-900/40 dark:text-amber-100">
+            Editorial policy
+          </Link>
+          <Link href="/financial-disclaimer" className="rounded-full border border-amber-300 bg-white/70 px-3 py-1 font-medium text-amber-900 hover:bg-white dark:border-amber-400/60 dark:bg-amber-900/40 dark:text-amber-100">
+            Financial disclaimer
+          </Link>
+          <Link href="/contact" className="rounded-full border border-amber-300 bg-white/70 px-3 py-1 font-medium text-amber-900 hover:bg-white dark:border-amber-400/60 dark:bg-amber-900/40 dark:text-amber-100">
+            Contact the editorial team
+          </Link>
+        </div>
+      </section>
+
       <NewsletterForm source="blog" leadMagnet="7-day-money-reset-checklist" className="max-w-2xl border-2 border-blue-100" />
 
       {calculatorSupportLinks.length > 0 && (

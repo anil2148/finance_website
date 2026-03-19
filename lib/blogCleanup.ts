@@ -25,6 +25,9 @@ const bySlug = new Map<string, CleanupItem>((cleanupInventory as CleanupItem[]).
 const redirectsBySource = new Map<string, RedirectItem>((redirectMap as RedirectItem[]).map((item) => [item.source, item]));
 
 const legacySlugFallbacks: Array<{ pattern: RegExp; destination: string; reason: RedirectItem['reason'] }> = [
+  { pattern: /^seo-401k-contribution-rate-guide-2026$/i, destination: '/blog/401k-contribution-rate-sustainable-target-2026', reason: 'MERGE' },
+  { pattern: /^seo-zero-based-budget-monthly-system$/i, destination: '/blog/zero-based-budget-assign-every-dollar-job', reason: 'MERGE' },
+  { pattern: /^seo-credit-card-apr-2026-cost-to-carry-balance$/i, destination: '/blog/seo-credit-card-apr-2026-what-your-rate-costs', reason: 'MERGE' },
   { pattern: /^beginner-investing-guides-\d+$/i, destination: '/blog/beginner-investing-roadmap-year-one-milestones', reason: 'REDIRECT' },
   { pattern: /^tax-saving-strategies-\d+$/i, destination: '/blog/tax-efficient-investing-account-location-decisions', reason: 'REDIRECT' },
   { pattern: /^tax-optimization-guide-\d+$/i, destination: '/blog/tax-efficient-investing-account-location-decisions', reason: 'REDIRECT' },
