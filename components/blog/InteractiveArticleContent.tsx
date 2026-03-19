@@ -117,7 +117,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
           const paragraph = paragraphBuffer.join(' ').trim();
           if (paragraph) {
             elements.push(
-              <p key={`${section.id}-p-${elements.length}`} className="text-base leading-7 text-neutral-700 dark:text-neutral-300">
+              <p key={`${section.id}-p-${elements.length}`} className="text-[1.02rem] leading-8 text-neutral-700 dark:text-neutral-200">
                 {renderInline(paragraph)}
               </p>
             );
@@ -139,6 +139,16 @@ export function InteractiveArticleContent({ content }: { content: string }) {
               <h3 key={`${section.id}-h-${i}`} className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
                 {line.replace(/^###\s+/, '').trim()}
               </h3>
+            );
+            continue;
+          }
+
+          if (line.startsWith('#### ')) {
+            flushParagraph();
+            elements.push(
+              <h4 key={`${section.id}-h4-${i}`} className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
+                {line.replace(/^####\s+/, '').trim()}
+              </h4>
             );
             continue;
           }
@@ -290,7 +300,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             className="space-y-6 rounded-xl border border-neutral-200 bg-white p-5 sm:p-6 dark:border-neutral-700 dark:bg-neutral-900"
           >
             <h2 className="text-2xl font-semibold leading-tight text-neutral-900 dark:text-neutral-100">{section.title}</h2>
-            <div className="space-y-5">{elements}</div>
+            <div className="space-y-5 [&_a]:font-medium">{elements}</div>
           </section>
         );
       })}
