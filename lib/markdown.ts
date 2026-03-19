@@ -24,6 +24,21 @@ export type BlogPost = {
 };
 
 let postsCache: BlogPost[] | null = null;
+let postsCacheKey: string | null = null;
+
+function getContentCacheKey() {
+  const files = fs
+    .readdirSync(contentDir)
+    .filter((f) => f.endsWith('.mdx'))
+    .sort();
+
+  return files
+    .map((file) => {
+      const stats = fs.statSync(path.join(contentDir, file));
+      return `${file}:${stats.mtimeMs}`;
+    })
+    .join('|');
+}
 
 function loadPosts() {
   const loadedPosts = fs
@@ -74,8 +89,11 @@ function loadPosts() {
 }
 
 export function getPosts(): BlogPost[] {
-  if (!postsCache) {
+  const cacheKey = getContentCacheKey();
+
+  if (!postsCache || postsCacheKey !== cacheKey) {
     postsCache = loadPosts();
+    postsCacheKey = cacheKey;
   }
 
   return postsCache;
