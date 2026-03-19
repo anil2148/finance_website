@@ -165,7 +165,7 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
 
 const featuredOrderByCategory: Record<string, string[]> = {
   investing: ['beginner-investing-roadmap-year-one-milestones', 'tax-efficient-investing-account-location-decisions'],
-  loans: ['mortgage-preapproval-checklist-underwriting', 'personal-loan-comparison-for-bad-month-resilience', 'debt-to-income-ratio-90-day-plan'],
+  loans: ['mortgage-preapproval-checklist-underwriting', 'seo-how-to-compare-personal-loan-apr', 'debt-to-income-ratio-90-day-plan'],
   'credit-cards': ['credit-utilization-statement-cycle-playbook'],
   'savings-accounts': ['emergency-fund-target-by-recovery-timeline', 'how-to-choose-a-high-yield-savings-account', 'budget-rule-based-reset']
 };
