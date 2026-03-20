@@ -15,11 +15,11 @@ const comparisonSchema = {
   name: 'FinanceSphere Product Comparisons',
   description: 'Compare financial products by rates, fees, bonuses, and practical fit for your goals.',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Credit Cards', url: 'https://www.financesphere.io/comparison?category=credit_card' },
-    { '@type': 'ListItem', position: 2, name: 'Savings Accounts', url: 'https://www.financesphere.io/comparison?category=savings_account' },
-    { '@type': 'ListItem', position: 3, name: 'Investment Apps', url: 'https://www.financesphere.io/comparison?category=investment_app' },
-    { '@type': 'ListItem', position: 4, name: 'Mortgage Lenders', url: 'https://www.financesphere.io/comparison?category=mortgage_lender' },
-    { '@type': 'ListItem', position: 5, name: 'Personal Loans', url: 'https://www.financesphere.io/comparison?category=personal_loan' }
+    { '@type': 'ListItem', position: 1, name: 'Credit Cards', url: 'https://financesphere.io/comparison?category=credit_card' },
+    { '@type': 'ListItem', position: 2, name: 'Savings Accounts', url: 'https://financesphere.io/comparison?category=savings_account' },
+    { '@type': 'ListItem', position: 3, name: 'Investment Apps', url: 'https://financesphere.io/comparison?category=investment_app' },
+    { '@type': 'ListItem', position: 4, name: 'Mortgage Lenders', url: 'https://financesphere.io/comparison?category=mortgage_lender' },
+    { '@type': 'ListItem', position: 5, name: 'Personal Loans', url: 'https://financesphere.io/comparison?category=personal_loan' }
   ]
 };
 

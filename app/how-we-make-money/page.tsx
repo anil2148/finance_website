@@ -4,7 +4,7 @@ import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 export const metadata: Metadata = {
   title: 'How We Make Money',
   description: 'FinanceSphere revenue model, including affiliate partnerships, advertising, and sponsored placements.',
-  alternates: { canonical: 'https://www.financesphere.io/how-we-make-money' }
+  alternates: { canonical: 'https://financesphere.io/how-we-make-money' }
 };
 
 export default function HowWeMakeMoneyPage() {

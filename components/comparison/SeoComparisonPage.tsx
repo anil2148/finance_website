@@ -24,7 +24,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
     '@type': 'Product',
     name: item.name,
     brand: item.bank,
-    offers: { '@type': 'Offer', url: `https://www.financesphere.io/go/${item.id}` },
+    offers: { '@type': 'Offer', url: `https://financesphere.io/go/${item.id}` },
     aggregateRating: { '@type': 'AggregateRating', ratingValue: item.rating, reviewCount: 120 }
   }));
 

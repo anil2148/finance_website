@@ -1,30 +1,80 @@
 const fs = require('fs');
 const path = require('path');
+const matter = require('gray-matter');
 
 const BASE_URL = 'https://financesphere.io';
 const lastMod = new Date().toISOString().split('T')[0];
+const blogDir = path.join(__dirname, 'content', 'blog');
+
+const corePages = [
+  { path: '/', changefreq: 'weekly', priority: '1.0' },
+  { path: '/calculators', changefreq: 'weekly', priority: '0.95' },
+  { path: '/comparison', changefreq: 'weekly', priority: '0.9' },
+  { path: '/blog', changefreq: 'weekly', priority: '0.9' },
+  { path: '/tools', changefreq: 'monthly', priority: '0.8' },
+  { path: '/learn/investing', changefreq: 'weekly', priority: '0.8' },
+  { path: '/learn/loans', changefreq: 'weekly', priority: '0.8' },
+  { path: '/learn/credit-cards', changefreq: 'weekly', priority: '0.8' },
+  { path: '/compare/mortgage-rate-comparison', changefreq: 'weekly', priority: '0.8' },
+  { path: '/best-investment-apps', changefreq: 'weekly', priority: '0.8' },
+  { path: '/best-savings-accounts-usa', changefreq: 'weekly', priority: '0.8' },
+  { path: '/best-credit-cards-2026', changefreq: 'weekly', priority: '0.8' }
+];
+
+const calculatorPages = [
+  'mortgage-calculator',
+  'loan-calculator',
+  'compound-interest-calculator',
+  'retirement-calculator',
+  'fire-calculator',
+  'net-worth-calculator',
+  'investment-growth-calculator',
+  'savings-goal-calculator',
+  'debt-payoff-calculator',
+  'debt-snowball-calculator',
+  'debt-avalanche-calculator',
+  'credit-card-payoff-calculator',
+  'student-loan-calculator',
+  'auto-loan-calculator',
+  'salary-after-tax-calculator',
+  'budget-planner'
+].map((slug) => ({
+  path: `/calculators/${slug}`,
+  changefreq: 'weekly',
+  priority: '0.85'
+}));
+
+function getBlogPages() {
+  if (!fs.existsSync(blogDir)) return [];
+
+  return fs
+    .readdirSync(blogDir)
+    .filter((file) => file.endsWith('.mdx'))
+    .map((file) => {
+      const raw = fs.readFileSync(path.join(blogDir, file), 'utf8');
+      const { data } = matter(raw);
+      if (!data.slug || !data.date || data.slug.startsWith('seo-')) return null;
+
+      return {
+        path: `/blog/${data.slug}`,
+        changefreq: 'monthly',
+        priority: '0.72',
+        lastmod: (data.updatedAt ?? data.date).toString().slice(0, 10)
+      };
+    })
+    .filter(Boolean);
+}
 
 const pages = [
-  { path: '/', changefreq: 'monthly', priority: '1.0' },
-  { path: '/calculators', changefreq: 'weekly', priority: '0.9' },
-  { path: '/tools', changefreq: 'monthly', priority: '0.8' },
-  { path: '/dashboard', changefreq: 'monthly', priority: '0.8' },
-  { path: '/comparison', changefreq: 'monthly', priority: '0.8' },
-  { path: '/blog', changefreq: 'monthly', priority: '0.8' },
-  { path: '/mortgage-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/loan-emi-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/compound-interest-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/retirement-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/fire-retirement-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/net-worth-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/investment-growth-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/savings-goal-calculator', changefreq: 'weekly', priority: '0.9' },
-  { path: '/debt-payoff-calculator', changefreq: 'weekly', priority: '0.9' },
+  ...corePages,
+  ...calculatorPages,
+  ...getBlogPages()
 ];
 
 const xmlUrls = pages
   .map(
-    ({ path: pagePath, changefreq, priority }) => `  <url>\n    <loc>${BASE_URL}${pagePath}</loc>\n    <lastmod>${lastMod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
+    ({ path: pagePath, changefreq, priority, lastmod: entryLastMod }) =>
+      `  <url>\n    <loc>${BASE_URL}${pagePath}</loc>\n    <lastmod>${entryLastMod ?? lastMod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
   )
   .join('\n');
 

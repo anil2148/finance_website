@@ -38,10 +38,10 @@ const links: NavLink[] = [
   {
     label: 'Tools',
     children: [
-      { label: 'Net Worth Calculator', href: '/net-worth-calculator' },
-      { label: 'Investment Growth Calculator', href: '/investment-growth-calculator' },
-      { label: 'Retirement Calculator', href: '/retirement-calculator' },
-      { label: 'Loan EMI Calculator', href: '/loan-emi-calculator' }
+      { label: 'Net Worth Calculator', href: '/calculators/net-worth-calculator' },
+      { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
+      { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
+      { label: 'Loan EMI Calculator', href: '/calculators/loan-calculator' }
     ]
   },
   { label: 'Blog', href: '/blog' },

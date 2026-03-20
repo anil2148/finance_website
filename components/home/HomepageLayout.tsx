@@ -102,7 +102,7 @@ export function HomepageLayout() {
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Know your next money move in 10 minutes</h1>
             <p className="max-w-xl text-blue-100/95">
-              Start with a calculator, compare real offers using your numbers, and follow practical guides to avoid costly mistakes across debt, savings, home financing, and investing.
+              Make smarter financial decisions with practical calculators, comparison tools, and guides built to help you evaluate real tradeoffs.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">

@@ -11,11 +11,26 @@ const nextConfig = {
   },
 
   async redirects() {
-    return blogRedirectMap.map((entry) => ({
-      source: entry.source,
-      destination: entry.destination,
-      permanent: true
-    }));
+    const legacyCalculatorRedirects = [
+      { source: '/mortgage-calculator', destination: '/calculators/mortgage-calculator' },
+      { source: '/loan-emi-calculator', destination: '/calculators/loan-calculator' },
+      { source: '/compound-interest-calculator', destination: '/calculators/compound-interest-calculator' },
+      { source: '/retirement-calculator', destination: '/calculators/retirement-calculator' },
+      { source: '/fire-retirement-calculator', destination: '/calculators/fire-calculator' },
+      { source: '/net-worth-calculator', destination: '/calculators/net-worth-calculator' },
+      { source: '/investment-growth-calculator', destination: '/calculators/investment-growth-calculator' },
+      { source: '/savings-goal-calculator', destination: '/calculators/savings-goal-calculator' },
+      { source: '/debt-payoff-calculator', destination: '/calculators/debt-payoff-calculator' }
+    ];
+
+    return [
+      ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
+      ...blogRedirectMap.map((entry) => ({
+        source: entry.source,
+        destination: entry.destination,
+        permanent: true
+      }))
+    ];
   },
   async headers() {
     return [

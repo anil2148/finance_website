@@ -3,7 +3,11 @@ import { readOfferClicks } from '@/lib/offerTracking';
 
 export const metadata = {
   title: 'Offer Analytics',
-  description: 'Internal offer click analytics dashboard for affiliate performance.'
+  description: 'Internal offer click analytics dashboard for affiliate performance.',
+  robots: {
+    index: false,
+    follow: false
+  }
 };
 
 export default function AdminOffersPage() {
