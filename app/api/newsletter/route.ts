@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendConfirmationEmail } from '@/lib/newsletter/mailchimp';
-import { generateConfirmationToken } from '@/lib/newsletter/token';
+import { subscribeToBrevo } from '@/lib/newsletter/brevo';
 import { isValidEmail, maskEmail, normalizeEmail } from '@/lib/newsletter/validation';
 import { appendSignupLog } from '@/lib/newsletter/storage';
 
@@ -15,8 +14,9 @@ type ErrorCode =
   | 'INVALID_CONTENT_TYPE'
   | 'INVALID_JSON'
   | 'INVALID_EMAIL'
-  | 'TOKEN_CONFIG_ERROR'
-  | 'EMAIL_PROVIDER_ERROR'
+  | 'NEWSLETTER_CONFIG_MISSING'
+  | 'RATE_LIMITED'
+  | 'PROVIDER_ERROR'
   | 'INTERNAL_ERROR';
 
 type NewsletterErrorResponse = {
@@ -26,10 +26,6 @@ type NewsletterErrorResponse = {
     message: string;
   };
 };
-
-function getAppUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL ?? process.env.APP_URL ?? 'http://localhost:3000';
-}
 
 function errorResponse(status: number, code: ErrorCode, message: string) {
   return NextResponse.json<NewsletterErrorResponse>(
@@ -52,6 +48,32 @@ async function parseRequestBody(request: Request): Promise<NewsletterPayload> {
   }
 
   return request.json() as Promise<NewsletterPayload>;
+}
+
+function mapBrevoError(error: unknown) {
+  const message = error instanceof Error ? error.message : 'Unknown provider error';
+
+  if (message === 'BREVO_CONFIG_MISSING') {
+    return {
+      status: 503,
+      code: 'NEWSLETTER_CONFIG_MISSING' as const,
+      message: 'Newsletter signup is temporarily unavailable. Please try again soon.'
+    };
+  }
+
+  if (message.includes(':429:')) {
+    return {
+      status: 429,
+      code: 'RATE_LIMITED' as const,
+      message: 'Too many signup attempts right now. Please wait a moment and try again.'
+    };
+  }
+
+  return {
+    status: 502,
+    code: 'PROVIDER_ERROR' as const,
+    message: 'Unable to subscribe right now. Please try again in a moment.'
+  };
 }
 
 export async function POST(request: Request) {
@@ -80,30 +102,20 @@ export async function POST(request: Request) {
     const persona = payload.persona ?? 'unspecified';
     const leadMagnet = payload.leadMagnet ?? 'none';
 
-    let token: string;
+    let alreadySubscribed = false;
 
     try {
-      token = generateConfirmationToken(normalizedEmail);
+      const result = await subscribeToBrevo(normalizedEmail);
+      alreadySubscribed = result.alreadySubscribed;
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Token generation failed.';
-      console.error('[newsletter-subscribe:token-config]', {
-        email: maskEmail(normalizedEmail),
-        error: message
-      });
-      return errorResponse(500, 'TOKEN_CONFIG_ERROR', 'Newsletter subscription is not configured correctly.');
-    }
-
-    const confirmUrl = `${getAppUrl()}/newsletter/confirm/${encodeURIComponent(token)}`;
-
-    try {
-      await sendConfirmationEmail(normalizedEmail, confirmUrl);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Unknown email provider error';
+      const mapped = mapBrevoError(error);
+      const providerMessage = error instanceof Error ? error.message : 'Unknown provider error';
       console.error('[newsletter-subscribe:provider-error]', {
         email: maskEmail(normalizedEmail),
-        error: message
+        code: mapped.code,
+        error: providerMessage
       });
-      return errorResponse(502, 'EMAIL_PROVIDER_ERROR', 'Unable to send confirmation email right now. Please try again.');
+      return errorResponse(mapped.status, mapped.code, mapped.message);
     }
 
     try {
@@ -126,7 +138,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Check your email to confirm subscription.'
+      alreadySubscribed,
+      message: alreadySubscribed
+        ? "You're already subscribed. We'll keep sending future guides and updates."
+        : "You're subscribed. Check your inbox for future guides and updates."
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';

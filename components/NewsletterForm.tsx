@@ -44,7 +44,7 @@ const defaultCopy = {
 
 function getClientErrorMessage(response: NewsletterApiResponse) {
   if (response.success || !response.error?.code) {
-    return response.success ? response.message ?? 'Check your email to confirm subscription.' : 'Unable to process subscription right now.';
+    return response.success ? response.message ?? "You're subscribed. Check your inbox for future guides and updates." : 'Unable to process subscription right now.';
   }
 
   switch (response.error.code) {
@@ -53,10 +53,12 @@ function getClientErrorMessage(response: NewsletterApiResponse) {
     case 'INVALID_JSON':
     case 'INVALID_CONTENT_TYPE':
       return 'Something went wrong while submitting the form. Please refresh and try again.';
-    case 'TOKEN_CONFIG_ERROR':
-      return 'Newsletter setup is currently unavailable. Please try again later.';
-    case 'EMAIL_PROVIDER_ERROR':
-      return 'Unable to send confirmation email right now. Please try again in a moment.';
+    case 'NEWSLETTER_CONFIG_MISSING':
+      return 'Newsletter signup is temporarily unavailable. Please try again soon.';
+    case 'RATE_LIMITED':
+      return 'Too many signup attempts right now. Please wait a moment and try again.';
+    case 'PROVIDER_ERROR':
+      return 'Unable to subscribe right now. Please try again in a moment.';
     default:
       return response.error.message ?? 'Unable to process subscription right now.';
   }
@@ -86,7 +88,7 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
     }
 
     setStatus('loading');
-    setMessage('Submitting...');
+    setMessage('Subscribing...');
 
     try {
       const response = await fetch('/api/newsletter', {
@@ -116,7 +118,7 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
       const successMessage = payload.success ? payload.message : undefined;
       setStatus('success');
       setEmail('');
-      setMessage(successMessage ?? 'Check your email to confirm subscription.');
+      setMessage(successMessage ?? "You're subscribed. Check your inbox for future guides and updates.");
     } catch {
       setStatus('error');
       setMessage('Network error. Please try again.');
@@ -152,7 +154,7 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
             aria-invalid={status === 'error'}
           />
           <button className="btn-primary disabled:opacity-70" type="submit" disabled={status === 'loading'}>
-            {status === 'loading' ? 'Submitting...' : copy.button}
+            {status === 'loading' ? 'Subscribing...' : copy.button}
           </button>
         </>
       )}
