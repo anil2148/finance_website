@@ -9,25 +9,65 @@ export type NewsletterSignupLog = {
   timestamp: string;
 };
 
-const logFilePath = path.join(process.cwd(), 'data', 'newsletter-signups.json');
+const DEFAULT_LOG_FILE_PATH = path.join(process.cwd(), 'data', 'newsletter-signups.json');
+const FALLBACK_LOG_FILE_PATH = path.join('/tmp', 'newsletter-signups.json');
 
-function ensureLogFile() {
-  if (!fs.existsSync(logFilePath)) {
-    fs.writeFileSync(logFilePath, '[]', 'utf8');
+function resolveLogFilePath() {
+  const configuredPath = process.env.NEWSLETTER_SIGNUPS_LOG_PATH?.trim();
+  return configuredPath || DEFAULT_LOG_FILE_PATH;
+}
+
+function ensureParentDirectory(filePath: string) {
+  const directoryPath = path.dirname(filePath);
+  if (!fs.existsSync(directoryPath)) {
+    fs.mkdirSync(directoryPath, { recursive: true });
   }
 }
 
-function readSignups() {
-  ensureLogFile();
+function isReadOnlyFileSystemError(error: unknown) {
+  return (
+    !!error &&
+    typeof error === 'object' &&
+    'code' in error &&
+    (error as { code?: string }).code === 'EROFS'
+  );
+}
+
+function ensureLogFile(filePath: string) {
+  ensureParentDirectory(filePath);
+
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, '[]', 'utf8');
+  }
+}
+
+function readSignups(filePath: string) {
+  ensureLogFile(filePath);
+
   try {
-    return JSON.parse(fs.readFileSync(logFilePath, 'utf8')) as NewsletterSignupLog[];
+    return JSON.parse(fs.readFileSync(filePath, 'utf8')) as NewsletterSignupLog[];
   } catch {
     return [];
   }
 }
 
 export function appendSignupLog(entry: NewsletterSignupLog) {
-  const entries = readSignups();
+  const preferredPath = resolveLogFilePath();
+  let activePath = preferredPath;
+  let entries = readSignups(activePath);
+
   entries.push(entry);
-  fs.writeFileSync(logFilePath, JSON.stringify(entries, null, 2), 'utf8');
+
+  try {
+    fs.writeFileSync(activePath, JSON.stringify(entries, null, 2), 'utf8');
+  } catch (error) {
+    if (!isReadOnlyFileSystemError(error)) {
+      throw error;
+    }
+
+    activePath = FALLBACK_LOG_FILE_PATH;
+    entries = readSignups(activePath);
+    entries.push(entry);
+    fs.writeFileSync(activePath, JSON.stringify(entries, null, 2), 'utf8');
+  }
 }
