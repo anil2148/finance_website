@@ -17,30 +17,22 @@ export function ContactPageContent() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          email,
-          topic,
-          message
-        })
-      });
+    const subject = `[${topic}] FinanceSphere support request`;
+    const body = [
+      `Name: ${name || 'N/A'}`,
+      `Email: ${email}`,
+      '',
+      message
+    ].join('\n');
 
-      if (!response.ok) {
-        throw new Error('Contact request failed.');
-      }
+    const mailtoUrl = `mailto:${supportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailtoUrl;
 
-      setStatus('submitted');
-      setName('');
-      setEmail('');
-      setTopic('General support');
-      setMessage('');
-    } catch (error) {
-      console.error('[contact] submit failed:', error);
-    }
+    setStatus('submitted');
+    setName('');
+    setEmail('');
+    setTopic('General support');
+    setMessage('');
   };
 
   return (
