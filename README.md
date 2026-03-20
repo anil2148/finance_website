@@ -124,37 +124,24 @@ Implementation notes:
 - Install command: `npm install`
 - Output: `.next`
 
-## Newsletter (Double Opt-in, no database)
+## Newsletter (Brevo, server-side)
 
-This project uses a token-based double opt-in flow and does **not** store newsletter subscribers in a local database.
+The newsletter signup now posts to `POST /api/newsletter`, and the server securely calls Brevo Contacts API. The browser never receives or sends Brevo secrets.
 
 ### Environment variables (`.env.local`)
 
 ```bash
-# Required secret for signed confirmation tokens (min 32 chars)
-NEWSLETTER_TOKEN_SECRET="replace-with-a-long-random-secret"
+# Required for Brevo API access
+BREVO_API_KEY="your-brevo-api-key"
 
-# App URL used to build confirmation links
-NEXT_PUBLIC_APP_URL="http://localhost:3000"
-
-# Choose ONE provider block below
-
-# Mailchimp Marketing API (audience subscribe on confirmation)
-MAILCHIMP_API_KEY="your-mailchimp-marketing-api-key"
-MAILCHIMP_SERVER_PREFIX="us21"
-MAILCHIMP_AUDIENCE_ID="your-audience-id"
-
-# OR ConvertKit API (form subscribe on confirmation)
-CONVERTKIT_API_SECRET="your-convertkit-api-secret"
-CONVERTKIT_FORM_ID="your-convertkit-form-id"
-
-# Optional: Mailchimp Transactional (Mandrill) for sending confirmation email
-MAILCHIMP_TRANSACTIONAL_API_KEY="your-mailchimp-transactional-key"
-NEWSLETTER_FROM_EMAIL="newsletter@yourdomain.com"
-NEWSLETTER_FROM_NAME="FinanceSphere"
+# Optional: if set, subscribers are assigned to this Brevo list
+BREVO_LIST_ID="123"
 ```
 
-If transactional email variables are missing, the app logs the confirmation email HTML server-side for local development.
+Behavior notes:
+- If `BREVO_API_KEY` is missing, the API returns a graceful `503` response and the UI shows a friendly fallback message.
+- If `BREVO_LIST_ID` is set, the contact is attached to that list.
+- Existing contacts are updated instead of hard-failing, so repeat submissions are idempotent.
 
 ### Local test flow
 
@@ -166,13 +153,11 @@ npm run dev
 ```
 
 2. Submit an email in the newsletter form (`/` or `/blog`).
-3. Confirm you see: **“Check your email to confirm subscription.”**
-4. Open the confirmation link (`/newsletter/confirm/[token]`).
-5. Confirm the page shows subscription success and verify the contact in Mailchimp or ConvertKit.
+3. Confirm you see a success state: **“You're subscribed. Check your inbox for future guides and updates.”**
+4. Re-submit the same email and confirm the existing-subscriber success message appears.
 
 ### Deploying (Vercel)
 
 1. Add all newsletter env vars in Project Settings → Environment Variables.
-2. Set `NEXT_PUBLIC_APP_URL` to your production URL (e.g. `https://yourdomain.com`).
-3. Redeploy.
-4. Run a production subscription test to confirm both emails + audience subscription.
+2. Redeploy.
+3. Run a production subscription test and verify the contact appears in Brevo (and in the configured list when `BREVO_LIST_ID` is set).
