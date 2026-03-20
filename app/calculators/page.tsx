@@ -18,7 +18,8 @@ export default function CalculatorsPage() {
       <div className="grid gap-5 rounded-3xl bg-gradient-to-r from-slate-900 via-blue-800 to-brand p-6 text-white md:grid-cols-[1.2fr_1fr] md:items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Finance calculators for major money decisions</h1>
-          <p className="max-w-3xl text-blue-100">Use these calculators to plan monthly payments, compare borrowing paths, and model savings or investment outcomes before you commit real money.</p>
+          <p className="max-w-3xl text-blue-100">Explore calculators for mortgage payments, loan EMI, compound interest, retirement planning, net worth, savings goals, debt payoff, and investment growth.</p>
+          <p className="mt-2 max-w-3xl text-sm text-blue-100/90">Run your scenario, then review <Link href="/comparison" className="font-semibold underline">comparison pages</Link> and <Link href="/blog" className="font-semibold underline">practical guides</Link> before making a final decision.</p>
         </div>
         <div className="relative h-44 overflow-hidden rounded-2xl border border-white/20 sm:h-52">
           <Image

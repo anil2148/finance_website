@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: 'Best Credit Cards for Everyday Spending',
   description: 'Learn how cashback and rewards cards work, compare top options, and use our recommendation tool to pick the best card for daily spending.',
   alternates: { canonical: '/best-credit-cards-everyday-spending' },
-  openGraph: { title: 'Best Credit Cards for Everyday Spending', description: 'Compare cards and maximize rewards.', url: 'https://www.financesphere.io/best-credit-cards-everyday-spending' }
+  openGraph: { title: 'Best Credit Cards for Everyday Spending', description: 'Compare cards and maximize rewards.', url: 'https://financesphere.io/best-credit-cards-everyday-spending' }
 };
 
 export default function BestCreditCardsEverydaySpendingPage() {

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://www.financesphere.io/cookie-policy';
+const pageUrl = 'https://financesphere.io/cookie-policy';
 
 export const metadata: Metadata = {
   title: 'Cookie Policy',

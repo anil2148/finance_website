@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://www.financesphere.io/affiliate-disclosure';
+const pageUrl = 'https://financesphere.io/affiliate-disclosure';
 
 export const metadata: Metadata = {
   title: 'Affiliate Disclosure',

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://www.financesphere.io/terms-and-conditions';
+const pageUrl = 'https://financesphere.io/terms-and-conditions';
 
 export const metadata: Metadata = {
   title: 'Terms & Conditions',

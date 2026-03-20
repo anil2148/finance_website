@@ -4,7 +4,7 @@ import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 export const metadata: Metadata = {
   title: 'Editorial Policy',
   description: 'Learn how FinanceSphere researches, reviews, and updates content to maintain accuracy and editorial independence.',
-  alternates: { canonical: 'https://www.financesphere.io/editorial-policy' }
+  alternates: { canonical: 'https://financesphere.io/editorial-policy' }
 };
 
 export default function EditorialPolicyPage() {
