@@ -67,7 +67,7 @@ npm install
 cp .env.example .env.local
 ```
 
-Required variables:
+Base variables:
 
 ```bash
 DATABASE_URL="postgresql://user:password@localhost:5432/financesite"
@@ -80,6 +80,12 @@ DEMO_LOGIN_PASSWORD="replace-with-a-strong-password"
 
 # Optional: allow demo auth in production (defaults to false)
 ALLOW_DEMO_AUTH="false"
+
+# Required for Brevo newsletter API access
+BREVO_API_KEY=""
+
+# Optional: Brevo list to attach subscribers to
+BREVO_LIST_ID=""
 ```
 
 3. Generate Prisma client and run migrations:
@@ -128,14 +134,21 @@ Implementation notes:
 
 The newsletter signup now posts to `POST /api/newsletter`, and the server securely calls Brevo Contacts API. The browser never receives or sends Brevo secrets.
 
-### Environment variables (`.env.local`)
+### Environment variables
+
+#### Local development (`.env.local`)
+
+1. Create your local env file:
 
 ```bash
-# Required for Brevo API access
-BREVO_API_KEY="your-brevo-api-key"
+cp .env.example .env.local
+```
 
-# Optional: if set, subscribers are assigned to this Brevo list
-BREVO_LIST_ID="123"
+2. Add Brevo variables:
+
+```bash
+BREVO_API_KEY="your-brevo-api-key"
+BREVO_LIST_ID="123" # optional
 ```
 
 Behavior notes:
@@ -158,6 +171,8 @@ npm run dev
 
 ### Deploying (Vercel)
 
-1. Add all newsletter env vars in Project Settings → Environment Variables.
-2. Redeploy.
-3. Run a production subscription test and verify the contact appears in Brevo (and in the configured list when `BREVO_LIST_ID` is set).
+1. Open your Vercel project → **Project Settings** → **Environment Variables**.
+2. Add `BREVO_API_KEY` (required).
+3. Add `BREVO_LIST_ID` (optional).
+4. Redeploy.
+5. Run a production subscription test and verify the contact appears in Brevo (and in the configured list when `BREVO_LIST_ID` is set).
