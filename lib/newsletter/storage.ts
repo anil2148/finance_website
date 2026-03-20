@@ -53,21 +53,19 @@ function readSignups(filePath: string) {
 
 export function appendSignupLog(entry: NewsletterSignupLog) {
   const preferredPath = resolveLogFilePath();
-  let activePath = preferredPath;
-  let entries = readSignups(activePath);
-
-  entries.push(entry);
+  const writeEntry = (filePath: string) => {
+    const entries = readSignups(filePath);
+    entries.push(entry);
+    fs.writeFileSync(filePath, JSON.stringify(entries, null, 2), 'utf8');
+  };
 
   try {
-    fs.writeFileSync(activePath, JSON.stringify(entries, null, 2), 'utf8');
+    writeEntry(preferredPath);
   } catch (error) {
     if (!isReadOnlyFileSystemError(error)) {
       throw error;
     }
 
-    activePath = FALLBACK_LOG_FILE_PATH;
-    entries = readSignups(activePath);
-    entries.push(entry);
-    fs.writeFileSync(activePath, JSON.stringify(entries, null, 2), 'utf8');
+    writeEntry(FALLBACK_LOG_FILE_PATH);
   }
 }
