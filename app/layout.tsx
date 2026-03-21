@@ -17,6 +17,7 @@ const ogDescription =
   'Use FinanceSphere to estimate costs, evaluate trade-offs, and choose financial products that fit your goals.';
 const twitterTitle = 'FinanceSphere | Practical Finance Tools';
 const twitterDescription = 'Calculator-first guidance for mortgages, debt payoff, savings, and investing.';
+const gaMeasurementId = 'G-JR0S3QNR44';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -68,7 +69,6 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const gaMeasurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
   return (
@@ -93,6 +93,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </main>
           <Footer />
         </PreferenceProvider>
+
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${gaMeasurementId}');
+          `}
+        </Script>
       </body>
     </html>
   );
