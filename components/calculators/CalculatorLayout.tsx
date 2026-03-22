@@ -14,6 +14,7 @@ import { calculatorDefinitions, calculatorMap } from '@/lib/calculators/registry
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { BaseCalculatorInputs } from '@/lib/calculators/types';
 import { getCurrencySymbol, getLocaleForCurrency, resolveCurrencyPrefix } from '@/lib/utils';
+import { absoluteUrl } from '@/lib/seo';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -151,7 +152,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     <section className="space-y-8 pb-16" ref={exportRef}>
       <CalculatorHeader title={definition.title} description={definition.description} />
       {/* Sharing: encourage backlinks and distribution for calculator/tool pages. */}
-      <SocialShareButtons title={definition.title} url={`https://financesphere.io/calculators/${slug}`} />
+      <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 
       {showGuide && (
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-100" role="status">

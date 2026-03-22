@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://financesphere.io/privacy-policy';
-
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'Learn how FinanceSphere collects, uses, and protects data including cookies, analytics, and affiliate tracking information.',
-  alternates: {
-    canonical: pageUrl
-  }
+  alternates: { canonical: '/privacy-policy' }
 };
 
 export default function PrivacyPolicyPage() {

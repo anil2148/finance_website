@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 
-const BASE_URL = 'https://financesphere.io';
+const BASE_URL = 'https://www.financesphere.io';
 const lastMod = new Date().toISOString().split('T')[0];
 const blogDir = path.join(__dirname, 'content', 'blog');
 
@@ -71,10 +71,15 @@ const pages = [
   ...getBlogPages()
 ];
 
+function canonicalUrl(pagePath) {
+  if (pagePath === '/') return `${BASE_URL}/`;
+  return `${BASE_URL}${pagePath.replace(/\/+$/, '')}`;
+}
+
 const xmlUrls = pages
   .map(
     ({ path: pagePath, changefreq, priority, lastmod: entryLastMod }) =>
-      `  <url>\n    <loc>${BASE_URL}${pagePath}</loc>\n    <lastmod>${entryLastMod ?? lastMod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
+      `  <url>\n    <loc>${canonicalUrl(pagePath)}</loc>\n    <lastmod>${entryLastMod ?? lastMod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`
   )
   .join('\n');
 

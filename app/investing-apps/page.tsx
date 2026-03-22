@@ -51,7 +51,7 @@ const useCases = [
   {
     audience: 'Active traders',
     fit: 'Focus on execution speed, quality charting, options chain depth, and mobile order reliability.',
-    nextStep: '/comparison?category=investment_app'
+    nextStep: '/best-investment-apps'
   },
   {
     audience: 'Options-curious users',
@@ -168,7 +168,7 @@ export default function InvestingAppsPillarPage() {
       <section id="best-overview" className="space-y-4">
         <div className="flex items-end justify-between gap-4">
           <h2 className="text-2xl font-bold">Best investing apps overview</h2>
-          <Link href="/comparison?category=investment_app" className="text-sm font-semibold text-blue-700 hover:underline">Open full comparison →</Link>
+          <Link href="/best-investment-apps" className="text-sm font-semibold text-blue-700 hover:underline">Open full comparison →</Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {investmentApps.map((app) => (

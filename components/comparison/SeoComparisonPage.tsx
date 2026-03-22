@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ComparisonEngine } from '@/components/comparison/ComparisonEngine';
 import { getFinancialProducts, type FinancialCategory } from '@/lib/financialProducts';
 import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByFinancialCategory, resolveCalculatorHref } from '@/lib/calculatorLinks';
+import { absoluteUrl } from '@/lib/seo';
 
 type SeoComparisonPageProps = {
   pageTitle: string;
@@ -24,7 +25,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
     '@type': 'Product',
     name: item.name,
     brand: item.bank,
-    offers: { '@type': 'Offer', url: `https://financesphere.io/go/${item.id}` },
+    offers: { '@type': 'Offer', url: absoluteUrl(`/go/${item.id}`) },
     aggregateRating: { '@type': 'AggregateRating', ratingValue: item.rating, reviewCount: 120 }
   }));
 

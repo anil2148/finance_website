@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://financesphere.io/sitemap.xml
+Sitemap: https://www.financesphere.io/sitemap.xml

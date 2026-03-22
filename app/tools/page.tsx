@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
+import { absoluteUrl } from '@/lib/seo';
 
 const tools = [
   { name: 'Net worth tracker', value: 'Track how assets and liabilities change over time so you can measure real wealth progress.', href: '/calculators/net-worth-calculator' },
@@ -28,7 +29,7 @@ export default function ToolsPage() {
       name: tool.name,
       description: tool.value,
       applicationCategory: 'FinanceApplication',
-      url: `https://financesphere.io${tool.href}`
+      url: absoluteUrl(tool.href)
     }))
   };
 

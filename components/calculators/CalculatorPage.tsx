@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { CalculatorLayout } from '@/components/calculators/CalculatorLayout';
 import { calculatorMap } from '@/lib/calculators/registry';
+import { absoluteUrl } from '@/lib/seo';
 
 const howToStepsBySlug: Record<string, Array<{ name: string; text: string }>> = {
   'mortgage-calculator': [
@@ -38,7 +39,7 @@ export function getCalculatorMetadata(slug: string): Metadata {
     openGraph: {
       title: calculator.seoTitle,
       description: calculator.seoDescription,
-      url: `https://financesphere.io/calculators/${slug}`,
+      url: absoluteUrl(`/calculators/${slug}`),
       type: 'website'
     },
     twitter: {
@@ -71,7 +72,7 @@ export function CalculatorPage({ slug }: { slug: string }) {
     applicationCategory: 'FinanceApplication',
     name: calculator.title,
     description: calculator.description,
-    url: `https://financesphere.io/calculators/${slug}`
+    url: absoluteUrl(`/calculators/${slug}`)
   };
 
   const howToSchema = {

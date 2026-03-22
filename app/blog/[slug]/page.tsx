@@ -4,7 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
 import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
-import { articleSchema } from '@/lib/seo';
+import { absoluteUrl, articleSchema } from '@/lib/seo';
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
 import { getRelatedLinks } from '@/lib/internalLinks';
@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: post.seoTitle ?? post.title,
     description: post.metaDescription ?? post.description,
     alternates: { canonical: canonicalPath },
-    openGraph: { title: post.seoTitle ?? post.title, description: post.metaDescription ?? post.description, type: 'article', url: `https://financesphere.io${canonicalPath}` },
+    openGraph: { title: post.seoTitle ?? post.title, description: post.metaDescription ?? post.description, type: 'article', url: absoluteUrl(canonicalPath) },
     twitter: { card: 'summary_large_image', title: post.seoTitle ?? post.title, description: post.metaDescription ?? post.description }
   };
 }
@@ -142,7 +142,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         <div className={`relative aspect-[16/9] overflow-hidden rounded-2xl border border-neutral-200 bg-gradient-to-br ${visual.heroClassName} p-4 sm:p-6 dark:border-neutral-700`}>
           <Image src={visual.src} alt={visual.alt} fill priority sizes="(max-width: 768px) 100vw, 900px" className="object-cover p-4 sm:p-6" />
         </div>
-        <SocialShareButtons title={post.title} url={`https://financesphere.io/blog/${post.slug}`} />
+        <SocialShareButtons title={post.title} url={absoluteUrl(`/blog/${post.slug}`)} />
       </header>
 
       <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />

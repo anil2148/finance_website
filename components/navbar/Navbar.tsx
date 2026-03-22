@@ -32,7 +32,7 @@ const links: NavLink[] = [
       { label: 'Savings Accounts', href: '/best-savings-accounts-usa' },
       { label: 'Investment Apps', href: '/best-investment-apps' },
       { label: 'Mortgage Rates', href: '/compare/mortgage-rate-comparison' },
-      { label: 'Personal Loans', href: '/comparison?category=personal_loan' }
+      { label: 'Personal Loans', href: '/loans' }
     ]
   },
   {
