@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://financesphere.io/financial-disclaimer';
-
 export const metadata: Metadata = {
   title: 'Financial Disclaimer',
   description: 'FinanceSphere content is educational and informational only, not financial, legal, tax, or investment advice.',
-  alternates: {
-    canonical: pageUrl
-  }
+  alternates: { canonical: '/financial-disclaimer' }
 };
 
 export default function FinancialDisclaimerPage() {

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description:
     'Use FinanceSphere\'s side-by-side investment app comparison table to evaluate fees, ratings, account features, and platform fit.',
   alternates: {
-    canonical: '/investing-apps'
+    canonical: '/compare/best-investment-apps'
   }
 };
 

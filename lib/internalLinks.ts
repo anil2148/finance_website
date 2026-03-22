@@ -17,19 +17,19 @@ const categoryLinks: Record<string, RelatedLink[]> = {
   ],
   'credit-cards': [
     { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' },
-    { label: 'Credit card comparisons', href: '/comparison?category=credit_card', type: 'comparison' },
+    { label: 'Credit card comparisons', href: '/best-credit-cards-2026', type: 'comparison' },
     { label: 'Credit card payoff calculator', href: '/calculators/credit-card-payoff-calculator', type: 'calculator' },
     { label: 'Credit utilization operating system', href: '/blog/credit-utilization-statement-cycle-playbook', type: 'article' }
   ],
   loans: [
     { label: 'Loans hub', href: '/learn/loans', type: 'hub' },
-    { label: 'Personal loan comparisons', href: '/comparison?category=personal_loan', type: 'comparison' },
+    { label: 'Personal loan comparisons', href: '/loans', type: 'comparison' },
     { label: 'Loan calculator', href: '/calculators/loan-calculator', type: 'calculator' },
     { label: 'Debt-to-income approval prep', href: '/blog/debt-to-income-ratio-90-day-plan', type: 'article' }
   ],
   mortgages: [
     { label: 'Loans hub', href: '/learn/loans', type: 'hub' },
-    { label: 'Mortgage lender comparisons', href: '/comparison?category=mortgage_lender', type: 'comparison' },
+    { label: 'Mortgage lender comparisons', href: '/mortgage-rate-comparison', type: 'comparison' },
     { label: 'Mortgage calculator', href: '/calculators/mortgage-calculator', type: 'calculator' },
     { label: 'Mortgage preapproval checklist', href: '/blog/mortgage-preapproval-checklist-underwriting', type: 'article' }
   ],
@@ -53,13 +53,13 @@ const categoryLinks: Record<string, RelatedLink[]> = {
   ],
   'passive-income': [
     { label: 'Passive income hub', href: '/learn/passive-income', type: 'hub' },
-    { label: 'Investment account comparisons', href: '/comparison?category=investment_app', type: 'comparison' },
+    { label: 'Investment account comparisons', href: '/best-investment-apps', type: 'comparison' },
     { label: 'Compound interest calculator', href: '/calculators/compound-interest-calculator', type: 'calculator' },
     { label: 'Tax-efficient investing rules', href: '/blog/seo-tax-efficient-investing-tips', type: 'article' }
   ],
   'credit cards': [
     { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' },
-    { label: 'Credit card comparisons', href: '/comparison?category=credit_card', type: 'comparison' },
+    { label: 'Credit card comparisons', href: '/best-credit-cards-2026', type: 'comparison' },
     { label: 'Credit card payoff calculator', href: '/calculators/credit-card-payoff-calculator', type: 'calculator' },
     { label: 'Credit utilization operating system', href: '/blog/credit-utilization-statement-cycle-playbook', type: 'article' }
   ]

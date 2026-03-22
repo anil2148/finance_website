@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://financesphere.io/affiliate-disclosure';
-
 export const metadata: Metadata = {
   title: 'Affiliate Disclosure',
   description: 'Read FinanceSphere affiliate disclosure and FTC-compliant commission transparency statement.',
-  alternates: {
-    canonical: pageUrl
-  }
+  alternates: { canonical: '/affiliate-disclosure' }
 };
 
 export default function AffiliateDisclosurePage() {

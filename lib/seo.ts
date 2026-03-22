@@ -6,13 +6,26 @@ type ArticleSchemaArgs = {
   modifiedTime?: string;
 };
 
+export const SITE_ORIGIN = 'https://www.financesphere.io';
+
+export function normalizePathname(pathname: string): string {
+  if (!pathname || pathname === '/') return '/';
+  const normalized = pathname.startsWith('/') ? pathname : `/${pathname}`;
+  return normalized.replace(/\/+$/, '');
+}
+
+export function absoluteUrl(pathname: string): string {
+  const normalizedPath = normalizePathname(pathname);
+  return normalizedPath === '/' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}${normalizedPath}`;
+}
+
 export function articleSchema({ title, description, slug, publishedTime, modifiedTime }: ArticleSchemaArgs) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: title,
     description,
-    url: `https://financesphere.io/blog/${slug}`,
+    url: absoluteUrl(`/blog/${slug}`),
     author: {
       '@type': 'Person',
       name: 'Anil Chowdhary',

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FAQAccordion, JumpNav, ResourceGrid, TrustBar } from '@/components/hubs/PillarPageSections';
+import { absoluteUrl } from '@/lib/seo';
 
 type HubConfig = {
   title: string;
@@ -34,7 +35,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     comparisons: [
       { href: '/best-investment-apps', label: 'Best investment apps comparison' },
-      { href: '/comparison?category=investment_app', label: 'All investing app offers' }
+      { href: '/best-investment-apps', label: 'All investing app offers' }
     ],
     faqs: [
       { question: 'Should I invest before paying off debt?', answer: 'Usually contribute enough to capture employer match first, then compare high-interest debt APR versus expected long-term return.' },
@@ -61,7 +62,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     comparisons: [
       { href: '/best-credit-cards-2026', label: 'Best credit cards comparison' },
-      { href: '/comparison?category=credit_card', label: 'All card offers' }
+      { href: '/best-credit-cards-2026', label: 'All card offers' }
     ],
     faqs: [
       { question: 'How many credit cards should I have?', answer: 'There is no universal number. Start with a manageable setup and expand only when each card has a clear purpose.' },
@@ -87,7 +88,7 @@ const hubs: Record<string, HubConfig> = {
       { href: '/calculators/debt-payoff-calculator', label: 'Debt payoff calculator' }
     ],
     comparisons: [
-      { href: '/comparison?category=personal_loan', label: 'Personal loan comparisons' },
+      { href: '/loans', label: 'Personal loan comparisons' },
       { href: '/mortgage-rate-comparison', label: 'Mortgage rate comparisons' }
     ],
     faqs: [
@@ -115,7 +116,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     comparisons: [
       { href: '/best-savings-accounts-usa', label: 'Best savings accounts' },
-      { href: '/comparison?category=savings_account', label: 'Savings account offers' }
+      { href: '/best-savings-accounts-usa', label: 'Savings account offers' }
     ],
     faqs: [
       { question: 'How often should I update my budget?', answer: 'Monthly is a good baseline, with extra check-ins after major income or bill changes.' },
@@ -161,7 +162,12 @@ export function generateMetadata({ params }: { params: { cluster: string } }): M
   return {
     title: `${data.title} | FinanceSphere`,
     description: data.description,
-    alternates: { canonical: `/learn/${params.cluster}` }
+    alternates: { canonical: `/learn/${params.cluster}` },
+    openGraph: {
+      title: `${data.title} | FinanceSphere`,
+      description: data.description,
+      url: absoluteUrl(`/learn/${params.cluster}`)
+    }
   };
 }
 

@@ -2,12 +2,13 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CreditCardRecommendationTool } from '@/components/blog/BlogInteractiveTools';
 import { getFinancialProducts } from '@/lib/financialProducts';
+import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
   title: 'Best Credit Cards for Everyday Spending',
   description: 'Learn how cashback and rewards cards work, compare top options, and use our recommendation tool to pick the best card for daily spending.',
   alternates: { canonical: '/best-credit-cards-everyday-spending' },
-  openGraph: { title: 'Best Credit Cards for Everyday Spending', description: 'Compare cards and maximize rewards.', url: 'https://financesphere.io/best-credit-cards-everyday-spending' }
+  openGraph: { title: 'Best Credit Cards for Everyday Spending', description: 'Compare cards and maximize rewards.', url: absoluteUrl('/best-credit-cards-everyday-spending') }
 };
 
 export default function BestCreditCardsEverydaySpendingPage() {

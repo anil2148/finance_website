@@ -4,6 +4,8 @@ const blogRedirectMap = require('./content/audit/blog-redirect-map.json');
 const nextConfig = {
   // SEO/performance: Next.js compression enables gzip/brotli in production.
   compress: true,
+  // URL normalization: keep a single canonical path format (no trailing slash except root).
+  trailingSlash: false,
   // Performance: keep JS/CSS minification enabled for production bundles.
   swcMinify: true,
   images: {
@@ -24,6 +26,12 @@ const nextConfig = {
     ];
 
     return [
+      {
+        source: '/:path*',
+        has: [{ type: 'host', value: 'financesphere.io' }],
+        destination: 'https://www.financesphere.io/:path*',
+        permanent: true
+      },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
       ...blogRedirectMap.map((entry) => ({
         source: entry.source,

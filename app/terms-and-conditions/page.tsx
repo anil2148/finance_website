@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://financesphere.io/terms-and-conditions';
-
 export const metadata: Metadata = {
   title: 'Terms & Conditions',
   description: 'Review FinanceSphere terms for site usage, intellectual property, affiliate disclaimers, and legal limitations.',
-  alternates: {
-    canonical: pageUrl
-  }
+  alternates: { canonical: '/terms-and-conditions' }
 };
 
 export default function TermsAndConditionsPage() {

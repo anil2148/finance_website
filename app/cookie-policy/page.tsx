@@ -1,14 +1,10 @@
 import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
-const pageUrl = 'https://financesphere.io/cookie-policy';
-
 export const metadata: Metadata = {
   title: 'Cookie Policy',
   description: 'Understand how FinanceSphere uses cookies for essential functionality, analytics, and affiliate attribution.',
-  alternates: {
-    canonical: pageUrl
-  }
+  alternates: { canonical: '/cookie-policy' }
 };
 
 export default function CookiePolicyPage() {

@@ -38,7 +38,7 @@ const goalCards = [
     primaryLabel: 'Start with the Debt Payoff Calculator',
     primaryHref: '/calculators/debt-payoff-calculator',
     secondaryLabel: 'Compare consolidation options',
-    secondaryHref: '/comparison?category=personal_loan'
+    secondaryHref: '/loans'
   },
   {
     title: 'Compare investing apps',

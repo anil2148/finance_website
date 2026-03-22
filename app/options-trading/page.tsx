@@ -157,7 +157,7 @@ export default function OptionsTradingPillarPage() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a href="#calls-puts" className="btn-primary">Learn the Basics</a>
-              <Link href="/comparison?category=investment_app" className="inline-flex items-center justify-center rounded-xl border border-indigo-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
+              <Link href="/best-investment-apps" className="inline-flex items-center justify-center rounded-xl border border-indigo-200 px-4 py-2 font-medium text-white transition hover:bg-white/10">
                 Compare Platforms
               </Link>
             </div>
@@ -270,7 +270,7 @@ export default function OptionsTradingPillarPage() {
           ))}
         </div>
         <div className="flex flex-wrap gap-3">
-          <Link href="/comparison?category=investment_app" className="btn-primary">Compare investment platforms</Link>
+          <Link href="/best-investment-apps" className="btn-primary">Compare investment platforms</Link>
           <Link href="/best-investment-apps" className="inline-flex items-center justify-center rounded-xl border border-slate-300 px-4 py-2 font-medium text-slate-800 transition hover:bg-slate-100">
             View curated picks
           </Link>
@@ -345,7 +345,7 @@ export default function OptionsTradingPillarPage() {
         <h2 className="text-2xl font-bold">Before you trade options, build your framework.</h2>
         <p className="mt-2 max-w-2xl text-slate-200">Compare platform tools, test assumptions in calculators, and commit to a repeatable risk process before scaling any strategy.</p>
         <div className="mt-5 flex flex-wrap gap-3">
-          <Link href="/comparison?category=investment_app" className="btn-primary">Compare platforms</Link>
+          <Link href="/best-investment-apps" className="btn-primary">Compare platforms</Link>
           <Link href="/investment-growth-calculator" className="inline-flex items-center justify-center rounded-xl border border-slate-500 px-4 py-2 font-medium text-white transition hover:bg-slate-800">
             Explore tools
           </Link>

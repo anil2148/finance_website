@@ -89,7 +89,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         'Credit-card content often overpromises rewards and underexplains risk. This article focuses on real break-even math, statement timing, and ways to avoid paying interest.',
       links: {
         calculator: { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
-        comparison: { label: 'Credit card comparisons', href: '/comparison?category=credit_card' },
+        comparison: { label: 'Credit card comparisons', href: '/best-credit-cards-2026' },
         hub: { label: 'Credit cards hub', href: '/learn/credit-cards' },
         related: { label: 'How credit utilization works', href: '/blog/credit-utilization-statement-cycle-playbook' }
       },
@@ -113,7 +113,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         'Borrowing decisions are won or lost before you sign: in documentation, APR comparison, and timeline planning. This guide emphasizes those high-impact details.',
       links: {
         calculator: { label: 'Loan Calculator', href: '/calculators/loan-calculator' },
-        comparison: { label: 'Personal loan comparisons', href: '/comparison?category=personal_loan' },
+        comparison: { label: 'Personal loan comparisons', href: '/loans' },
         hub: { label: 'Loans hub', href: '/learn/loans' },
         related: { label: 'Debt-to-income ratio guide', href: '/blog/debt-to-income-ratio-90-day-plan' }
       },
@@ -161,7 +161,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
         'Tax optimization is rarely one trick. It is account location, contribution order, and withdrawal timing working together. This article keeps the focus there.',
       links: {
         calculator: { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
-        comparison: { label: 'Investment account comparisons', href: '/comparison?category=investment_app' },
+        comparison: { label: 'Investment account comparisons', href: '/best-investment-apps' },
         hub: { label: 'Investing hub', href: '/learn/investing' },
         related: { label: 'Roth vs Traditional IRA', href: '/blog/tax-efficient-investing-account-location-decisions' }
       },

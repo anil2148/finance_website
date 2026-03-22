@@ -8,8 +8,8 @@ import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
+import { SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
 
-const siteUrl = 'https://financesphere.io';
 const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
 const siteDescription =
   'FinanceSphere helps you model major money decisions with calculators, compare financial products, and learn practical strategies for saving, borrowing, and investing.';
@@ -20,12 +20,9 @@ const twitterDescription = 'Calculator-first guidance for mortgages, debt payoff
 const gaMeasurementId = 'G-JR0S3QNR44';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(SITE_ORIGIN),
   title: siteTitle,
   description: siteDescription,
-  alternates: {
-    canonical: siteUrl
-  },
   icons: {
     icon: [
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
@@ -45,11 +42,11 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: ogDescription,
     type: 'website',
-    url: siteUrl,
+    url: absoluteUrl('/'),
     siteName: 'FinanceSphere',
     images: [
       {
-        url: `${siteUrl}/og-image.png`
+        url: absoluteUrl('/og-image.png')
       }
     ]
   },
@@ -57,7 +54,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: twitterTitle,
     description: twitterDescription,
-    images: [`${siteUrl}/og-image.png`]
+    images: [absoluteUrl('/og-image.png')]
   },
   other: {
     'google-adsense-account': 'ca-pub-9445870262181780'
