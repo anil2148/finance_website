@@ -46,6 +46,7 @@ const links: NavLink[] = [
   },
   { label: 'Blog', href: '/blog' },
   { label: 'Help', href: '/help' },
+  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' }
 ];
 
