@@ -26,12 +26,10 @@ const nextConfig = {
     ];
 
     return [
-      {
-        source: '/:path*',
-        has: [{ type: 'host', value: 'financesphere.io' }],
-        destination: 'https://www.financesphere.io/:path*',
-        permanent: true
-      },
+      { source: '/compare/best-credit-cards-2026', destination: '/best-credit-cards-2026', permanent: true },
+      { source: '/compare/best-investment-apps', destination: '/best-investment-apps', permanent: true },
+      { source: '/compare/best-savings-accounts-usa', destination: '/best-savings-accounts-usa', permanent: true },
+      { source: '/mortgage-rate-comparison', destination: '/compare/mortgage-rate-comparison', permanent: true },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
       ...blogRedirectMap.map((entry) => ({
         source: entry.source,

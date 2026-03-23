@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { ComparisonEngine } from '@/components/comparison/ComparisonEngine';
 import { getFinancialProducts } from '@/lib/financialProducts';
 
@@ -24,6 +25,15 @@ export function ComparisonPageClient() {
         </div>
       </div>
       <ComparisonEngine initialProducts={products} />
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-lg font-semibold text-slate-900">Popular comparison pages</h2>
+        <ul className="mt-3 grid gap-2 text-sm md:grid-cols-2">
+          <li><Link href="/best-credit-cards-2026" className="font-medium text-blue-700 hover:underline">Best Credit Cards 2026</Link></li>
+          <li><Link href="/best-investment-apps" className="font-medium text-blue-700 hover:underline">Best Investment Apps</Link></li>
+          <li><Link href="/best-savings-accounts-usa" className="font-medium text-blue-700 hover:underline">Best Savings Accounts USA</Link></li>
+          <li><Link href="/compare/mortgage-rate-comparison" className="font-medium text-blue-700 hover:underline">Mortgage Rate Comparison</Link></li>
+        </ul>
+      </section>
     </section>
   );
 }

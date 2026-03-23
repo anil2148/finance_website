@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
-import { absoluteUrl } from '@/lib/seo';
+import { absoluteUrl, createPageMetadata } from '@/lib/seo';
 
 const tools = [
   { name: 'Net worth tracker', value: 'Track how assets and liabilities change over time so you can measure real wealth progress.', href: '/calculators/net-worth-calculator' },
@@ -13,11 +13,11 @@ const tools = [
   { name: 'Financial independence calculator', value: 'Estimate your path to FI by modeling savings rate, return assumptions, and timeline.', href: '/calculators/fire-calculator' }
 ];
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Finance Tools | FinanceSphere',
   description: 'Use FinanceSphere tools to plan net worth growth, debt payoff, savings goals, and financial independence with scenario-based projections.',
-  alternates: { canonical: '/tools' }
-};
+  pathname: '/tools'
+});
 
 export default function ToolsPage() {
   const toolsSchema = {

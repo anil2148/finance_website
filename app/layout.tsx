@@ -8,7 +8,7 @@ import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
-import { SITE_ORIGIN, absoluteUrl } from '@/lib/seo';
+import { SITE_ORIGIN, absoluteUrl, organizationSchema, websiteSchema } from '@/lib/seo';
 
 const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
 const siteDescription =
@@ -23,6 +23,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: siteTitle,
   description: siteDescription,
+  alternates: {
+    canonical: '/'
+  },
   icons: {
     icon: [
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
@@ -67,10 +70,15 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [organizationSchema(), websiteSchema()]
+  };
 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
         <Script
           async
           crossOrigin="anonymous"

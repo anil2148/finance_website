@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { CalculatorLayout } from '@/components/calculators/CalculatorLayout';
 import { calculatorMap } from '@/lib/calculators/registry';
-import { absoluteUrl } from '@/lib/seo';
+import { absoluteUrl, createPageMetadata } from '@/lib/seo';
 
 const howToStepsBySlug: Record<string, Array<{ name: string; text: string }>> = {
   'mortgage-calculator': [
@@ -30,24 +30,11 @@ const defaultHowToSteps = [
 export function getCalculatorMetadata(slug: string): Metadata {
   const calculator = calculatorMap[slug];
 
-  return {
+  return createPageMetadata({
     title: calculator.seoTitle,
     description: calculator.seoDescription,
-    alternates: {
-      canonical: `/calculators/${slug}`
-    },
-    openGraph: {
-      title: calculator.seoTitle,
-      description: calculator.seoDescription,
-      url: absoluteUrl(`/calculators/${slug}`),
-      type: 'website'
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: calculator.seoTitle,
-      description: calculator.seoDescription
-    }
-  };
+    pathname: `/calculators/${slug}`
+  });
 }
 
 export function CalculatorPage({ slug }: { slug: string }) {

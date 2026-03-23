@@ -90,6 +90,15 @@ const trustSignals = [
   { label: 'How FinanceSphere evaluates products', href: '/editorial-policy' }
 ];
 
+const crawlPriorityLinks = [
+  { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
+  { href: '/best-investment-apps', label: 'Best Investment Apps' },
+  { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts USA' },
+  { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
+  { href: '/learn/loans', label: 'Loans Hub' },
+  { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
+];
+
 export function HomepageLayout() {
   return (
     <section className="space-y-10">
@@ -160,6 +169,17 @@ export function HomepageLayout() {
             <span className="font-medium text-slate-700 dark:text-slate-200">{signal.label}</span>
           </Link>
         ))}
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular comparison and learning pages</h2>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          {crawlPriorityLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
+              {item.label}
+            </Link>
+          ))}
+        </div>
       </section>
 
       <section>

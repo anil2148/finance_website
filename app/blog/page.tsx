@@ -4,14 +4,15 @@ import Image from 'next/image';
 import { BlogSearch } from '@/components/ui/BlogSearch';
 import { getCategories, getPosts, getTags } from '@/lib/markdown';
 import { NewsletterForm } from '@/components/NewsletterForm';
+import { createPageMetadata } from '@/lib/seo';
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'FinanceSphere Blog | Practical Money Guides',
   description: 'Read FinanceSphere explainers on credit cards, mortgages, savings rates, investing basics, and payoff strategies with calculator-backed examples.',
-  alternates: { canonical: '/blog' }
-};
+  pathname: '/blog'
+});
 
 const startHereGuides = [
   {
@@ -178,6 +179,20 @@ export default function BlogPage() {
       </div>
 
       <BlogSearch posts={posts} />
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-semibold">All recent articles</h2>
+        <p className="mt-1 text-sm text-slate-600">Direct links help crawlers and readers reach every published guide without relying on filters.</p>
+        <ul className="mt-3 grid gap-2 text-sm md:grid-cols-2">
+          {posts.slice(0, 36).map((post) => (
+            <li key={post.slug}>
+              <Link className="font-medium text-slate-700 hover:text-blue-700 hover:underline" href={`/blog/${post.slug}`}>
+                {post.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <NewsletterForm source="blog" className="max-w-xl" />
     </section>

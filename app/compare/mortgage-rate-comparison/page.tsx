@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
+import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Mortgage Rate Comparison | Compare APR & Lenders',
-  description: 'Compare mortgage lenders by APR, fees, ratings, and pros/cons to find the best home loan rates.'
-};
+  description: 'Compare mortgage lenders by APR, fees, ratings, and pros/cons to find the best home loan rates.',
+  pathname: '/compare/mortgage-rate-comparison'
+});
 
 export default function MortgageRateComparisonPage() {
   return (
