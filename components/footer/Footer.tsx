@@ -25,6 +25,7 @@ const legalLinks = [
   { href: '/editorial-policy', label: 'Editorial Policy' },
   { href: '/cookie-policy', label: 'Cookie Policy' },
   { href: '/financial-disclaimer', label: 'Financial Disclaimer' },
+  { href: '/about', label: 'About Us' },
   { href: '/help', label: 'Help Center' },
   { href: '/contact', label: 'Contact' }
 ];
