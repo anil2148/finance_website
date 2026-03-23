@@ -61,7 +61,7 @@ export default function PrivacyPolicyPage() {
         <li>Email <a href="mailto:privacy@financesphere.io">privacy@financesphere.io</a> with the subject line “Privacy Request”.</li>
       </ul>
       <h2>Contact Information</h2>
-      <p>For privacy questions, contact us at <a href="mailto:privacy@financesphere.io">privacy@financesphere.io</a> or write to: FinanceSphere Privacy Team, 100 Market Street, Suite 400, San Francisco, CA 94105, USA.</p>
+      <p>For privacy questions, contact us at <a href="mailto:privacy@financesphere.io">privacy@financesphere.io</a>.</p>
     </LegalPageLayout>
   );
 }
