@@ -44,6 +44,21 @@ export default function CalculatorsPage() {
           </Link>
         ))}
       </div>
+
+      <section className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 md:grid-cols-3">
+        <article>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Use this calculator first</h2>
+          <p className="mt-1 text-sm text-slate-700">Start with the tool connected to your next decision deadline, not the most popular one.</p>
+        </article>
+        <article>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Interpret results safely</h2>
+          <p className="mt-1 text-sm text-slate-700">Run base, conservative, and optimistic scenarios so you can compare risk before committing.</p>
+        </article>
+        <article>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Next action</h2>
+          <p className="mt-1 text-sm text-slate-700"><Link href="/comparison" className="font-medium text-blue-700 hover:underline">Compare products</Link> and review <Link href="/editorial-policy" className="font-medium text-blue-700 hover:underline">methodology</Link> before you act.</p>
+        </article>
+      </section>
     </section>
   );
 }

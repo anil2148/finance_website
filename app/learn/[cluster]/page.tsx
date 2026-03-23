@@ -8,6 +8,7 @@ type HubConfig = {
   description: string;
   startHere: string[];
   updatedAt: string;
+  popularDecisions: string[];
   resources: Array<{ href: string; title: string; description: string; tag?: string }>;
   calculators: Array<{ href: string; label: string }>;
   comparisons: Array<{ href: string; label: string }>;
@@ -24,6 +25,7 @@ const hubs: Record<string, HubConfig> = {
       'Choose account type before investment selection (retirement, taxable, education).',
       'Automate contributions and review quarterly—not daily.'
     ],
+    popularDecisions: ['Choose account type before fund selection', 'Set contribution cadence you can sustain for 12 months', 'Compare app fees before transferring assets'],
     resources: [
       { href: '/blog/beginner-investing-roadmap-year-one-milestones', title: 'Investing for beginners roadmap', description: 'A practical sequence for choosing accounts, funds, and contribution cadence.', tag: 'Start here' },
       { href: '/blog/tax-efficient-investing-account-location-decisions', title: 'Tax-efficient investing moves', description: 'Learn how account location and turnover discipline improve after-tax results.' },
@@ -51,6 +53,7 @@ const hubs: Record<string, HubConfig> = {
       'Estimate annual spending categories and compare net annual value after fees.',
       'Set autopay and utilization targets before applying for additional cards.'
     ],
+    popularDecisions: ['Pick rewards vs transfer strategy before applying', 'Set utilization and autopay rules first', 'Compare no-fee vs annual-fee break-even'],
     resources: [
       { href: '/best-credit-cards-2026', title: 'Best credit cards comparison', description: 'Compare reward structures, annual fees, and intro APR terms.', tag: 'Start here' },
       { href: '/blog/credit-utilization-statement-cycle-playbook', title: 'Credit utilization timing tactics', description: 'Use statement timing and per-card management to protect your score.' },
@@ -78,6 +81,7 @@ const hubs: Record<string, HubConfig> = {
       'Compare total borrowing cost, not just monthly payment.',
       'Run payoff acceleration scenarios for 12- and 24-month prepayment options.'
     ],
+    popularDecisions: ['Stress-test monthly payment under income volatility', 'Compare APR + fee stack instead of APR only', 'Choose prepayment-flexible terms when possible'],
     resources: [
       { href: '/blog/seo-how-to-compare-personal-loan-apr', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
       { href: '/blog/mortgage-preapproval-checklist-underwriting', title: 'Mortgage preapproval checklist', description: 'Prepare documents and timeline expectations to avoid underwriting delays.' },
@@ -105,6 +109,7 @@ const hubs: Record<string, HubConfig> = {
       'Create one realistic weekly spending guardrail before optimizing categories.',
       'Automate savings and debt payments right after income lands.'
     ],
+    popularDecisions: ['Choose one weekly spending guardrail', 'Automate transfers after paycheck hits', 'Use emergency-fund timeline, not fixed month-count only'],
     resources: [
       { href: '/blog/budget-rule-based-reset', title: 'How to adapt the 50/30/20 rule', description: 'Use a flexible spending split that still works in high-cost or debt-heavy months.', tag: 'Start here' },
       { href: '/blog/emergency-fund-target-by-recovery-timeline', title: 'Emergency fund target by risk level', description: 'Pick a 3-to-6 month reserve using job stability, dependents, and replacement-time risk.' },
@@ -132,6 +137,7 @@ const hubs: Record<string, HubConfig> = {
       'Separate low-risk cash-flow ideas from higher-risk strategies.',
       'Track net return after taxes and fees, not gross yield alone.'
     ],
+    popularDecisions: ['Separate low-risk yield from market-return goals', 'Track after-tax yield, not headline income only', 'Set review cadence for semi-passive strategies'],
     resources: [
       { href: '/blog/tax-efficient-investing-account-location-decisions', title: 'Tax-efficient investing basics', description: 'Improve after-tax outcomes with better asset location and contribution sequencing.', tag: 'Start here' },
       { href: '/blog/how-to-choose-a-high-yield-savings-account', title: 'High-yield savings account basics', description: 'Choose accounts by APY, transfer speed, withdrawal rules, and emergency access quality.' },
@@ -190,6 +196,15 @@ export default function ClusterHubPage({ params }: { params: { cluster: string }
             <li key={step}>{step}</li>
           ))}
         </ol>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <h2 className="text-2xl font-semibold">Popular decisions in this topic</h2>
+        <ul className="mt-3 grid gap-2 text-sm md:grid-cols-3">
+          {data.popularDecisions.map((item) => (
+            <li key={item} className="rounded-lg border border-slate-200 bg-white p-3 text-slate-700">{item}</li>
+          ))}
+        </ul>
       </section>
 
       <section id="top-guides" className="space-y-3">

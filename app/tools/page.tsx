@@ -65,6 +65,16 @@ export default function ToolsPage() {
           </Card>
         ))}
       </div>
+
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <h2 className="text-xl font-semibold text-slate-900">Plan → Compare → Decide workflow</h2>
+        <p className="mt-1 text-sm text-slate-600">These tools are educational planning aids. Use the matching comparison and guide pages to validate your next move.</p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          <Link href="/comparison" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Compare options before clicking through</Link>
+          <Link href="/blog" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Read practical scenario guides</Link>
+          <Link href="/financial-disclaimer" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Educational-use disclaimer</Link>
+        </div>
+      </section>
     </section>
   );
 }
