@@ -29,7 +29,7 @@ const categoryLinks: Record<string, RelatedLink[]> = {
   ],
   mortgages: [
     { label: 'Loans hub', href: '/learn/loans', type: 'hub' },
-    { label: 'Mortgage lender comparisons', href: '/mortgage-rate-comparison', type: 'comparison' },
+    { label: 'Mortgage lender comparisons', href: '/compare/mortgage-rate-comparison', type: 'comparison' },
     { label: 'Mortgage calculator', href: '/calculators/mortgage-calculator', type: 'calculator' },
     { label: 'Mortgage preapproval checklist', href: '/blog/mortgage-preapproval-checklist-underwriting', type: 'article' }
   ],

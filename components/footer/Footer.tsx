@@ -8,6 +8,15 @@ const primaryLinks = [
   { href: '/tools', label: 'Tools' }
 ];
 
+const discoveryLinks = [
+  { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
+  { href: '/learn/loans', label: 'Loans Hub' },
+  { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
+  { href: '/best-investment-apps', label: 'Best Investment Apps' },
+  { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts USA' },
+  { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
+];
+
 const legalLinks = [
   { href: '/privacy-policy', label: 'Privacy Policy' },
   { href: '/terms-and-conditions', label: 'Terms & Conditions' },
@@ -28,6 +37,13 @@ export function Footer() {
         <p>FinanceSphere may earn compensation from partners when you click through to an offer. Ratings and write-ups are based on product terms, features, and user-fit factors—not partner payments.</p>
         <ul className="flex flex-wrap gap-x-4 gap-y-2 pt-2 text-xs">
           {primaryLinks.map((link) => (
+            <li key={link.href}>
+              <Link className="font-medium hover:text-slate-700 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
+            </li>
+          ))}
+        </ul>
+        <ul className="flex flex-wrap gap-x-4 gap-y-2 pt-2 text-xs">
+          {discoveryLinks.map((link) => (
             <li key={link.href}>
               <Link className="font-medium hover:text-slate-700 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
             </li>

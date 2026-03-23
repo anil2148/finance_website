@@ -3,14 +3,15 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { calculatorDefinitions } from '@/lib/calculators/registry';
+import { createPageMetadata } from '@/lib/seo';
 
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Financial Calculators | FinanceSphere',
   description: 'Use FinanceSphere calculators to model mortgage payments, debt payoff timelines, retirement income targets, investment growth, and take-home pay scenarios.',
-  alternates: { canonical: '/calculators' }
-};
+  pathname: '/calculators'
+});
 
 export default function CalculatorsPage() {
   return (
