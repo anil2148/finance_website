@@ -4,6 +4,9 @@ type ArticleSchemaArgs = {
   title: string;
   description: string;
   slug: string;
+  authorName?: string;
+  authorRole?: string;
+  reviewerName?: string;
   publishedTime?: string;
   modifiedTime?: string;
 };
@@ -63,7 +66,16 @@ export function createPageMetadata({ title, description, pathname, type = 'websi
   };
 }
 
-export function articleSchema({ title, description, slug, publishedTime, modifiedTime }: ArticleSchemaArgs) {
+export function articleSchema({
+  title,
+  description,
+  slug,
+  authorName = 'FinanceSphere Editorial Team',
+  authorRole = 'FinanceSphere Editorial Team',
+  reviewerName = 'FinanceSphere Editorial Team',
+  publishedTime,
+  modifiedTime
+}: ArticleSchemaArgs) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -72,13 +84,12 @@ export function articleSchema({ title, description, slug, publishedTime, modifie
     url: absoluteUrl(`/blog/${slug}`),
     author: {
       '@type': 'Person',
-      name: 'Anil Chowdhary',
-      jobTitle: 'Founder, FinanceSphere',
-      description: 'Full Stack Developer | Personal Finance Tools Builder'
+      name: authorName,
+      jobTitle: authorRole
     },
     reviewedBy: {
-      '@type': 'Organization',
-      name: 'FinanceSphere Editorial Team'
+      '@type': 'Person',
+      name: reviewerName
     },
     publisher: {
       '@type': 'Organization',
@@ -110,5 +121,31 @@ export function websiteSchema() {
     publisher: {
       '@id': `${SITE_ORIGIN}/#organization`
     }
+  };
+}
+
+export function webpageSchema({ pathname, name, description }: { pathname: string; name: string; description: string }) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': absoluteUrl(pathname),
+    url: absoluteUrl(pathname),
+    name,
+    description,
+    isPartOf: { '@id': `${SITE_ORIGIN}/#website` },
+    about: { '@id': `${SITE_ORIGIN}/#organization` }
+  };
+}
+
+export function breadcrumbSchema(items: Array<{ name: string; item: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((entry, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: entry.name,
+      item: absoluteUrl(entry.item)
+    }))
   };
 }

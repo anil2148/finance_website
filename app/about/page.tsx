@@ -90,6 +90,17 @@ export default function AboutPage() {
         </p>
       </section>
 
+      <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">
+        <h2 className="text-2xl font-semibold text-slate-900">Editorial and commercial transparency</h2>
+        <p className="text-slate-700">FinanceSphere is an educational platform, not a personalized advisory service. Some pages include affiliate links, but editorial frameworks and comparison criteria are designed to prioritize user fit, fee impact, and decision clarity.</p>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/editorial-policy">Editorial policy</Link>
+          <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/affiliate-disclosure">Affiliate disclosure</Link>
+          <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/how-we-make-money">How we make money</Link>
+          <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/financial-disclaimer">Financial disclaimer</Link>
+        </div>
+      </section>
+
       <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-2xl font-semibold text-slate-900">Start exploring</h2>
         <p className="text-slate-700">

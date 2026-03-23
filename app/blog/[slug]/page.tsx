@@ -4,14 +4,16 @@ import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
 import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
-import { absoluteUrl, articleSchema } from '@/lib/seo';
+import { absoluteUrl, articleSchema, breadcrumbSchema, webpageSchema } from '@/lib/seo';
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
-import { getRelatedLinks } from '@/lib/internalLinks';
+import { getClusterForCategory, getDiversifiedMoneyLinks, getRelatedLinks } from '@/lib/internalLinks';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { getBlogVisual } from '@/lib/blogVisuals';
 import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByBlogCategory, resolveCalculatorHref } from '@/lib/calculatorLinks';
 import { redirectForSlug } from '@/lib/blogCleanup';
+import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, PRIMARY_AUTHOR_ID } from '@/lib/authors';
+import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,9 +54,18 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     title: post.title,
     description: post.description,
     slug: post.slug,
+    authorName: (AUTHOR_PROFILES[post.authorId] ?? AUTHOR_PROFILES[PRIMARY_AUTHOR_ID])?.name,
+    authorRole: (AUTHOR_PROFILES[post.authorId] ?? AUTHOR_PROFILES[PRIMARY_AUTHOR_ID])?.role,
+    reviewerName: (AUTHOR_PROFILES[post.reviewedById] ?? AUTHOR_PROFILES[EDITORIAL_REVIEWER_ID])?.name,
     publishedTime: post.date,
     modifiedTime: post.updatedAt
   });
+  const pageSchema = webpageSchema({ pathname: `/blog/${post.slug}`, name: post.title, description: post.description });
+  const crumbsSchema = breadcrumbSchema([
+    { name: 'Home', item: '/' },
+    { name: 'Blog', item: '/blog' },
+    { name: post.title, item: `/blog/${post.slug}` }
+  ]);
   const toc = getHeadings(post.content);
   const isTaxBracketArticle = post.slug === '2026-federal-tax-brackets-marginal-rate-decisions';
   const faqSchema = isTaxBracketArticle
@@ -130,10 +141,14 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         .map((link) => [link.href, link] as const)
     ).values()
   );
+  const cluster = getClusterForCategory(post.category);
+  const diversifiedMoneyLinks = getDiversifiedMoneyLinks(cluster).filter((item) => !comparisonLinks.some((link) => link.href === item.href));
 
   return (
     <article className="mx-auto max-w-4xl space-y-8 rounded-xl bg-white p-5 sm:p-6 lg:p-8 dark:bg-neutral-900">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbsSchema) }} />
       {faqSchema ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} /> : null}
 
       <header className="space-y-4">
@@ -146,6 +161,18 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       </header>
 
       <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />
+
+      <DecisionSupportPanel
+        title="Quick answer: how to use this guide"
+        tone="blue"
+        intro="Use this page to make one concrete decision, then pressure-test it with your own numbers."
+        points={[
+          { label: 'When this matters', text: `This is most useful when you are actively comparing ${post.category.replace(/-/g, ' ')} options in the next 30 to 90 days.` },
+          { label: 'Best option if...', text: 'Choose the option that holds up in a bad-month scenario, not only in a best-case projection.' },
+          { label: 'Avoid this mistake', text: 'Do not optimize for one metric alone; always check fees, timeline risk, and flexibility together.' }
+        ]}
+        links={calculatorSupportLinks.slice(0, 2)}
+      />
 
       <section className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800/50">
         <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Table of contents</h2>
@@ -211,6 +238,20 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         </section>
       )}
 
+      <DecisionSupportPanel
+        title="Read this before deciding"
+        intro="Use at least one comparison page and one calculator before applying, opening, or refinancing."
+        checklist={[
+          'Confirm total annual value after fees and realistic usage assumptions.',
+          'Check eligibility constraints, minimum balances, and timeline sensitivity.',
+          'Write your next action in one sentence: apply now, wait, or gather more data.'
+        ]}
+        links={[
+          ...comparisonLinks.slice(0, 2).map((item) => ({ href: item.href, label: item.label })),
+          ...diversifiedMoneyLinks.slice(0, 2).map((item) => ({ href: item.href, label: item.label }))
+        ]}
+      />
+
       {(continueLearningLinks.length > 0 || relatedPosts.length > 0) && (
         <section className="space-y-3 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Continue learning</h2>
@@ -239,6 +280,16 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           )}
         </section>
       )}
+
+      <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Practical next step path</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Move from reading to action: run numbers, compare options, then finalize a checklist.</p>
+        <div className="mt-3 grid gap-2 text-sm md:grid-cols-3">
+          <Link href={calculatorSupportLinks[0]?.href ?? '/calculators'} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Use this calculator next</Link>
+          <Link href={comparisonLinks[0]?.href ?? '/comparison'} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Compare before you choose</Link>
+          <Link href={`/learn/${cluster}`} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Read the cluster playbook</Link>
+        </div>
+      </section>
     </article>
   );
 }

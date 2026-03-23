@@ -15,6 +15,7 @@ import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { BaseCalculatorInputs } from '@/lib/calculators/types';
 import { getCurrencySymbol, getLocaleForCurrency, resolveCurrencyPrefix } from '@/lib/utils';
 import { absoluteUrl } from '@/lib/seo';
+import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -147,6 +148,33 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     label: item.label,
     value: item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`
   }));
+  const calculatorPathways: Record<string, { guide: { href: string; label: string }; compare: { href: string; label: string }; mistakes: string[] }> = {
+    'mortgage-calculator': {
+      guide: { href: '/blog/mortgage-preapproval-checklist-underwriting', label: 'Read the lender-readiness checklist' },
+      compare: { href: '/compare/mortgage-rate-comparison', label: 'Compare mortgage offers' },
+      mistakes: ['Forgetting taxes/insurance when checking affordability.', 'Choosing the lowest payment without reviewing total interest cost.', 'Skipping a bad-month affordability stress test.']
+    },
+    'debt-payoff-calculator': {
+      guide: { href: '/blog/debt-to-income-ratio-90-day-plan', label: 'Use the debt reduction playbook' },
+      compare: { href: '/best-credit-cards-2026', label: 'Compare balance-transfer-friendly cards' },
+      mistakes: ['Setting an extra payment amount you cannot sustain.', 'Comparing offers only by monthly payment.', 'Ignoring origination and transfer fees.']
+    },
+    'investment-growth-calculator': {
+      guide: { href: '/blog/beginner-investing-roadmap-year-one-milestones', label: 'Follow the beginner investing roadmap' },
+      compare: { href: '/best-investment-apps', label: 'Compare investment apps' },
+      mistakes: ['Using one return assumption only.', 'Skipping inflation-aware scenario checks.', 'Overestimating contribution consistency.']
+    },
+    'salary-after-tax-calculator': {
+      guide: { href: '/blog/2026-federal-tax-brackets-marginal-rate-decisions', label: 'Review current tax bracket strategy' },
+      compare: { href: '/best-savings-accounts-usa', label: 'Compare high-yield savings options' },
+      mistakes: ['Assuming this replaces tax filing advice.', 'Forgetting payroll deductions beyond taxes.', 'Ignoring location-specific withholding differences.']
+    }
+  };
+  const pathway = calculatorPathways[slug] ?? {
+    guide: { href: definition.blogLinks[0]?.href ?? '/blog', label: 'Read the matching guide' },
+    compare: { href: '/comparison', label: 'Compare options by fee and fit' },
+    mistakes: ['Using unrealistic input assumptions.', 'Relying on one scenario only.', 'Skipping eligibility and product-term checks.']
+  };
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
@@ -259,6 +287,32 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </ul>
         </div>
       </div>
+
+      <DecisionSupportPanel
+        title="How to interpret your result"
+        tone="blue"
+        intro="This calculator is a decision aid. Use ranges and scenarios to avoid overconfidence in one projection."
+        points={[
+          { label: 'Quick answer', text: `Your top metric is ${result.summary[0]?.label ?? 'the headline result'}. Start there, then review timeline and total-cost outputs.` },
+          { label: 'When this matters', text: 'This is most helpful before you apply, refinance, or lock in a financial commitment.' },
+          { label: 'Best option if...', text: 'Choose the path that remains manageable if income drops temporarily or costs rise.' }
+        ]}
+        links={[
+          { href: pathway.guide.href, label: pathway.guide.label },
+          { href: pathway.compare.href, label: pathway.compare.label }
+        ]}
+      />
+
+      <DecisionSupportPanel
+        title="Common mistakes to avoid"
+        tone="amber"
+        checklist={pathway.mistakes}
+        links={[
+          { href: '/editorial-policy', label: 'How FinanceSphere evaluates options' },
+          { href: '/financial-disclaimer', label: 'Educational-use disclaimer' },
+          { href: '/how-we-make-money', label: 'Affiliate transparency' }
+        ]}
+      />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold">Related calculators</h2>

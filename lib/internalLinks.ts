@@ -85,3 +85,44 @@ export function getRelatedLinks(category: string) {
 
   return fallback ? categoryLinks[fallback.key] : categoryLinks.budgeting;
 }
+
+export function getClusterForCategory(category: string) {
+  const normalized = category.toLowerCase();
+
+  if (normalized.includes('invest') || normalized.includes('retire') || normalized.includes('tax')) return 'investing';
+  if (normalized.includes('credit')) return 'credit-cards';
+  if (normalized.includes('loan') || normalized.includes('mortgage')) return 'loans';
+  if (normalized.includes('sav') || normalized.includes('budget')) return 'budgeting';
+  return 'budgeting';
+}
+
+export function getDiversifiedMoneyLinks(cluster: string) {
+  const options: Record<string, RelatedLink[]> = {
+    investing: [
+      { label: 'Best investment apps', href: '/best-investment-apps', type: 'comparison' },
+      { label: 'Investment app deep-dive comparison', href: '/compare/best-investment-apps', type: 'comparison' },
+      { label: 'Investment growth calculator', href: '/calculators/investment-growth-calculator', type: 'calculator' },
+      { label: 'Investing hub', href: '/learn/investing', type: 'hub' }
+    ],
+    'credit-cards': [
+      { label: 'Best credit cards 2026', href: '/best-credit-cards-2026', type: 'comparison' },
+      { label: 'Best everyday credit cards', href: '/best-credit-cards', type: 'comparison' },
+      { label: 'Credit card payoff calculator', href: '/calculators/credit-card-payoff-calculator', type: 'calculator' },
+      { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' }
+    ],
+    loans: [
+      { label: 'Mortgage rate comparison', href: '/compare/mortgage-rate-comparison', type: 'comparison' },
+      { label: 'Personal loan comparison', href: '/loans', type: 'comparison' },
+      { label: 'Loan calculator', href: '/calculators/loan-calculator', type: 'calculator' },
+      { label: 'Loans hub', href: '/learn/loans', type: 'hub' }
+    ],
+    budgeting: [
+      { label: 'Best savings accounts USA', href: '/best-savings-accounts-usa', type: 'comparison' },
+      { label: 'Savings goal calculator', href: '/calculators/savings-goal-calculator', type: 'calculator' },
+      { label: 'Budget planner calculator', href: '/calculators/budget-planner', type: 'calculator' },
+      { label: 'Budgeting hub', href: '/learn/budgeting', type: 'hub' }
+    ]
+  };
+
+  return options[cluster] ?? options.budgeting;
+}

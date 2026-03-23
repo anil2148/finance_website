@@ -24,6 +24,20 @@ export function ComparisonPageClient() {
           />
         </div>
       </div>
+      <section className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 md:grid-cols-3">
+        <article>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Start here</h2>
+          <p className="mt-1 text-sm text-slate-700">Pick one goal: lower borrowing cost, better rewards fit, stronger cash yield, or easier account management.</p>
+        </article>
+        <article>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Most useful next step</h2>
+          <p className="mt-1 text-sm text-slate-700">Filter category, compare tradeoffs, then run a calculator before applying or transferring funds.</p>
+        </article>
+        <article>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Transparency</h2>
+          <p className="mt-1 text-sm text-slate-700">Read <Link href="/editorial-policy" className="font-medium text-blue-700 hover:underline">editorial standards</Link> and <Link href="/affiliate-disclosure" className="font-medium text-blue-700 hover:underline">affiliate disclosure</Link> before choosing offers.</p>
+        </article>
+      </section>
       <ComparisonEngine initialProducts={products} />
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-lg font-semibold text-slate-900">Popular comparison pages</h2>
