@@ -38,7 +38,7 @@ const legacySlugFallbacks: Array<{ pattern: RegExp; destination: string; reason:
   { pattern: /^how-to-save-500-month-\d+$/i, destination: '/blog/how-to-choose-a-high-yield-savings-account', reason: 'REDIRECT' },
   { pattern: /^mortgage-tips-\d+$/i, destination: '/blog/seo-mortgage-preapproval-checklist', reason: 'REDIRECT' },
   { pattern: /^how-to-improve-credit-score-\d+$/i, destination: '/blog/credit-utilization-statement-cycle-playbook', reason: 'REDIRECT' },
-  { pattern: /^personal-loan-comparison-for-bad-month-resilience$/i, destination: '/blog/seo-how-to-compare-personal-loan-apr', reason: 'REDIRECT' }
+  { pattern: /^seo-how-to-compare-personal-loan-apr$/i, destination: '/blog/personal-loan-comparison-for-bad-month-resilience', reason: 'REDIRECT' }
 ];
 
 export function getCleanupItem(slug: string) {
