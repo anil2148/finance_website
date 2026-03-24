@@ -7,7 +7,7 @@
     "apr_apy": "18.99% APR",
     "pros": ["3% dining cashback", "No foreign transaction fee", "$200 welcome bonus"],
     "cons": ["$95 annual fee", "Excellent credit required"],
-    "affiliate_url": "https://example.com/credit-card-nova"
+    "affiliate_url": "/go/cc-aurora-cashback"
   },
   {
     "category": "credit-cards",
@@ -17,7 +17,7 @@
     "apr_apy": "20.24% APR",
     "pros": ["No annual fee", "2% groceries and gas", "0% intro APR for 12 months"],
     "cons": ["Lower rewards after intro period", "Balance transfer fee applies"],
-    "affiliate_url": "https://example.com/credit-card-summit"
+    "affiliate_url": "/go/cc-voyager-rewards"
   },
   {
     "category": "savings-accounts",
@@ -27,7 +27,7 @@
     "apr_apy": "5.05% APY",
     "pros": ["No monthly maintenance fees", "High APY", "FDIC insured"],
     "cons": ["No ATM card", "$500 minimum to earn APY"],
-    "affiliate_url": "https://example.com/savings-harbor"
+    "affiliate_url": "/go/sav-evergreen-yield"
   },
   {
     "category": "savings-accounts",
@@ -37,7 +37,7 @@
     "apr_apy": "4.70% APY",
     "pros": ["No minimum opening deposit", "Fast mobile transfers"],
     "cons": ["Lower APY tier below $10k", "No physical branches"],
-    "affiliate_url": "https://example.com/savings-pioneer"
+    "affiliate_url": "/go/sav-horizon-plus"
   },
   {
     "category": "loans",
@@ -47,7 +47,7 @@
     "apr_apy": "7.49% - 19.99% APR",
     "pros": ["Same-day funding", "No prepayment penalty", "Flexible terms"],
     "cons": ["Origination fee up to 4%", "Best rates require top credit"],
-    "affiliate_url": "https://example.com/loan-crest"
+    "affiliate_url": "/go/loan-velocity-personal"
   },
   {
     "category": "loans",
@@ -57,7 +57,7 @@
     "apr_apy": "8.25% - 23.50% APR",
     "pros": ["Joint applications accepted", "Debt payoff tools"],
     "cons": ["Late fee charged", "Longer approval for self-employed"],
-    "affiliate_url": "https://example.com/loan-metro"
+    "affiliate_url": "/go/loan-fairpath-flex"
   },
   {
     "category": "investment-apps",
@@ -67,7 +67,7 @@
     "apr_apy": "0.25% advisory fee",
     "pros": ["Automated rebalancing", "Tax-loss harvesting", "Low minimum deposit"],
     "cons": ["No individual stock trading", "Premium tax support costs extra"],
-    "affiliate_url": "https://example.com/invest-orion"
+    "affiliate_url": "/go/inv-wealthpilot-core"
   },
   {
     "category": "investment-apps",
@@ -77,6 +77,6 @@
     "apr_apy": "$0 commissions",
     "pros": ["Fractional shares", "Real-time market news", "Retirement account support"],
     "cons": ["Margin rates can be high", "Advanced tools in paid tier"],
-    "affiliate_url": "https://example.com/invest-atlas"
+    "affiliate_url": "/go/inv-alphatrade-max"
   }
 ]

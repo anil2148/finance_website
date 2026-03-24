@@ -45,6 +45,18 @@
       .replace(/\s+/g, ' ');
   }
 
+  function isNavigableHref(href) {
+    if (!href || typeof href !== 'string') return false;
+    if (href.startsWith('/')) return true;
+
+    try {
+      var parsed = new URL(href);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (_error) {
+      return false;
+    }
+  }
+
   /**
    * Renders a status message (loading, error, empty state) inside container.
    * @param {HTMLElement} container
@@ -64,6 +76,10 @@
   function createOfferCardMarkup(offer) {
     var prosText = Array.isArray(offer.pros) ? offer.pros.map(escapeHtml).join(', ') : 'N/A';
     var consText = Array.isArray(offer.cons) ? offer.cons.map(escapeHtml).join(', ') : 'N/A';
+    var hasValidLink = isNavigableHref(offer.affiliate_url);
+    var ctaMarkup = hasValidLink
+      ? '<a class="offer-card__button" href="' + escapeHtml(offer.affiliate_url) + '" rel="noopener noreferrer sponsored">View Offer</a>'
+      : '<span class="offer-card__button offer-card__button--disabled" aria-disabled="true">Offer unavailable</span>';
 
     return [
       '<article class="offer-card">',
@@ -75,7 +91,7 @@
       '  <p class="offer-card__apr"><strong>APR/APY:</strong> ' + escapeHtml(offer.apr_apy || 'N/A') + '</p>',
       '  <p class="offer-card__pros"><strong>Pros:</strong> ' + prosText + '</p>',
       '  <p class="offer-card__cons"><strong>Cons:</strong> ' + consText + '</p>',
-      '  <a class="offer-card__button" href="' + escapeHtml(offer.affiliate_url || '#') + '" target="_blank" rel="noopener noreferrer sponsored">View Offer</a>',
+      '  ' + ctaMarkup,
       '</article>'
     ].join('\n');
   }

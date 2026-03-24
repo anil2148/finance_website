@@ -613,10 +613,10 @@ docker run -d \
     <span class="k">cert-manager.io/cluster-issuer</span>: <span class="s">letsencrypt-prod</span>
 <span class="k">spec</span>:
   <span class="k">tls</span>:
-  - <span class="k">hosts</span>: [<span class="s">api.example.com</span>]
+  - <span class="k">hosts</span>: [<span class="s">api.financesphere.io</span>]
     <span class="k">secretName</span>: <span class="s">api-tls</span>
   <span class="k">rules</span>:
-  - <span class="k">host</span>: <span class="s">api.example.com</span>
+  - <span class="k">host</span>: <span class="s">api.financesphere.io</span>
     <span class="k">http</span>:
       <span class="k">paths</span>:
       - <span class="k">path</span>: <span class="s">/api</span>     <span class="k">pathType</span>: <span class="s">Prefix</span>
@@ -754,7 +754,7 @@ docker run -d \
   <span class="k">requests</span>: { <span class="k">cpu</span>: <span class="s">200m</span>, <span class="k">memory</span>: <span class="s">256Mi</span> }
   <span class="k">limits</span>:   { <span class="k">cpu</span>: <span class="s">1000m</span>, <span class="k">memory</span>: <span class="s">1Gi</span> }
 <span class="k">autoscaling</span>: { <span class="k">enabled</span>: <span class="v">true</span>, <span class="k">minReplicas</span>: <span class="v">3</span>, <span class="k">maxReplicas</span>: <span class="v">10</span> }
-<span class="k">ingress</span>: { <span class="k">enabled</span>: <span class="v">true</span>, <span class="k">hostname</span>: <span class="s">api.example.com</span> }
+<span class="k">ingress</span>: { <span class="k">enabled</span>: <span class="v">true</span>, <span class="k">hostname</span>: <span class="s">api.financesphere.io</span> }
 
 <span class="c"># Upgrade with rollback on failure</span>
 <span class="cmd">helm upgrade my-app ./chart --atomic --cleanup-on-fail</span>

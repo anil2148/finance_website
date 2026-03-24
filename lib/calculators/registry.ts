@@ -82,7 +82,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Loan Calculator: Monthly EMI & Interest Breakdown',
     seoDescription: 'Calculate monthly installment payments with a year-by-year amortization schedule and total interest breakdown.',
     faq: [{ question: 'How can this help me compare two loan offers?', answer: 'Enter each offer separately and compare the monthly installment, total interest, and payoff length to see the real trade-off.' }],
-    blogLinks: [{ title: 'How Loan Interest Works', href: '/blog/seo-how-to-compare-personal-loan-apr' }],
+    blogLinks: [{ title: 'How Loan Interest Works', href: '/blog/personal-loan-comparison-for-bad-month-resilience' }],
     defaultInputs: { ...defaultInputs, years: 7 },
     compute: calculateLoan
   },
@@ -148,7 +148,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Debt Avalanche Calculator: Minimize Interest Paid',
     seoDescription: 'Model debt avalanche payoff and compare savings across repayment plans.',
     faq: [{ question: 'What is debt avalanche?', answer: 'It focuses extra payments on the highest-interest debt first.' }],
-    blogLinks: [{ title: 'Personal Loan vs Credit Card', href: '/blog/seo-how-to-compare-personal-loan-apr' }],
+    blogLinks: [{ title: 'Personal Loan vs Credit Card', href: '/blog/personal-loan-comparison-for-bad-month-resilience' }],
     defaultInputs: { ...defaultInputs, loanAmount: 40000, years: 8 },
     compute: (inputs) => debtPayoffResult('Debt Avalanche Projection', inputs)
   },
@@ -233,7 +233,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     seoTitle: 'Auto Loan Calculator: Car Payment and Interest Breakdown',
     seoDescription: 'Model auto-loan payments, cumulative interest, and payoff timing across different terms and APRs.',
     faq: [{ question: 'How much should a car payment be?', answer: 'A common rule of thumb is keeping auto costs manageable relative to take-home pay, but the right cap depends on your budget.' }],
-    blogLinks: [{ title: 'Auto Loan Term Length', href: '/blog/seo-how-to-compare-personal-loan-apr' }],
+    blogLinks: [{ title: 'Auto Loan Term Length', href: '/blog/personal-loan-comparison-for-bad-month-resilience' }],
     defaultInputs: { ...defaultInputs, loanAmount: 32000, years: 6, interestRate: 7.1 },
     compute: calculateLoan
   },

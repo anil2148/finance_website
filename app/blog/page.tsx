@@ -23,7 +23,7 @@ const startHereGuides = [
   },
   {
     title: 'How to compare personal loan APR',
-    href: '/blog/seo-how-to-compare-personal-loan-apr',
+    href: '/blog/personal-loan-comparison-for-bad-month-resilience',
     next: '/calculators/loan-calculator',
     angle: 'Choose for bad-month resilience, not teaser-rate marketing.'
   },

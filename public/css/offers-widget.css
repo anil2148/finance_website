@@ -59,6 +59,12 @@
   background: #1d4ed8;
 }
 
+.offer-card__button--disabled,
+.offer-card__button--disabled:hover {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
 .offers-message {
   margin: 0;
   padding: 0.9rem;
