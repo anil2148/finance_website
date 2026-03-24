@@ -1,8 +1,9 @@
 const affiliateRows = [
   {
-    product: 'Credit card',
-    feature: 'cashback',
-    applyUrl: 'https://example.com/affiliate/best-credit-cards'
+    product: 'Best Credit Cards 2026',
+    feature: 'cashback + travel',
+    applyUrl: '/best-credit-cards-2026',
+    cta: 'View comparison'
   }
 ];
 
@@ -28,8 +29,8 @@ export default function BestCreditCardsPage() {
                 <td className="p-3">{row.product}</td>
                 <td className="p-3">{row.feature}</td>
                 <td className="p-3">
-                  <a className="btn-primary" href={row.applyUrl} target="_blank" rel="noreferrer sponsored">
-                    Affiliate Link
+                  <a className="btn-primary" href={row.applyUrl}>
+                    {row.cta}
                   </a>
                 </td>
               </tr>

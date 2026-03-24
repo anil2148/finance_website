@@ -5,7 +5,7 @@ const categoryLinks: Record<string, RelatedLink[]> = {
     { label: 'Investing hub', href: '/learn/investing', type: 'hub' },
     { label: 'Best investment apps', href: '/best-investment-apps', type: 'comparison' },
     { label: 'Investment growth calculator', href: '/calculators/investment-growth-calculator', type: 'calculator' },
-    { label: 'Tax-efficient investing rules', href: '/blog/seo-tax-efficient-investing-tips', type: 'article' }
+    { label: 'Tax-efficient investing rules', href: '/blog/tax-efficient-investing-account-location-decisions', type: 'article' }
   ],
   tax: [
     { label: '2026 federal tax brackets guide', href: '/blog/2026-federal-tax-brackets-marginal-rate-decisions', type: 'hub' },
@@ -55,7 +55,7 @@ const categoryLinks: Record<string, RelatedLink[]> = {
     { label: 'Passive income hub', href: '/learn/passive-income', type: 'hub' },
     { label: 'Investment account comparisons', href: '/best-investment-apps', type: 'comparison' },
     { label: 'Compound interest calculator', href: '/calculators/compound-interest-calculator', type: 'calculator' },
-    { label: 'Tax-efficient investing rules', href: '/blog/seo-tax-efficient-investing-tips', type: 'article' }
+    { label: 'Tax-efficient investing rules', href: '/blog/tax-efficient-investing-account-location-decisions', type: 'article' }
   ],
   'credit cards': [
     { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' },

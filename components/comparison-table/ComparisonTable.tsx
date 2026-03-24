@@ -11,7 +11,7 @@ type Product = {
   cashback: number;
   minimum_credit_score: number;
   rating: number;
-  affiliate_link: string;
+  affiliate_link: string | null;
 };
 
 const sortOptions = [
@@ -98,9 +98,15 @@ export function ComparisonTable({ data }: { data: Product[] }) {
                   </span>
                 </td>
                 <td className="p-3">
-                  <a className="btn-primary rounded-lg" href={r.affiliate_link} target="_blank" rel="noreferrer">
-                    Apply Now
-                  </a>
+                  {r.affiliate_link ? (
+                    <a className="btn-primary rounded-lg" href={r.affiliate_link} rel="noreferrer sponsored">
+                      Apply Now
+                    </a>
+                  ) : (
+                    <span className="inline-flex cursor-not-allowed rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                      Coming soon
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}

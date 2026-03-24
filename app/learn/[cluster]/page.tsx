@@ -83,7 +83,7 @@ const hubs: Record<string, HubConfig> = {
     ],
     popularDecisions: ['Stress-test monthly payment under income volatility', 'Compare APR + fee stack instead of APR only', 'Choose prepayment-flexible terms when possible'],
     resources: [
-      { href: '/blog/seo-how-to-compare-personal-loan-apr', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
+      { href: '/blog/personal-loan-comparison-for-bad-month-resilience', title: 'How to compare personal loan APR', description: 'Evaluate offers using APR, fees, repayment flexibility, and stress-tested payment ranges.', tag: 'Start here' },
       { href: '/blog/mortgage-preapproval-checklist-underwriting', title: 'Mortgage preapproval checklist', description: 'Prepare documents and timeline expectations to avoid underwriting delays.' },
       { href: '/blog/debt-to-income-ratio-90-day-plan', title: 'Debt-to-income ratio guide', description: 'Use front-end and back-end DTI targets to improve approval odds before applying.' }
     ],

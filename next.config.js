@@ -1,5 +1,33 @@
 const blogRedirectMap = require('./content/audit/blog-redirect-map.json');
 
+function normalizeRedirectMap(entries) {
+  const firstBySource = new Map();
+
+  for (const entry of entries) {
+    if (!entry?.source || !entry?.destination) continue;
+    if (!firstBySource.has(entry.source)) {
+      firstBySource.set(entry.source, { source: entry.source, destination: entry.destination });
+    }
+  }
+
+  const normalized = [];
+
+  for (const [source, initial] of firstBySource.entries()) {
+    const seen = new Set([source]);
+    let destination = initial.destination;
+
+    while (firstBySource.has(destination) && !seen.has(destination)) {
+      seen.add(destination);
+      destination = firstBySource.get(destination).destination;
+    }
+
+    if (seen.has(destination) || destination === source) continue;
+    normalized.push({ source, destination });
+  }
+
+  return normalized;
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // SEO/performance: Next.js compression enables gzip/brotli in production.
@@ -31,7 +59,7 @@ const nextConfig = {
       { source: '/compare/best-savings-accounts-usa', destination: '/best-savings-accounts-usa', permanent: true },
       { source: '/mortgage-rate-comparison', destination: '/compare/mortgage-rate-comparison', permanent: true },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
-      ...blogRedirectMap.map((entry) => ({
+      ...normalizeRedirectMap(blogRedirectMap).map((entry) => ({
         source: entry.source,
         destination: entry.destination,
         permanent: true

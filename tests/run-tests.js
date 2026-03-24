@@ -16,11 +16,15 @@ require('sucrase/register/ts');
 
 const { runUtilsTests } = require('./utils.test.ts');
 const { runCalculatorTests } = require('./calculators.test.ts');
+const { runLinkIntegrityTests } = require('./linkIntegrity.test.ts');
 
 runUtilsTests();
 console.log('✅ utils tests passed');
 
 runCalculatorTests();
 console.log('✅ calculator tests passed');
+
+runLinkIntegrityTests();
+console.log('✅ link integrity tests passed');
 
 console.log('🎉 all unit tests passed');
