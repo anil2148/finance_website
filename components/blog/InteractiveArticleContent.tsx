@@ -111,6 +111,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
       {sections.map((section) => {
         const paragraphBuffer: string[] = [];
         const elements: JSX.Element[] = [];
+        let pendingAnchorId: string | null = null;
 
         const flushParagraph = () => {
           if (!paragraphBuffer.length) return;
@@ -133,23 +134,84 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             continue;
           }
 
+          const divOpenMatch = line.match(/^<div id="([^"]+)">$/);
+          if (divOpenMatch) {
+            flushParagraph();
+            pendingAnchorId = divOpenMatch[1];
+            continue;
+          }
+
+          if (line === '</div>') {
+            flushParagraph();
+            pendingAnchorId = null;
+            continue;
+          }
+
+          const paragraphMatch = line.match(/^<p id="([^"]+)">(.*)<\/p>$/);
+          if (paragraphMatch) {
+            flushParagraph();
+            const [, paragraphId, paragraphText] = paragraphMatch;
+            if (paragraphText.trim().length > 0) {
+              elements.push(
+                <p
+                  key={`${section.id}-html-p-${i}`}
+                  id={paragraphId}
+                  className="rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3 text-[1.02rem] leading-8 text-neutral-700 dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-neutral-200"
+                >
+                  {renderInline(paragraphText.trim())}
+                </p>
+              );
+            }
+            continue;
+          }
+
+          if (line.startsWith('```')) {
+            flushParagraph();
+            const codeLines: string[] = [];
+            let cursor = i + 1;
+
+            while (cursor < section.lines.length && !section.lines[cursor].trim().startsWith('```')) {
+              codeLines.push(section.lines[cursor]);
+              cursor += 1;
+            }
+
+            const blockProps = pendingAnchorId ? { id: pendingAnchorId } : {};
+            elements.push(
+              <div
+                key={`${section.id}-code-${i}`}
+                {...blockProps}
+                className="overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-900 p-4 text-sm leading-6 text-neutral-100 dark:border-neutral-700"
+              >
+                <pre className="font-mono whitespace-pre">{codeLines.join('\n')}</pre>
+              </div>
+            );
+
+            pendingAnchorId = null;
+            i = cursor;
+            continue;
+          }
+
           if (line.startsWith('### ')) {
             flushParagraph();
+            const headingProps = pendingAnchorId ? { id: pendingAnchorId } : {};
             elements.push(
-              <h3 key={`${section.id}-h-${i}`} className="text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+              <h3 key={`${section.id}-h-${i}`} {...headingProps} className="scroll-mt-28 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
                 {line.replace(/^###\s+/, '').trim()}
               </h3>
             );
+            pendingAnchorId = null;
             continue;
           }
 
           if (line.startsWith('#### ')) {
             flushParagraph();
+            const headingProps = pendingAnchorId ? { id: pendingAnchorId } : {};
             elements.push(
-              <h4 key={`${section.id}-h4-${i}`} className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
+              <h4 key={`${section.id}-h4-${i}`} {...headingProps} className="scroll-mt-28 text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                 {line.replace(/^####\s+/, '').trim()}
               </h4>
             );
+            pendingAnchorId = null;
             continue;
           }
 
@@ -213,8 +275,13 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             }
 
             const table = parseTable(tableLines);
+            const wrapperProps = pendingAnchorId ? { id: pendingAnchorId } : {};
             elements.push(
-              <div key={`${section.id}-table-${i}`} className="my-6 overflow-x-auto rounded-xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+              <div
+                key={`${section.id}-table-${i}`}
+                {...wrapperProps}
+                className="my-6 overflow-x-auto rounded-xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
+              >
                 <table className="min-w-full text-sm text-neutral-900 dark:text-neutral-100">
                   <thead>
                     <tr className="bg-neutral-50 dark:bg-neutral-800">
@@ -240,6 +307,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
               </div>
             );
 
+            pendingAnchorId = null;
             i = cursor - 1;
             continue;
           }
