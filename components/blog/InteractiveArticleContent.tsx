@@ -36,7 +36,7 @@ function renderInline(text: string) {
     const token = match[0];
 
     if (token.startsWith('**')) {
-      nodes.push(<strong key={`b-${key++}`}>{token.slice(2, -2)}</strong>);
+      nodes.push(<strong key={`b-${key++}`}>{renderInline(token.slice(2, -2))}</strong>);
     } else {
       const parts = token.match(/^\[([^\]]+)\]\(([^\)]+)\)$/);
       if (parts) {
@@ -365,7 +365,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
           <section
             key={section.id}
             id={section.id}
-            className="space-y-6 rounded-xl border border-neutral-200 bg-white p-5 sm:p-6 dark:border-neutral-700 dark:bg-neutral-900"
+            className="scroll-mt-24 space-y-6 rounded-xl border border-neutral-200 bg-white p-5 sm:p-6 dark:border-neutral-700 dark:bg-neutral-900"
           >
             <h2 className="text-2xl font-semibold leading-tight text-neutral-900 dark:text-neutral-100">{section.title}</h2>
             <div className="space-y-5 [&_a]:font-medium">{elements}</div>
