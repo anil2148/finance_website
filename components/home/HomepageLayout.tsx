@@ -1,8 +1,5 @@
-'use client';
-
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import {
   ArrowTrendingUpIcon,
   ChartBarIcon,
@@ -99,9 +96,33 @@ const crawlPriorityLinks = [
   { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
 ];
 
+const homepageFaqs = [
+  {
+    question: 'Where should I start if I need quick financial clarity?',
+    answer:
+      'Pick one decision you need to make this month, run the matching calculator first, and then read the linked comparison page before applying or moving money.',
+    href: '/calculators',
+    label: 'Browse all calculators'
+  },
+  {
+    question: 'How are product recommendations evaluated?',
+    answer:
+      'Comparison pages prioritize transparent trade-offs: total cost, rates, fees, flexibility, and who each option is likely to fit based on practical usage patterns.',
+    href: '/editorial-policy',
+    label: 'Read editorial policy'
+  },
+  {
+    question: 'Is FinanceSphere financial advice?',
+    answer:
+      'No. The site is educational. Use it to build your own decision framework, then verify current terms directly with providers before you commit.',
+    href: '/financial-disclaimer',
+    label: 'Read full disclaimer'
+  }
+];
+
 export function HomepageLayout() {
   return (
-    <section className="space-y-10">
+    <section className="space-y-10" aria-label="FinanceSphere homepage">
       <Card className="relative overflow-hidden border-none bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 text-white shadow-[0_30px_80px_-40px_rgba(37,99,235,0.9)]">
         <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_20%_20%,rgba(56,189,248,0.6),transparent_40%),radial-gradient(circle_at_80%_10%,rgba(129,140,248,0.5),transparent_35%),linear-gradient(rgba(148,163,184,0.22)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.22)_1px,transparent_1px)] [background-size:auto,auto,26px_26px,26px_26px]" />
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
@@ -143,7 +164,6 @@ export function HomepageLayout() {
         </div>
       </Card>
 
-
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">What to do first</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal and follow one workflow: run your numbers first, compare options second, and read the matching guide before acting.</p>
@@ -162,17 +182,17 @@ export function HomepageLayout() {
         </div>
       </section>
 
-      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900">
+      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900" aria-label="Trust and transparency links">
         {trustSignals.map((signal) => (
           <Link key={signal.label} href={signal.href} className="flex items-start gap-2 rounded-xl border border-slate-100 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
-            <ShieldCheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-blue-300" />
+            <ShieldCheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-blue-300" aria-hidden="true" />
             <span className="font-medium text-slate-700 dark:text-slate-200">{signal.label}</span>
           </Link>
         ))}
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular comparison and learning pages</h2>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="priority-pages-heading">
+        <h2 id="priority-pages-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular comparison and learning pages</h2>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           {crawlPriorityLinks.map((item) => (
             <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
@@ -189,15 +209,13 @@ export function HomepageLayout() {
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {popularCalculators.map((calculator) => (
-            <motion.div key={calculator.href} whileHover={{ y: -4 }}>
-              <Link href={calculator.href}>
-                <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)]">
-                  <ChartBarIcon className="h-6 w-6 text-blue-700 dark:text-blue-300" />
-                  <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{calculator.title}</h3>
-                  <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{calculator.description}</p>
-                </Card>
-              </Link>
-            </motion.div>
+            <Link key={calculator.href} href={calculator.href} className="group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+              <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)] transition-transform duration-200 group-hover:-translate-y-1 group-hover:shadow-lg">
+                <ChartBarIcon className="h-6 w-6 text-blue-700 dark:text-blue-300" aria-hidden="true" />
+                <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{calculator.title}</h3>
+                <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{calculator.description}</p>
+              </Card>
+            </Link>
           ))}
         </div>
       </section>
@@ -214,20 +232,33 @@ export function HomepageLayout() {
 
       <Card className="border-slate-200/90 bg-white/90 dark:border-slate-700 dark:bg-slate-900/90">
         <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
-          <ArrowTrendingUpIcon className="h-5 w-5 text-blue-700 dark:text-blue-300" /> Decide with confidence
+          <ArrowTrendingUpIcon className="h-5 w-5 text-blue-700 dark:text-blue-300" aria-hidden="true" /> Decide with confidence
         </h3>
         <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">
           FinanceSphere blends calculators, product comparisons, and editorial guides into one decision workflow so you can explain your plan before committing.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <Link href="/compare/best-credit-cards-2026" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
-            <CheckBadgeIcon className="mr-2 inline h-4 w-4" /> Best credit cards with transparent trade-offs
+            <CheckBadgeIcon className="mr-2 inline h-4 w-4" aria-hidden="true" /> Best credit cards with transparent trade-offs
           </Link>
           <Link href="/compare/best-investment-apps" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
-            <SparklesIcon className="mr-2 inline h-4 w-4" /> Investment app comparison with fit guidance
+            <SparklesIcon className="mr-2 inline h-4 w-4" aria-hidden="true" /> Investment app comparison with fit guidance
           </Link>
         </div>
       </Card>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="homepage-faq-heading">
+        <h2 id="homepage-faq-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Quick answers before you start</h2>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {homepageFaqs.map((faq) => (
+            <article key={faq.question} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{faq.question}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{faq.answer}</p>
+              <Link href={faq.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">{faq.label}</Link>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere keeps pages decision-first</h2>
