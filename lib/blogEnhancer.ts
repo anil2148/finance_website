@@ -19,19 +19,14 @@ type TopicBlueprint = {
 const THIN_PATTERNS = [
   'A complete overview for',
   'can accelerate your long-term wealth strategy when done consistently',
-  'Compare your options',
-  'Action plan',
-  'Step-by-step plan',
+  'Action plan:',
+  'Step-by-step plan:',
   'Option A',
   'Option B',
   'with practical steps, examples, and expert tips'
 ];
 
 const REPETITIVE_TITLE_PATTERNS = [/practical\s+\d{4}\s+guide\s*#\d+/i, /complete guide\s*\(\d{4}\)/i, /guide\s*#\d+/i];
-const PRESERVE_SOURCE_CONTENT_SLUGS = new Set([
-  '2026-federal-tax-brackets-marginal-rate-decisions'
-]);
-
 function hashNumber(value: string) {
   return [...value].reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
 }
@@ -73,7 +68,7 @@ export function canonicalTopicKey(post: BlogPost) {
 
 function isLowValueContent(content: string) {
   const wordCount = content.split(/\s+/).filter(Boolean).length;
-  return wordCount < 360 || THIN_PATTERNS.some((phrase) => content.includes(phrase));
+  return wordCount < 220 || THIN_PATTERNS.some((phrase) => content.includes(phrase));
 }
 
 function hasTemplatedTitle(title: string) {
@@ -514,7 +509,6 @@ export function enhancePost(post: BlogPost): BlogPost {
   const blueprint = inferBlueprint(`${post.category} ${post.slug}`.toLowerCase());
   const title = normalizeTitle(post, topicLabel, blueprint);
   const description = normalizeDescription(post, topicLabel, blueprint);
-  const lowValue = !PRESERVE_SOURCE_CONTENT_SLUGS.has(post.slug) && isLowValueContent(post.content);
 
   return {
     ...post,
@@ -522,6 +516,6 @@ export function enhancePost(post: BlogPost): BlogPost {
     description,
     seoTitle: `${title} | FinanceSphere`,
     metaDescription: description,
-    content: lowValue ? buildEnhancedBody(post, topicLabel, blueprint) : post.content
+    content: post.content
   };
 }
