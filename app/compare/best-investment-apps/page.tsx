@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
 
 export const metadata: Metadata = {
-  title: 'Investment App Comparison Table | Fees, Ratings, and Features',
+  title: 'Investment App Comparison Framework | FinanceSphere',
   description:
     'Use FinanceSphere\'s side-by-side investment app comparison table to evaluate fees, ratings, account features, and platform fit.',
   alternates: {
@@ -41,7 +41,7 @@ export default function BestInvestmentAppsPage() {
 
       <SeoComparisonPage
         pageTitle="Best Investment Apps"
-        intro="Compare beginner-friendly and advanced investing apps by cost, account tools, automation features, and user experience to choose the right platform."
+        intro="Use this framework to compare investing app models by fee drag, account support, automation quality, and long-term behavior fit."
         category="investment_app"
         slug="best-investment-apps"
         faq={[

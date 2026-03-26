@@ -55,11 +55,11 @@ const helpTopics: HelpItem[] = [
     category: 'Tool Guidance',
     title: 'How do product comparisons work?',
     summary:
-      'Comparison pages organize products by APR/APY, fees, bonuses, and fit signals. Start by filtering category first, then check cost and feature trade-offs side by side.',
+      'Comparison pages provide evaluation frameworks (not live ranked offers). Use them to shortlist options by costs, constraints, and support quality before visiting provider sites.',
     steps: [
-      'Choose a product category (credit card, savings, mortgage, loan, investment app).',
-      'Filter for your priorities like annual fees, reward style, or savings yield.',
-      'Use calculators first so you know what rate/payment range fits your plan.'
+      'Choose a category and identify your non-negotiables (budget limit, timeline, support needs).',
+      'Use the framework rows to compare best-fit use cases, limitations, and when-to-avoid conditions.',
+      'Run a calculator scenario so your shortlist matches your own numbers.'
     ],
     links: [
       { href: '/comparison', label: 'Open the comparison engine' },
@@ -129,8 +129,8 @@ const quickFaq = [
     a: 'FinanceSphere provides educational estimates and comparisons. Use it for planning, then confirm decisions with professionals when needed.'
   },
   {
-    q: 'How often are comparisons and guides updated?',
-    a: 'Content is reviewed periodically and refreshed when rates, product features, or market context materially changes.'
+    q: 'How often are comparison frameworks and guides updated?',
+    a: 'Content is reviewed periodically and refreshed when product rules, assumptions, or decision guidance materially changes.'
   }
 ];
 

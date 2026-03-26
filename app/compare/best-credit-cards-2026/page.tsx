@@ -2,15 +2,15 @@ import type { Metadata } from 'next';
 import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
 
 export const metadata: Metadata = {
-  title: 'Best Credit Cards 2026 | Compare Rewards, APR & Fees',
-  description: 'Compare 2026 credit cards with issuer data, fee math, and approval-fit guidance so you can choose rewards that match your spending profile.'
+  title: 'Credit Card Comparison Framework (2026) | FinanceSphere',
+  description: 'Use a transparent framework to compare credit card options by annual value, downside APR risk, and approval fit.'
 };
 
 export default function BestCreditCards2026Page() {
   return (
     <SeoComparisonPage
       pageTitle="Best Credit Cards 2026"
-      intro="Compare leading U.S. cards by net first-year value, APR downside risk, annual fees, and issuer approval profile before submitting any application."
+      intro="Use this framework to compare credit card options by annual value, APR downside risk, and approval fit before you apply."
       category="credit_card"
       slug="best-credit-cards-2026"
       faq={[
