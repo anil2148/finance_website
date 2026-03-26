@@ -253,11 +253,39 @@ const categoryLabel: Record<FinancialCategory, string> = {
   personal_loan: 'Personal Loans'
 };
 
+const decisionGuardrailsByCategory: Record<FinancialCategory, string[]> = {
+  credit_card: [
+    'If you regularly carry balances, prioritize APR risk and payoff path before rewards value.',
+    'Do not count credits you rarely use as guaranteed annual value.',
+    'Write a maximum annual-fee threshold before applying.'
+  ],
+  savings_account: [
+    'Set minimum acceptable transfer speed before comparing APY differences.',
+    'Check withdrawal limits, balance rules, and support access for emergency scenarios.',
+    'Keep emergency cash where you can reliably access it, even during weekends/holidays.'
+  ],
+  investment_app: [
+    'Calculate all-in annual cost (platform + advisory + fund fees).',
+    'Choose app design that supports recurring buys and reduces impulse trading.',
+    'Confirm account-type coverage for your next 24 months, not just today.'
+  ],
+  mortgage_lender: [
+    'Compare Loan Estimates line by line, not headline rate alone.',
+    'Test payment affordability with taxes, insurance, and maintenance buffer included.',
+    'If timeline is rigid, weight execution reliability as heavily as rate.'
+  ],
+  personal_loan: [
+    'Use a payment ceiling that still works in a below-average income month.',
+    'Include origination fees in total-cost comparisons.',
+    'If consolidating debt, pair the loan with a no-new-debt plan on day one.'
+  ]
+};
 
 const categoryByFrameworkId: Record<string, FinancialCategory> = Object.entries(frameworkByCategory).reduce((acc, [category, rows]) => {
   for (const row of rows) acc[row.id] = category as FinancialCategory;
   return acc;
 }, {} as Record<string, FinancialCategory>);
+
 export function ComparisonEngine({ defaultCategory = 'all' }: ComparisonEngineProps) {
   const [category, setCategory] = useState<FinancialCategory | 'all'>(defaultCategory);
 
@@ -265,6 +293,8 @@ export function ComparisonEngine({ defaultCategory = 'all' }: ComparisonEnginePr
     if (category === 'all') return Object.values(frameworkByCategory).flat();
     return frameworkByCategory[category];
   }, [category]);
+
+  const guardrails = category === 'all' ? [] : decisionGuardrailsByCategory[category];
 
   return (
     <section className="space-y-4">
@@ -282,6 +312,17 @@ export function ComparisonEngine({ defaultCategory = 'all' }: ComparisonEnginePr
       <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900 dark:border-blue-500/40 dark:bg-blue-500/10 dark:text-blue-100">
         This is an evaluation framework, not a live ranking table. Use it to shortlist providers and then verify current terms directly on provider sites.
       </div>
+
+      {guardrails.length > 0 && (
+        <section className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Decision guardrails for this category</h3>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+            {guardrails.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900">
         <table className="min-w-[980px] w-full text-sm">

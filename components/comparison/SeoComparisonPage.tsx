@@ -131,6 +131,43 @@ const prepChecklistByCategory: Record<FinancialCategory, Array<{ label: string; 
   ]
 };
 
+const decisionSignalsByCategory: Record<FinancialCategory, { bestIf: string; avoidIf: string; whenToWait: string }> = {
+  credit_card: {
+    bestIf: 'Best if you pay in full monthly and can document realistic annual net value after fees.',
+    avoidIf: 'Avoid applying when you are carrying revolving debt and do not have a payoff schedule.',
+    whenToWait: 'Wait if your emergency buffer is below one month of expenses or your utilization is temporarily elevated.'
+  },
+  savings_account: {
+    bestIf: 'Best if you need dependable liquidity and can automate contributions with minimal maintenance.',
+    avoidIf: 'Avoid complex account-rule structures if you are unlikely to meet activity or balance conditions.',
+    whenToWait: 'Wait before switching if your current account is tied to pending payroll or bill migration work.'
+  },
+  investment_app: {
+    bestIf: 'Best if the platform supports your account types and recurring-contribution workflow for at least 12 months.',
+    avoidIf: 'Avoid platforms that encourage high-friction trading behavior you already struggle to control.',
+    whenToWait: 'Wait if you still need to define baseline allocation and contribution amount.'
+  },
+  mortgage_lender: {
+    bestIf: 'Best if the lender can execute your file type reliably within your real closing timeline.',
+    avoidIf: 'Avoid choosing solely by headline note rate without full fee and process comparison.',
+    whenToWait: 'Wait when key documentation is incomplete or your debt profile is likely to improve within 60–90 days.'
+  },
+  personal_loan: {
+    bestIf: 'Best if the fixed payment remains manageable in your conservative cash-flow month.',
+    avoidIf: 'Avoid debt consolidation loans if spending controls are not in place yet.',
+    whenToWait: 'Wait when income variability is high and emergency runway is still too thin.'
+  }
+};
+
+const updateCadenceByCategory: Record<FinancialCategory, string> = {
+  credit_card: 'Reviewed during major issuer-term or fee-structure updates.',
+  savings_account: 'Reviewed when account-rule patterns and transfer reliability guidance materially change.',
+  investment_app: 'Reviewed when platform fee models, account support, or automation capabilities change.',
+  mortgage_lender: 'Reviewed when borrower-process guidance or underwriting workflow assumptions change.',
+  personal_loan: 'Reviewed when repayment-structure assumptions or fee patterns materially change.'
+};
+
+
 
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
   const relatedCalculators = matchingCalculatorLinksByFinancialCategory[category] ?? defaultMatchingCalculatorLinks;
@@ -222,6 +259,22 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
       </section>
 
 
+      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900/40">
+        <article>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Best option if...</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{decisionSignalsByCategory[category].bestIf}</p>
+        </article>
+        <article>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Avoid if...</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{decisionSignalsByCategory[category].avoidIf}</p>
+        </article>
+        <article>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">When to wait</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{decisionSignalsByCategory[category].whenToWait}</p>
+        </article>
+      </section>
+
+
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{scenarioExamples[category].title}</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{scenarioExamples[category].setup}</p>
@@ -244,7 +297,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Coverage and limitations</h2>
         <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
           <li>We do not claim exhaustive market coverage on this page.</li>
-          <li>Illustrative decision frameworks are updated during editorial refresh cycles.</li>
+          <li>{updateCadenceByCategory[category]}</li>
           <li>Terms, rates, and eligibility can change quickly; always verify with the provider.</li>
           <li>This page is educational and not personalized financial advice.</li>
         </ul>
