@@ -43,19 +43,5 @@ export function runLinkIntegrityTests() {
 
   const productValidation = validateFinancialProducts();
   assert.equal(productValidation.valid, true, `financial product mapping has invalid entries: ${productValidation.errors.join('; ')}`);
-
-  const requiredProductIds = [
-    'cc-aurora-cashback',
-    'cc-voyager-rewards',
-    'sav-evergreen-yield',
-    'sav-horizon-plus',
-    'mort-nova-fixed-30',
-    'mort-metro-refi-15',
-    'inv-wealthpilot-core',
-    'inv-alphatrade-max'
-  ];
-
-  for (const id of requiredProductIds) {
-    assert.ok(getFinancialProductById(id), `required /go product is missing: ${id}`);
-  }
+  assert.equal(getFinancialProductById('cc-aurora-cashback'), undefined, 'legacy fictional product ids should not remain in production data');
 }

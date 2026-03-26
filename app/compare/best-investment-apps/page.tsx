@@ -44,9 +44,10 @@ export default function BestInvestmentAppsPage() {
         intro="Use this framework to compare investing app models by fee drag, account support, automation quality, and long-term behavior fit."
         category="investment_app"
         slug="best-investment-apps"
+        pathname="/best-investment-apps"
         faq={[
-          { question: 'What is the best app for beginners?', answer: 'Beginner investors often prefer apps with no minimums, fractional shares, and automated portfolios.' },
-          { question: 'Do investment apps charge commissions?', answer: 'Many apps offer zero-commission stock trades, but may charge for options, margin, or premium data.' }
+          { question: 'Which app setup is usually best for beginners?', answer: 'Beginners often do best with recurring contributions, broad-market funds, and guardrails that reduce impulse trading.' },
+          { question: 'Are zero-commission apps always the lowest-cost option?', answer: 'Not always. Include advisory fees, fund expense ratios, spread quality, and subscription tiers in your annual cost check.' }
         ]}
       />
     </div>

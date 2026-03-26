@@ -13,9 +13,10 @@ export default function BestCreditCards2026Page() {
       intro="Use this framework to compare credit card options by annual value, APR downside risk, and approval fit before you apply."
       category="credit_card"
       slug="best-credit-cards-2026"
+      pathname="/best-credit-cards-2026"
       faq={[
-        { question: 'What credit score do I need for premium cards?', answer: 'Most premium rewards cards require good to excellent credit, typically 690 and above.' },
-        { question: 'Do no-annual-fee cards still offer rewards?', answer: 'Yes, many no-annual-fee cards provide cashback or points, though premium perks may be limited.' }
+        { question: 'What credit score range is typically needed for premium cards?', answer: 'Most premium cards target good-to-excellent credit profiles, but approval still depends on income, existing debt, and recent applications.' },
+        { question: 'Can a no-annual-fee card still beat a premium card?', answer: 'Yes. If you will not consistently use premium credits or transfer partners, a no-fee card can produce higher net annual value.' }
       ]}
     />
   );

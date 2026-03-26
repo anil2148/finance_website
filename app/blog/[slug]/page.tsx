@@ -17,6 +17,43 @@ import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
 export const dynamic = 'force-dynamic';
 
+const decisionPanelByCategory: Record<
+  string,
+  {
+    title: string;
+    intro: string;
+    points: Array<{ label: string; text: string }>;
+  }
+> = {
+  'credit-cards': {
+    title: 'Quick answer: choose cards by downside risk first',
+    intro: 'This guide is most useful when you are deciding whether a card helps your cash flow or makes it easier to carry debt.',
+    points: [
+      { label: 'Best option if...', text: 'Choose the setup that still works when one month runs above budget and you cannot revolve a balance.' },
+      { label: 'Avoid this mistake', text: 'Do not value points at premium redemption rates you are unlikely to use.' },
+      { label: 'Decision trigger', text: 'If your emergency buffer is below one month of expenses, prioritize liquidity before applying for another card.' }
+    ]
+  },
+  mortgages: {
+    title: 'Quick answer: underwriter readiness matters as much as rate',
+    intro: 'Use this guide if you expect to apply in the next 30 to 120 days and need fewer underwriting surprises.',
+    points: [
+      { label: 'Best option if...', text: 'Choose the path that keeps your DTI, document quality, and reserves strong through closing.' },
+      { label: 'Avoid this mistake', text: 'Do not compare offers using only note rate; check APR and total fee stack together.' },
+      { label: 'Decision trigger', text: 'If timeline flexibility is low, prioritize execution reliability over tiny rate differences.' }
+    ]
+  },
+  tax: {
+    title: 'Quick answer: optimize after-tax outcomes, not headline returns',
+    intro: 'This guide helps when your next contribution or withdrawal decision can move you into a higher marginal bracket.',
+    points: [
+      { label: 'Best option if...', text: 'Use the account location or contribution mix that reduces total expected lifetime tax drag.' },
+      { label: 'Avoid this mistake', text: 'Do not make a one-year tax move that hurts long-term flexibility across account types.' },
+      { label: 'Decision trigger', text: 'If taxable income is near a bracket edge, model both sides before changing contribution strategy.' }
+    ]
+  }
+};
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
@@ -143,6 +180,17 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   );
   const cluster = getClusterForCategory(post.category);
   const diversifiedMoneyLinks = getDiversifiedMoneyLinks(cluster).filter((item) => !comparisonLinks.some((link) => link.href === item.href));
+  const decisionPanel =
+    decisionPanelByCategory[post.category] ??
+    ({
+      title: 'Quick answer: how to use this guide',
+      intro: 'Use this page to make one concrete decision, then pressure-test it with your own numbers.',
+      points: [
+        { label: 'When this matters', text: `This is most useful when you are actively comparing ${post.category.replace(/-/g, ' ')} options in the next 30 to 90 days.` },
+        { label: 'Best option if...', text: 'Choose the option that holds up in a bad-month scenario, not only in a best-case projection.' },
+        { label: 'Avoid this mistake', text: 'Do not optimize for one metric alone; always check fees, timeline risk, and flexibility together.' }
+      ]
+    } as const);
 
   return (
     <article className="mx-auto max-w-4xl space-y-8 rounded-xl bg-white p-5 sm:p-6 lg:p-8 dark:bg-neutral-900">
@@ -163,14 +211,10 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />
 
       <DecisionSupportPanel
-        title="Quick answer: how to use this guide"
+        title={decisionPanel.title}
         tone="blue"
-        intro="Use this page to make one concrete decision, then pressure-test it with your own numbers."
-        points={[
-          { label: 'When this matters', text: `This is most useful when you are actively comparing ${post.category.replace(/-/g, ' ')} options in the next 30 to 90 days.` },
-          { label: 'Best option if...', text: 'Choose the option that holds up in a bad-month scenario, not only in a best-case projection.' },
-          { label: 'Avoid this mistake', text: 'Do not optimize for one metric alone; always check fees, timeline risk, and flexibility together.' }
-        ]}
+        intro={decisionPanel.intro}
+        points={decisionPanel.points}
         links={calculatorSupportLinks.slice(0, 2)}
       />
 
@@ -276,7 +320,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
             </div>
           )}
           {relatedPosts.length === 0 && continueLearningLinks.length === 0 && (
-            <p className="text-gray-600 dark:text-gray-400">More related guides coming soon.</p>
+            <p className="text-gray-600 dark:text-gray-400">No close-match article right now. Continue with a calculator run and comparison framework before making a commitment.</p>
           )}
         </section>
       )}

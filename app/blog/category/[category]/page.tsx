@@ -122,8 +122,8 @@ const categoryVisuals: Record<string, { src: string; alt: string; shell: string 
     shell: 'from-amber-50 to-orange-50'
   },
   mortgages: {
-    src: '/images/comparison-analytics-illustration.svg',
-    alt: 'Mortgage affordability and approval analytics illustration',
+    src: '/images/blog-visual-mortgage.svg',
+    alt: 'Mortgage affordability and approval planning illustration',
     shell: 'from-teal-50 to-sky-50'
   },
   'credit-cards': {
@@ -258,7 +258,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
       )}
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="text-lg font-semibold">What to do next from this category</h2>
+        <h2 className="text-lg font-semibold">Continue your decision path</h2>
         <p className="mt-1 text-sm text-slate-600">Run numbers first, compare offers second, then return to this category for scenario-specific decisions.</p>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           {journeyLinks.map((item) => (

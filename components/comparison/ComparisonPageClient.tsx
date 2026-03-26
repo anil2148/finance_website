@@ -45,6 +45,18 @@ export function ComparisonPageClient() {
           <li><Link href="/compare/mortgage-rate-comparison" className="font-medium text-blue-700 hover:underline">Mortgage lender framework</Link></li>
         </ul>
       </section>
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <h2 className="text-lg font-semibold text-slate-900">Methodology and update cadence</h2>
+        <p className="mt-2 text-sm text-slate-700">
+          FinanceSphere comparison pages are refreshed during editorial review cycles and whenever product constraints or decision workflows materially change.
+          We do not imply full-market coverage and we do not publish fake precision where live market data is unavailable in-repo.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2 text-xs">
+          <Link href="/editorial-policy" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Read editorial policy</Link>
+          <Link href="/help" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Ask a comparison question</Link>
+          <Link href="/contact" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Report an issue</Link>
+        </div>
+      </section>
     </section>
   );
 }

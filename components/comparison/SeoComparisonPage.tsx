@@ -10,6 +10,7 @@ type SeoComparisonPageProps = {
   category: FinancialCategory;
   faq: Array<{ question: string; answer: string }>;
   slug: string;
+  pathname?: string;
 };
 
 const methodologyWeights: Record<FinancialCategory, Array<{ factor: string; weight: string; why: string }>> = {
@@ -73,19 +74,25 @@ const audienceSummaries: Record<FinancialCategory, Array<{ title: string; text: 
   ]
 };
 
-export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: SeoComparisonPageProps) {
+export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
   const relatedCalculators = matchingCalculatorLinksByFinancialCategory[category] ?? defaultMatchingCalculatorLinks;
+  const fallbackPath = slug.startsWith('/') ? slug : `/${slug}`;
+  const resolvedPath = pathname
+    ? pathname
+    : fallbackPath.includes('/compare/')
+      ? fallbackPath
+      : `/compare/${slug}`;
 
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: faq.map((item) => ({ '@type': 'Question', name: item.question, acceptedAnswer: { '@type': 'Answer', text: item.answer } }))
   };
-  const pageSchema = webpageSchema({ pathname: `/${slug}`, name: pageTitle, description: intro });
+  const pageSchema = webpageSchema({ pathname: resolvedPath, name: pageTitle, description: intro });
   const crumbsSchema = breadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Comparison', item: '/comparison' },
-    { name: pageTitle, item: `/${slug}` }
+    { name: pageTitle, item: resolvedPath }
   ]);
 
   return (
@@ -128,6 +135,21 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
         </div>
       </section>
 
+      <section className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900/40">
+        <article>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Who this helps most</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Readers making a decision in the next one to three months who need a shortlist based on tradeoffs, not marketing claims.</p>
+        </article>
+        <article>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Costly mistake to avoid</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Picking only on headline rate or rewards while missing constraints, fee triggers, and service reliability in bad-month scenarios.</p>
+        </article>
+        <article>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Do this after reading</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Take two options into a calculator, run best/base/stress assumptions, then verify final terms directly with providers.</p>
+        </article>
+      </section>
+
       <ComparisonEngine defaultCategory={category} />
 
       <section className="grid gap-3 md:grid-cols-3">
@@ -147,6 +169,16 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug }: Seo
           <li>Terms, rates, and eligibility can change quickly; always verify with the provider.</li>
           <li>This page is educational and not personalized financial advice.</li>
         </ul>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision checklist before you apply or switch</h2>
+        <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li>Write one sentence for what success looks like over the next 12 months.</li>
+          <li>Set a failure condition upfront (fee cap, payment cap, transfer speed, or response time).</li>
+          <li>Keep only options that pass both the success target and the failure-condition test.</li>
+          <li>Confirm final pricing and eligibility with provider disclosures the same day you act.</li>
+        </ol>
       </section>
 
       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
