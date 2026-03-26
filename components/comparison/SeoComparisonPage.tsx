@@ -46,6 +46,35 @@ const methodologyWeights: Record<FinancialCategory, Array<{ factor: string; weig
   ]
 };
 
+
+const scenarioExamples: Record<FinancialCategory, { title: string; setup: string; takeaway: string }> = {
+  credit_card: {
+    title: 'Illustrative scenario: no-fee cashback vs premium rewards',
+    setup: 'If a household spends about $2,000 per month and redeems rewards at conservative cash-back value, a premium annual fee card often needs consistently used credits to beat a no-fee setup.',
+    takeaway: 'Run your own annual net value math using realistic redemption assumptions before applying.'
+  },
+  savings_account: {
+    title: 'Illustrative scenario: APY vs access reliability',
+    setup: 'A slightly lower APY can still be the better choice when transfer speed and support reliability prevent emergency-cash delays.',
+    takeaway: 'For emergency funds, reliability and liquidity can outweigh small yield differences.'
+  },
+  investment_app: {
+    title: 'Illustrative scenario: fee drag over long horizons',
+    setup: 'Even a modest annual platform fee gap can materially change outcomes across 10+ years when contributions are consistent.',
+    takeaway: 'Compare all-in annual costs first, then evaluate feature depth.'
+  },
+  mortgage_lender: {
+    title: 'Illustrative scenario: lower rate, higher fee stack',
+    setup: 'A lower headline rate is not always cheaper if origination and closing fees are materially higher on the Loan Estimate.',
+    takeaway: 'Compare total borrowing cost and timeline reliability together.'
+  },
+  personal_loan: {
+    title: 'Illustrative scenario: smaller payment, longer payoff',
+    setup: 'A longer term can reduce monthly pressure but raise total interest enough to delay other goals.',
+    takeaway: 'Use a payment you can sustain in bad months, then prepay aggressively when cash flow improves.'
+  }
+};
+
 const audienceSummaries: Record<FinancialCategory, Array<{ title: string; text: string }>> = {
   credit_card: [
     { title: 'Best for beginners', text: 'Start with one no-annual-fee card you can pay in full monthly. Build payment consistency before chasing complex reward stacks.' },
@@ -148,6 +177,13 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Do this after reading</h3>
           <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Take two options into a calculator, run best/base/stress assumptions, then verify final terms directly with providers.</p>
         </article>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{scenarioExamples[category].title}</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{scenarioExamples[category].setup}</p>
+        <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-200">{scenarioExamples[category].takeaway}</p>
+        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Examples are illustrative decision models, not live market quotes.</p>
       </section>
 
       <ComparisonEngine defaultCategory={category} />
