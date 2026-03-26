@@ -1,34 +1,46 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ComparisonTable } from '@/components/comparison-table/ComparisonTable';
-import { savingsAccounts } from '@/data/savingsAccounts';
+import { createPageMetadata } from '@/lib/seo';
 
-export const revalidate = 3600;
-
-const featuredGuides = [
-  { href: '/blog/emergency-fund-target-by-recovery-timeline', label: 'Emergency Fund Guide' },
-  { href: '/blog/how-to-choose-a-high-yield-savings-account', label: 'High-Yield Savings Account Basics' }
-];
+export const metadata: Metadata = createPageMetadata({
+  title: 'Savings Account Decision Framework | FinanceSphere',
+  description: 'Choose savings accounts using APY durability, transfer reliability, liquidity constraints, and emergency-fund fit.',
+  pathname: '/savings'
+});
 
 export default function SavingsPage() {
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <h1 className="text-2xl font-bold">Compare Savings Accounts</h1>
-        <p className="text-slate-600">Compare APY and account features, then use the guides below to build your emergency savings strategy.</p>
-      </div>
-
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
-        <h2 className="mb-3 text-lg font-semibold">Related savings guides</h2>
-        <div className="flex flex-wrap gap-2">
-          {featuredGuides.map((guide) => (
-            <Link key={guide.href} href={guide.href} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800">
-              {guide.label}
-            </Link>
-          ))}
+    <section className="space-y-6">
+      <header className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
+        <h1 className="text-3xl font-bold text-slate-900">Savings account framework for real emergencies</h1>
+        <p className="max-w-3xl text-slate-600">
+          Use this page if you are deciding where to keep emergency cash and short-term reserves. The biggest mistake is chasing a headline APY without
+          verifying transfer speed, withdrawal constraints, and account rules.
+        </p>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link href="/best-savings-accounts-usa" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Open savings comparison framework</Link>
+          <Link href="/calculators/savings-goal-calculator" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Run savings goal calculator</Link>
+          <Link href="/blog/emergency-fund-target-by-recovery-timeline" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Emergency fund guide</Link>
         </div>
-      </div>
+      </header>
 
-      <ComparisonTable data={savingsAccounts} />
-    </div>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-semibold text-slate-900">Decision checklist before you open or switch</h2>
+        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-700">
+          <li>Confirm your emergency target in months of essential expenses, not as a generic dollar amount.</li>
+          <li>Test transfer rules and timing so you know how fast cash reaches checking during urgent weeks.</li>
+          <li>Check monthly fee triggers, minimum balance rules, and any account activity requirements.</li>
+          <li>Review support access quality for fraud holds, transfer reversals, and account lock events.</li>
+        </ol>
+      </section>
+
+      <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+        <h2 className="text-xl font-semibold text-amber-900">When to wait before optimizing APY</h2>
+        <p className="mt-2 text-sm text-amber-900">
+          If your buffer is below one month of required expenses, prioritize contribution consistency and liquidity first. A slightly lower APY with simpler
+          access can be safer than a higher-yield account you cannot operate reliably under stress.
+        </p>
+      </section>
+    </section>
   );
 }
