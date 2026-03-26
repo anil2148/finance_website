@@ -3,8 +3,8 @@ import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'Mortgage Rate Comparison | Compare APR & Lenders',
-  description: 'Compare mortgage lenders by APR, fees, ratings, and pros/cons to find the best home loan rates.',
+  title: 'Mortgage Lender Comparison Framework | FinanceSphere',
+  description: 'Compare mortgage lender types using total borrowing cost, timeline reliability, support quality, and borrower fit.',
   pathname: '/compare/mortgage-rate-comparison'
 });
 
@@ -12,7 +12,7 @@ export default function MortgageRateComparisonPage() {
   return (
     <SeoComparisonPage
       pageTitle="Mortgage Rate Comparison"
-      intro="Review fixed and refinance mortgage offers with transparent APR data, lender fees, and qualification details before locking your rate."
+      intro="Use this framework to compare mortgage lender channels by all-in cost, execution reliability, and fit for your borrower profile."
       category="mortgage_lender"
       slug="mortgage-rate-comparison"
       faq={[

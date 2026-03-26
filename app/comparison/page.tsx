@@ -5,8 +5,8 @@ import { absoluteUrl, createPageMetadata } from '@/lib/seo';
 export const revalidate = 3600;
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'Compare Credit Cards, Savings, Mortgages, Loans & Investment Apps | FinanceSphere',
-  description: 'Compare APR/APY, annual fees, bonus offers, and product strengths across credit cards, savings accounts, lenders, loans, and investing apps.',
+  title: 'Finance Product Comparison Frameworks | FinanceSphere',
+  description: 'Use transparent comparison frameworks to evaluate credit cards, savings accounts, investing apps, mortgages, and loans without fake rankings or placeholder rates.',
   pathname: '/comparison'
 });
 
@@ -14,7 +14,7 @@ const comparisonSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
   name: 'FinanceSphere Product Comparisons',
-  description: 'Compare financial products by rates, fees, bonuses, and practical fit for your goals.',
+  description: 'Compare financial product types by cost structure, constraints, support quality, and fit for your situation.',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Credit Cards', url: absoluteUrl('/best-credit-cards-2026') },
     { '@type': 'ListItem', position: 2, name: 'Savings Accounts', url: absoluteUrl('/best-savings-accounts-usa') },

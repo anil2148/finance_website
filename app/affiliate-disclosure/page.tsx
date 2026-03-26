@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
 export const metadata: Metadata = {
-  title: 'Affiliate Disclosure',
-  description: 'Read FinanceSphere affiliate disclosure and FTC-compliant commission transparency statement.',
+  title: 'Affiliate Disclosure | FinanceSphere',
+  description: 'Clear explanation of FinanceSphere affiliate relationships and how editorial decisions remain user-first.',
   alternates: { canonical: '/affiliate-disclosure' }
 };
 
@@ -11,35 +11,27 @@ export default function AffiliateDisclosurePage() {
   return (
     <LegalPageLayout
       title="Affiliate Disclosure"
-      description="Transparency matters. This page explains how affiliate relationships support FinanceSphere."
-      lastUpdated="March 15, 2026"
+      description="How affiliate partnerships work on FinanceSphere and what they do not change."
+      lastUpdated="March 26, 2026"
     >
-      <p>
-        <strong>
-          FinanceSphere participates in affiliate marketing programs and may earn commissions when you click certain links and complete qualifying actions.
-          This compensation does not increase the price you pay.
-        </strong>
-      </p>
+      <p><strong>Some links on FinanceSphere are affiliate links.</strong> If you click a partner link and complete a qualifying action, we may earn a commission. This does not increase the price you pay.</p>
 
-      <h2>How Affiliate Links Work</h2>
+      <h2>What affiliate compensation can and cannot do</h2>
       <ul>
-        <li>Some recommendations include links to financial products offered by partner companies.</li>
-        <li>When you click an affiliate link, a tracking mechanism may attribute the referral to FinanceSphere.</li>
-        <li>Compensation helps us keep calculators, comparisons, and educational resources free for readers.</li>
+        <li>It can help fund calculators, editorial operations, and ongoing site maintenance.</li>
+        <li>It cannot buy favorable language, guaranteed placement, or hidden endorsements.</li>
+        <li>It does not override our requirement to show limitations and fit-mismatch risks.</li>
       </ul>
 
-      <h2>Editorial Integrity</h2>
+      <h2>User-first commitment</h2>
       <ul>
-        <li>Our editorial process aims to prioritize relevance, value, and user outcomes.</li>
-        <li>Partnerships do not guarantee favorable coverage.</li>
-        <li>Not every provider or offer is included on FinanceSphere.</li>
+        <li>We aim to help readers make better decisions, even when that means delaying an application.</li>
+        <li>We include &ldquo;when not to choose&rdquo; guidance where relevant.</li>
+        <li>We do not publish fake reviews, fake rates, or fictional product rankings.</li>
       </ul>
 
-      <h2>Sample FTC Compliance Language</h2>
-      <p>
-        “FinanceSphere may receive compensation from partners listed on this page. Compensation may influence how and where offers appear, but does not affect
-        our editorial evaluations. We recommend products based on usefulness and audience fit.”
-      </p>
+      <h2>Coverage limitations</h2>
+      <p>FinanceSphere is not a complete market directory. Some providers are not included. Always compare multiple sources and verify final terms directly with the provider.</p>
     </LegalPageLayout>
   );
 }

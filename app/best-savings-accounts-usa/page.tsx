@@ -3,8 +3,8 @@ import BestSavingsAccountsUSAPage from '@/app/compare/best-savings-accounts-usa/
 import { createPageMetadata } from '@/lib/seo';
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'Best Savings Accounts USA | Compare APY & Features',
-  description: 'Review U.S. savings accounts using APY durability, transfer speed, account rules, and service quality—not headline rate alone.',
+  title: 'Savings Account Comparison Framework (US) | FinanceSphere',
+  description: 'Use a practical framework to evaluate U.S. savings account options by APY durability, transfer reliability, and account rules.',
   pathname: '/best-savings-accounts-usa'
 });
 
