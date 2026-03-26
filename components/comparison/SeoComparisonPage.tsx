@@ -103,6 +103,35 @@ const audienceSummaries: Record<FinancialCategory, Array<{ title: string; text: 
   ]
 };
 
+const prepChecklistByCategory: Record<FinancialCategory, Array<{ label: string; detail: string }>> = {
+  credit_card: [
+    { label: '12-month spend estimate', detail: 'Use your real category spend so reward break-even math is realistic.' },
+    { label: 'Carry-balance risk check', detail: 'If you may revolve debt, APR downside usually outweighs points upside.' },
+    { label: 'Credit-profile timing', detail: 'Review utilization and recent inquiries before submitting new applications.' }
+  ],
+  savings_account: [
+    { label: 'Emergency runway target', detail: 'Define the amount that must stay liquid before chasing marginal APY differences.' },
+    { label: 'Transfer timing need', detail: 'Decide whether next-day or same-day access is necessary for your workflow.' },
+    { label: 'Account-rule tolerance', detail: 'Avoid tiered or conditional products if you are unlikely to meet ongoing requirements.' }
+  ],
+  investment_app: [
+    { label: 'Account map', detail: 'List which account types you need now and within 24 months to avoid transfer friction later.' },
+    { label: 'All-in fee estimate', detail: 'Include platform, advisory, and fund expense ratios in one annual percentage.' },
+    { label: 'Behavior plan', detail: 'Choose an app design that supports recurring contributions and limits impulse trades.' }
+  ],
+  mortgage_lender: [
+    { label: 'Timeline readiness', detail: 'Write your closing deadline and prioritize lenders with reliable execution.' },
+    { label: 'Document readiness', detail: 'Gather income, asset, and liability documentation before comparing quotes.' },
+    { label: 'Cost comparison method', detail: 'Compare Loan Estimates line-by-line instead of using note rate only.' }
+  ],
+  personal_loan: [
+    { label: 'Payment ceiling', detail: 'Set a max monthly payment that still works in a below-average income month.' },
+    { label: 'Net-proceeds check', detail: 'Account for origination fees so usable cash matches your actual need.' },
+    { label: 'No-new-debt rule', detail: 'If consolidating, pair the loan with a card-spend control plan immediately.' }
+  ]
+};
+
+
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
   const relatedCalculators = matchingCalculatorLinksByFinancialCategory[category] ?? defaultMatchingCalculatorLinks;
   const fallbackPath = slug.startsWith('/') ? slug : `/${slug}`;
@@ -178,6 +207,20 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Take two options into a calculator, run best/base/stress assumptions, then verify final terms directly with providers.</p>
         </article>
       </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Collect this before you compare</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">A strong comparison starts with your own constraints. Use this pre-check so you do not optimize the wrong metric.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {prepChecklistByCategory[category].map((item) => (
+            <article key={item.label} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.label}</h3>
+              <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{scenarioExamples[category].title}</h2>

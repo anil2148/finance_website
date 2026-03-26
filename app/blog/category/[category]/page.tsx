@@ -215,6 +215,7 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
   ];
   const featuredPosts = sortedPosts.slice(0, 3);
   const morePosts = sortedPosts.slice(3);
+  const hasPosts = sortedPosts.length > 0;
 
   return (
     <section className="space-y-5">
@@ -236,24 +237,33 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
         </div>
       </header>
 
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold">Featured in this category</h2>
-        <p className="text-sm text-slate-600">Each featured card includes a different decision angle so this category reads like an editorial selection, not a templated list.</p>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {featuredPosts.map((p) => (
-            <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
-          ))}
-        </div>
-      </section>
+      {hasPosts ? (
+        <>
+          <section className="space-y-3">
+            <h2 className="text-xl font-semibold">Featured in this category</h2>
+            <p className="text-sm text-slate-600">Each featured card includes a different decision angle so this category reads like an editorial selection, not a templated list.</p>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {featuredPosts.map((p) => (
+                <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
+              ))}
+            </div>
+          </section>
 
-      {morePosts.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">More guides</h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {morePosts.map((p) => (
-              <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
-            ))}
-          </div>
+          {morePosts.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-xl font-semibold">More guides</h2>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {morePosts.map((p) => (
+                  <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      ) : (
+        <section className="rounded-2xl border border-slate-200 bg-white p-5">
+          <h2 className="text-xl font-semibold">No published guides in this category yet</h2>
+          <p className="mt-2 text-sm text-slate-600">Use the linked hub, calculator, and comparison pages below while this category is being expanded with review-ready content.</p>
         </section>
       )}
 

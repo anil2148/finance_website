@@ -93,9 +93,10 @@ export default function AboutPage() {
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-2xl font-semibold text-slate-900">Who runs FinanceSphere</h2>
-        <p className="text-slate-700">FinanceSphere was founded by <strong>Anil Chowdhary</strong> and is maintained by a small editorial and product team focused on practical personal finance decision support. Content pages are written for practical use, then reviewed for clarity, disclosure compliance, and scenario realism before publication.</p>
-        <p className="text-slate-700">We deliberately avoid fake rankings and placeholder market claims. Where live data is not available in-repo, we publish comparison frameworks and explain limitations openly.</p>
-        <p className="text-slate-700">If you spot unclear guidance, broken links, or outdated assumptions, contact <a className="font-semibold text-blue-700 hover:underline" href="mailto:support@financesphere.io">support@financesphere.io</a> and include the page URL.</p>
+        <p className="text-slate-700">FinanceSphere was founded by <strong>Anil Chowdhary</strong> and is maintained by a small editorial and product team focused on practical personal finance decision support.</p>
+        <p className="text-slate-700">Our workflow is intentionally simple: define the decision, show the tradeoffs, stress-test with realistic scenarios, and publish only after review for clarity, disclosure compliance, and usefulness.</p>
+        <p className="text-slate-700">We do not publish fake reviews, fake rates, or fabricated provider rankings. If live product detail is unavailable in-repo, we publish a comparison framework and clearly label limitations.</p>
+        <p className="text-slate-700">If you spot unclear guidance, broken links, or outdated assumptions, contact <a className="font-semibold text-blue-700 hover:underline" href="mailto:support@financesphere.io">support@financesphere.io</a> and include the page URL so we can investigate quickly.</p>
       </section>
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">
