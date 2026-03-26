@@ -229,6 +229,24 @@ export function HomepageLayout() {
         </div>
       </Card>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere keeps pages decision-first</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">1) Define decision context</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">Each major page starts with who it is for, what decision it supports, and which expensive mistake it helps avoid.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">2) Stress-test with numbers</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">Guides route to calculators so readers can validate scenarios using their own payment, savings, and timeline assumptions.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">3) Publish limitations clearly</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">Where live provider data is unavailable in-repo, we publish comparison frameworks and explicitly label coverage limits.</p>
+          </article>
+        </div>
+      </section>
+
       <NewsletterForm source="homepage" className="scroll-mt-24" />
     </section>
   );

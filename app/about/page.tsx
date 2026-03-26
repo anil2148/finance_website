@@ -3,9 +3,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'About FinanceSphere | Practical Financial Planning Tools and Guides',
+  title: 'About FinanceSphere | Decision-First Personal Finance Tools',
   description:
-    'Learn how FinanceSphere helps people make better money decisions with practical calculators, planning tools, and straightforward educational guides.',
+    'Learn who runs FinanceSphere, how our decision-first content is built, and how we keep calculators, comparisons, and guides transparent and useful.',
   alternates: {
     canonical: '/about'
   }
@@ -16,10 +16,9 @@ export default function AboutPage() {
     <article className="mx-auto max-w-4xl space-y-10">
       <header className="grid gap-6 md:grid-cols-[1.2fr_1fr] md:items-center">
         <div className="space-y-4">
-          <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">About FinanceSphere: Clear tools for real money decisions</h1>
+          <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">About FinanceSphere: Built for real money decisions, not content volume</h1>
           <p className="max-w-3xl text-lg text-slate-600">
-            FinanceSphere helps you plan major financial choices with practical calculators and plain-language guides, so you can compare options and move
-            forward with confidence.
+            FinanceSphere exists to help people make high-stakes household finance decisions with practical tools, clearer tradeoff analysis, and transparent editorial standards.
           </p>
         </div>
         <div className="relative h-52 overflow-hidden rounded-2xl border border-slate-200 bg-white">
@@ -35,73 +34,63 @@ export default function AboutPage() {
       </header>
 
       <section className="space-y-4">
-        <h2 className="text-2xl font-semibold text-slate-900">Our mission</h2>
+        <h2 className="text-2xl font-semibold text-slate-900">Why FinanceSphere exists</h2>
         <p className="text-slate-700">
-          FinanceSphere exists to make financial planning more usable day to day. Big money decisions often involve tradeoffs across time, risk, and monthly
-          cash flow. We build tools and content that make those tradeoffs visible, so you can evaluate scenarios with numbers instead of guesswork.
+          Most personal-finance content explains concepts but does not help with the moment that actually matters: choosing what to do next with your own constraints.
+          FinanceSphere is built around that decision moment.
         </p>
         <p className="text-slate-700">
-          Whether you are deciding between mortgage options, setting a debt payoff plan, or checking if your savings rate supports retirement goals, our
-          goal is the same: help you understand your next best step.
+          We focus on practical scenarios like: whether to prioritize debt payoff or investing this quarter, whether a refinance actually lowers total cost,
+          and whether a product still fits when your month goes off plan.
         </p>
       </section>
-
-      <section className="space-y-4">
-        <h2 className="text-2xl font-semibold text-slate-900">What we offer</h2>
-        <div className="space-y-3 text-slate-700">
-          <p>
-            <span className="font-semibold text-slate-900">Mortgage and loan tools:</span> estimate monthly payments, compare borrowing scenarios, and model
-            loan EMI structures so you can see how rates, terms, and down payments change total cost.
-          </p>
-          <p>
-            <span className="font-semibold text-slate-900">Retirement and FIRE planning tools:</span> test timelines, contribution strategies, and return
-            assumptions to evaluate long-term outcomes and financial independence targets.
-          </p>
-          <p>
-            <span className="font-semibold text-slate-900">Savings, net worth, debt payoff, and investment growth tools:</span> track progress toward goals,
-            understand payoff strategies, and project how regular contributions can compound over time.
-          </p>
-          <p>
-            <span className="font-semibold text-slate-900">Educational content:</span> practical articles that explain key concepts, break down tradeoffs, and
-            support smarter day-to-day money decisions alongside the calculators.
-          </p>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-2xl font-semibold text-slate-900">Who it&apos;s for</h2>
-        <p className="text-slate-700">FinanceSphere is built for people who want clarity before making a move, including:</p>
-        <ul className="list-disc space-y-2 pl-6 text-slate-700 marker:text-slate-400">
-          <li>Anyone planning major decisions like buying a home, refinancing, or taking a new loan.</li>
-          <li>People comparing multiple options and trying to understand short-term affordability versus long-term cost.</li>
-          <li>Households building a retirement plan, exploring FIRE, or balancing debt payoff with investing and savings goals.</li>
-          <li>Individuals who want straightforward explanations without jargon-heavy financial content.</li>
-        </ul>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-2xl font-semibold text-slate-900">How we think about financial tools</h2>
-        <p className="text-slate-700">
-          We prioritize simplicity and practical guidance. A good financial tool should answer a real question, show the assumptions clearly, and make
-          outcomes easy to compare. It should not overwhelm you with complexity that hides the decision.
-        </p>
-        <p className="text-slate-700">
-          That is why FinanceSphere focuses on clean inputs, understandable outputs, and context that helps you interpret results in your own situation.
-        </p>
-      </section>
-
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-2xl font-semibold text-slate-900">Who runs FinanceSphere</h2>
-        <p className="text-slate-700">FinanceSphere was founded by <strong>Anil Chowdhary</strong> and is maintained by a small editorial and product team focused on practical personal finance decision support.</p>
-        <p className="text-slate-700">Our workflow is intentionally simple: define the decision, show the tradeoffs, stress-test with realistic scenarios, and publish only after review for clarity, disclosure compliance, and usefulness.</p>
-        <p className="text-slate-700">We do not publish fake reviews, fake rates, or fabricated provider rankings. If live product detail is unavailable in-repo, we publish a comparison framework and clearly label limitations.</p>
-        <p className="text-slate-700">If you spot unclear guidance, broken links, or outdated assumptions, contact <a className="font-semibold text-blue-700 hover:underline" href="mailto:support@financesphere.io">support@financesphere.io</a> and include the page URL so we can investigate quickly.</p>
+        <p className="text-slate-700">
+          FinanceSphere was founded by <strong>Anil Chowdhary</strong> and is maintained by a small editorial and product team.
+          We are a publishing and software team focused on educational decision support, not a personalized advisory service.
+        </p>
+        <p className="text-slate-700">
+          Our internal process is simple by design: define the user decision, test the guidance with calculator scenarios, review for disclosure clarity,
+          and publish only when the page gives a concrete next step.
+        </p>
+        <p className="text-slate-700">
+          If real-time provider data is unavailable in-repo, we publish a clearly labeled comparison framework rather than pretending to provide exhaustive live rankings.
+        </p>
+      </section>
+
+      <section className="space-y-4">
+        <h2 className="text-2xl font-semibold text-slate-900">How we build useful pages</h2>
+        <div className="grid gap-3 md:grid-cols-2">
+          <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Calculators</h3>
+            <p className="mt-2 text-sm text-slate-700">We prioritize transparent assumptions, easy input changes, and output views that support comparison—not false precision.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Guides</h3>
+            <p className="mt-2 text-sm text-slate-700">Guides are written to answer: who this is for, what mistake is costly, and what the reader should do next.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Comparisons</h3>
+            <p className="mt-2 text-sm text-slate-700">We use methodology-first comparison frameworks and call out limitations, instead of publishing unverified ranking claims.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Quality control</h3>
+            <p className="mt-2 text-sm text-slate-700">Before updates ship, we check internal links, route consistency, and whether a page still supports a clear decision workflow.</p>
+          </article>
+        </div>
       </section>
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">
         <h2 className="text-2xl font-semibold text-slate-900">Editorial and commercial transparency</h2>
-        <p className="text-slate-700">FinanceSphere is an educational platform, not a personalized advisory service. Some pages include affiliate links, but editorial frameworks and comparison criteria are designed to prioritize user fit, fee impact, and decision clarity.</p>
+        <p className="text-slate-700">
+          FinanceSphere may earn revenue from affiliate relationships, but our editorial standards are designed around user fit, downside risk, and clarity—not conversion-first copy.
+        </p>
+        <p className="text-slate-700">
+          If a page is unclear, outdated, or missing a key caveat, email <a className="font-semibold text-blue-700 hover:underline" href="mailto:support@financesphere.io">support@financesphere.io</a> with the URL.
+          We review feedback as part of our refresh cycle.
+        </p>
         <div className="flex flex-wrap gap-2 text-sm">
           <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/editorial-policy">Editorial policy</Link>
           <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/affiliate-disclosure">Affiliate disclosure</Link>
@@ -111,16 +100,13 @@ export default function AboutPage() {
       </section>
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
-        <h2 className="text-2xl font-semibold text-slate-900">Start exploring</h2>
-        <p className="text-slate-700">
-          If you&apos;re ready to plan your next step, start with our calculators and guides. Use them to compare scenarios, test assumptions, and build a plan
-          you can act on.
-        </p>
-        <p>
-          <Link className="font-semibold text-blue-700 hover:text-blue-800" href="/tools">
-            Explore FinanceSphere tools →
-          </Link>
-        </p>
+        <h2 className="text-2xl font-semibold text-slate-900">Start here</h2>
+        <p className="text-slate-700">If you are making a decision soon, start with one calculator run, then one comparison framework, then one guide that matches your scenario.</p>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/calculators">Open calculators</Link>
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/comparison">Open comparisons</Link>
+          <Link className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700" href="/blog">Read guides</Link>
+        </div>
       </section>
     </article>
   );

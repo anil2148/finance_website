@@ -130,7 +130,7 @@ const quickFaq = [
   },
   {
     q: 'How often are comparison frameworks and guides updated?',
-    a: 'Content is reviewed periodically and refreshed when product rules, assumptions, or decision guidance materially changes.'
+    a: 'Major pages are refreshed when assumptions, product constraints, or user workflow guidance materially changes; last-updated context appears on key pages.'
   }
 ];
 
@@ -256,6 +256,16 @@ export function HelpCenterContent() {
             </details>
           ))}
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Report a content issue quickly</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">If a guide feels outdated, unclear, or inconsistent with calculator behavior, include this in your message so we can investigate faster.</p>
+        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li>Page URL and section heading.</li>
+          <li>What you expected versus what you saw.</li>
+          <li>Any calculator inputs used (if relevant).</li>
+        </ul>
       </section>
 
       <Card className="border-slate-200/90 bg-white/90">

@@ -74,7 +74,22 @@ export function ContactPageContent() {
         <Card className="space-y-4">
           <div className="space-y-1">
             <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Send us a message</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-300">Share as much context as possible (page URL, calculator name, or question) so we can help quickly.</p>
+            <p className="text-sm text-slate-600 dark:text-slate-300">Share context (page URL, calculator inputs used, and expected result) so we can troubleshoot quickly.</p>
+          </div>
+
+          <div className="grid gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm md:grid-cols-3 dark:border-slate-700 dark:bg-slate-800/40">
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-slate-100">For calculator issues</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">Include tool name, inputs used, and what result looked incorrect.</p>
+            </div>
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-slate-100">For comparison feedback</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">Tell us which decision was unclear (fees, eligibility, or fit guidance).</p>
+            </div>
+            <div>
+              <p className="font-semibold text-slate-900 dark:text-slate-100">For editorial corrections</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">Send the page URL and quote the line you believe needs correction.</p>
+            </div>
           </div>
 
           <form className="grid gap-4" onSubmit={handleSubmit}>
