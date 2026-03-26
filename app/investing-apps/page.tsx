@@ -98,6 +98,7 @@ const methodologyPoints = [
 
 export default function InvestingAppsPillarPage() {
   const investmentApps = getFinancialProducts().filter((item) => item.category === 'investment_app');
+  const hasInvestmentApps = investmentApps.length > 0;
 
   const faqSchema = {
     '@context': 'https://schema.org',
@@ -120,7 +121,7 @@ export default function InvestingAppsPillarPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-blue-200">Investing hub</p>
             <h1 className="mt-3 text-3xl font-bold leading-tight md:text-5xl">Investing Apps: How to Compare Platforms, Costs, and Features</h1>
             <p className="mt-4 max-w-3xl text-base text-slate-100 md:text-lg">
-              This hub helps you shortlist investing apps by your goals, experience level, and feature needs—then move to FinanceSphere&rsquo;s live comparison data for platform-by-platform decisions.
+              This hub helps you shortlist investing apps by your goals, experience level, and feature needs, then apply a transparent framework with current provider disclosures.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/best-investment-apps" className="btn-primary">Compare Investment Apps</Link>
@@ -167,11 +168,11 @@ export default function InvestingAppsPillarPage() {
 
       <section id="best-overview" className="space-y-4">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="text-2xl font-bold">Best investing apps overview</h2>
+          <h2 className="text-2xl font-bold">Shortlist structure by investor type</h2>
           <Link href="/best-investment-apps" className="text-sm font-semibold text-blue-700 hover:underline">Open full comparison →</Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
-          {investmentApps.map((app) => (
+          {hasInvestmentApps ? investmentApps.map((app) => (
             <article key={app.id} className="card">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-700">{app.recommended_flag ? 'Featured pick' : 'Alternative fit'}</p>
               <h3 className="text-xl font-semibold">{app.name}</h3>
@@ -187,15 +188,25 @@ export default function InvestingAppsPillarPage() {
                   <li key={pro}>{pro}</li>
                 ))}
               </ul>
-              <Link href="/best-investment-apps" className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:underline">See details and partner terms</Link>
+              <Link href="/best-investment-apps" className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:underline">See comparison methodology</Link>
+            </article>
+          )) : [
+            { title: 'Beginners and hands-off investors', note: 'Prioritize recurring deposits, diversified defaults, and low behavior friction.' },
+            { title: 'Hands-on investors', note: 'Prioritize all-in cost visibility, account coverage, tax reporting, and execution quality.' }
+          ].map((item) => (
+            <article key={item.title} className="card">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-700">Framework lens</p>
+              <h3 className="text-xl font-semibold">{item.title}</h3>
+              <p className="mt-2 text-sm text-slate-600">{item.note}</p>
+              <Link href="/best-investment-apps" className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:underline">Open full framework</Link>
             </article>
           ))}
         </div>
       </section>
 
       <section id="comparison" className="space-y-4">
-        <h2 className="text-2xl font-bold">Fees and features comparison</h2>
-        <p className="text-slate-700">Use this quick scan first, then move to the detailed comparison page for partner terms and the latest offer-level details.</p>
+        <h2 className="text-2xl font-bold">Fees and features comparison framework</h2>
+        <p className="text-slate-700">Use this checklist with current provider pages. We do not publish fabricated live-offer rankings when in-repo product data is unavailable.</p>
         <div className="table-shell">
           <table className="min-w-full text-left text-sm">
             <thead className="bg-slate-100 text-xs uppercase tracking-wide text-slate-600">
@@ -213,7 +224,7 @@ export default function InvestingAppsPillarPage() {
               </tr>
             </thead>
             <tbody>
-              {investmentApps.map((app) => (
+              {hasInvestmentApps ? investmentApps.map((app) => (
                 <tr key={app.id} className="border-t border-slate-200">
                   <td className="px-4 py-3 font-semibold text-slate-900">{app.name}</td>
                   <td className="px-4 py-3 text-slate-700">{app.recommended_flag ? 'Beginners, long-term investors' : 'Active traders, options-curious users'}</td>
@@ -225,6 +236,22 @@ export default function InvestingAppsPillarPage() {
                   <td className="px-4 py-3 text-slate-700">{app.pros.some((pro) => pro.toLowerCase().includes('options')) ? 'Yes' : 'Not core focus'}</td>
                   <td className="px-4 py-3 text-slate-700">High (app-first design)</td>
                   <td className="px-4 py-3"><Link href="/best-investment-apps" className="text-blue-700 hover:underline">Compare</Link></td>
+                </tr>
+              )) : [
+                { platform: 'Beginner-first robo or automated app', bestFor: 'New investors building consistency', fees: 'Advisory fee + ETF expense ratio', minimum: '$0 to low', automation: 'Core requirement', options: 'Usually no' },
+                { platform: 'Self-directed brokerage app', bestFor: 'DIY investors with allocation rules', fees: 'Trading + spread + optional subscriptions', minimum: '$0 varies', automation: 'Useful but not required', options: 'May be available' }
+              ].map((row) => (
+                <tr key={row.platform} className="border-t border-slate-200">
+                  <td className="px-4 py-3 font-semibold text-slate-900">{row.platform}</td>
+                  <td className="px-4 py-3 text-slate-700">{row.bestFor}</td>
+                  <td className="px-4 py-3 text-slate-700">{row.fees}</td>
+                  <td className="px-4 py-3 text-slate-700">{row.minimum}</td>
+                  <td className="px-4 py-3 text-slate-700">Varies</td>
+                  <td className="px-4 py-3 text-slate-700">Check IRA and taxable availability</td>
+                  <td className="px-4 py-3 text-slate-700">{row.automation}</td>
+                  <td className="px-4 py-3 text-slate-700">{row.options}</td>
+                  <td className="px-4 py-3 text-slate-700">Compare support channels and uptime history</td>
+                  <td className="px-4 py-3"><Link href="/best-investment-apps" className="text-blue-700 hover:underline">Framework</Link></td>
                 </tr>
               ))}
             </tbody>
@@ -278,7 +305,7 @@ export default function InvestingAppsPillarPage() {
 
       <section id="methodology" className="space-y-4 rounded-2xl border border-slate-200 bg-white p-6">
         <h2 className="text-2xl font-bold">How FinanceSphere evaluates investing apps</h2>
-        <p className="text-sm text-slate-600">Our scoring blends platform cost data, feature depth, usability, and suitability for different investor profiles. We update rankings when platform terms materially change.</p>
+        <p className="text-sm text-slate-600">Our methodology prioritizes cost drag, account support, user-fit, and operational reliability. Where live in-repo product data is unavailable, this page provides a transparent decision framework instead of fabricated rankings.</p>
         <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
           {methodologyPoints.map((point) => (
             <li key={point}>{point}</li>
@@ -299,7 +326,7 @@ export default function InvestingAppsPillarPage() {
             {
               href: '/best-investment-apps',
               title: 'Best Investment Apps Comparison',
-              description: 'See live comparison cards with ratings, feature highlights, and offer-level details.',
+              description: 'Use our comparison methodology to evaluate cost, account support, automation, and behavior fit.',
               tag: 'Comparison'
             },
             {
