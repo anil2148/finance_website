@@ -93,8 +93,9 @@ export default function AboutPage() {
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-2xl font-semibold text-slate-900">Who runs FinanceSphere</h2>
-        <p className="text-slate-700">FinanceSphere is maintained by a small editorial and product team focused on personal finance decision support. Content pages are written for practical use, then reviewed for clarity, disclosure compliance, and scenario realism before publication.</p>
+        <p className="text-slate-700">FinanceSphere was founded by <strong>Anil Chowdhary</strong> and is maintained by a small editorial and product team focused on practical personal finance decision support. Content pages are written for practical use, then reviewed for clarity, disclosure compliance, and scenario realism before publication.</p>
         <p className="text-slate-700">We deliberately avoid fake rankings and placeholder market claims. Where live data is not available in-repo, we publish comparison frameworks and explain limitations openly.</p>
+        <p className="text-slate-700">If you spot unclear guidance, broken links, or outdated assumptions, contact <a className="font-semibold text-blue-700 hover:underline" href="mailto:support@financesphere.io">support@financesphere.io</a> and include the page URL.</p>
       </section>
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">

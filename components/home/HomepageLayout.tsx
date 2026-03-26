@@ -124,7 +124,7 @@ export function HomepageLayout() {
                 Start with a guide
               </Link>
             </div>
-            <p className="text-xs text-blue-200">Last content review: March 18, 2026 • Coverage includes U.S., UK, Canada, and India contexts.</p>
+            <p className="text-xs text-blue-200">Last homepage review: March 26, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
             <div className="relative h-36 overflow-hidden rounded-lg border border-white/20">

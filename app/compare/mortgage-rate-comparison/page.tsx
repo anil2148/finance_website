@@ -15,9 +15,10 @@ export default function MortgageRateComparisonPage() {
       intro="Use this framework to compare mortgage lender channels by all-in cost, execution reliability, and fit for your borrower profile."
       category="mortgage_lender"
       slug="mortgage-rate-comparison"
+      pathname="/compare/mortgage-rate-comparison"
       faq={[
-        { question: 'What affects mortgage APR?', answer: 'APR depends on your credit score, loan type, down payment, and lender fees.' },
-        { question: 'Should I choose a 15-year or 30-year mortgage?', answer: '15-year loans often have lower rates but higher monthly payments; 30-year loans offer lower monthly payments.' }
+        { question: 'What usually moves mortgage APR the most?', answer: 'Loan-level pricing factors include credit profile, loan-to-value ratio, property type, lock timing, and lender fee structure.' },
+        { question: 'How should I decide between a 15-year and 30-year term?', answer: 'Compare both terms using payment resilience first. If the 15-year payment is tight in a bad month, the 30-year often provides safer cash-flow flexibility.' }
       ]}
     />
   );

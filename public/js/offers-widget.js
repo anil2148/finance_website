@@ -1,8 +1,9 @@
 /**
- * Dynamic Offers Widget
+ * Offer Availability Widget
  * ---------------------
- * Fetches real-time bank offers from /offers.json, filters by category,
- * sorts by rating (highest first), and renders offer cards into a container.
+ * Loads transparent offer references from /offers.json when available.
+ * If no live data is published, renders an honest empty-state message
+ * and points users to comparison frameworks instead of showing mock offers.
  *
  * Usage:
  * 1) Add a container to your page:
@@ -16,7 +17,7 @@
 
   // Selector for the HTML element where offers should be rendered.
   var CONTAINER_SELECTOR = '#offers-container';
-  // Endpoint that returns offer data. Can be changed if needed.
+  // Endpoint that returns offer data.
   var OFFERS_ENDPOINT = '/offers.json';
 
   /**
@@ -85,7 +86,7 @@
       '<article class="offer-card">',
       '  <div class="offer-card__header">',
       '    <h3 class="offer-card__bank">' + escapeHtml(offer.bank || 'Unknown Bank') + '</h3>',
-      '    <span class="offer-card__rating">⭐ ' + escapeHtml(offer.rating != null ? offer.rating : 'N/A') + '</span>',
+      '    <span class="offer-card__rating">' + escapeHtml(offer.updated_at || 'Verify current terms directly') + '</span>',
       '  </div>',
       '  <h4 class="offer-card__name">' + escapeHtml(offer.name || 'Unnamed Product') + '</h4>',
       '  <p class="offer-card__apr"><strong>APR/APY:</strong> ' + escapeHtml(offer.apr_apy || 'N/A') + '</p>',
@@ -115,7 +116,7 @@
       return;
     }
 
-    renderMessage(container, 'Loading offers...', 'info');
+      renderMessage(container, 'Loading available offers...', 'info');
 
     try {
       var response = await fetch(OFFERS_ENDPOINT, { cache: 'no-store' });
@@ -131,15 +132,10 @@
       var matchingOffers = allOffers
         .filter(function (offer) {
           return normalizeCategory(offer.category) === pageCategory;
-        })
-        .sort(function (a, b) {
-          var ratingA = Number(a.rating) || 0;
-          var ratingB = Number(b.rating) || 0;
-          return ratingB - ratingA;
         });
 
       if (matchingOffers.length === 0) {
-        renderMessage(container, 'No offers found for this category right now.', 'info');
+        renderMessage(container, 'Live provider offers are not published right now. Use the comparison framework for evaluation criteria and decision steps.', 'info');
         return;
       }
 

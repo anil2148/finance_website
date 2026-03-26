@@ -73,6 +73,12 @@ const visualPools: Array<{ keyword: string; variants: VisualVariant[] }> = [
     keyword: 'mortgage',
     variants: [
       {
+        src: '/images/blog-visual-mortgage.svg',
+        alt: 'Mortgage affordability planning visual with down payment, taxes, and insurance checkpoints',
+        cardClassName: 'from-cyan-50 via-sky-50 to-blue-100',
+        heroClassName: 'from-cyan-50 via-sky-50 to-blue-100'
+      },
+      {
         src: '/images/blog-visual-mortgage-home.svg',
         alt: 'Mortgage decision dashboard with rate, home price, and payment checkpoints',
         cardClassName: 'from-sky-50 via-blue-50 to-indigo-100',
