@@ -87,6 +87,21 @@ const trustSignals = [
   { label: 'How FinanceSphere evaluates products', href: '/editorial-policy' }
 ];
 
+const trustStory = [
+  {
+    title: 'Who this is for',
+    text: 'People making high-impact money choices right now: debt payoff, mortgage terms, savings allocation, and investing contributions.'
+  },
+  {
+    title: 'Why this site exists',
+    text: 'Most finance content is generic. We built FinanceSphere to turn every decision into concrete dollars, timelines, and trade-offs.'
+  },
+  {
+    title: 'What makes it different',
+    text: 'We quantify every financial decision with scenarios you can pressure-test before you commit.'
+  }
+];
+
 const crawlPriorityLinks = [
   { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
   { href: '/best-investment-apps', label: 'Best Investment Apps' },
@@ -121,9 +136,9 @@ const homepageFaqs = [
 ];
 
 const momentumExamples = [
-  { label: '$2,000/month for 20 years at 8% annual return', outcome: '≈ $1.18M projected balance', note: 'Compounding example before taxes/fees; run your own assumptions.' },
-  { label: '$400/month debt overpayment on a $20,000 balance at 22% APR', outcome: 'Can cut payoff by years and save thousands in interest', note: 'Exact savings depend on your current minimum payment and rate changes.' },
-  { label: '$250/month emergency-fund automation', outcome: '≈ $3,000 saved in year one', note: 'Creates buffer that prevents high-cost borrowing during bad months.' }
+  { label: 'Saving $200/month', outcome: '≈ $30,000 in 10 years', note: 'Assumes a 6% annual return. Small automated contributions compound into meaningful buffers.' },
+  { label: 'Reducing loan rate by 1%', outcome: 'Can save ≈ $80,000 over a 30-year mortgage', note: 'Illustrative for long-term mortgage balances. Verify with your exact quote and fee stack.' },
+  { label: 'Adding $300/month to debt payoff', outcome: 'Can cut payoff time by years and save five figures in interest', note: 'Impact depends on APR, minimum payment, and whether rates are variable.' }
 ];
 
 export function HomepageLayout() {
@@ -136,19 +151,19 @@ export function HomepageLayout() {
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">
               FinanceSphere • Interactive personal finance platform
             </p>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Know your next money move in 10 minutes</h1>
+            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
-              Make smarter financial decisions with practical calculators, comparison tools, and guides built to help you evaluate real tradeoffs.
+              See exactly how much you save, invest, or lose — before you decide.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">
-                Run a calculator
+                Start with your situation
               </Link>
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/comparison">
-                Compare products
+                Compare options
               </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/learn/investing">
-                Start with a guide
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/calculators">
+                Try a calculator
               </Link>
             </div>
             <p className="text-xs text-blue-200">Last homepage review: March 26, 2026 • Educational content only; verify final terms with providers before action.</p>
@@ -189,7 +204,7 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="real-number-examples">
-        <h2 id="real-number-examples" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Real-number examples readers use to decide faster</h2>
+        <h2 id="real-number-examples" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Money impact snapshot</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {momentumExamples.map((example) => (
             <article key={example.label} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -197,6 +212,18 @@ export function HomepageLayout() {
               <h3 className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{example.label}</h3>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{example.outcome}</p>
               <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{example.note}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Trust and purpose</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {trustStory.map((item) => (
+            <article key={item.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.title}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.text}</p>
             </article>
           ))}
         </div>
