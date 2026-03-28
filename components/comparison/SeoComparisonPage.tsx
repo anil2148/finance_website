@@ -167,6 +167,34 @@ const updateCadenceByCategory: Record<FinancialCategory, string> = {
   personal_loan: 'Reviewed when repayment-structure assumptions or fee patterns materially change.'
 };
 
+const shortlistByCategory: Record<FinancialCategory, Array<{ label: string; bestFor: string; avoidWhen: string }>> = {
+  credit_card: [
+    { label: 'No-annual-fee cashback card', bestFor: 'Households that want predictable value with minimal management.', avoidWhen: 'You frequently carry balances month to month.' },
+    { label: 'Low-APR card', bestFor: 'People prioritizing balance-carry risk control over premium perks.', avoidWhen: 'You only compare based on intro offers without post-intro APR.' },
+    { label: 'Premium travel card', bestFor: 'Frequent travelers who can reliably redeem high-value credits.', avoidWhen: 'Credits and travel redemptions are likely to go unused.' }
+  ],
+  savings_account: [
+    { label: 'Simple online HYSA', bestFor: 'Emergency funds requiring strong APY with straightforward rules.', avoidWhen: 'You need in-person branch support for frequent cash tasks.' },
+    { label: 'Hybrid checking + savings setup', bestFor: 'Users who want easy bill-pay and transfer automation.', avoidWhen: 'Linked account structure adds complexity you will not maintain.' },
+    { label: 'CD ladder alongside HYSA', bestFor: 'Households separating near-term cash and medium-term reserves.', avoidWhen: 'You may need full balance liquidity before maturity windows.' }
+  ],
+  investment_app: [
+    { label: 'Automated robo platform', bestFor: 'Beginners building consistency with recurring contributions.', avoidWhen: 'You need advanced tax-lot controls or complex strategy overlays.' },
+    { label: 'Low-cost brokerage app', bestFor: 'Hands-on investors with a written allocation plan.', avoidWhen: 'You often react impulsively to market volatility.' },
+    { label: 'Retirement-focused platform', bestFor: 'Workers optimizing IRA/401(k) rollover and long-term planning.', avoidWhen: 'Account-type coverage is too narrow for your next 24 months.' }
+  ],
+  mortgage_lender: [
+    { label: 'Execution-focused lender', bestFor: 'Buyers with tight closing timelines and complex coordination.', avoidWhen: 'Rate is attractive but process reliability is weak.' },
+    { label: 'Low-fee lender', bestFor: 'Borrowers optimizing lifetime cost with flexible timelines.', avoidWhen: 'You ignore service quality during underwriting exceptions.' },
+    { label: 'Niche-profile lender', bestFor: 'Self-employed or non-standard income borrowers.', avoidWhen: 'Standard W-2 profile can get lower all-in cost elsewhere.' }
+  ],
+  personal_loan: [
+    { label: 'Consolidation-focused loan', bestFor: 'Borrowers replacing high APR revolving debt with fixed payments.', avoidWhen: 'No spending-control system is in place after consolidation.' },
+    { label: 'Lower-payment longer-term loan', bestFor: 'Cash-flow protection during variable-income periods.', avoidWhen: 'Total interest cost crowds out future savings goals.' },
+    { label: 'Fast-funding emergency loan', bestFor: 'Time-sensitive needs with clear short repayment horizon.', avoidWhen: 'You can stabilize with expenses cuts and short-term buffer instead.' }
+  ]
+};
+
 
 
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
@@ -284,6 +312,31 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
 
       <ComparisonEngine defaultCategory={category} />
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Shortlist: 3 option archetypes to test first</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Use these as starting points, then map real providers to each archetype using your exact constraints.</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="min-w-[640px] w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500 dark:border-slate-700">
+                <th className="px-2 py-2">Option type</th>
+                <th className="px-2 py-2">Best for</th>
+                <th className="px-2 py-2">When not to choose</th>
+              </tr>
+            </thead>
+            <tbody>
+              {shortlistByCategory[category].map((item) => (
+                <tr key={item.label} className="border-b border-slate-100 dark:border-slate-800">
+                  <td className="px-2 py-2 font-medium text-slate-900 dark:text-slate-100">{item.label}</td>
+                  <td className="px-2 py-2 text-slate-700 dark:text-slate-300">{item.bestFor}</td>
+                  <td className="px-2 py-2 text-slate-700 dark:text-slate-300">{item.avoidWhen}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="grid gap-3 md:grid-cols-3">
         {audienceSummaries[category].map((item) => (
           <article key={item.title} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
@@ -311,6 +364,10 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           <li>Keep only options that pass both the success target and the failure-condition test.</li>
           <li>Confirm final pricing and eligibility with provider disclosures the same day you act.</li>
         </ol>
+        <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-500/40 dark:bg-blue-950/30 dark:text-blue-100">
+          <p className="font-semibold">Decision shortcut:</p>
+          <p className="mt-1">If two options are close, choose the one that still works in your stress-case month (income down, one surprise expense, and less flexibility).</p>
+        </div>
       </section>
 
       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
@@ -344,10 +401,20 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
         <div>
           <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Methodology and transparency</h2>
           <p className="text-sm text-slate-600 dark:text-slate-300">Our framework emphasizes cost, constraints, and downside resilience before upside claims. We surface tradeoffs and avoid fake precision where live market data is unavailable in-repo.</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Data sources used: provider disclosures, official fee schedules, eligibility terms, and historical user-decision patterns from FinanceSphere workflow analytics.</p>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Last reviewed logic: refreshed after material policy changes and during scheduled editorial update windows.</p>
           <div className="mt-2 flex gap-2 text-xs">
             <Link className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600" href="/editorial-policy">Editorial policy</Link>
             <Link className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600" href="/affiliate-disclosure">Affiliate disclosure</Link>
           </div>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900/40">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Continue your decision workflow</h2>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          <Link href="/blog/how-to-increase-your-savings-rate" className="rounded-full border border-slate-300 bg-white px-3 py-1 dark:border-slate-600 dark:bg-slate-900">Read related blog: Increase your savings rate</Link>
+          <Link href="/blog/personal-loan-comparison-for-bad-month-resilience" className="rounded-full border border-slate-300 bg-white px-3 py-1 dark:border-slate-600 dark:bg-slate-900">Read related blog: Bad-month resilience</Link>
         </div>
       </section>
 

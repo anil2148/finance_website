@@ -4,6 +4,8 @@ export type AuthorProfile = {
   role: string;
   description?: string;
   bio: string;
+  philosophy?: string;
+  experience?: string;
 };
 
 export const PRIMARY_AUTHOR_ID = 'anil_chowdhary';
@@ -14,8 +16,12 @@ export const AUTHOR_PROFILES: Record<string, AuthorProfile> = {
     id: PRIMARY_AUTHOR_ID,
     name: 'Anil Chowdhary',
     role: 'Founder, FinanceSphere',
-    description: 'Full Stack Developer | Personal Finance Tools Builder',
-    bio: 'Anil Chowdhary is the founder of FinanceSphere and a full stack developer focused on building practical personal finance tools, calculators, and comparison resources that help users make better financial decisions.'
+    description: 'Product engineer and personal finance systems builder',
+    experience:
+      'Built and shipped consumer finance workflows covering calculators, comparison frameworks, and conversion-focused decision content used by readers evaluating debt, savings, mortgage, and investing choices.',
+    philosophy:
+      'Every recommendation must survive a bad-month scenario: lower income, higher expenses, and tighter liquidity.',
+    bio: 'Anil built FinanceSphere after seeing how often people make high-cost decisions with partial information. The platform combines concrete math, comparison filters, and plain-language guidance so readers can move from uncertainty to a documented next step.'
   },
   [EDITORIAL_REVIEWER_ID]: {
     id: EDITORIAL_REVIEWER_ID,

@@ -36,6 +36,8 @@ export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { autho
             <span className="font-semibold">Written by:</span> {author?.name} — {author?.role}
           </p>
           {author?.description ? <p className="text-xs text-slate-600">{author.description}</p> : null}
+          {author?.experience ? <p className="text-xs text-slate-600">{author.experience}</p> : null}
+          {author?.philosophy ? <p className="text-xs text-slate-600">Decision philosophy: {author.philosophy}</p> : null}
           <p className="text-xs text-slate-600">{author?.bio}</p>
         </div>
 
@@ -51,6 +53,12 @@ export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { autho
             <span className="font-semibold">Last updated:</span> {formatDate(safeUpdatedAt)}
           </p>
         ) : null}
+
+        <div className="space-y-1 text-xs text-slate-600">
+          <p><span className="font-semibold text-slate-800">How we evaluate products:</span> cost-to-value math, downside resilience, and usability under stress.</p>
+          <p><span className="font-semibold text-slate-800">Data sources used:</span> provider disclosures, fee schedules, public rate sheets, and FinanceSphere scenario modeling assumptions.</p>
+          <p><span className="font-semibold text-slate-800">Last reviewed logic:</span> content is re-reviewed after material fee, eligibility, or policy changes and during scheduled editorial refreshes.</p>
+        </div>
 
         <p className="text-xs text-slate-600">
           FinanceSphere content is educational and does not constitute personalized financial advice.

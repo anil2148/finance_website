@@ -120,6 +120,12 @@ const homepageFaqs = [
   }
 ];
 
+const momentumExamples = [
+  { label: '$2,000/month for 20 years at 8% annual return', outcome: '≈ $1.18M projected balance', note: 'Compounding example before taxes/fees; run your own assumptions.' },
+  { label: '$400/month debt overpayment on a $20,000 balance at 22% APR', outcome: 'Can cut payoff by years and save thousands in interest', note: 'Exact savings depend on your current minimum payment and rate changes.' },
+  { label: '$250/month emergency-fund automation', outcome: '≈ $3,000 saved in year one', note: 'Creates buffer that prevents high-cost borrowing during bad months.' }
+];
+
 export function HomepageLayout() {
   return (
     <section className="space-y-10" aria-label="FinanceSphere homepage">
@@ -177,6 +183,20 @@ export function HomepageLayout() {
                 <Link href={goal.primaryHref} className="block font-semibold text-blue-700 hover:underline dark:text-blue-300">{goal.primaryLabel}</Link>
                 <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline dark:text-slate-200 dark:hover:text-blue-300">{goal.secondaryLabel}</Link>
               </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="real-number-examples">
+        <h2 id="real-number-examples" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Real-number examples readers use to decide faster</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {momentumExamples.map((example) => (
+            <article key={example.label} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Illustrative scenario</p>
+              <h3 className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{example.label}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{example.outcome}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{example.note}</p>
             </article>
           ))}
         </div>
