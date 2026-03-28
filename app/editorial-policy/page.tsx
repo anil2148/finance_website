@@ -29,6 +29,17 @@ export default function EditorialPolicyPage() {
       </ol>
       <p>When current market-level values are not available in-repo, we explicitly frame content as a comparison process rather than a live ranking.</p>
 
+      <h2>How we evaluate products</h2>
+      <ul>
+        <li><strong>Fit first:</strong> map products to specific user constraints (cash-flow volatility, timeline, credit profile, and service needs).</li>
+        <li><strong>Total-cost math:</strong> compare all-in costs including fees, APR/APY quality, and usage assumptions.</li>
+        <li><strong>Bad-month resilience:</strong> test whether the decision still works during an above-expense or below-income month.</li>
+        <li><strong>Execution risk:</strong> include process reliability, support quality, and operational friction as decision factors.</li>
+      </ul>
+
+      <h2>Data sources used</h2>
+      <p>We rely on provider disclosures, product terms, regulatory references, and calculator-model assumptions stored in-repo. Where data freshness is uncertain, we explicitly label the page as a framework and direct readers to verify current terms with providers.</p>
+
       <h2>Review workflow</h2>
       <ol>
         <li><strong>Scope pass:</strong> identify decision context, common mistakes, and intended reader constraints.</li>
@@ -46,6 +57,7 @@ export default function EditorialPolicyPage() {
 
       <h2>Update cadence and corrections</h2>
       <p>We refresh pages when assumptions, product constraints, or decision workflows materially change. Material corrections update page copy and the visible last-updated date.</p>
+      <p><strong>Last reviewed logic:</strong> March 28, 2026 (UTC) for framework consistency, internal link-path integrity, and disclosure placement.</p>
       <p>If you spot a potential issue, email <a href="mailto:support@financesphere.io">support@financesphere.io</a> with the page URL and concern. We prioritize issues that could change user decisions.</p>
     </LegalPageLayout>
   );

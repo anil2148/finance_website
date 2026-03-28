@@ -213,13 +213,13 @@ const slugVisualOverrides: Record<string, BlogVisual> = {
     cardClassName: 'from-teal-50 via-cyan-50 to-sky-100',
     heroClassName: 'from-teal-50 via-cyan-50 to-sky-100'
   },
-  'seo-mortgage-preapproval-checklist': {
+  'mortgage-preapproval-checklist-underwriting': {
     src: '/images/blog-visual-mortgage-home.svg',
     alt: 'Mortgage preapproval planning board linking document readiness to payment affordability targets',
     cardClassName: 'from-sky-50 via-blue-50 to-indigo-100',
     heroClassName: 'from-sky-50 via-blue-50 to-indigo-100'
   },
-  'seo-how-to-compare-personal-loan-apr': {
+  'personal-loan-comparison-for-bad-month-resilience': {
     src: '/images/blog-visual-credit.svg',
     alt: 'Personal loan offer comparison worksheet with APR, fee, and payment stress columns',
     cardClassName: 'from-blue-50 via-indigo-50 to-violet-100',

@@ -120,6 +120,27 @@ const homepageFaqs = [
   }
 ];
 
+const realWorldScenarios = [
+  {
+    title: '$2,000/month invested for 20 years',
+    outcome: '≈ $1.2M at 8% annualized return assumptions',
+    note: 'Use as an illustrative compounding benchmark, then adjust for your expected contribution consistency and risk profile.',
+    calculatorHref: '/calculators/investment-growth-calculator'
+  },
+  {
+    title: '$500/month extra to debt payoff',
+    outcome: 'Can cut payoff horizon by years depending on APR and starting balance',
+    note: 'Small monthly acceleration often saves five figures of interest on high-APR debt.',
+    calculatorHref: '/calculators/debt-payoff-calculator'
+  },
+  {
+    title: '0.50% mortgage rate difference',
+    outcome: 'Can shift lifetime borrowing cost by tens of thousands',
+    note: 'Always compare total fee stack with APR, not headline rate alone.',
+    calculatorHref: '/calculators/mortgage-calculator'
+  }
+];
+
 export function HomepageLayout() {
   return (
     <section className="space-y-10" aria-label="FinanceSphere homepage">
@@ -189,6 +210,20 @@ export function HomepageLayout() {
             <span className="font-medium text-slate-700 dark:text-slate-200">{signal.label}</span>
           </Link>
         ))}
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Real outcome examples (illustrative)</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {realWorldScenarios.map((scenario) => (
+            <article key={scenario.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{scenario.title}</h3>
+              <p className="mt-1 text-base font-semibold text-slate-900 dark:text-slate-100">{scenario.outcome}</p>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{scenario.note}</p>
+              <Link href={scenario.calculatorHref} className="mt-2 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Run this scenario</Link>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="priority-pages-heading">

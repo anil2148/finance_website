@@ -167,6 +167,57 @@ const updateCadenceByCategory: Record<FinancialCategory, string> = {
   personal_loan: 'Reviewed when repayment-structure assumptions or fee patterns materially change.'
 };
 
+const shortlistByCategory: Record<FinancialCategory, Array<{ persona: string; bestFor: string; watchOut: string }>> = {
+  credit_card: [
+    { persona: 'Cash-back simplifier', bestFor: 'One no-fee card with broad earn categories and easy redemption.', watchOut: 'High APR can erase all rewards if you carry balances.' },
+    { persona: 'Frequent traveler', bestFor: 'Travel card when annual credits and transfer partners match your actual use.', watchOut: 'Do not pay annual fees for benefits you rarely redeem.' },
+    { persona: 'Debt payoff phase', bestFor: 'Low-interest or intro-APR option paired with a fixed payoff plan.', watchOut: 'Avoid new spending patterns that extend repayment timelines.' }
+  ],
+  savings_account: [
+    { persona: 'Emergency fund builder', bestFor: 'HYSA with fast transfers and predictable support.', watchOut: 'Tiny APY gains are not worth delayed access risk.' },
+    { persona: 'Rate optimizer', bestFor: 'High-yield account with clear balance rules and no maintenance fees.', watchOut: 'Teaser rates can reset lower; read timing terms carefully.' },
+    { persona: 'Joint household saver', bestFor: 'Account with simple automation and shared visibility.', watchOut: 'Complex tier requirements can create avoidable friction.' }
+  ],
+  investment_app: [
+    { persona: 'Set-and-forget investor', bestFor: 'Automation-first app with recurring contributions and rebalancing.', watchOut: 'Avoid interfaces that trigger impulse trading behavior.' },
+    { persona: 'DIY portfolio builder', bestFor: 'Low-cost self-directed platform with account-type depth.', watchOut: 'Do not ignore tax-lot/reporting quality at filing time.' },
+    { persona: 'Retirement-focused user', bestFor: 'Provider with IRA support and long-term cost transparency.', watchOut: 'Promotional features can distract from fee drag.' }
+  ],
+  mortgage_lender: [
+    { persona: 'First-time buyer', bestFor: 'Lender with strong documentation guidance and predictable milestones.', watchOut: 'Lowest quoted rate can lose once fee stack is included.' },
+    { persona: 'Tight closing deadline', bestFor: 'Execution reliability and underwriting responsiveness.', watchOut: 'Avoid teams with weak communication cadence.' },
+    { persona: 'Self-employed borrower', bestFor: 'Lender experienced with complex income files.', watchOut: 'Do not assume every lender handles non-W2 files equally.' }
+  ],
+  personal_loan: [
+    { persona: 'Debt consolidator', bestFor: 'Lower all-in APR and a payment below your conservative monthly ceiling.', watchOut: 'Consolidation fails if new card debt restarts immediately.' },
+    { persona: 'Cash-flow stabilizer', bestFor: 'Predictable servicing and transparent hardship options.', watchOut: 'Long terms can reduce payment but raise lifetime interest cost.' },
+    { persona: 'Credit rebuild phase', bestFor: 'Clear fee disclosure and no prepayment penalty.', watchOut: 'Origination fees may reduce usable proceeds more than expected.' }
+  ]
+};
+
+const relatedBlogsByCategory: Record<FinancialCategory, Array<{ label: string; href: string }>> = {
+  credit_card: [
+    { label: 'Credit utilization statement-cycle playbook', href: '/blog/credit-utilization-statement-cycle-playbook' },
+    { label: 'Credit card APR real balance cost', href: '/blog/credit-card-apr-2026-real-balance-cost' }
+  ],
+  savings_account: [
+    { label: 'How to choose a high-yield savings account', href: '/blog/how-to-choose-a-high-yield-savings-account' },
+    { label: 'Emergency fund target by recovery timeline', href: '/blog/emergency-fund-target-by-recovery-timeline' }
+  ],
+  investment_app: [
+    { label: 'Beginner investing roadmap: year-one milestones', href: '/blog/beginner-investing-roadmap-year-one-milestones' },
+    { label: 'Tax-efficient investing account location decisions', href: '/blog/tax-efficient-investing-account-location-decisions' }
+  ],
+  mortgage_lender: [
+    { label: 'Mortgage preapproval checklist for underwriting readiness', href: '/blog/mortgage-preapproval-checklist-underwriting' },
+    { label: 'Debt-to-income ratio 90-day plan', href: '/blog/debt-to-income-ratio-90-day-plan' }
+  ],
+  personal_loan: [
+    { label: 'Personal loan comparison for bad-month resilience', href: '/blog/personal-loan-comparison-for-bad-month-resilience' },
+    { label: 'Debt-to-income ratio 90-day plan', href: '/blog/debt-to-income-ratio-90-day-plan' }
+  ]
+};
+
 
 
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
@@ -293,6 +344,20 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
         ))}
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Best for specific users: quick shortlist</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Use this as a first-pass shortlist, then pressure-test each option with your own numbers and constraints.</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {shortlistByCategory[category].map((item) => (
+            <article key={item.persona} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.persona}</h3>
+              <p className="mt-1 text-sm text-slate-700 dark:text-slate-300"><strong>Best option pattern:</strong> {item.bestFor}</p>
+              <p className="mt-1 text-sm text-amber-800 dark:text-amber-200"><strong>When not to choose:</strong> {item.watchOut}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Coverage and limitations</h2>
         <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
@@ -311,6 +376,15 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           <li>Keep only options that pass both the success target and the failure-condition test.</li>
           <li>Confirm final pricing and eligibility with provider disclosures the same day you act.</li>
         </ol>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900/40">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision shortcuts for busy weeks</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li>If you only have 15 minutes: shortlist two options and run one stress-case calculator scenario.</li>
+          <li>If you are within 30 days of action: prioritize execution reliability and downside risk over small upside differences.</li>
+          <li>If results are close: pick the option with lower irreversible downside (fees, penalties, or timeline risk).</li>
+        </ul>
       </section>
 
       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
@@ -342,8 +416,17 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           </ul>
         </div>
         <div>
+          <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Related guides</h2>
+          <ul className="space-y-1 text-sm">
+            {relatedBlogsByCategory[category].map((item) => (
+              <li key={item.href}><Link href={item.href} className="text-brand hover:underline">{item.label}</Link></li>
+            ))}
+          </ul>
+        </div>
+        <div>
           <h2 className="mb-2 text-lg font-semibold text-slate-900 dark:text-slate-100">Methodology and transparency</h2>
           <p className="text-sm text-slate-600 dark:text-slate-300">Our framework emphasizes cost, constraints, and downside resilience before upside claims. We surface tradeoffs and avoid fake precision where live market data is unavailable in-repo.</p>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Data sources used: provider terms, official disclosures, and in-house calculator assumptions. Last reviewed logic: March 28, 2026 (UTC).</p>
           <div className="mt-2 flex gap-2 text-xs">
             <Link className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600" href="/editorial-policy">Editorial policy</Link>
             <Link className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600" href="/affiliate-disclosure">Affiliate disclosure</Link>

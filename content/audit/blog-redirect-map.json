@@ -7204,5 +7204,35 @@
     "destination": "/blog/tax-efficient-investing-account-location-decisions",
     "permanent": true,
     "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/seo-401k-contribution-rate-guide-2026",
+    "destination": "/blog/401k-contribution-rate-playbook-2026",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/seo-cd-ladder-strategy-2026",
+    "destination": "/blog/cd-ladder-strategy-cashflow-design-2026",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/seo-credit-card-apr-2026-cost-to-carry-balance",
+    "destination": "/blog/credit-card-apr-2026-carry-balance-cost",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/seo-credit-card-apr-2026-what-your-rate-costs",
+    "destination": "/blog/credit-card-apr-2026-real-balance-cost",
+    "permanent": true,
+    "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/seo-zero-based-budget-monthly-system",
+    "destination": "/blog/zero-based-budget-monthly-control-system",
+    "permanent": true,
+    "reason": "REDIRECT"
   }
 ]

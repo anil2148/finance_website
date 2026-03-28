@@ -52,8 +52,16 @@ export default function AboutPage() {
           We are a publishing and software team focused on educational decision support, not a personalized advisory service.
         </p>
         <p className="text-slate-700">
+          Founder background: product-led financial tooling, SEO systems for regulated-content categories, and workflow design focused on helping users move from analysis paralysis to a documented next step.
+          The platform was built after repeated observations that most finance content answered “what is this” but not “what should I do next with my own constraints.”
+        </p>
+        <p className="text-slate-700">
           Our internal process is simple by design: define the user decision, test the guidance with calculator scenarios, review for disclosure clarity,
           and publish only when the page gives a concrete next step.
+        </p>
+        <p className="text-slate-700">
+          Decision philosophy: optimize for downside resilience first (what breaks in a bad month), then optimize upside once the base plan is durable.
+          That means we prioritize liquidity, flexibility, and total-cost clarity over short-term promotional claims.
         </p>
         <p className="text-slate-700">
           If real-time provider data is unavailable in-repo, we publish a clearly labeled comparison framework rather than pretending to provide exhaustive live rankings.
