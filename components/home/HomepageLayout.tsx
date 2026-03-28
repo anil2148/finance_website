@@ -182,6 +182,27 @@ export function HomepageLayout() {
         </div>
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="real-world-examples">
+        <h2 id="real-world-examples" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Real-world decision examples</h2>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Long-term investing</p>
+            <h3 className="mt-1 font-semibold text-slate-900 dark:text-slate-100">$2,000/month → about $1.2M in 20 years</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">At a 7% annual return assumption, consistency beats timing. Test your own range in our calculator before picking allocation risk.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Debt payoff choice</p>
+            <h3 className="mt-1 font-semibold text-slate-900 dark:text-slate-100">+$300 payment can cut years off high-APR debt</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">The right plan depends on cash-flow resilience in low-income months, not just an optimistic payoff schedule.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Savings safety</p>
+            <h3 className="mt-1 font-semibold text-slate-900 dark:text-slate-100">Emergency fund target = 3–9 months by risk profile</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Households with variable income usually need a deeper buffer and faster transfer access over small APY differences.</p>
+          </article>
+        </div>
+      </section>
+
       <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900" aria-label="Trust and transparency links">
         {trustSignals.map((signal) => (
           <Link key={signal.label} href={signal.href} className="flex items-start gap-2 rounded-xl border border-slate-100 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">

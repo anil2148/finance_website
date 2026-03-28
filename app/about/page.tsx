@@ -52,6 +52,13 @@ export default function AboutPage() {
           We are a publishing and software team focused on educational decision support, not a personalized advisory service.
         </p>
         <p className="text-slate-700">
+          Founder background: Anil built FinanceSphere after seeing how often households made expensive money decisions from generic articles with no scenario math.
+          The platform approach is product-first: every major guide should connect to calculators, transparent tradeoff tables, and a decision checklist a reader can actually execute.
+        </p>
+        <p className="text-slate-700">
+          Decision philosophy: keep plans durable in bad months, optimize downside before upside, and prefer clear frameworks over overconfident predictions.
+        </p>
+        <p className="text-slate-700">
           Our internal process is simple by design: define the user decision, test the guidance with calculator scenarios, review for disclosure clarity,
           and publish only when the page gives a concrete next step.
         </p>
@@ -80,6 +87,25 @@ export default function AboutPage() {
             <p className="mt-2 text-sm text-slate-700">Before updates ship, we check internal links, route consistency, and whether a page still supports a clear decision workflow.</p>
           </article>
         </div>
+      </section>
+
+      <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
+        <h2 className="text-2xl font-semibold text-slate-900">How we evaluate products</h2>
+        <ul className="list-disc space-y-2 pl-5 text-slate-700">
+          <li>We score fit by total cost, downside risk, workflow reliability, and practical constraints for real households.</li>
+          <li>We do not rank by payout potential. Commercial relationships never override methodology weights.</li>
+          <li>We prioritize options that remain workable during irregular-income or high-expense months.</li>
+        </ul>
+      </section>
+
+      <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">
+        <h2 className="text-2xl font-semibold text-slate-900">Data sources and review logic</h2>
+        <p className="text-slate-700">
+          Data sources used include provider disclosures, public fee schedules, account terms, and published methodology documentation available at the time of review.
+        </p>
+        <p className="text-slate-700">
+          Last reviewed logic: pages are reviewed when terms change materially, when user feedback identifies unclear guidance, or when internal link and scenario checks flag stale assumptions.
+        </p>
       </section>
 
       <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">

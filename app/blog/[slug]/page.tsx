@@ -17,6 +17,10 @@ import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
 export const dynamic = 'force-dynamic';
 
+function hashSeed(value: string) {
+  return [...value].reduce((sum, char) => ((sum << 5) - sum + char.charCodeAt(0)) | 0, 0);
+}
+
 const decisionPanelByCategory: Record<
   string,
   {
@@ -26,30 +30,30 @@ const decisionPanelByCategory: Record<
   }
 > = {
   'credit-cards': {
-    title: 'Quick answer: choose cards by downside risk first',
-    intro: 'This guide is most useful when you are deciding whether a card helps your cash flow or makes it easier to carry debt.',
+    title: 'Decision lens: protect downside before chasing rewards',
+    intro: 'Use this page when your main question is whether a card improves monthly cash flow or adds risk to an already-tight budget.',
     points: [
-      { label: 'Best option if...', text: 'Choose the setup that still works when one month runs above budget and you cannot revolve a balance.' },
-      { label: 'Avoid this mistake', text: 'Do not value points at premium redemption rates you are unlikely to use.' },
-      { label: 'Decision trigger', text: 'If your emergency buffer is below one month of expenses, prioritize liquidity before applying for another card.' }
+      { label: 'Stress test', text: 'Choose the setup that still works when one month runs above budget and you cannot revolve a balance.' },
+      { label: 'Hidden trap', text: 'Do not value points at premium redemption rates you are unlikely to use.' },
+      { label: 'Act now vs wait', text: 'If your emergency buffer is below one month of expenses, prioritize liquidity before applying for another card.' }
     ]
   },
   mortgages: {
-    title: 'Quick answer: underwriter readiness matters as much as rate',
+    title: 'Decision lens: underwriting readiness matters as much as note rate',
     intro: 'Use this guide if you expect to apply in the next 30 to 120 days and need fewer underwriting surprises.',
     points: [
-      { label: 'Best option if...', text: 'Choose the path that keeps your DTI, document quality, and reserves strong through closing.' },
-      { label: 'Avoid this mistake', text: 'Do not compare offers using only note rate; check APR and total fee stack together.' },
-      { label: 'Decision trigger', text: 'If timeline flexibility is low, prioritize execution reliability over tiny rate differences.' }
+      { label: 'Stress test', text: 'Choose the path that keeps your DTI, document quality, and reserves strong through closing.' },
+      { label: 'Hidden trap', text: 'Do not compare offers using only note rate; check APR and total fee stack together.' },
+      { label: 'Act now vs wait', text: 'If timeline flexibility is low, prioritize execution reliability over tiny rate differences.' }
     ]
   },
   tax: {
-    title: 'Quick answer: optimize after-tax outcomes, not headline returns',
+    title: 'Decision lens: optimize after-tax outcomes, not headline returns',
     intro: 'This guide helps when your next contribution or withdrawal decision can move you into a higher marginal bracket.',
     points: [
-      { label: 'Best option if...', text: 'Use the account location or contribution mix that reduces total expected lifetime tax drag.' },
-      { label: 'Avoid this mistake', text: 'Do not make a one-year tax move that hurts long-term flexibility across account types.' },
-      { label: 'Decision trigger', text: 'If taxable income is near a bracket edge, model both sides before changing contribution strategy.' }
+      { label: 'Stress test', text: 'Use the account location or contribution mix that reduces total expected lifetime tax drag.' },
+      { label: 'Hidden trap', text: 'Do not make a one-year tax move that hurts long-term flexibility across account types.' },
+      { label: 'Act now vs wait', text: 'If taxable income is near a bracket edge, model both sides before changing contribution strategy.' }
     ]
   }
 };
@@ -86,6 +90,9 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const relatedPosts = posts
     .filter((item) => item.slug !== post.slug && (item.category === post.category || item.tags.some((tag) => post.tags.includes(tag))))
     .slice(0, 3);
+  const backupBlogLinks = posts
+    .filter((item) => item.slug !== post.slug && item.category !== post.category)
+    .slice(0, 4);
 
   const schema = articleSchema({
     title: post.title,
@@ -180,15 +187,42 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   );
   const cluster = getClusterForCategory(post.category);
   const diversifiedMoneyLinks = getDiversifiedMoneyLinks(cluster).filter((item) => !comparisonLinks.some((link) => link.href === item.href));
+  const blogPathLinks = [...relatedPosts, ...backupBlogLinks]
+    .slice(0, 3)
+    .map((item) => ({ label: item.title, href: `/blog/${item.slug}` }));
+  const decisionTableRows = [
+    {
+      situation: 'Stable cash flow, clear monthly surplus',
+      option: 'Automate contribution or payoff immediately',
+      why: 'Compounding and interest savings start sooner.'
+    },
+    {
+      situation: 'Income varies month to month',
+      option: 'Use baseline plan plus buffer account',
+      why: 'Protects execution during lower-income months.'
+    },
+    {
+      situation: 'Major expense expected inside 12 months',
+      option: 'Prioritize liquidity and short-duration risk',
+      why: 'Reduces forced-selling or high-rate borrowing risk.'
+    }
+  ];
+  const seed = Math.abs(hashSeed(post.slug));
+  const scenarioMonthly = 250 + (seed % 8) * 75;
+  const scenarioAnnual = scenarioMonthly * 12;
+  const scenarioRate = 0.04 + (seed % 4) * 0.01;
+  const fiveYearValue = Math.round((scenarioMonthly * ((Math.pow(1 + scenarioRate / 12, 60) - 1) / (scenarioRate / 12))) / 100) * 100;
+  const tenYearValue = Math.round((scenarioMonthly * ((Math.pow(1 + scenarioRate / 12, 120) - 1) / (scenarioRate / 12))) / 100) * 100;
+  const wrongDecisionCost = Math.round((tenYearValue - fiveYearValue) / 10) * 10;
   const decisionPanel =
     decisionPanelByCategory[post.category] ??
     ({
-      title: 'Quick answer: how to use this guide',
+      title: 'Decision lens: how to use this guide',
       intro: 'Use this page to make one concrete decision, then pressure-test it with your own numbers.',
       points: [
-        { label: 'When this matters', text: `This is most useful when you are actively comparing ${post.category.replace(/-/g, ' ')} options in the next 30 to 90 days.` },
-        { label: 'Best option if...', text: 'Choose the option that holds up in a bad-month scenario, not only in a best-case projection.' },
-        { label: 'Avoid this mistake', text: 'Do not optimize for one metric alone; always check fees, timeline risk, and flexibility together.' }
+        { label: 'Decision window', text: `This is most useful when you are actively comparing ${post.category.replace(/-/g, ' ')} options in the next 30 to 90 days.` },
+        { label: 'Stress test', text: 'Choose the option that holds up in a bad-month scenario, not only in a best-case projection.' },
+        { label: 'Hidden trap', text: 'Do not optimize for one metric alone; always check fees, timeline risk, and flexibility together.' }
       ]
     } as const);
 
@@ -235,6 +269,47 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       </section>
 
       <InteractiveArticleContent content={post.content} />
+
+      <section className="rounded-xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/40">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Scenario math: monthly choice to long-range impact</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+          If you redirect <strong>${scenarioMonthly}/month</strong> ({`$${scenarioAnnual.toLocaleString()}/year`}) at roughly {(scenarioRate * 100).toFixed(0)}% expected return, the modeled value is about <strong>${fiveYearValue.toLocaleString()}</strong> in 5 years and <strong>${tenYearValue.toLocaleString()}</strong> in 10 years.
+        </p>
+        <p className="mt-2 text-sm text-rose-700 dark:text-rose-300">
+          Cost of the wrong decision: delaying this setup by several years can leave roughly <strong>${wrongDecisionCost.toLocaleString()}</strong> on the table in the same decade.
+        </p>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision table: choose by your situation</h2>
+        <div className="mt-3 overflow-x-auto">
+          <table className="min-w-[620px] w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500 dark:border-slate-700">
+                <th className="px-2 py-2">Situation</th>
+                <th className="px-2 py-2">Best option</th>
+                <th className="px-2 py-2">Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              {decisionTableRows.map((row) => (
+                <tr key={row.situation} className="border-b border-slate-100 dark:border-slate-800">
+                  <td className="px-2 py-2 font-medium text-slate-900 dark:text-slate-100">{row.situation}</td>
+                  <td className="px-2 py-2 text-slate-700 dark:text-slate-300">{row.option}</td>
+                  <td className="px-2 py-2 text-slate-600 dark:text-slate-300">{row.why}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Edge case: what if a bad month hits?</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+          Keep a fallback version of your plan with a lower contribution or payment target. In stress months, the goal is continuity, not perfection.
+        </p>
+      </section>
 
       <section className="rounded-xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-500/50 dark:bg-amber-950/30">
         <h2 className="text-xl font-semibold text-amber-900 dark:text-amber-100">Before you act on this guide</h2>
@@ -327,11 +402,26 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Practical next step path</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Move from reading to action: run numbers, compare options, then finalize a checklist.</p>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Move from reading to action: blog → calculator → compare → decision checklist.</p>
         <div className="mt-3 grid gap-2 text-sm md:grid-cols-3">
           <Link href={calculatorSupportLinks[0]?.href ?? '/calculators'} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Use this calculator next</Link>
           <Link href={comparisonLinks[0]?.href ?? '/comparison'} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Compare before you choose</Link>
           <Link href={`/learn/${cluster}`} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Read the cluster playbook</Link>
+        </div>
+        <div className="mt-4 grid gap-2 text-sm md:grid-cols-2">
+          {calculatorSupportLinks.slice(0, 2).map((item) => (
+            <Link key={`calc-${item.href}`} href={item.href} className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 font-medium text-blue-800 hover:bg-blue-100 dark:border-blue-700/60 dark:bg-blue-900/30 dark:text-blue-200">
+              Calculator: {item.label}
+            </Link>
+          ))}
+          <Link href={comparisonLinks[0]?.href ?? '/comparison'} className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 font-medium text-emerald-800 hover:bg-emerald-100 dark:border-emerald-700/60 dark:bg-emerald-900/30 dark:text-emerald-200">
+            Comparison shortcut: {comparisonLinks[0]?.label ?? 'Open comparison frameworks'}
+          </Link>
+          {blogPathLinks.slice(0, 2).map((item) => (
+            <Link key={`blog-${item.href}`} href={item.href} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">
+              Related guide: {item.label}
+            </Link>
+          ))}
         </div>
       </section>
     </article>

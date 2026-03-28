@@ -167,6 +167,33 @@ const updateCadenceByCategory: Record<FinancialCategory, string> = {
   personal_loan: 'Reviewed when repayment-structure assumptions or fee patterns materially change.'
 };
 
+const shortlistByCategory: Record<FinancialCategory, Array<{ name: string; fit: string; avoid: string }>> = {
+  credit_card: [
+    { name: 'No-fee cashback setup', fit: 'Best for predictable monthly spend and full-statement payment habits.', avoid: 'Skip if you carry balances frequently.' },
+    { name: 'Low-APR stability card', fit: 'Best for users prioritizing downside protection over rewards.', avoid: 'Skip if rewards optimization is your main objective.' },
+    { name: 'Premium rewards stack', fit: 'Best for high spenders who reliably redeem credits and transfer partners.', avoid: 'Skip if annual-fee credits are likely to go unused.' }
+  ],
+  savings_account: [
+    { name: 'Simple HYSA', fit: 'Best for emergency funds and low-maintenance automation.', avoid: 'Skip if you need branch-only cash handling.' },
+    { name: 'Premium support HYSA', fit: 'Best for users who value transfer support and phone access.', avoid: 'Skip if APY maximization is your only priority.' },
+    { name: 'Tiered-rate savings product', fit: 'Best for disciplined users who can meet balance rules consistently.', avoid: 'Skip if your balance fluctuates heavily month to month.' }
+  ],
+  investment_app: [
+    { name: 'Auto-invest beginner app', fit: 'Best for hands-off investors building first-year habits.', avoid: 'Skip if you need advanced taxable-lot controls now.' },
+    { name: 'Low-cost self-directed broker', fit: 'Best for users with a defined allocation and rebalancing plan.', avoid: 'Skip if app design triggers impulse trading behavior.' },
+    { name: 'Hybrid advisory platform', fit: 'Best for users wanting automation with optional human guidance.', avoid: 'Skip if advisory fee drag outweighs your behavior benefit.' }
+  ],
+  mortgage_lender: [
+    { name: 'Execution-first lender', fit: 'Best for tight closing timelines and complex documentation.', avoid: 'Skip if your primary target is absolute lowest fee stack.' },
+    { name: 'Low-fee lender model', fit: 'Best for borrowers with straightforward files and flexible timelines.', avoid: 'Skip if support responsiveness is your top constraint.' },
+    { name: 'Service-focused lender', fit: 'Best for first-time buyers needing coaching through underwriting.', avoid: 'Skip if rate/fee competitiveness is materially weaker.' }
+  ],
+  personal_loan: [
+    { name: 'Low-fee consolidation loan', fit: 'Best for borrowers with stable income and strict no-new-debt rules.', avoid: 'Skip if monthly payment would still be fragile.' },
+    { name: 'Flexible hardship lender', fit: 'Best for variable-income users needing fallback policy clarity.', avoid: 'Skip if fees erase most consolidation benefit.' },
+    { name: 'Fast-funding lender', fit: 'Best for urgent cash-flow cases where time-to-fund matters.', avoid: 'Skip if rushed funding pushes you into expensive terms.' }
+  ]
+};
 
 
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
@@ -283,6 +310,19 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
       </section>
 
       <ComparisonEngine defaultCategory={category} />
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Shortlist: top paths by user type</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {shortlistByCategory[category].map((item) => (
+            <article key={item.name} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.name}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>Best for:</strong> {item.fit}</p>
+              <p className="mt-2 text-sm text-rose-700 dark:text-rose-300"><strong>When not to choose:</strong> {item.avoid}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="grid gap-3 md:grid-cols-3">
         {audienceSummaries[category].map((item) => (
