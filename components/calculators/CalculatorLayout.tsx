@@ -175,10 +175,18 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     compare: { href: '/comparison', label: 'Compare options by fee and fit' },
     mistakes: ['Using unrealistic input assumptions.', 'Relying on one scenario only.', 'Skipping eligibility and product-term checks.']
   };
+  const primaryMetric = result.summary[0];
+  const baselineValue = primaryMetric?.value ?? 0;
+  const downsideScenario = baselineValue * 1.12;
+  const improvementScenario = baselineValue * 0.88;
+  const upsideScenario = baselineValue * 0.8;
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
       <CalculatorHeader title={definition.title} description={definition.description} />
+      <div className="sticky top-16 z-20 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-900 shadow-sm dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
+        You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
+      </div>
       {/* Sharing: encourage backlinks and distribution for calculator/tool pages. */}
       <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 
@@ -257,6 +265,24 @@ export function CalculatorLayout({ slug }: { slug: string }) {
               </tbody>
             </table>
           </div>
+
+          <section className="grid gap-4 md:grid-cols-2">
+            <article className="rounded-2xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-500/40 dark:bg-blue-950/30">
+              <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100">Instant insight</h2>
+              <p className="mt-2 text-sm text-blue-900 dark:text-blue-100">
+                Based on your inputs, your projected {primaryMetric?.label?.toLowerCase() ?? 'financial impact'} is{' '}
+                <strong>{primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</strong>.
+              </p>
+            </article>
+            <article className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-500/40 dark:bg-indigo-950/30">
+              <h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Scenario simulation</h2>
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-indigo-900 dark:text-indigo-100">
+                <li>Stress case (+12% impact): {primaryMetric?.currency ? formatCurrency(downsideScenario) : `${downsideScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</li>
+                <li>Improved case (-12% impact): {primaryMetric?.currency ? formatCurrency(improvementScenario) : `${improvementScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</li>
+                <li>Optimized plan (-20% impact): {primaryMetric?.currency ? formatCurrency(upsideScenario) : `${upsideScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</li>
+              </ul>
+            </article>
+          </section>
         </div>
       </div>
 
@@ -303,6 +329,21 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         ]}
       />
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision guidance</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+          Choose the option that remains affordable in a bad month, not just the one that looks best in a perfect-case projection. If the stress-case number is uncomfortable, lower risk first.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          <Link href={pathway.guide.href} className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-semibold text-slate-900 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
+            Optimize your plan
+          </Link>
+          <Link href={pathway.compare.href} className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-semibold text-slate-900 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
+            Compare better options
+          </Link>
+        </div>
+      </section>
+
       <DecisionSupportPanel
         title="Common mistakes to avoid"
         tone="amber"
@@ -313,6 +354,13 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           { href: '/how-we-make-money', label: 'Affiliate transparency' }
         ]}
       />
+
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-700 dark:bg-slate-900/50">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How we calculate</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
+          Outputs are generated from your slider inputs using transparent formulas in our calculator engine. Results are educational estimates and should be validated with provider terms before taking action.
+        </p>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold">Related calculators</h2>

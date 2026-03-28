@@ -54,6 +54,27 @@ const decisionPanelByCategory: Record<
   }
 };
 
+const moneyImpactByCategory: Record<string, { hook: string; scenario: string; decision: string; action: string }> = {
+  'credit-cards': {
+    hook: 'Carrying a $5,000 balance at 24% APR can cost about $1,200/year in interest alone.',
+    scenario: 'If you switch to a lower-APR path and add $200/month payoff, you can often compress payoff time by years.',
+    decision: 'Use the linked calculator to compare annual fee + APR downside versus realistic rewards upside.',
+    action: 'Keep only options that remain net-positive in your stress-case month.'
+  },
+  mortgages: {
+    hook: 'On a 30-year mortgage, a 1% rate difference can change lifetime cost by tens of thousands of dollars.',
+    scenario: 'A slightly higher payment can reduce total interest materially when extra principal is sustainable.',
+    decision: 'Run base and stress assumptions before accepting a lender quote.',
+    action: 'Choose the loan that stays affordable if one major expense hits.'
+  },
+  investing: {
+    hook: 'A 1% annual fee drag can reduce long-term portfolio outcomes by six figures over multi-decade horizons.',
+    scenario: 'Increasing automated investing by $150/month can materially change 10-year balance outcomes.',
+    decision: 'Compare all-in cost and behavior support, not features alone.',
+    action: 'Automate first, then optimize allocation once consistency is stable.'
+  }
+};
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
@@ -196,6 +217,12 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       ]
     } as const);
   const additionalRelatedBlogs = posts.filter((item) => item.slug !== post.slug && !relatedPosts.some((r) => r.slug === item.slug)).slice(0, 2);
+  const moneyImpact = moneyImpactByCategory[post.category] ?? {
+    hook: 'Small percentage changes in rates, fees, or contribution pace can compound into large dollar outcomes.',
+    scenario: 'Run at least two what-if scenarios before committing to a product or plan.',
+    decision: 'Use this article with a calculator and a comparison page for a full decision loop.',
+    action: 'Document your next step: act now, wait, or gather one missing data point.'
+  };
 
   return (
     <article className="mx-auto max-w-4xl space-y-8 rounded-xl bg-white p-5 sm:p-6 lg:p-8 dark:bg-neutral-900">
@@ -222,6 +249,16 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         points={decisionPanel.points}
         links={calculatorSupportLinks.slice(0, 2)}
       />
+
+      <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-500/40 dark:bg-emerald-950/30">
+        <h2 className="text-xl font-semibold text-emerald-900 dark:text-emerald-100">Financial decision engine</h2>
+        <div className="mt-3 grid gap-3 text-sm md:grid-cols-2">
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Hook (money impact)</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.hook}</p></article>
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Scenario</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.scenario}</p></article>
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Tool + Decision</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.decision}</p></article>
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Action</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.action}</p></article>
+        </div>
+      </section>
 
       <section className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800/50">
         <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Table of contents</h2>

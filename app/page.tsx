@@ -2,9 +2,9 @@ import { HomepageLayout } from '@/components/home/HomepageLayout';
 import type { Metadata } from 'next';
 import { absoluteUrl, breadcrumbSchema, webpageSchema } from '@/lib/seo';
 
-const homepageTitle = 'FinanceSphere | Personal Finance Calculators, Comparisons, and Decision Guides';
+const homepageTitle = 'Make Smarter Money Decisions with Real Numbers | FinanceSphere';
 const homepageDescription =
-  'Use FinanceSphere to run calculators, compare financial products, and follow practical step-by-step guides for savings, debt payoff, mortgages, and investing.';
+  'See exactly how much you save, invest, or lose before you decide. Use calculators, scenario comparisons, and decision guides built for real financial outcomes.';
 
 export const metadata: Metadata = {
   title: homepageTitle,

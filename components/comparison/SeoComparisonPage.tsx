@@ -195,6 +195,33 @@ const shortlistByCategory: Record<FinancialCategory, Array<{ label: string; best
   ]
 };
 
+const userTypeRecommendations: Record<FinancialCategory, Array<{ userType: string; bestOption: string; why: string }>> = {
+  credit_card: [
+    { userType: 'Pays in full monthly', bestOption: 'No-fee cashback or optimized rewards card', why: 'Maximizes net value without interest drag.' },
+    { userType: 'Carries occasional balance', bestOption: 'Low-APR card', why: 'Reduces downside cost when balances roll over.' },
+    { userType: 'Frequent traveler', bestOption: 'Premium travel card only if credits are fully used', why: 'Annual fee only works when redemption rate is reliable.' }
+  ],
+  savings_account: [
+    { userType: 'Emergency-fund builder', bestOption: 'Simple online HYSA', why: 'Strong yield and fast liquidity with fewer rule traps.' },
+    { userType: 'Needs branch support', bestOption: 'Hybrid checking + savings setup', why: 'Support availability can outweigh slight APY differences.' },
+    { userType: 'Multi-bucket saver', bestOption: 'HYSA + laddered CDs', why: 'Balances liquidity with better medium-term yield.' }
+  ],
+  investment_app: [
+    { userType: 'Beginner automator', bestOption: 'Robo platform with recurring investing', why: 'Consistency beats manual complexity early on.' },
+    { userType: 'Self-directed investor', bestOption: 'Low-cost brokerage app', why: 'Lower fee drag with broad product access.' },
+    { userType: 'Retirement optimizer', bestOption: 'Retirement-focused platform', why: 'Account coverage and rollover workflows matter most.' }
+  ],
+  mortgage_lender: [
+    { userType: 'First-time buyer', bestOption: 'Execution-focused lender', why: 'Process reliability reduces closing risk.' },
+    { userType: 'Rate-sensitive borrower', bestOption: 'Low-fee lender after APR comparison', why: 'Total cost matters more than note rate alone.' },
+    { userType: 'Complex income profile', bestOption: 'Niche-profile lender', why: 'Underwriting fit can improve approval odds.' }
+  ],
+  personal_loan: [
+    { userType: 'Debt consolidator', bestOption: 'Consolidation-focused loan', why: 'Fixed payments can accelerate payoff with discipline.' },
+    { userType: 'Variable-income borrower', bestOption: 'Lower-payment longer-term loan', why: 'Payment resilience reduces default risk in weak months.' },
+    { userType: 'Urgent cash need', bestOption: 'Fast-funding loan with short payoff plan', why: 'Speed matters, but cap total interest with a strict timeline.' }
+  ]
+};
 
 
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
@@ -308,6 +335,31 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{scenarioExamples[category].setup}</p>
         <p className="mt-2 text-sm font-medium text-blue-800 dark:text-blue-200">{scenarioExamples[category].takeaway}</p>
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Examples are illustrative decision models, not live market quotes.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Scenario-based recommendation table</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Which option is best for YOU? Match your profile first, then validate pricing and eligibility.</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="min-w-[640px] w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500 dark:border-slate-700">
+                <th className="px-2 py-2">User type</th>
+                <th className="px-2 py-2">Best option</th>
+                <th className="px-2 py-2">Why</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userTypeRecommendations[category].map((item) => (
+                <tr key={item.userType} className="border-b border-slate-100 dark:border-slate-800">
+                  <td className="px-2 py-2 font-medium text-slate-900 dark:text-slate-100">{item.userType}</td>
+                  <td className="px-2 py-2 text-slate-700 dark:text-slate-300">{item.bestOption}</td>
+                  <td className="px-2 py-2 text-slate-700 dark:text-slate-300">{item.why}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <ComparisonEngine defaultCategory={category} />
