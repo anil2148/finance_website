@@ -67,8 +67,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: post.seoTitle ?? post.title,
     description: post.metaDescription ?? post.description,
     alternates: { canonical: canonicalPath },
-    openGraph: { title: post.seoTitle ?? post.title, description: post.metaDescription ?? post.description, type: 'article', url: absoluteUrl(canonicalPath) },
-    twitter: { card: 'summary_large_image', title: post.seoTitle ?? post.title, description: post.metaDescription ?? post.description }
+    openGraph: { title: post.title, description: post.metaDescription ?? post.description, type: 'article', url: absoluteUrl(canonicalPath) },
+    twitter: { card: 'summary_large_image', title: post.title, description: post.metaDescription ?? post.description }
   };
 }
 
@@ -88,7 +88,7 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     .slice(0, 3);
 
   const schema = articleSchema({
-    title: post.seoTitle ?? post.title,
+    title: post.title,
     description: post.metaDescription ?? post.description,
     slug: post.slug,
     authorName: (AUTHOR_PROFILES[post.authorId] ?? AUTHOR_PROFILES[PRIMARY_AUTHOR_ID])?.name,
@@ -99,13 +99,13 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   });
   const pageSchema = webpageSchema({
     pathname: `/blog/${post.slug}`,
-    name: post.seoTitle ?? post.title,
+    name: post.title,
     description: post.metaDescription ?? post.description
   });
   const crumbsSchema = breadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Blog', item: '/blog' },
-    { name: post.seoTitle ?? post.title, item: `/blog/${post.slug}` }
+    { name: post.title, item: `/blog/${post.slug}` }
   ]);
   const toc = getHeadings(post.content);
   const isTaxBracketArticle = post.slug === '2026-federal-tax-brackets-marginal-rate-decisions';

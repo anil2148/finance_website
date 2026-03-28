@@ -16,6 +16,13 @@ type TopicBlueprint = {
   descriptionTemplates: string[];
 };
 
+type ScenarioRow = {
+  monthly: string;
+  annual: string;
+  longTerm: string;
+  note: string;
+};
+
 const THIN_PATTERNS = [
   'A complete overview for',
   'can accelerate your long-term wealth strategy when done consistently',
@@ -482,6 +489,179 @@ function normalizeDescription(post: BlogPost, topicLabel: string, blueprint: Top
   return post.description;
 }
 
+const repeatedHeadingReplacements: Array<{ pattern: RegExp; options: string[] }> = [
+  {
+    pattern: /^##\s*quick answer\s*$/gim,
+    options: ['## Decision snapshot', '## The tradeoff in one minute', '## Start with this lens']
+  },
+  {
+    pattern: /^##\s*when this matters\s*$/gim,
+    options: ['## Use this framework when', '## Timing signals to watch', '## Where this decision has the biggest impact']
+  },
+  {
+    pattern: /^##\s*best option if\s*$/gim,
+    options: ['## Best-fit path', '## Strong fit signals', '## Who each path serves best']
+  },
+  {
+    pattern: /^##\s*avoid this mistake\s*$/gim,
+    options: ['## High-cost errors to avoid', '## Mistakes that quietly cost thousands', '## Failure patterns to catch early']
+  },
+  {
+    pattern: /^##\s*what should you do now\??\s*$/gim,
+    options: ['## Your next move this week', '## Execution plan for the next 7 days', '## Turn analysis into action']
+  }
+];
+
+const secondaryCalculatorByArchetype: Record<TopicBlueprint['archetype'], { label: string; href: string }> = {
+  investing: { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
+  loans: { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' },
+  budgeting: { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
+  savings: { label: 'Compound Interest Calculator', href: '/calculators/compound-interest-calculator' },
+  'credit-cards': { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' },
+  tax: { label: 'Salary After-Tax Calculator', href: '/calculators/salary-after-tax-calculator' }
+};
+
+const relatedBlogsByArchetype: Record<TopicBlueprint['archetype'], Array<{ label: string; href: string }>> = {
+  investing: [
+    { label: '401(k) contribution rate targets', href: '/blog/401k-contribution-rate-sustainable-target-2026' },
+    { label: 'Dollar-cost averaging playbook', href: '/blog/dollar-cost-averaging-guide' }
+  ],
+  loans: [
+    { label: 'Debt-to-income 90-day plan', href: '/blog/debt-to-income-ratio-90-day-plan' },
+    { label: '15-year vs 30-year mortgage cost', href: '/blog/15-year-vs-30-year-mortgage-2026-total-cost' }
+  ],
+  budgeting: [
+    { label: 'Zero-based budget operating system', href: '/blog/zero-based-budget-assign-every-dollar-job' },
+    { label: 'Monthly expense audit system', href: '/blog/monthly-expense-audit-system' }
+  ],
+  savings: [
+    { label: 'Where to store savings', href: '/blog/where-to-store-savings-hysa-vs-other-options' },
+    { label: 'How to increase your savings rate', href: '/blog/how-to-increase-your-savings-rate' }
+  ],
+  'credit-cards': [
+    { label: 'Credit utilization statement-cycle playbook', href: '/blog/credit-utilization-statement-cycle-playbook' },
+    { label: 'APR cost-to-carry breakdown', href: '/blog/credit-card-apr-2026-cost-to-carry-balance' }
+  ],
+  tax: [
+    { label: 'Roth vs Traditional 401(k) decision guide', href: '/blog/roth-vs-traditional-401k-decision-guide' },
+    { label: '0% capital-gains harvesting rules', href: '/blog/capital-gains-tax-strategy-0-percent-harvesting-2026' }
+  ]
+};
+
+const scenarioRowsByArchetype: Record<TopicBlueprint['archetype'], ScenarioRow[]> = {
+  investing: [
+    { monthly: '$600 invested', annual: '$7,200 contribution', longTerm: '≈ $196,000 in 15 years at 8%', note: 'Skipping one full year can reduce the 15-year result by ~10–12%.' },
+    { monthly: '$1,000 invested', annual: '$12,000 contribution', longTerm: '≈ $549,000 in 20 years at 7%', note: 'Cutting monthly contributions to $700 lowers the 20-year total by roughly six figures.' }
+  ],
+  loans: [
+    { monthly: '$375 payment', annual: '$4,500 cash outflow', longTerm: '≈ $22,500 over 5 years', note: 'Refinancing 3 points lower could save roughly $2,000–$3,000 total interest.' },
+    { monthly: '$550 payment', annual: '$6,600 cash outflow', longTerm: '≈ $39,600 over 6 years', note: 'Extending term to lower payment may add ~$4,000+ in total interest.' }
+  ],
+  budgeting: [
+    { monthly: '$350 auto-transfer', annual: '$4,200 saved', longTerm: '≈ $24,000 in 5 years at 4.5% APY', note: 'Skipping transfers for three high-spend months can erase one full quarter of progress.' },
+    { monthly: '$500 auto-transfer', annual: '$6,000 saved', longTerm: '≈ $40,000 in 6 years at 4.0% APY', note: 'A $200 recurring leak can cost ~$14,000 over six years including foregone growth.' }
+  ],
+  savings: [
+    { monthly: '$250 contribution', annual: '$3,000 saved', longTerm: '≈ $16,600 in 5 years at 4.2% APY', note: 'Using a near-zero-yield account can leave ~$1,500+ on the table versus HYSA rates.' },
+    { monthly: '$800 contribution', annual: '$9,600 saved', longTerm: '≈ $53,000 in 5 years at 4.0% APY', note: 'Missing six deposits in a bad cash-flow year can reduce the 5-year result by ~$5,000.' }
+  ],
+  'credit-cards': [
+    { monthly: '$400 revolving balance', annual: '≈ $1,056 annual interest at 22% APR', longTerm: '≈ $5,280 over 5 years if balance persists', note: 'A payoff plan that clears this in 18 months can save thousands.' },
+    { monthly: '$1,200 revolving balance', annual: '≈ $3,168 annual interest at 22% APR', longTerm: '≈ $15,800 over 5 years if unchanged', note: 'Chasing rewards while carrying debt is often negative expected value.' }
+  ],
+  tax: [
+    { monthly: '$700 pre-tax contribution', annual: '$8,400 sheltered from current tax', longTerm: 'Potentially $170,000+ account value in 12 years at 7%', note: 'Wrong account mix can create avoidable tax drag on withdrawals later.' },
+    { monthly: '$500 Roth contribution', annual: '$6,000 after-tax invested', longTerm: '≈ $250,000 in 20 years at 7%', note: 'Deferring tax planning until retirement can reduce withdrawal flexibility.' }
+  ]
+};
+
+function normalizeTemplateHeadings(content: string, slug: string) {
+  let updated = content;
+  for (const item of repeatedHeadingReplacements) {
+    const replacement = pick(item.options, `${slug}-${item.pattern.source}`);
+    updated = updated.replace(item.pattern, replacement);
+  }
+  return updated;
+}
+
+function hasMinRelatedLinks(content: string) {
+  const internalLinks = content.match(/\]\((\/[^)]+)\)/g) ?? [];
+  return internalLinks.length >= 5;
+}
+
+function buildDecisionUpgradeBlock(post: BlogPost, blueprint: TopicBlueprint) {
+  const scenario = pick(scenarioRowsByArchetype[blueprint.archetype], `${post.slug}-scenario`);
+  const altScenario = pick(scenarioRowsByArchetype[blueprint.archetype], `${post.slug}-scenario-alt`);
+  const secondaryCalculator = secondaryCalculatorByArchetype[blueprint.archetype];
+  const relatedBlogs = relatedBlogsByArchetype[blueprint.archetype];
+
+  const introVariants = [
+    '## Scenario lab: run this with your real numbers',
+    '## Stress-test view: base case vs bad-month case',
+    '## Decision simulator: monthly to long-term impact'
+  ];
+  const costVariants = [
+    '## Cost of the wrong decision (in dollars)',
+    '## What the wrong choice can cost you',
+    '## Dollar downside if you optimize the wrong metric'
+  ];
+  const edgeVariants = [
+    '## Edge cases that break a good plan',
+    '## Bad-month scenarios to model before acting',
+    '## Non-ideal conditions to include in your model'
+  ];
+
+  return `
+${pick(introVariants, `${post.slug}-intro-variant`)}
+
+| Monthly decision input | 12-month effect | Longer-term projection | What changes the outcome |
+|---|---|---|---|
+| ${scenario.monthly} | ${scenario.annual} | ${scenario.longTerm} | ${scenario.note} |
+| ${altScenario.monthly} | ${altScenario.annual} | ${altScenario.longTerm} | ${altScenario.note} |
+
+## Decision table: choose by context, not hype
+
+| Situation | Best option | Why |
+|---|---|---|
+| You need downside protection first | Simpler lower-risk setup | Preserves flexibility when a surprise expense hits. |
+| You can commit for 12+ months | Optimization path with automation | Compounding and habit consistency usually beat one-time tactics. |
+| You expect an irregular-income quarter | Conservative payment/savings target | Avoids plan collapse and expensive resets. |
+
+${pick(costVariants, `${post.slug}-cost-variant`)}
+
+- Choosing based on headline upside only can create a **multi-thousand-dollar drag** from avoidable fees, interest, or tax friction.
+- A single bad-month miss (income dip + surprise bill) can undo several months of progress if liquidity and payment buffers are thin.
+- Write a hard ceiling now: maximum fee, payment, or risk level you will accept before acting.
+
+${pick(edgeVariants, `${post.slug}-edge-variant`)}
+
+1. Income temporarily drops 15–20% for one quarter.
+2. A $1,200 unexpected expense lands in the same month.
+3. Product terms worsen after onboarding or teaser periods end.
+
+If your plan still works in this stress case, it is probably durable.
+
+## Execute the workflow: calculator → compare → decide
+
+- Run primary math in [${blueprint.links.calculator.label}](${blueprint.links.calculator.href}).
+- Pressure-test with a second model in [${secondaryCalculator.label}](${secondaryCalculator.href}).
+- Shortlist options on [${blueprint.links.comparison.label}](${blueprint.links.comparison.href}).
+- Read [${relatedBlogs[0].label}](${relatedBlogs[0].href}) and [${relatedBlogs[1].label}](${relatedBlogs[1].href}) before final action.
+- Keep your operating playbook in [${blueprint.links.hub.label}](${blueprint.links.hub.href}).
+`;
+}
+
+function enrichContent(post: BlogPost, blueprint: TopicBlueprint) {
+  let content = normalizeTemplateHeadings(post.content, post.slug);
+  const hasScenarioSection = /cost of the wrong decision|decision table|bad-month|stress-test/i.test(content);
+
+  if (!hasScenarioSection || !hasMinRelatedLinks(content)) {
+    content = `${content.trim()}\n${buildDecisionUpgradeBlock(post, blueprint)}\n`;
+  }
+
+  return content;
+}
+
 export function qualityScore(post: BlogPost) {
   const wordCount = post.content.split(/\s+/).filter(Boolean).length;
   let score = Math.min(60, Math.floor(wordCount / 10));
@@ -516,6 +696,6 @@ export function enhancePost(post: BlogPost): BlogPost {
     description,
     seoTitle: `${title} | FinanceSphere`,
     metaDescription: description,
-    content: post.content
+    content: enrichContent(post, blueprint)
   };
 }
