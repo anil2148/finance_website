@@ -31,7 +31,7 @@ export default function HomePage() {
     '@graph': [
       webpageSchema({
         pathname: '/',
-        name: 'FinanceSphere Homepage',
+        name: homepageTitle,
         description: homepageDescription
       }),
       breadcrumbSchema([{ name: 'Home', item: '/' }]),
