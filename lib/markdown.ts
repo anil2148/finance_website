@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, getAuthorIdForCategory } from '@/lib/authors';
 import { canonicalTopicKey, enhancePost, qualityScore, shouldExcludePost } from '@/lib/blogEnhancer';
 import { shouldDisplayPost } from '@/lib/blogCleanup';
+import { sanitizeBlogSlug } from '@/lib/blogSlug';
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
@@ -49,7 +50,7 @@ function loadPosts() {
       const { data, content } = matter(raw);
       const basePost = {
         title: data.title,
-        slug: data.slug,
+        slug: sanitizeBlogSlug(data.slug),
         description: data.description,
         date: data.date,
         category: data.category ?? 'general',

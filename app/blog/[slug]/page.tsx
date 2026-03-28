@@ -26,30 +26,30 @@ const decisionPanelByCategory: Record<
   }
 > = {
   'credit-cards': {
-    title: 'Quick answer: choose cards by downside risk first',
+    title: 'Card decision lens: protect downside before chasing rewards',
     intro: 'This guide is most useful when you are deciding whether a card helps your cash flow or makes it easier to carry debt.',
     points: [
-      { label: 'Best option if...', text: 'Choose the setup that still works when one month runs above budget and you cannot revolve a balance.' },
-      { label: 'Avoid this mistake', text: 'Do not value points at premium redemption rates you are unlikely to use.' },
-      { label: 'Decision trigger', text: 'If your emergency buffer is below one month of expenses, prioritize liquidity before applying for another card.' }
+      { label: 'Strong fit signal', text: 'Choose the setup that still works when one month runs above budget and you cannot revolve a balance.' },
+      { label: 'Frequent trap', text: 'Do not value points at premium redemption rates you are unlikely to use.' },
+      { label: 'Pause condition', text: 'If your emergency buffer is below one month of expenses, prioritize liquidity before applying for another card.' }
     ]
   },
   mortgages: {
-    title: 'Quick answer: underwriter readiness matters as much as rate',
+    title: 'Mortgage readiness snapshot: execution risk matters as much as rate',
     intro: 'Use this guide if you expect to apply in the next 30 to 120 days and need fewer underwriting surprises.',
     points: [
-      { label: 'Best option if...', text: 'Choose the path that keeps your DTI, document quality, and reserves strong through closing.' },
-      { label: 'Avoid this mistake', text: 'Do not compare offers using only note rate; check APR and total fee stack together.' },
-      { label: 'Decision trigger', text: 'If timeline flexibility is low, prioritize execution reliability over tiny rate differences.' }
+      { label: 'Strong fit signal', text: 'Choose the path that keeps your DTI, document quality, and reserves strong through closing.' },
+      { label: 'Frequent trap', text: 'Do not compare offers using only note rate; check APR and total fee stack together.' },
+      { label: 'Pause condition', text: 'If timeline flexibility is low, prioritize execution reliability over tiny rate differences.' }
     ]
   },
   tax: {
-    title: 'Quick answer: optimize after-tax outcomes, not headline returns',
+    title: 'Tax planning frame: optimize after-tax outcomes, not headline returns',
     intro: 'This guide helps when your next contribution or withdrawal decision can move you into a higher marginal bracket.',
     points: [
-      { label: 'Best option if...', text: 'Use the account location or contribution mix that reduces total expected lifetime tax drag.' },
-      { label: 'Avoid this mistake', text: 'Do not make a one-year tax move that hurts long-term flexibility across account types.' },
-      { label: 'Decision trigger', text: 'If taxable income is near a bracket edge, model both sides before changing contribution strategy.' }
+      { label: 'Strong fit signal', text: 'Use the account location or contribution mix that reduces total expected lifetime tax drag.' },
+      { label: 'Frequent trap', text: 'Do not make a one-year tax move that hurts long-term flexibility across account types.' },
+      { label: 'Pause condition', text: 'If taxable income is near a bracket edge, model both sides before changing contribution strategy.' }
     ]
   }
 };
@@ -88,8 +88,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     .slice(0, 3);
 
   const schema = articleSchema({
-    title: post.title,
-    description: post.description,
+    title: post.seoTitle ?? post.title,
+    description: post.metaDescription ?? post.description,
     slug: post.slug,
     authorName: (AUTHOR_PROFILES[post.authorId] ?? AUTHOR_PROFILES[PRIMARY_AUTHOR_ID])?.name,
     authorRole: (AUTHOR_PROFILES[post.authorId] ?? AUTHOR_PROFILES[PRIMARY_AUTHOR_ID])?.role,
@@ -97,11 +97,15 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     publishedTime: post.date,
     modifiedTime: post.updatedAt
   });
-  const pageSchema = webpageSchema({ pathname: `/blog/${post.slug}`, name: post.title, description: post.description });
+  const pageSchema = webpageSchema({
+    pathname: `/blog/${post.slug}`,
+    name: post.seoTitle ?? post.title,
+    description: post.metaDescription ?? post.description
+  });
   const crumbsSchema = breadcrumbSchema([
     { name: 'Home', item: '/' },
     { name: 'Blog', item: '/blog' },
-    { name: post.title, item: `/blog/${post.slug}` }
+    { name: post.seoTitle ?? post.title, item: `/blog/${post.slug}` }
   ]);
   const toc = getHeadings(post.content);
   const isTaxBracketArticle = post.slug === '2026-federal-tax-brackets-marginal-rate-decisions';
@@ -183,14 +187,15 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
   const decisionPanel =
     decisionPanelByCategory[post.category] ??
     ({
-      title: 'Quick answer: how to use this guide',
+      title: 'How to use this guide in one pass',
       intro: 'Use this page to make one concrete decision, then pressure-test it with your own numbers.',
       points: [
-        { label: 'When this matters', text: `This is most useful when you are actively comparing ${post.category.replace(/-/g, ' ')} options in the next 30 to 90 days.` },
-        { label: 'Best option if...', text: 'Choose the option that holds up in a bad-month scenario, not only in a best-case projection.' },
-        { label: 'Avoid this mistake', text: 'Do not optimize for one metric alone; always check fees, timeline risk, and flexibility together.' }
+        { label: 'Use this when', text: `This is most useful when you are actively comparing ${post.category.replace(/-/g, ' ')} options in the next 30 to 90 days.` },
+        { label: 'What to prioritize', text: 'Choose the option that holds up in a bad-month scenario, not only in a best-case projection.' },
+        { label: 'What to avoid', text: 'Do not optimize for one metric alone; always check fees, timeline risk, and flexibility together.' }
       ]
     } as const);
+  const additionalRelatedBlogs = posts.filter((item) => item.slug !== post.slug && !relatedPosts.some((r) => r.slug === item.slug)).slice(0, 2);
 
   return (
     <article className="mx-auto max-w-4xl space-y-8 rounded-xl bg-white p-5 sm:p-6 lg:p-8 dark:bg-neutral-900">
@@ -307,6 +312,17 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
                     <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{related.category.replace(/-/g, ' ')}</p>
                     <h3 className="mt-1 text-base font-semibold text-gray-900 dark:text-gray-100">{related.title}</h3>
                     <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{related.description}</p>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          {relatedPosts.length < 2 && additionalRelatedBlogs.length > 0 && (
+            <ul className="grid gap-2 text-sm md:grid-cols-2">
+              {additionalRelatedBlogs.map((related) => (
+                <li key={`fallback-${related.slug}`}>
+                  <Link href={`/blog/${related.slug}`} className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200">
+                    {related.title}
                   </Link>
                 </li>
               ))}
