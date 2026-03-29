@@ -10,7 +10,6 @@ import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
-import AuthorBox from '@/components/common/AuthorBox';
 import { SITE_ORIGIN, absoluteUrl, organizationSchema, websiteSchema } from '@/lib/seo';
 
 const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
@@ -98,7 +97,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">
             <Breadcrumbs />
             <PageTransition>{children}</PageTransition>
-            <AuthorBox />
           </main>
           <Footer />
         </PreferenceProvider>
