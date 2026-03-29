@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
+import AuthorBox from '@/components/common/AuthorBox';
 
 const popularCalculators = [
   {
@@ -136,9 +137,21 @@ const homepageFaqs = [
 ];
 
 const momentumExamples = [
-  { label: 'Saving $200/month', outcome: '≈ $30,000 in 10 years', note: 'Assumes a 6% annual return. Small automated contributions compound into meaningful buffers.' },
-  { label: 'Reducing loan rate by 1%', outcome: 'Can save ≈ $80,000 over a 30-year mortgage', note: 'Illustrative for long-term mortgage balances. Verify with your exact quote and fee stack.' },
-  { label: 'Adding $300/month to debt payoff', outcome: 'Can cut payoff time by years and save five figures in interest', note: 'Impact depends on APR, minimum payment, and whether rates are variable.' }
+  {
+    label: 'Increase investing from $500 to $550/month',
+    outcome: '≈ $39,000 more over 20 years',
+    note: 'Assumes 8% annual growth. A $50 monthly increase can materially shift long-run flexibility.'
+  },
+  {
+    label: 'Lower a $400,000 mortgage from 7% to 6%',
+    outcome: '≈ $87,000 less total interest over 30 years',
+    note: 'Illustrative principal-and-interest comparison before taxes/insurance. Confirm APR and closing-fee trade-offs.'
+  },
+  {
+    label: 'Add $200/month on a $15,000 balance at 22% APR',
+    outcome: 'Can cut payoff time by roughly 3+ years',
+    note: 'Interest savings can reach five figures depending on balance, APR, and whether you avoid new card spending.'
+  }
 ];
 
 export function HomepageLayout() {
@@ -179,8 +192,8 @@ export function HomepageLayout() {
                 className="object-cover"
               />
             </div>
-            <h2 className="text-xl font-semibold">Workflow snapshot</h2>
-            <p className="text-sm text-cyan-100">Choose a goal and follow the same path our readers use: run your numbers, compare options, then read a focused guide.</p>
+            <h2 className="text-xl font-semibold">Decision engine workflow</h2>
+            <p className="text-sm text-cyan-100">In under 10 minutes: quantify your scenario, compare trade-offs, and choose the next step with a downside plan.</p>
           </div>
         </div>
       </Card>
@@ -307,23 +320,7 @@ export function HomepageLayout() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere keeps pages decision-first</h2>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">1) Define decision context</h3>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">Each major page starts with who it is for, what decision it supports, and which expensive mistake it helps avoid.</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">2) Stress-test with numbers</h3>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">Guides route to calculators so readers can validate scenarios using their own payment, savings, and timeline assumptions.</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">3) Publish limitations clearly</h3>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">Where live provider data is unavailable in-repo, we publish comparison frameworks and explicitly label coverage limits.</p>
-          </article>
-        </div>
-      </section>
+      <AuthorBox className="mt-0" />
 
       <NewsletterForm source="homepage" className="scroll-mt-24" />
     </section>

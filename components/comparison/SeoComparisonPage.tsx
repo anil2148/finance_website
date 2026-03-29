@@ -3,6 +3,7 @@ import { ComparisonEngine } from '@/components/comparison/ComparisonEngine';
 import type { FinancialCategory } from '@/lib/financialProducts';
 import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByFinancialCategory, resolveCalculatorHref } from '@/lib/calculatorLinks';
 import { breadcrumbSchema, webpageSchema } from '@/lib/seo';
+import AuthorBox from '@/components/common/AuthorBox';
 
 type SeoComparisonPageProps = {
   pageTitle: string;
@@ -50,27 +51,27 @@ const methodologyWeights: Record<FinancialCategory, Array<{ factor: string; weig
 const scenarioExamples: Record<FinancialCategory, { title: string; setup: string; takeaway: string }> = {
   credit_card: {
     title: 'Illustrative scenario: no-fee cashback vs premium rewards',
-    setup: 'If a household spends about $2,000 per month and redeems rewards at conservative cash-back value, a premium annual fee card often needs consistently used credits to beat a no-fee setup.',
+    setup: 'If a household spends $2,000 per month and shifts 70% of spend to a 2% no-fee card, annual rewards are about $336. A $395 premium card needs near-full credit usage plus higher redemption value to stay net positive.',
     takeaway: 'Run your own annual net value math using realistic redemption assumptions before applying.'
   },
   savings_account: {
     title: 'Illustrative scenario: APY vs access reliability',
-    setup: 'A slightly lower APY can still be the better choice when transfer speed and support reliability prevent emergency-cash delays.',
+    setup: 'On a $25,000 emergency fund, 4.60% APY vs 4.20% APY is roughly a $100 annual difference after rough tax adjustment. One delayed transfer during a true emergency can cost more than that spread.',
     takeaway: 'For emergency funds, reliability and liquidity can outweigh small yield differences.'
   },
   investment_app: {
     title: 'Illustrative scenario: fee drag over long horizons',
-    setup: 'Even a modest annual platform fee gap can materially change outcomes across 10+ years when contributions are consistent.',
+    setup: 'Investing $600 monthly for 25 years at 8% gross return can produce a gap of roughly $90,000+ between a 0.20% and 1.00% annual all-in fee profile.',
     takeaway: 'Compare all-in annual costs first, then evaluate feature depth.'
   },
   mortgage_lender: {
     title: 'Illustrative scenario: lower rate, higher fee stack',
-    setup: 'A lower headline rate is not always cheaper if origination and closing fees are materially higher on the Loan Estimate.',
+    setup: 'On a $400,000 mortgage, a 6.25% quote with $9,500 total lender fees can lose to a 6.40% quote with $2,500 fees depending on expected time in the home.',
     takeaway: 'Compare total borrowing cost and timeline reliability together.'
   },
   personal_loan: {
     title: 'Illustrative scenario: smaller payment, longer payoff',
-    setup: 'A longer term can reduce monthly pressure but raise total interest enough to delay other goals.',
+    setup: 'Refinancing $18,000 at 11% into 36 months costs about $588/month, while a 60-month term drops payment near $391 but adds roughly $2,300 more total interest.',
     takeaway: 'Use a payment you can sustain in bad months, then prepay aggressively when cash flow improves.'
   }
 };
@@ -251,7 +252,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{pageTitle}</h1>
         <p className="max-w-3xl text-slate-600 dark:text-slate-300">{intro}</p>
         <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
-          FinanceSphere does not publish live-rate rankings on this page. We publish an evaluation framework you can use with current provider disclosures.
+          We use transparent evaluation frameworks, real-world scenarios, and provider disclosures so you can compare options confidently.
         </p>
         <div className="flex flex-wrap gap-2 text-xs">
           <Link href="/editorial-policy" className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600">Editorial standards</Link>
@@ -259,6 +260,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           <Link href="/how-we-make-money" className="rounded-full border border-slate-300 px-2 py-1 dark:border-slate-600">How we make money</Link>
         </div>
       </header>
+      <AuthorBox className="mt-0" />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How to evaluate options on this page</h2>

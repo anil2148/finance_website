@@ -96,7 +96,7 @@ const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculat
 export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
   const [inputs, setInputs] = useState(definition.defaultInputs);
-  const { currency, formatCurrency, isRatesLoading } = usePreferences();
+  const { currency, formatCurrency } = usePreferences();
 
   const [showGuide, setShowGuide] = useState(false);
   const [savedMessage, setSavedMessage] = useState('');
@@ -177,9 +177,15 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   };
   const primaryMetric = result.summary[0];
   const baselineValue = primaryMetric?.value ?? 0;
-  const downsideScenario = baselineValue * 1.12;
-  const improvementScenario = baselineValue * 0.88;
-  const upsideScenario = baselineValue * 0.8;
+  const contributionBase = inputs.monthlyContribution ?? 0;
+  const contributionBoost = contributionBase + 100;
+  const contributionLabel = primaryMetric?.currency ? formatCurrency(contributionBase) : `${contributionBase.toFixed(0)}`;
+  const boostedContributionLabel = primaryMetric?.currency ? formatCurrency(contributionBoost) : `${contributionBoost.toFixed(0)}`;
+  const rateBase = inputs.interestRate ?? 0;
+  const improvedRate = Math.max(rateBase - 1, 0);
+  const downsideScenario = baselineValue * 1.15;
+  const improvedCase = baselineValue * 0.9;
+  const stretchCase = baselineValue * 0.8;
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
@@ -221,7 +227,6 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             </div>
 
             <div className="space-y-6">
-              {isRatesLoading && <p className="text-xs text-slate-500 dark:text-slate-400">Loading live exchange rates…</p>}
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {result.summary.map((item) => (
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`} />
@@ -277,9 +282,18 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             <article className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-500/40 dark:bg-indigo-950/30">
               <h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Scenario simulation</h2>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-indigo-900 dark:text-indigo-100">
-                <li>Stress case (+12% impact): {primaryMetric?.currency ? formatCurrency(downsideScenario) : `${downsideScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</li>
-                <li>Improved case (-12% impact): {primaryMetric?.currency ? formatCurrency(improvementScenario) : `${improvementScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</li>
-                <li>Optimized plan (-20% impact): {primaryMetric?.currency ? formatCurrency(upsideScenario) : `${upsideScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</li>
+                <li>
+                  If you move monthly contributions from {contributionLabel} to {boostedContributionLabel}, this headline outcome often improves toward{' '}
+                  {primaryMetric?.currency ? formatCurrency(improvedCase) : `${improvedCase.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
+                </li>
+                <li>
+                  A 1-point rate shift (from {rateBase.toFixed(1)}% to {improvedRate.toFixed(1)}%) can move results toward{' '}
+                  {primaryMetric?.currency ? formatCurrency(stretchCase) : `${stretchCase.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
+                </li>
+                <li>
+                  Stress-test the bad month too: if costs rise or contributions pause, outcomes can deteriorate toward{' '}
+                  {primaryMetric?.currency ? formatCurrency(downsideScenario) : `${downsideScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
+                </li>
               </ul>
             </article>
           </section>
