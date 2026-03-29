@@ -9,6 +9,27 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function SavingsPage() {
+  const scenarios = [
+    {
+      title: 'Scenario 1: Job loss anxiety with a thin buffer',
+      emotion: 'You are losing sleep because one income interruption could force credit-card debt.',
+      numbers: 'Essential spend: $3,200/month. Current emergency cash: $2,900. Gap to 3-month baseline: $6,700.',
+      decision: 'Prioritize instant-access savings and automatic weekly transfers before optimizing APY.'
+    },
+    {
+      title: 'Scenario 2: Stable income but slow transfer risk',
+      emotion: 'You feel safe on paper, but your cash is trapped in accounts with slow outbound transfers.',
+      numbers: 'Emergency cash: $15,000. Transfer delay: 3 business days. Urgent car repair: $1,450 due same day.',
+      decision: 'Split reserves into a “fast-access” bucket and a “yield” bucket to reduce operational risk.'
+    },
+    {
+      title: 'Scenario 3: APY-chasing fatigue',
+      emotion: 'You keep switching accounts for small APY differences and lose consistency.',
+      numbers: 'Balance: $20,000. APY delta: 0.30%. Annual gain from switching: about $60 pre-tax.',
+      decision: 'Only switch when service quality and transfer reliability also improve, not APY alone.'
+    }
+  ];
+
   return (
     <section className="space-y-6">
       <header className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5">
@@ -32,6 +53,21 @@ export default function SavingsPage() {
           <li>Check monthly fee triggers, minimum balance rules, and any account activity requirements.</li>
           <li>Review support access quality for fraud holds, transfer reversals, and account lock events.</li>
         </ol>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+        <h2 className="text-xl font-semibold text-slate-900">Emotional + numeric scenario map</h2>
+        <p className="mt-2 text-sm text-slate-600">Use these examples to connect stress signals with concrete numbers and a practical next action.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {scenarios.map((scenario) => (
+            <article key={scenario.title} className="rounded-xl border border-slate-200 bg-white p-4">
+              <h3 className="text-base font-semibold text-slate-900">{scenario.title}</h3>
+              <p className="mt-2 text-sm text-slate-700"><strong>Emotional signal:</strong> {scenario.emotion}</p>
+              <p className="mt-2 text-sm text-slate-700"><strong>Numeric snapshot:</strong> {scenario.numbers}</p>
+              <p className="mt-2 text-sm text-slate-700"><strong>Decision rule:</strong> {scenario.decision}</p>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-5">

@@ -56,6 +56,24 @@ const checklist = [
   'Do not consolidate debt without a no-new-debt rule and autopay setup.'
 ];
 
+const emotionalSignals = [
+  {
+    signal: 'Urgency pressure',
+    risk: 'Rushed acceptance of first offer without comparing total cost.',
+    numericGuardrail: 'Collect at least 3 offers with the same loan amount and term within 48 hours.'
+  },
+  {
+    signal: 'Relief bias',
+    risk: 'Choosing the lowest monthly payment while ignoring total repayment drag.',
+    numericGuardrail: 'Reject structures where total repay cost is >15% higher just to lower monthly payment slightly.'
+  },
+  {
+    signal: 'Shame spiral after debt mistakes',
+    risk: 'Overcorrecting into an unsustainably aggressive term that fails in bad months.',
+    numericGuardrail: 'Keep required debt payments below ~20% of take-home pay in your stress-case month.'
+  }
+];
+
 export default function LoansPage() {
   return (
     <section className="space-y-6">
@@ -106,6 +124,31 @@ export default function LoansPage() {
               <p className="mt-2 text-sm text-slate-700">{scenario.details}</p>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-semibold text-slate-900">Emotional + numeric risk controls</h2>
+        <p className="mt-2 text-sm text-slate-600">When a loan decision feels emotional, use guardrails so urgency does not override math.</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="min-w-[720px] w-full text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-left text-xs uppercase tracking-wide text-slate-500">
+                <th className="px-2 py-2">Emotional signal</th>
+                <th className="px-2 py-2">Common mistake</th>
+                <th className="px-2 py-2">Numeric guardrail</th>
+              </tr>
+            </thead>
+            <tbody>
+              {emotionalSignals.map((item) => (
+                <tr key={item.signal} className="border-b border-slate-100">
+                  <td className="px-2 py-2 font-medium text-slate-900">{item.signal}</td>
+                  <td className="px-2 py-2 text-slate-700">{item.risk}</td>
+                  <td className="px-2 py-2 text-slate-700">{item.numericGuardrail}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </section>
 
