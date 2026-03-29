@@ -298,10 +298,10 @@ export function HomepageLayout() {
           FinanceSphere blends calculators, product comparisons, and editorial guides into one decision workflow so you can explain your plan before committing.
         </p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <Link href="/compare/best-credit-cards-2026" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
+          <Link href="/best-credit-cards-2026" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
             <CheckBadgeIcon className="mr-2 inline h-4 w-4" aria-hidden="true" /> Best credit cards with transparent trade-offs
           </Link>
-          <Link href="/compare/best-investment-apps" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
+          <Link href="/best-investment-apps" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
             <SparklesIcon className="mr-2 inline h-4 w-4" aria-hidden="true" /> Investment app comparison with fit guidance
           </Link>
         </div>

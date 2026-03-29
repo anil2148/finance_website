@@ -31,7 +31,7 @@ const useCases = [
   {
     audience: 'Students',
     fit: 'Look for low or no minimums, autopilot deposits, and no inactivity fees so tiny contributions still compound.',
-    nextStep: '/compound-interest-calculator'
+    nextStep: '/calculators/compound-interest-calculator'
   },
   {
     audience: 'Hands-off investors',
@@ -330,13 +330,13 @@ export default function InvestingAppsPillarPage() {
               tag: 'Comparison'
             },
             {
-              href: '/investment-growth-calculator',
+              href: '/calculators/investment-growth-calculator',
               title: 'Investment Growth Calculator',
               description: 'Model contribution plans and long-term return scenarios before picking a platform.',
               tag: 'Calculator'
             },
             {
-              href: '/retirement-calculator',
+              href: '/calculators/retirement-calculator',
               title: 'Retirement Calculator',
               description: 'Stress-test retirement projections and contribution assumptions.',
               tag: 'Calculator'
@@ -368,7 +368,7 @@ export default function InvestingAppsPillarPage() {
         <p className="mt-2 max-w-2xl text-slate-200">Compare app features side-by-side, then validate your plan with FinanceSphere calculators before funding a new account.</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link href="/best-investment-apps" className="btn-primary">Compare investment apps</Link>
-          <Link href="/investment-growth-calculator" className="inline-flex items-center justify-center rounded-xl border border-slate-500 px-4 py-2 font-medium text-white transition hover:bg-slate-800">
+          <Link href="/calculators/investment-growth-calculator" className="inline-flex items-center justify-center rounded-xl border border-slate-500 px-4 py-2 font-medium text-white transition hover:bg-slate-800">
             Run growth scenarios
           </Link>
         </div>

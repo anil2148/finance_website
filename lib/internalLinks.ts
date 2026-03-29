@@ -100,7 +100,7 @@ export function getDiversifiedMoneyLinks(cluster: string) {
   const options: Record<string, RelatedLink[]> = {
     investing: [
       { label: 'Best investment apps', href: '/best-investment-apps', type: 'comparison' },
-      { label: 'Investment app deep-dive comparison', href: '/compare/best-investment-apps', type: 'comparison' },
+      { label: 'Investment app deep-dive comparison', href: '/best-investment-apps', type: 'comparison' },
       { label: 'Investment growth calculator', href: '/calculators/investment-growth-calculator', type: 'calculator' },
       { label: 'Investing hub', href: '/learn/investing', type: 'hub' }
     ],
