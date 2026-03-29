@@ -57,6 +57,9 @@ const nextConfig = {
       { source: '/compare/best-credit-cards-2026', destination: '/best-credit-cards-2026', permanent: true },
       { source: '/compare/best-investment-apps', destination: '/best-investment-apps', permanent: true },
       { source: '/compare/best-savings-accounts-usa', destination: '/best-savings-accounts-usa', permanent: true },
+      { source: '/compare/high-yield-savings-accounts', destination: '/high-yield-savings-accounts', permanent: true },
+      { source: '/best-credit-cards', destination: '/best-credit-cards-2026', permanent: true },
+      { source: '/best-savings-accounts', destination: '/best-savings-accounts-usa', permanent: true },
       { source: '/mortgage-rate-comparison', destination: '/compare/mortgage-rate-comparison', permanent: true },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
       ...normalizeRedirectMap(blogRedirectMap).map((entry) => ({

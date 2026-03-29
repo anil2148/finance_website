@@ -59,7 +59,7 @@ const curatedCollections = [
     description: 'Use scenario-based guides on account location, contribution cadence, and downturn rules you can stick with.',
     links: [
       { href: '/blog/category/investing', label: 'Investing category' },
-      { href: '/compare/best-investment-apps', label: 'Best investment apps' },
+      { href: '/best-investment-apps', label: 'Best investment apps' },
       { href: '/learn/investing', label: 'Investing hub' }
     ]
   }

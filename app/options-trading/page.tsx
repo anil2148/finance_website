@@ -314,13 +314,13 @@ export default function OptionsTradingPillarPage() {
               tag: 'Hub'
             },
             {
-              href: '/investment-growth-calculator',
+              href: '/calculators/investment-growth-calculator',
               title: 'Investment Growth Calculator',
               description: 'Project outcomes under different return and contribution assumptions.',
               tag: 'Calculator'
             },
             {
-              href: '/retirement-calculator',
+              href: '/calculators/retirement-calculator',
               title: 'Retirement Calculator',
               description: 'Use long-term planning assumptions before adding options risk.',
               tag: 'Calculator'
@@ -346,7 +346,7 @@ export default function OptionsTradingPillarPage() {
         <p className="mt-2 max-w-2xl text-slate-200">Compare platform tools, test assumptions in calculators, and commit to a repeatable risk process before scaling any strategy.</p>
         <div className="mt-5 flex flex-wrap gap-3">
           <Link href="/best-investment-apps" className="btn-primary">Compare platforms</Link>
-          <Link href="/investment-growth-calculator" className="inline-flex items-center justify-center rounded-xl border border-slate-500 px-4 py-2 font-medium text-white transition hover:bg-slate-800">
+          <Link href="/calculators/investment-growth-calculator" className="inline-flex items-center justify-center rounded-xl border border-slate-500 px-4 py-2 font-medium text-white transition hover:bg-slate-800">
             Explore tools
           </Link>
         </div>
