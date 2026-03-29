@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { ComparisonEngine } from '@/components/comparison/ComparisonEngine';
+import AuthorBox from '@/components/common/AuthorBox';
 
 export function ComparisonPageClient() {
   return (
@@ -8,7 +9,7 @@ export function ComparisonPageClient() {
       <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-[1.3fr_1fr] md:items-center">
         <div>
           <h1 className="text-3xl font-bold">Compare financial options with a decision framework</h1>
-          <p className="text-slate-600">Use category-specific frameworks to compare cost structure, constraints, support quality, and fit. We prioritize honest decision support over fake live-rate rankings.</p>
+          <p className="text-slate-600">Use category-specific frameworks to compare cost structure, constraints, support quality, and fit. We prioritize transparent decision support built around realistic household scenarios.</p>
         </div>
         <div className="relative h-44 overflow-hidden rounded-2xl sm:h-52">
           <Image
@@ -36,6 +37,7 @@ export function ComparisonPageClient() {
         </article>
       </section>
       <ComparisonEngine />
+      <AuthorBox className="mt-0" />
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-lg font-semibold text-slate-900">Popular comparison pages</h2>
         <ul className="mt-3 grid gap-2 text-sm md:grid-cols-2">
@@ -49,7 +51,7 @@ export function ComparisonPageClient() {
         <h2 className="text-lg font-semibold text-slate-900">Methodology and update cadence</h2>
         <p className="mt-2 text-sm text-slate-700">
           FinanceSphere comparison pages are refreshed during editorial review cycles and whenever product constraints or decision workflows materially change.
-          We do not imply full-market coverage and we do not publish fake precision where live market data is unavailable in-repo.
+          We publish what we can verify: frameworks, scenario math, and disclosure-backed trade-offs rather than marketing-first rankings.
         </p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
           <Link href="/editorial-policy" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700">Read editorial policy</Link>

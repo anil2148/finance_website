@@ -63,14 +63,14 @@ const moneyImpactByCategory: Record<string, { hook: string; scenario: string; de
     action: 'Keep only options that remain net-positive in your stress-case month.'
   },
   mortgages: {
-    hook: 'On a 30-year mortgage, a 1% rate difference can change lifetime cost by tens of thousands of dollars.',
-    scenario: 'A slightly higher payment can reduce total interest materially when extra principal is sustainable.',
+    hook: 'On a $400,000 30-year mortgage, moving from 7% to 6% can reduce lifetime interest by roughly $87,000.',
+    scenario: 'Paying an extra $200/month toward principal can shorten payoff by years when the payment is sustainable.',
     decision: 'Run base and stress assumptions before accepting a lender quote.',
     action: 'Choose the loan that stays affordable if one major expense hits.'
   },
   investing: {
     hook: 'A 1% annual fee drag can reduce long-term portfolio outcomes by six figures over multi-decade horizons.',
-    scenario: 'Increasing automated investing by $150/month can materially change 10-year balance outcomes.',
+    scenario: 'Increasing automated investing from $500 to $650/month can add roughly $80,000+ over 20 years at 8% growth.',
     decision: 'Compare all-in cost and behavior support, not features alone.',
     action: 'Automate first, then optimize allocation once consistency is stable.'
   }
@@ -219,8 +219,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
     } as const);
   const additionalRelatedBlogs = posts.filter((item) => item.slug !== post.slug && !relatedPosts.some((r) => r.slug === item.slug)).slice(0, 2);
   const moneyImpact = moneyImpactByCategory[post.category] ?? {
-    hook: 'Small percentage changes in rates, fees, or contribution pace can compound into large dollar outcomes.',
-    scenario: 'Run at least two what-if scenarios before committing to a product or plan.',
+    hook: 'Moving one major input can materially change outcomes: for example, increasing investing from $500 to $550 monthly can add about $39,000 over 20 years at 8% growth.',
+    scenario: 'Compare at least two numeric scenarios such as a 1-point rate change or an extra $200 monthly payment before committing.',
     decision: 'Use this article with a calculator and a comparison page for a full decision loop.',
     action: 'Document your next step: act now, wait, or gather one missing data point.'
   };
