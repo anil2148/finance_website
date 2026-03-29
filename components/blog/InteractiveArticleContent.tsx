@@ -70,6 +70,10 @@ function parseSections(content: string): Section[] {
   for (const rawLine of lines) {
     const line = rawLine.trimEnd();
 
+    if (line.startsWith('# ')) {
+      continue;
+    }
+
     if (line.startsWith('## ')) {
       if (current) sections.push(current);
       const title = line.replace(/^##\s+/, '').trim();

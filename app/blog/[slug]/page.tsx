@@ -14,7 +14,6 @@ import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByBlogCategory, 
 import { redirectForSlug } from '@/lib/blogCleanup';
 import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
-import AuthorBox from '@/components/common/AuthorBox';
 
 export const dynamic = 'force-dynamic';
 
@@ -242,7 +241,6 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       </header>
 
       <ArticleTrustPanel authorId={post.authorId} reviewedById={post.reviewedById} updatedAt={post.updatedAt} />
-      <AuthorBox />
 
       <DecisionSupportPanel
         title={decisionPanel.title}
