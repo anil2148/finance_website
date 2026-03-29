@@ -91,7 +91,7 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
   budgeting: [
     { href: '/learn/budgeting', label: 'Budgeting Hub' },
     { href: '/calculators/budget-planner', label: 'Budget Planner' },
-    { href: '/compare/high-yield-savings-accounts', label: 'Compare High-Yield Savings' }
+    { href: '/high-yield-savings-accounts', label: 'Compare High-Yield Savings' }
   ],
   'retirement-planning': [
     { href: '/learn/investing', label: 'Retirement & Investing Hub' },
@@ -106,7 +106,7 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
   'saving-money': [
     { href: '/learn/budgeting', label: 'Budgeting Hub' },
     { href: '/calculators/savings-goal-calculator', label: 'Savings Goal Calculator' },
-    { href: '/compare/best-savings-accounts-usa', label: 'Best Savings Accounts USA' }
+    { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts USA' }
   ]
 };
 
