@@ -1,11 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import {
-  ArrowTrendingUpIcon,
   ChartBarIcon,
-  CheckBadgeIcon,
-  ShieldCheckIcon,
-  SparklesIcon
+  ShieldCheckIcon
 } from '@heroicons/react/24/outline';
 import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
@@ -175,8 +172,8 @@ export function HomepageLayout() {
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/comparison">
                 Compare options
               </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/calculators">
-                Try a calculator
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/tools">
+                Explore tools
               </Link>
             </div>
             <p className="text-xs text-blue-200">Last homepage review: March 26, 2026 • Educational content only; verify final terms with providers before action.</p>
@@ -200,7 +197,7 @@ export function HomepageLayout() {
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">What to do first</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal and follow one workflow: run your numbers first, compare options second, and read the matching guide before acting.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal, run the numbers, then choose your best next step.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -289,23 +286,6 @@ export function HomepageLayout() {
           </Card>
         ))}
       </section>
-
-      <Card className="border-slate-200/90 bg-white/90 dark:border-slate-700 dark:bg-slate-900/90">
-        <h3 className="mb-3 flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-slate-100">
-          <ArrowTrendingUpIcon className="h-5 w-5 text-blue-700 dark:text-blue-300" aria-hidden="true" /> Decide with confidence
-        </h3>
-        <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">
-          FinanceSphere blends calculators, product comparisons, and editorial guides into one decision workflow so you can explain your plan before committing.
-        </p>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <Link href="/compare/best-credit-cards-2026" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
-            <CheckBadgeIcon className="mr-2 inline h-4 w-4" aria-hidden="true" /> Best credit cards with transparent trade-offs
-          </Link>
-          <Link href="/compare/best-investment-apps" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
-            <SparklesIcon className="mr-2 inline h-4 w-4" aria-hidden="true" /> Investment app comparison with fit guidance
-          </Link>
-        </div>
-      </Card>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="homepage-faq-heading">
         <h2 id="homepage-faq-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Quick answers before you start</h2>
