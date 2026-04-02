@@ -5,10 +5,13 @@ const primaryLinks = [
   { href: '/calculators', label: 'Calculators' },
   { href: '/comparison', label: 'Comparisons' },
   { href: '/blog', label: 'Blog' },
-  { href: '/tools', label: 'Tools' }
+  { href: '/tools', label: 'Tools' },
+  { href: '/in', label: 'India hub' }
 ];
 
 const discoveryLinks = [
+  { href: '/in/blog/sip-vs-fd', label: 'India: SIP vs FD' },
+  { href: '/in/calculators/emi-calculator', label: 'India: EMI Calculator' },
   { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
   { href: '/learn/loans', label: 'Loans Hub' },
   { href: '/best-credit-cards-2026', label: 'Credit Card Framework' },

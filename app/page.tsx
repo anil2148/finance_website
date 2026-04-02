@@ -10,7 +10,12 @@ export const metadata: Metadata = {
   title: homepageTitle,
   description: homepageDescription,
   alternates: {
-    canonical: absoluteUrl('/')
+    canonical: absoluteUrl('/'),
+    languages: {
+      'en-US': absoluteUrl('/'),
+      'en-IN': absoluteUrl('/in'),
+      'x-default': absoluteUrl('/')
+    }
   },
   openGraph: {
     title: homepageTitle,

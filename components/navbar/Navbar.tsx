@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
+import { getCountrySwitchPath, isIndiaPath } from '@/lib/countryRouting';
 
 type NavLink = {
   label: string;
@@ -45,12 +46,16 @@ const links: NavLink[] = [
     ]
   },
   { label: 'Blog', href: '/blog' },
+  { label: 'India', href: '/in' },
   { label: 'Help', href: '/help' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' }
 ];
 
-const countries = ['US', 'India', 'UK', 'Canada'] as const;
+const countries = [
+  { value: 'US', label: 'United States' },
+  { value: 'IN', label: 'India' }
+] as const;
 const currencies = ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'] as const;
 
 function isActive(pathname: string, href: string) {
@@ -60,9 +65,11 @@ function isActive(pathname: string, href: string) {
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const { currency, country, darkMode, setCountry, setCurrency, toggleDarkMode } = usePreferences();
+  const { currency, country, setCountry, darkMode, setCurrency, toggleDarkMode } = usePreferences();
+  const routeCountry = isIndiaPath(pathname) ? 'IN' : 'US';
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
@@ -118,9 +125,20 @@ export function Navbar() {
               Start planning
             </Link>
 
-            <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={country} onChange={(event) => setCountry(event.target.value as (typeof countries)[number])}>
+            <select
+              className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+              value={routeCountry}
+              onChange={(event) => {
+                const nextCountry = event.target.value as 'US' | 'IN';
+                const nextPath = getCountrySwitchPath(pathname, nextCountry);
+                setCountry(nextCountry === 'IN' ? 'India' : 'US');
+                router.push(nextPath);
+                setOpen(false);
+              }}
+              aria-label="Country selector"
+            >
               {countries.map((item) => (
-                <option key={item}>{item}</option>
+                <option key={item.value} value={item.value}>{item.label}</option>
               ))}
             </select>
             <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof currencies)[number])}>
@@ -173,6 +191,27 @@ export function Navbar() {
                 </li>
               ))}
             </ul>
+
+
+            <div className="grid gap-2">
+              <label htmlFor="mobile-country-selector" className="text-xs font-semibold uppercase tracking-wide text-slate-500">Country</label>
+              <select
+                id="mobile-country-selector"
+                className="rounded-lg border border-slate-300 bg-white px-2 py-2 text-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                value={routeCountry}
+                onChange={(event) => {
+                  const nextCountry = event.target.value as 'US' | 'IN';
+                  const nextPath = getCountrySwitchPath(pathname, nextCountry);
+                  setCountry(nextCountry === 'IN' ? 'India' : 'US');
+                  router.push(nextPath);
+                  setOpen(false);
+                }}
+              >
+                {countries.map((item) => (
+                  <option key={item.value} value={item.value}>{item.label}</option>
+                ))}
+              </select>
+            </div>
 
             <Link href="/tools" className="btn-primary w-full text-sm" onClick={() => setOpen(false)}>
               Start planning

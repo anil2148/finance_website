@@ -106,7 +106,8 @@ const crawlPriorityLinks = [
   { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts USA' },
   { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
   { href: '/learn/loans', label: 'Loans Hub' },
-  { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' }
+  { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' },
+  { href: '/in', label: 'India Finance Hub' }
 ];
 
 const homepageFaqs = [
@@ -194,6 +195,16 @@ export function HomepageLayout() {
           </div>
         </div>
       </Card>
+
+      <section className="rounded-2xl border border-amber-200 bg-amber-50/70 p-5 dark:border-amber-500/40 dark:bg-amber-500/10" aria-labelledby="india-edition-heading">
+        <h2 id="india-edition-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Looking for India-specific finance planning?</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">Explore FinanceSphere India for ₹-based calculators and guides on SIP, FD, PPF, ELSS, EMI, tax-saving, and home loan decisions.</p>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          <Link href="/in" className="rounded-lg bg-slate-900 px-3 py-2 font-semibold text-white hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900">Visit FinanceSphere India</Link>
+          <Link href="/in/blog/sip-vs-fd" className="rounded-lg border border-slate-300 px-3 py-2 font-medium text-slate-800 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200">Read SIP vs FD</Link>
+          <Link href="/in/calculators/emi-calculator" className="rounded-lg border border-slate-300 px-3 py-2 font-medium text-slate-800 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200">Use India EMI Calculator</Link>
+        </div>
+      </section>
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">What to do first</h2>
