@@ -18,7 +18,13 @@ const corePages = [
   { path: '/compare/mortgage-rate-comparison', changefreq: 'weekly', priority: '0.8' },
   { path: '/best-investment-apps', changefreq: 'weekly', priority: '0.8' },
   { path: '/best-savings-accounts-usa', changefreq: 'weekly', priority: '0.8' },
-  { path: '/best-credit-cards-2026', changefreq: 'weekly', priority: '0.8' }
+  { path: '/best-credit-cards-2026', changefreq: 'weekly', priority: '0.8' },
+  { path: '/in', changefreq: 'weekly', priority: '0.9' },
+  { path: '/in/blog', changefreq: 'weekly', priority: '0.82' },
+  { path: '/in/blog/sip-vs-fd', changefreq: 'monthly', priority: '0.78' },
+  { path: '/in/blog/ppf-vs-elss', changefreq: 'monthly', priority: '0.78' },
+  { path: '/in/calculators/emi-calculator', changefreq: 'weekly', priority: '0.84' },
+  { path: '/in/calculators/sip-calculator', changefreq: 'weekly', priority: '0.82' }
 ];
 
 const calculatorPages = [

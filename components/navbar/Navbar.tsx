@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
@@ -13,7 +13,7 @@ type NavLink = {
   children?: Array<{ label: string; href: string }>;
 };
 
-const links: NavLink[] = [
+const globalLinks: NavLink[] = [
   { label: 'Home', href: '/' },
   {
     label: 'Learn',
@@ -50,6 +50,37 @@ const links: NavLink[] = [
   { label: 'Contact', href: '/contact' }
 ];
 
+const indiaLinks: NavLink[] = [
+  { label: 'Home', href: '/in' },
+  {
+    label: 'Learn',
+    children: [
+      { label: 'SIP vs FD', href: '/in/blog/sip-vs-fd' },
+      { label: 'PPF vs ELSS', href: '/in/blog/ppf-vs-elss' },
+      { label: 'India Blog Hub', href: '/in/blog' }
+    ]
+  },
+  {
+    label: 'Compare',
+    children: [
+      { label: 'SIP vs FD', href: '/in/blog/sip-vs-fd' },
+      { label: 'PPF vs ELSS', href: '/in/blog/ppf-vs-elss' },
+      { label: 'EMI Planning', href: '/in/calculators/emi-calculator' }
+    ]
+  },
+  {
+    label: 'Tools',
+    children: [
+      { label: 'India EMI Calculator', href: '/in/calculators/emi-calculator' },
+      { label: 'India SIP Calculator', href: '/in/calculators/sip-calculator' }
+    ]
+  },
+  { label: 'Blog', href: '/in/blog' },
+  { label: 'Help', href: '/help' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' }
+];
+
 const countries = ['US', 'India', 'UK', 'Canada'] as const;
 const currencies = ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'] as const;
 
@@ -60,9 +91,24 @@ function isActive(pathname: string, href: string) {
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const { currency, country, darkMode, setCountry, setCurrency, toggleDarkMode } = usePreferences();
+  const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
+  const links = isIndiaContext ? indiaLinks : globalLinks;
+
+  function getCountryLandingPath(targetCountry: (typeof countries)[number]) {
+    if (targetCountry === 'India') return '/in';
+    if (!isIndiaContext) return pathname;
+    if (pathname === '/in') return '/';
+    if (pathname === '/in/blog') return '/blog';
+    if (pathname === '/in/blog/sip-vs-fd') return '/blog';
+    if (pathname === '/in/blog/ppf-vs-elss') return '/blog';
+    if (pathname === '/in/calculators/emi-calculator') return '/calculators/loan-calculator';
+    if (pathname === '/in/calculators/sip-calculator') return '/calculators/compound-interest-calculator';
+    return '/';
+  }
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
@@ -114,11 +160,20 @@ export function Navbar() {
               ))}
             </ul>
 
-            <Link href="/tools" className="rounded-xl bg-brand px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700">
+            <Link href={isIndiaContext ? '/in/calculators/emi-calculator' : '/tools'} className="rounded-xl bg-brand px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700">
               Start planning
             </Link>
 
-            <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={country} onChange={(event) => setCountry(event.target.value as (typeof countries)[number])}>
+            <select
+              className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+              value={country}
+              onChange={(event) => {
+                const nextCountry = event.target.value as (typeof countries)[number];
+                setCountry(nextCountry);
+                const nextPath = getCountryLandingPath(nextCountry);
+                if (nextPath !== pathname) router.push(nextPath);
+              }}
+            >
               {countries.map((item) => (
                 <option key={item}>{item}</option>
               ))}
@@ -174,7 +229,7 @@ export function Navbar() {
               ))}
             </ul>
 
-            <Link href="/tools" className="btn-primary w-full text-sm" onClick={() => setOpen(false)}>
+            <Link href={isIndiaContext ? '/in/calculators/emi-calculator' : '/tools'} className="btn-primary w-full text-sm" onClick={() => setOpen(false)}>
               Start planning
             </Link>
           </div>

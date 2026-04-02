@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const primaryLinks = [
   { href: '/', label: 'Home' },
@@ -34,6 +37,29 @@ const supportLinks = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+  const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
+  const contextualPrimaryLinks = isIndiaContext
+    ? [
+        { href: '/in', label: 'India Home' },
+        { href: '/in/calculators/emi-calculator', label: 'India EMI Calculator' },
+        { href: '/in/calculators/sip-calculator', label: 'India SIP Calculator' },
+        { href: '/in/blog', label: 'India Blog' },
+        { href: '/tools', label: 'Tools' }
+      ]
+    : primaryLinks;
+
+  const contextualDiscoveryLinks = isIndiaContext
+    ? [
+        { href: '/in/blog/sip-vs-fd', label: 'SIP vs FD Guide' },
+        { href: '/in/blog/ppf-vs-elss', label: 'PPF vs ELSS Guide' },
+        { href: '/in/calculators/emi-calculator', label: 'EMI Planning' },
+        { href: '/in/calculators/sip-calculator', label: 'SIP Planning' },
+        { href: '/in/blog', label: 'India Decision Hub' },
+        { href: '/in', label: 'India Start Page' }
+      ]
+    : discoveryLinks;
+
   return (
     <footer className="mt-10 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950">
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 text-sm text-slate-600 dark:text-slate-300 lg:grid-cols-[1.25fr_1fr_1fr_1fr]">
@@ -52,7 +78,7 @@ export function Footer() {
         <section>
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Start here</p>
           <ul className="space-y-1 text-sm">
-            {primaryLinks.map((link) => (
+            {contextualPrimaryLinks.map((link) => (
               <li key={link.href}>
                 <Link className="font-medium hover:text-slate-900 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
               </li>
@@ -63,7 +89,7 @@ export function Footer() {
         <section>
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Popular pathways</p>
           <ul className="space-y-1 text-sm">
-            {discoveryLinks.map((link) => (
+            {contextualDiscoveryLinks.map((link) => (
               <li key={link.href}>
                 <Link className="font-medium hover:text-slate-900 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
               </li>
