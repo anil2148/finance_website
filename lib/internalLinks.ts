@@ -1,3 +1,6 @@
+import { localizeHref } from '@/lib/country/routing';
+import type { CountryCode } from '@/lib/country/config';
+
 export type RelatedLink = { label: string; href: string; type: 'article' | 'calculator' | 'comparison' | 'hub' };
 
 const categoryLinks: Record<string, RelatedLink[]> = {
@@ -125,4 +128,9 @@ export function getDiversifiedMoneyLinks(cluster: string) {
   };
 
   return options[cluster] ?? options.budgeting;
+}
+
+
+export function localizeRelatedLinks(links: RelatedLink[], country: CountryCode) {
+  return links.map((link) => ({ ...link, href: localizeHref(link.href, country) }));
 }

@@ -5,6 +5,8 @@ const matter = require('gray-matter');
 const BASE_URL = 'https://www.financesphere.io';
 const lastMod = new Date().toISOString().split('T')[0];
 const blogDir = path.join(__dirname, 'content', 'blog');
+const indiaBlogDir = path.join(__dirname, 'content', 'in', 'blog');
+const indiaCalculatorsDir = path.join(__dirname, 'content', 'in', 'calculators');
 
 const corePages = [
   { path: '/', changefreq: 'weekly', priority: '1.0' },
@@ -12,6 +14,8 @@ const corePages = [
   { path: '/comparison', changefreq: 'weekly', priority: '0.9' },
   { path: '/blog', changefreq: 'weekly', priority: '0.9' },
   { path: '/tools', changefreq: 'monthly', priority: '0.8' },
+  { path: '/in', changefreq: 'weekly', priority: '0.85' },
+  { path: '/in/blog', changefreq: 'weekly', priority: '0.85' },
   { path: '/learn/investing', changefreq: 'weekly', priority: '0.8' },
   { path: '/learn/loans', changefreq: 'weekly', priority: '0.8' },
   { path: '/learn/credit-cards', changefreq: 'weekly', priority: '0.8' },
@@ -44,32 +48,60 @@ const calculatorPages = [
   priority: '0.85'
 }));
 
-function getBlogPages() {
-  if (!fs.existsSync(blogDir)) return [];
+function readMdxEntries(dir, mapper) {
+  if (!fs.existsSync(dir)) return [];
 
   return fs
-    .readdirSync(blogDir)
+    .readdirSync(dir)
     .filter((file) => file.endsWith('.mdx'))
     .map((file) => {
-      const raw = fs.readFileSync(path.join(blogDir, file), 'utf8');
+      const raw = fs.readFileSync(path.join(dir, file), 'utf8');
       const { data } = matter(raw);
-      if (!data.slug || !data.date || data.slug.startsWith('seo-')) return null;
-
-      return {
-        path: `/blog/${data.slug}`,
-        changefreq: 'monthly',
-        priority: '0.72',
-        lastmod: (data.updatedAt ?? data.date).toString().slice(0, 10)
-      };
+      return mapper(data);
     })
     .filter(Boolean);
 }
 
-const pages = [
-  ...corePages,
-  ...calculatorPages,
-  ...getBlogPages()
-];
+function getBlogPages() {
+  return readMdxEntries(blogDir, (data) => {
+    if (!data.slug || !data.date || data.slug.startsWith('seo-')) return null;
+
+    return {
+      path: `/blog/${data.slug}`,
+      changefreq: 'monthly',
+      priority: '0.72',
+      lastmod: (data.updatedAt ?? data.date).toString().slice(0, 10)
+    };
+  });
+}
+
+function getIndiaBlogPages() {
+  return readMdxEntries(indiaBlogDir, (data) => {
+    if (!data.slug || !data.date || data.canonical !== `/in/blog/${data.slug}`) return null;
+
+    return {
+      path: `/in/blog/${data.slug}`,
+      changefreq: 'monthly',
+      priority: '0.74',
+      lastmod: (data.updatedAt ?? data.date).toString().slice(0, 10)
+    };
+  });
+}
+
+function getIndiaCalculatorPages() {
+  return readMdxEntries(indiaCalculatorsDir, (data) => {
+    if (!data.slug || !data.date || data.canonical !== `/in/calculators/${data.slug}`) return null;
+
+    return {
+      path: `/in/calculators/${data.slug}`,
+      changefreq: 'monthly',
+      priority: '0.78',
+      lastmod: (data.updatedAt ?? data.date).toString().slice(0, 10)
+    };
+  });
+}
+
+const pages = [...corePages, ...calculatorPages, ...getBlogPages(), ...getIndiaBlogPages(), ...getIndiaCalculatorPages()];
 
 function canonicalUrl(pagePath) {
   if (pagePath === '/') return `${BASE_URL}/`;

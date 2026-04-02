@@ -2,10 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
+import { switchCountryPath } from '@/lib/country/routing';
 
 type NavLink = {
   label: string;
@@ -50,7 +51,7 @@ const links: NavLink[] = [
   { label: 'Contact', href: '/contact' }
 ];
 
-const countries = ['US', 'India', 'UK', 'Canada'] as const;
+const countries = ['US', 'India'] as const;
 const currencies = ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'] as const;
 
 function isActive(pathname: string, href: string) {
@@ -60,6 +61,7 @@ function isActive(pathname: string, href: string) {
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const { currency, country, darkMode, setCountry, setCurrency, toggleDarkMode } = usePreferences();
@@ -118,7 +120,16 @@ export function Navbar() {
               Start planning
             </Link>
 
-            <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={country} onChange={(event) => setCountry(event.target.value as (typeof countries)[number])}>
+            <select
+              className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+              value={country}
+              onChange={(event) => {
+                const target = event.target.value as (typeof countries)[number];
+                setCountry(target);
+                const targetCountryCode = target === 'India' ? 'in' : 'us';
+                router.push(switchCountryPath(pathname, targetCountryCode));
+              }}
+            >
               {countries.map((item) => (
                 <option key={item}>{item}</option>
               ))}
