@@ -18,7 +18,9 @@ const corePages = [
   { path: '/compare/mortgage-rate-comparison', changefreq: 'weekly', priority: '0.8' },
   { path: '/best-investment-apps', changefreq: 'weekly', priority: '0.8' },
   { path: '/best-savings-accounts-usa', changefreq: 'weekly', priority: '0.8' },
-  { path: '/best-credit-cards-2026', changefreq: 'weekly', priority: '0.8' }
+  { path: '/best-credit-cards-2026', changefreq: 'weekly', priority: '0.8' },
+  { path: '/in', changefreq: 'weekly', priority: '0.9' },
+  { path: '/in/blog', changefreq: 'weekly', priority: '0.85' }
 ];
 
 const calculatorPages = [
@@ -44,6 +46,12 @@ const calculatorPages = [
   priority: '0.85'
 }));
 
+const indiaCalculatorPages = ['emi-calculator', 'sip-calculator'].map((slug) => ({
+  path: `/in/calculators/${slug}`,
+  changefreq: 'weekly',
+  priority: '0.86'
+}));
+
 function getBlogPages() {
   if (!fs.existsSync(blogDir)) return [];
 
@@ -55,10 +63,13 @@ function getBlogPages() {
       const { data } = matter(raw);
       if (!data.slug || !data.date || data.slug.startsWith('seo-')) return null;
 
+      const country = data.country === 'India' ? 'India' : 'US';
+      const routePrefix = country === 'India' ? '/in/blog' : '/blog';
+
       return {
-        path: `/blog/${data.slug}`,
+        path: `${routePrefix}/${data.slug}`,
         changefreq: 'monthly',
-        priority: '0.72',
+        priority: country === 'India' ? '0.74' : '0.72',
         lastmod: (data.updatedAt ?? data.date).toString().slice(0, 10)
       };
     })
@@ -68,6 +79,7 @@ function getBlogPages() {
 const pages = [
   ...corePages,
   ...calculatorPages,
+  ...indiaCalculatorPages,
   ...getBlogPages()
 ];
 

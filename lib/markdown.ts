@@ -5,6 +5,7 @@ import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, getAuthorIdForCategory } from '
 import { canonicalTopicKey, enhancePost, qualityScore, shouldExcludePost } from '@/lib/blogEnhancer';
 import { shouldDisplayPost } from '@/lib/blogCleanup';
 import { sanitizeBlogSlug } from '@/lib/blogSlug';
+import { CountryCode, countryConfigs } from '@/lib/country';
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
@@ -89,7 +90,11 @@ function loadPosts() {
   return [...bestByTopic.values()].sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
-export function getPosts(): BlogPost[] {
+function matchesCountry(post: BlogPost, country: CountryCode) {
+  return countryConfigs[country].contentCountries.includes(post.country);
+}
+
+export function getPosts(country: CountryCode = 'US'): BlogPost[] {
   const cacheKey = getContentCacheKey();
 
   if (!postsCache || postsCacheKey !== cacheKey) {
@@ -97,11 +102,15 @@ export function getPosts(): BlogPost[] {
     postsCacheKey = cacheKey;
   }
 
-  return postsCache;
+  return postsCache.filter((post) => matchesCountry(post, country));
 }
 
-export function getPostBySlug(slug: string) {
-  return getPosts().find((p) => p.slug === slug);
+export function getPostBySlug(slug: string, country: CountryCode = 'US') {
+  return getPosts(country).find((p) => p.slug === slug);
+}
+
+export function hasPostBySlug(slug: string, country: CountryCode) {
+  return Boolean(getPostBySlug(slug, country));
 }
 
 function decodeUriComponentSafe(value: string) {
@@ -116,14 +125,14 @@ export function normalizeTag(tag: string) {
   return decodeUriComponentSafe(tag).trim().toLowerCase();
 }
 
-export function getCategories() {
-  return [...new Set(getPosts().map((post) => post.category))];
+export function getCategories(country: CountryCode = 'US') {
+  return [...new Set(getPosts(country).map((post) => post.category))];
 }
 
-export function getTags() {
+export function getTags(country: CountryCode = 'US') {
   const unique = new Map<string, string>();
 
-  for (const tag of getPosts().flatMap((post) => post.tags)) {
+  for (const tag of getPosts(country).flatMap((post) => post.tags)) {
     const normalized = normalizeTag(tag);
     if (normalized && !unique.has(normalized)) unique.set(normalized, tag.trim());
   }

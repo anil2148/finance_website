@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { countryFromPathname, localizeHref, stripCountryPrefix } from '@/lib/country';
 import { Fragment, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
@@ -50,7 +51,6 @@ const links: NavLink[] = [
   { label: 'Contact', href: '/contact' }
 ];
 
-const countries = ['US', 'India', 'UK', 'Canada'] as const;
 const currencies = ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'] as const;
 
 function isActive(pathname: string, href: string) {
@@ -62,7 +62,9 @@ export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const { currency, country, darkMode, setCountry, setCurrency, toggleDarkMode } = usePreferences();
+  const { currency, darkMode, setCurrency, toggleDarkMode } = usePreferences();
+  const activeCountry = countryFromPathname(pathname);
+  const basePath = stripCountryPrefix(pathname);
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
@@ -118,11 +120,10 @@ export function Navbar() {
               Start planning
             </Link>
 
-            <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={country} onChange={(event) => setCountry(event.target.value as (typeof countries)[number])}>
-              {countries.map((item) => (
-                <option key={item}>{item}</option>
-              ))}
-            </select>
+            <div className="flex items-center rounded-lg border border-slate-300 p-0.5 text-xs dark:border-slate-600"> 
+              <Link href={localizeHref(basePath, 'US')} className={`rounded px-2 py-1 ${activeCountry === 'US' ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-700 dark:text-slate-200'}`}>US</Link>
+              <Link href={localizeHref(basePath, 'IN')} className={`rounded px-2 py-1 ${activeCountry === 'IN' ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-700 dark:text-slate-200'}`}>IN</Link>
+            </div>
             <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof currencies)[number])}>
               {currencies.map((item) => (
                 <option key={item}>{item}</option>
@@ -173,6 +174,12 @@ export function Navbar() {
                 </li>
               ))}
             </ul>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500">Country:</span>
+              <Link href={localizeHref(basePath, 'US')} onClick={() => setOpen(false)} className={`rounded px-2 py-1 text-xs ${activeCountry === 'US' ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'border border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-200'}`}>US</Link>
+              <Link href={localizeHref(basePath, 'IN')} onClick={() => setOpen(false)} className={`rounded px-2 py-1 text-xs ${activeCountry === 'IN' ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'border border-slate-300 text-slate-700 dark:border-slate-600 dark:text-slate-200'}`}>IN</Link>
+            </div>
 
             <Link href="/tools" className="btn-primary w-full text-sm" onClick={() => setOpen(false)}>
               Start planning

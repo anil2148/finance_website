@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { CountryCode, countryConfigs, localizeHref } from '@/lib/country';
 
 type ArticleSchemaArgs = {
   title: string;
@@ -147,5 +148,46 @@ export function breadcrumbSchema(items: Array<{ name: string; item: string }>) {
       name: entry.name,
       item: absoluteUrl(entry.item)
     }))
+  };
+}
+
+
+type CreateCountryPageMetadataArgs = {
+  title: string;
+  description: string;
+  pathname: string;
+  country: CountryCode;
+  type?: 'website' | 'article';
+};
+
+export function createCountryPageMetadata({ title, description, pathname, country, type = 'website' }: CreateCountryPageMetadataArgs): Metadata {
+  const config = countryConfigs[country];
+  const canonicalPath = normalizeCanonicalPath(localizeHref(pathname, country));
+  const usPath = normalizeCanonicalPath(localizeHref(pathname, 'US'));
+  const inPath = normalizeCanonicalPath(localizeHref(pathname, 'IN'));
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: canonicalPath,
+      languages: {
+        'en-US': usPath,
+        'en-IN': inPath,
+        'x-default': usPath
+      }
+    },
+    openGraph: {
+      title,
+      description,
+      type,
+      locale: config.ogLocale,
+      url: createCanonicalUrl(canonicalPath)
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description
+    }
   };
 }
