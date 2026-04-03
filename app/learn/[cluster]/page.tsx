@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { FAQAccordion, JumpNav, ResourceGrid, TrustBar } from '@/components/hubs/PillarPageSections';
 import { createPageMetadata } from '@/lib/seo';
@@ -18,6 +19,8 @@ type HubConfig = {
   bestFor: string[];
   notIdealFor: string[];
   decisionBranch: Array<{ condition: string; action: string }>;
+  contextExample: { situation: string; insight: string };
+  variant: 'standard' | 'mistake-first' | 'decision-first' | 'segmentation-first' | 'comparison-first';
 };
 
 const hubs: Record<string, HubConfig> = {
@@ -25,6 +28,11 @@ const hubs: Record<string, HubConfig> = {
     title: 'Investing Hub',
     description: 'Build a long-term portfolio with practical asset allocation, fee analysis, and app comparisons.',
     updatedAt: 'March 18, 2026',
+    variant: 'standard',
+    contextExample: {
+      situation: 'You earn $78K, have been investing $400/month for 8 months, and have no employer match. Your remaining student loan balance is $4,200 at 5.8%.',
+      insight: 'At that loan rate, the math on prepaying vs. continuing contributions is close. The real question is behavioral: will an extra $150/month toward the loan get done, or will it get spent? Run the payoff scenario first, then decide.'
+    },
     microReality: 'If you invest $500/month at 8% for 25 years, the difference between 0.1% and 1.0% in annual fees is roughly $100,000. That is not a rounding error.',
     whatGoesWrong: {
       scenario: 'You open an investing account, fund it with $400/month, and feel set. Six months later, a market dip triggers anxiety and you pause contributions "until it stabilizes."',
@@ -66,6 +74,11 @@ const hubs: Record<string, HubConfig> = {
     title: 'Credit Cards Hub',
     description: 'Find the best cards for rewards, low fees, and credit-building with transparent trade-offs.',
     updatedAt: 'March 18, 2026',
+    variant: 'mistake-first',
+    contextExample: {
+      situation: 'You spend $1,800/month, earn $55K, and carry no revolving balance. You are choosing between a flat 2% cashback card and a travel card with a $95 annual fee.',
+      insight: 'The no-fee card earns ~$432/year. The travel card needs to return $527+ in actual redemptions to break even. If you fly twice per year, run the specific credit values—do not assume you will use them all.'
+    },
     microReality: 'A $95 annual fee is worth it only if you actually redeem enough to cover it. Most people do not run this math before applying.',
     whatGoesWrong: {
       scenario: 'You apply for a premium travel card to earn 80,000 signup points. Life gets busy—you forget to use the travel credits and annual lounge benefit.',
@@ -107,6 +120,11 @@ const hubs: Record<string, HubConfig> = {
     title: 'Loans Hub',
     description: 'Compare personal loans, understand APR, and choose repayment strategies that reduce interest.',
     updatedAt: 'March 18, 2026',
+    variant: 'decision-first',
+    contextExample: {
+      situation: 'You have $16,000 in credit card debt at 22% APR and earn $62K. A personal loan at 10% APR would drop your monthly payment from ~$640 to ~$407.',
+      insight: 'That saves roughly $1,900/year in interest. But the cards are now empty. If you do not close them or adjust spending habits, the consolidation extends your debt timeline rather than ending it.'
+    },
     microReality: 'Monthly payment is the number lenders lead with. Total repayment cost is the number that actually matters.',
     whatGoesWrong: {
       scenario: 'You refinance $22,000 in credit card debt into a 60-month personal loan at 11% APR. The monthly payment drops from $750 to $478 and feels like relief.',
@@ -148,6 +166,11 @@ const hubs: Record<string, HubConfig> = {
     title: 'Budgeting Hub',
     description: 'Create a spending plan that aligns with your goals and adapts to irregular expenses.',
     updatedAt: 'March 18, 2026',
+    variant: 'segmentation-first',
+    contextExample: {
+      situation: 'You earn $4,200/month after tax. Fixed costs—rent, utilities, minimum debt payments—total $2,800. That leaves $1,400.',
+      insight: 'That $1,400 is your real planning number, not your gross salary. If your budget was built on $5,800/month gross, it is already wrong. Start with what lands in your account and what is already committed.'
+    },
     microReality: 'The best budget is not the most optimized one. It is the one you actually stick to in a difficult month.',
     whatGoesWrong: {
       scenario: 'You build a tight 50/30/20 budget, automate transfers, and track spending for two weeks. Then rent goes up $200 and a medical bill arrives.',
@@ -189,6 +212,11 @@ const hubs: Record<string, HubConfig> = {
     title: 'Passive Income Hub',
     description: 'Use savings yield, dividends, and automation systems to create repeatable cash flow.',
     updatedAt: 'March 18, 2026',
+    variant: 'comparison-first',
+    contextExample: {
+      situation: 'You have $15,000 in a standard savings account earning 0.5% APY and want supplemental cash flow.',
+      insight: 'Moving to a 4.8% HYSA earns about $630/year more—real, predictable, low-risk. A dividend fund at 4% yield sounds similar but could lose 15–20% in value during a downturn. These are not equivalent options.'
+    },
     microReality: 'Most passive income is semi-passive. The setup takes work, the monitoring takes time, and the tax treatment takes attention.',
     whatGoesWrong: {
       scenario: 'You move $30,000 into a dividend ETF targeting 4% annual yield to generate $1,200/year in supplemental income.',
@@ -248,6 +276,114 @@ export default function ClusterHubPage({ params }: { params: { cluster: string }
     return <div className="rounded-xl border bg-white p-5">Cluster not found.</div>;
   }
 
+  const startHereSection = (
+    <section id="start-here" className="rounded-2xl border border-slate-200 bg-white p-5">
+      <h2 className="text-2xl font-semibold">Start here</h2>
+      <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-700">
+        {data.startHere.map((step) => (
+          <li key={step}>{step}</li>
+        ))}
+      </ol>
+    </section>
+  );
+
+  const whatFailsSection = (
+    <section id="what-fails" className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
+      <h2 className="text-2xl font-semibold text-slate-900">What people get wrong</h2>
+      <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <article className="rounded-xl border border-amber-200 bg-white p-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700">Scenario</h3>
+          <p className="mt-1 text-sm text-slate-700">{data.whatGoesWrong.scenario}</p>
+        </article>
+        <article className="rounded-xl border border-amber-200 bg-white p-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700">Failure point</h3>
+          <p className="mt-1 text-sm text-slate-700">{data.whatGoesWrong.failurePoint}</p>
+        </article>
+        <article className="rounded-xl border border-amber-200 bg-white p-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700">Consequence</h3>
+          <p className="mt-1 text-sm text-slate-700">{data.whatGoesWrong.consequence}</p>
+        </article>
+      </div>
+    </section>
+  );
+
+  const segmentationSection = (
+    <section className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 md:grid-cols-2">
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Best for</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700">
+          {data.bestFor.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-lg font-semibold text-slate-900">Not ideal for</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700">
+          {data.notIdealFor.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+  );
+
+  const decisionBranchSection = (
+    <section className="rounded-2xl border border-slate-200 bg-white p-5">
+      <h2 className="text-lg font-semibold text-slate-900">Decision branching</h2>
+      <p className="mt-1 text-sm text-slate-600">Match your situation to the right starting point.</p>
+      <div className="mt-3 space-y-2 text-sm">
+        {data.decisionBranch.map((branch) => (
+          <div key={branch.condition} className="rounded-lg border border-slate-200 p-3">
+            <span className="font-semibold text-blue-700">If: </span>
+            <span className="text-slate-700">{branch.condition}</span>
+            <span className="mx-2 text-slate-400">→</span>
+            <span className="text-slate-800">{branch.action}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+
+  const contextExampleSection = (
+    <section className="rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-blue-700">Situation example</h2>
+      <p className="mt-2 text-sm font-medium text-slate-800">{data.contextExample.situation}</p>
+      <p className="mt-2 text-sm text-slate-700">{data.contextExample.insight}</p>
+    </section>
+  );
+
+  const popularDecisionsSection = (
+    <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+      <h2 className="text-2xl font-semibold">Popular decisions in this topic</h2>
+      <ul className="mt-3 grid gap-2 text-sm md:grid-cols-3">
+        {data.popularDecisions.map((item) => (
+          <li key={item} className="rounded-lg border border-slate-200 bg-white p-3 text-slate-700">{item}</li>
+        ))}
+      </ul>
+    </section>
+  );
+
+  // Vary section order by hub variant
+  let topSections: ReactNode;
+  if (data.variant === 'mistake-first') {
+    // credit-cards: mistake → context example → start here
+    topSections = <>{whatFailsSection}{contextExampleSection}{startHereSection}</>;
+  } else if (data.variant === 'decision-first') {
+    // loans: decision branching first → what fails → context example → start here
+    topSections = <>{decisionBranchSection}{whatFailsSection}{contextExampleSection}{startHereSection}</>;
+  } else if (data.variant === 'segmentation-first') {
+    // budgeting: who it fits → context example → start here → what fails
+    topSections = <>{segmentationSection}{contextExampleSection}{startHereSection}{whatFailsSection}</>;
+  } else if (data.variant === 'comparison-first') {
+    // passive-income: context example → start here → who it fits → what fails
+    topSections = <>{contextExampleSection}{startHereSection}{segmentationSection}{whatFailsSection}</>;
+  } else {
+    // investing (standard): context example → start here → what fails → segmentation
+    topSections = <>{contextExampleSection}{startHereSection}{whatFailsSection}{segmentationSection}</>;
+  }
+
+  // Show decision branching after top sections only when it was not already placed first
+  const showDecisionBranchAfter = data.variant !== 'decision-first';
+  // Show segmentation after top sections only when it was not already placed in topSections
+  const showSegmentationAfter = data.variant === 'mistake-first' || data.variant === 'decision-first';
+
   return (
     <section className="space-y-7">
       <header className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -262,71 +398,13 @@ export default function ClusterHubPage({ params }: { params: { cluster: string }
 
       <TrustBar updatedAt={data.updatedAt} disclaimer="Some links are affiliate links, but rankings and guides follow editorial methodology." methodologyAnchor="/editorial-policy" />
 
-      <section id="start-here" className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="text-2xl font-semibold">Start here</h2>
-        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-700">
-          {data.startHere.map((step) => (
-            <li key={step}>{step}</li>
-          ))}
-        </ol>
-      </section>
+      {topSections}
 
-      <section id="what-fails" className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
-        <h2 className="text-2xl font-semibold text-slate-900">What people get wrong</h2>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          <article className="rounded-xl border border-amber-200 bg-white p-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700">Scenario</h3>
-            <p className="mt-1 text-sm text-slate-700">{data.whatGoesWrong.scenario}</p>
-          </article>
-          <article className="rounded-xl border border-amber-200 bg-white p-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700">Failure point</h3>
-            <p className="mt-1 text-sm text-slate-700">{data.whatGoesWrong.failurePoint}</p>
-          </article>
-          <article className="rounded-xl border border-amber-200 bg-white p-3">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700">Consequence</h3>
-            <p className="mt-1 text-sm text-slate-700">{data.whatGoesWrong.consequence}</p>
-          </article>
-        </div>
-      </section>
+      {showSegmentationAfter && segmentationSection}
 
-      <section className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 md:grid-cols-2">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">Best for</h2>
-          <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700">
-            {data.bestFor.map((item) => <li key={item}>{item}</li>)}
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">Not ideal for</h2>
-          <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700">
-            {data.notIdealFor.map((item) => <li key={item}>{item}</li>)}
-          </ul>
-        </div>
-      </section>
+      {showDecisionBranchAfter && decisionBranchSection}
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h2 className="text-lg font-semibold text-slate-900">Decision branching</h2>
-        <p className="mt-1 text-sm text-slate-600">Match your situation to the right starting point.</p>
-        <div className="mt-3 space-y-2 text-sm">
-          {data.decisionBranch.map((branch) => (
-            <div key={branch.condition} className="rounded-lg border border-slate-200 p-3">
-              <span className="font-semibold text-blue-700">If: </span>
-              <span className="text-slate-700">{branch.condition}</span>
-              <span className="mx-2 text-slate-400">→</span>
-              <span className="text-slate-800">{branch.action}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-        <h2 className="text-2xl font-semibold">Popular decisions in this topic</h2>
-        <ul className="mt-3 grid gap-2 text-sm md:grid-cols-3">
-          {data.popularDecisions.map((item) => (
-            <li key={item} className="rounded-lg border border-slate-200 bg-white p-3 text-slate-700">{item}</li>
-          ))}
-        </ul>
-      </section>
+      {popularDecisionsSection}
 
       <section id="top-guides" className="space-y-3">
         <h2 className="text-2xl font-semibold">Top guides by subtopic</h2>

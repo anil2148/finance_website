@@ -66,6 +66,28 @@ export default function ToolsPage() {
         ))}
       </div>
 
+      <section className="rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
+        <h2 className="text-lg font-semibold text-slate-900">Which tool fits your situation</h2>
+        <p className="mt-1 text-sm text-slate-600">Starting with the wrong tool wastes time. Match the question to the tool before running anything.</p>
+        <div className="mt-3 space-y-2 text-sm">
+          <div className="rounded-lg border border-blue-200 bg-white p-3">
+            <span className="font-semibold text-blue-700">If you are deciding how much house you can afford</span>
+            <span className="mx-2 text-slate-400">→</span>
+            <span className="text-slate-800">Mortgage calculator first. Run at your target rate and at a 0.5% higher rate. If the higher payment strains your budget, your price ceiling is lower than the first number suggested.</span>
+          </div>
+          <div className="rounded-lg border border-blue-200 bg-white p-3">
+            <span className="font-semibold text-blue-700">If you have debt and want to invest simultaneously</span>
+            <span className="mx-2 text-slate-400">→</span>
+            <span className="text-slate-800">Debt payoff calculator first. See the exact interest cost of waiting. Then compare that number to your expected investment return before splitting contributions.</span>
+          </div>
+          <div className="rounded-lg border border-blue-200 bg-white p-3">
+            <span className="font-semibold text-blue-700">If your income varies month to month</span>
+            <span className="mx-2 text-slate-400">→</span>
+            <span className="text-slate-800">Budget planner using your lowest income month as the input, not your average. Build a plan that works at floor income, then accelerate when the strong months arrive.</span>
+          </div>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
         <h2 className="text-lg font-semibold text-slate-900">What goes wrong</h2>
         <p className="mt-2 text-sm text-slate-700">Running a calculator once with ideal assumptions, then making a decision. The number looks good in a normal month. One expense spike later, the plan collapses.</p>

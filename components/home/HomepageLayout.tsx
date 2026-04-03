@@ -144,24 +144,24 @@ const homepageFaqs = [
 
 const userSegments = [
   {
-    title: 'Beginner with stable income',
-    note: 'Start with a conservative baseline, then raise contributions only after 3 stable months.',
-    next: { href: '/calculators/budget-planner', label: 'Run budget planner first' }
+    title: 'Stable income, starting out',
+    note: 'If you earn $58K, take home ~$3,900/month, and have $600 left after fixed costs—your first question is not which app to use. It is whether that $600 survives a bad month before you automate anything.',
+    next: { href: '/calculators/budget-planner', label: 'Test your baseline first' }
   },
   {
     title: 'Variable income household',
-    note: 'Use your lowest income month as baseline. If the plan fails there, it is too aggressive.',
+    note: 'If your monthly income swings between $3,200 and $5,800—budget from the $3,200 floor. Any plan that only works on the high months is not a plan.',
     next: { href: '/calculators/savings-goal-calculator', label: 'Model emergency runway' }
   },
   {
-    title: 'Debt payoff vs investing split',
-    note: 'Compare interest drag vs expected return, then prioritize the decision with lower failure risk.',
-    next: { href: '/calculators/debt-payoff-calculator', label: 'Test debt payoff scenarios' }
+    title: 'Carrying debt and building savings',
+    note: 'If your card balance is at 22% APR and you are also saving 5%—the math on which to prioritize first is not obvious. Run both scenarios before splitting the difference.',
+    next: { href: '/calculators/debt-payoff-calculator', label: 'Compare payoff vs savings math' }
   },
   {
-    title: 'Homeowner or future buyer',
-    note: 'Stress-test mortgage affordability before comparing lenders or listing budgets.',
-    next: { href: '/calculators/mortgage-calculator', label: 'Stress-test mortgage payment' }
+    title: 'Buying a home in the next 12 months',
+    note: 'If you earn $92K and are targeting a $380K home—stress-test the payment at 7% and 7.5% before you start comparing lenders. The difference is $130/month over 30 years.',
+    next: { href: '/calculators/mortgage-calculator', label: 'Stress-test at two rates' }
   }
 ];
 

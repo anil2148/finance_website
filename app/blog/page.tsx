@@ -130,6 +130,25 @@ export default function BlogPage() {
         </div>
       </section>
 
+      <section className="rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
+        <h2 className="text-lg font-semibold text-slate-900">Where this applies to your situation</h2>
+        <p className="mt-1 text-sm text-slate-600">These guides are not written for one income level or one life stage. Pick the angle that matches where you are now.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
+          <div className="rounded-xl border border-blue-200 bg-white p-3">
+            <p className="font-semibold text-blue-700">Early-career, $48K–$65K income</p>
+            <p className="mt-1 text-slate-700">Start with emergency fund sizing and one card. Do not split attention across debt, investing, and savings until each has a clear rule in place.</p>
+          </div>
+          <div className="rounded-xl border border-blue-200 bg-white p-3">
+            <p className="font-semibold text-blue-700">Mid-career, $80K–$110K, rent increase of $300+</p>
+            <p className="mt-1 text-slate-700">When fixed costs jump, the right question is not &quot;where to cut&quot; but &quot;which existing plan survives this.&quot; Start with the budgeting or loan guides before adjusting investments.</p>
+          </div>
+          <div className="rounded-xl border border-blue-200 bg-white p-3">
+            <p className="font-semibold text-blue-700">Approaching a major decision (home, child, job change)</p>
+            <p className="mt-1 text-slate-700">Life-change moments break existing plans. Read the guide for the new situation before moving money—not after you have already committed.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-xl font-semibold">Curated by decision type</h2>
         <p className="mt-1 text-sm text-slate-600">Fewer, stronger guides routed to the right tools and comparisons. Check the failure scenario before using the strategy.</p>
