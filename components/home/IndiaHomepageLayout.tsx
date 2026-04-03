@@ -178,9 +178,10 @@ export function IndiaHomepageLayout() {
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Salary-based India entry points</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {salaryEntryPoints.map((item) => (
-            <Link key={item.salary} href={item.path} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <Link key={item.salary} href={item.path} className="link-card no-underline">
               <h3 className="font-semibold text-slate-900 dark:text-slate-100">{item.salary}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.decision}</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Open pathway →</p>
             </Link>
           ))}
         </div>
@@ -235,7 +236,7 @@ export function IndiaHomepageLayout() {
             <article key={item.q} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.q}</h3>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.a}</p>
-              <Link href={item.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Open related guide</Link>
+              <Link href={item.href} className="mt-3 inline-flex content-link text-sm font-semibold">Open related guide →</Link>
             </article>
           ))}
         </div>

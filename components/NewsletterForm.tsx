@@ -131,18 +131,21 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
       <p className="text-sm text-slate-600 dark:text-slate-300">{copy.description}</p>
 
       {step === 1 ? (
-        <div className="space-y-3">
-          <label className="text-sm font-medium text-slate-800 dark:text-slate-100" htmlFor="newsletter-persona">What best describes your current goal?</label>
-          <select id="newsletter-persona" className="input" value={persona} onChange={(event) => setPersona(event.target.value)}>
+        <fieldset className="space-y-3">
+          <legend className="text-sm font-medium text-slate-800 dark:text-slate-100">What best describes your current goal?</legend>
+          <p id="newsletter-persona-help" className="text-xs text-slate-500 dark:text-slate-400">Choose one focus so we can send the most relevant planning playbooks.</p>
+          <select id="newsletter-persona" aria-describedby="newsletter-persona-help" className="input" value={persona} onChange={(event) => setPersona(event.target.value)}>
             <option value="beginner">I am building the basics</option>
             <option value="debt-payoff">I am focused on debt payoff</option>
             <option value="investing">I am focused on investing</option>
           </select>
           <button type="button" className="btn-primary" onClick={() => setStep(2)}>Continue</button>
-        </div>
+        </fieldset>
       ) : (
         <>
+          <label htmlFor="newsletter-email" className="text-sm font-medium text-slate-800 dark:text-slate-100">Email address</label>
           <input
+            id="newsletter-email"
             className="input"
             type="email"
             autoComplete="email"

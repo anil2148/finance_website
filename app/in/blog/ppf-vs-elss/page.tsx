@@ -24,20 +24,20 @@ export default function PpfVsElssIndiaPage() {
 
       <section id="decision-framework" className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">PPF vs ELSS at a glance</h2>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[680px] text-left text-sm">
+        <div className="table-shell mt-4">
+          <table className="comparison-table">
             <thead>
-              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
-                <th className="px-3 py-2">Factor</th>
-                <th className="px-3 py-2">PPF</th>
-                <th className="px-3 py-2">ELSS</th>
+              <tr>
+                <th>Factor</th>
+                <th>PPF</th>
+                <th>ELSS</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-slate-100 dark:border-slate-800"><td className="px-3 py-2">Lock-in</td><td className="px-3 py-2">15 years (partial withdrawal rules apply)</td><td className="px-3 py-2">3 years</td></tr>
-              <tr className="border-b border-slate-100 dark:border-slate-800"><td className="px-3 py-2">Return profile</td><td className="px-3 py-2">Government-backed, stable but moderate</td><td className="px-3 py-2">Equity-linked, can outperform over long periods with volatility</td></tr>
-              <tr className="border-b border-slate-100 dark:border-slate-800"><td className="px-3 py-2">Liquidity fit</td><td className="px-3 py-2">Low for short-term goals</td><td className="px-3 py-2">Moderate after lock-in</td></tr>
-              <tr><td className="px-3 py-2">Typical role</td><td className="px-3 py-2">Stability core for conservative savers</td><td className="px-3 py-2">Growth sleeve for long-term tax saving</td></tr>
+              <tr><td>Lock-in</td><td>15 years (partial withdrawal rules apply)</td><td>3 years</td></tr>
+              <tr><td>Return profile</td><td>Government-backed, stable but moderate</td><td>Equity-linked, can outperform over long periods with volatility</td></tr>
+              <tr><td>Liquidity fit</td><td>Low for short-term goals</td><td>Moderate after lock-in</td></tr>
+              <tr><td>Typical role</td><td>Stability core for conservative savers</td><td>Growth sleeve for long-term tax saving</td></tr>
             </tbody>
           </table>
         </div>
@@ -100,6 +100,26 @@ export default function PpfVsElssIndiaPage() {
           <Link href="/in/calculators/sip-calculator" className="content-link">SIP calculator</Link>
           <Link href="/in/blog" className="content-link">India blog hub</Link>
         </div>
+      </section>
+      <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 dark:border-blue-500/40 dark:bg-blue-900/20">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">FAQ: PPF vs ELSS</h2>
+        <dl className="mt-3 space-y-4 text-sm">
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">Does ELSS replace PPF?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Usually no. Many investors use PPF for stability and ELSS for long-term growth potential.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">Should all 80C money go in one option?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Often a split is easier to sustain and aligns better with liquidity and risk comfort.</dd>
+          </div>
+        </dl>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">References</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">
+          <li><Link href="https://www.rbi.org.in/" target="_blank" rel="noreferrer" className="content-link">Reserve Bank of India (RBI)</Link></li>
+          <li><Link href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer" className="content-link">Income Tax Department (India)</Link></li>
+        </ul>
       </section>
       <IndiaAuthorityNote />
     </article>

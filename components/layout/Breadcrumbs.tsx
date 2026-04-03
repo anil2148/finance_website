@@ -3,36 +3,69 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+const breadcrumbLabelMap: Record<string, string> = {
+  in: 'India',
+  blog: 'Blog',
+  ppf: 'PPF',
+  elss: 'ELSS',
+  sip: 'SIP',
+  fd: 'FD',
+  emi: 'EMI',
+  faq: 'FAQ',
+  usa: 'USA',
+  us: 'US'
+};
+
 const toLabel = (segment: string) =>
   segment
-    
     .split('-')
-    .map((word) => word[0]?.toUpperCase() + word.slice(1))
+    .map((word) => {
+      const normalized = word.trim().toLowerCase();
+      if (!normalized) return '';
+      if (breadcrumbLabelMap[normalized]) return breadcrumbLabelMap[normalized];
+      return normalized[0].toUpperCase() + normalized.slice(1);
+    })
     .join(' ');
 
 export function Breadcrumbs() {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
   const isIndiaPath = pathname.startsWith('/in');
-  const homeHref = isIndiaPath ? '/in' : '/';
-  const homeLabel = isIndiaPath ? 'India home' : 'Home';
+  const homeHref = '/';
+  const homeLabel = 'Home';
 
   if (segments.length === 0) return null;
 
   return (
-    <nav aria-label="Breadcrumb" className="mb-6 text-xs text-slate-500 dark:text-slate-300">
-      <ol className="flex flex-wrap items-center gap-2">
+    <nav aria-label="Breadcrumb" className="mb-6">
+      <ol className="breadcrumb-shell">
         <li>
-          <Link href={homeHref} className="utility-link text-xs">{homeLabel}</Link>
+          {segments.length === 0 ? (
+            <span aria-current="page" className="breadcrumb-current">{homeLabel}</span>
+          ) : (
+            <Link href={homeHref} className="breadcrumb-link">{homeLabel}</Link>
+          )}
         </li>
+        {isIndiaPath && (
+          <li className="breadcrumb-item">
+            <span aria-hidden="true" className="breadcrumb-separator">/</span>
+            {segments.length === 1 ? (
+              <span aria-current="page" className="breadcrumb-current">India</span>
+            ) : (
+              <Link href="/in" className="breadcrumb-link">India</Link>
+            )}
+          </li>
+        )}
         {segments.map((segment, index) => {
           const href = `/${segments.slice(0, index + 1).join('/')}`;
           const isLast = index === segments.length - 1;
+          const shouldSkip = isIndiaPath && segment === 'in';
+          if (shouldSkip) return null;
 
           return (
-            <li key={href} className="flex items-center gap-2">
-              <span aria-hidden="true" className="text-slate-400 dark:text-slate-500">/</span>
-              {isLast ? <span aria-current="page" className="rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 font-semibold text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-white">{toLabel(segment)}</span> : <Link href={href} className="utility-link text-xs">{toLabel(segment)}</Link>}
+            <li key={href} className="breadcrumb-item">
+              <span aria-hidden="true" className="breadcrumb-separator">/</span>
+              {isLast ? <span aria-current="page" className="breadcrumb-current">{toLabel(segment)}</span> : <Link href={href} className="breadcrumb-link">{toLabel(segment)}</Link>}
             </li>
           );
         })}
