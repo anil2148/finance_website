@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   alternates: {
     languages: {
-      'en-US': '/us',
+      'en-US': '/',
       'en-IN': '/in'
     }
   },
