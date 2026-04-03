@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { AppLink } from '@/components/ui/AppLink';
 
 type LinkItem = {
   href: string;
@@ -49,9 +49,9 @@ export function DecisionSupportPanel({ title, intro, tone = 'slate', points = []
       {links.length > 0 ? (
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
           {links.map((item) => (
-            <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 bg-white/85 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
+            <AppLink key={item.href} href={item.href} variant="chip" className="border-slate-300 bg-white/85 text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-200">
               {item.label}
-            </Link>
+            </AppLink>
           ))}
         </div>
       ) : null}

@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { AppLink } from '@/components/ui/AppLink';
 
 const primaryLinks = [
   { href: '/', label: 'Home' },
@@ -71,8 +71,8 @@ export function Footer() {
             We may earn compensation from partners, but pages are built to prioritize user fit, clarity, and downside-risk awareness over conversion pressure.
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
-            <Link href="/editorial-policy" className="content-link-chip text-xs">Editorial policy</Link>
-            <Link href="/affiliate-disclosure" className="content-link-chip text-xs">Affiliate disclosure</Link>
+            <AppLink href="/editorial-policy" variant="chip" className="text-xs">Editorial policy</AppLink>
+            <AppLink href="/affiliate-disclosure" variant="chip" className="text-xs">Affiliate disclosure</AppLink>
           </div>
         </section>
 
@@ -81,7 +81,7 @@ export function Footer() {
           <ul className="space-y-1 text-sm">
             {contextualPrimaryLinks.map((link) => (
               <li key={link.href}>
-                <Link className="utility-link font-medium" href={link.href}>{link.label}</Link>
+                <AppLink variant="utility" className="font-medium" href={link.href}>{link.label}</AppLink>
               </li>
             ))}
           </ul>
@@ -92,7 +92,7 @@ export function Footer() {
           <ul className="space-y-1 text-sm">
             {contextualDiscoveryLinks.map((link) => (
               <li key={link.href}>
-                <Link className="utility-link font-medium" href={link.href}>{link.label}</Link>
+                <AppLink variant="utility" className="font-medium" href={link.href}>{link.label}</AppLink>
               </li>
             ))}
           </ul>
@@ -103,12 +103,12 @@ export function Footer() {
           <ul className="space-y-1 text-sm">
             {legalLinks.map((link) => (
               <li key={link.href}>
-                <Link className="utility-link" href={link.href}>{link.label}</Link>
+                <AppLink variant="utility" href={link.href}>{link.label}</AppLink>
               </li>
             ))}
             {supportLinks.map((link) => (
               <li key={link.href}>
-                <Link className="utility-link font-medium" href={link.href}>{link.label}</Link>
+                <AppLink variant="utility" className="font-medium" href={link.href}>{link.label}</AppLink>
               </li>
             ))}
           </ul>

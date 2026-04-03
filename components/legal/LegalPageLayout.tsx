@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { AppLink } from '@/components/ui/AppLink';
 
 export function LegalPageLayout({
   title,
@@ -20,14 +20,14 @@ export function LegalPageLayout({
         <p className="mt-4 text-xs font-medium text-slate-500 dark:text-slate-400">Last Updated: {lastUpdated}</p>
       </header>
 
-      <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24 dark:prose-invert">{children}</div>
+      <div className="prose prose-slate max-w-none prose-headings:scroll-mt-24 prose-a:text-blue-700 prose-a:underline prose-a:decoration-blue-500/80 prose-a:underline-offset-4 hover:prose-a:text-blue-800 dark:prose-invert dark:prose-a:text-blue-300 dark:prose-a:decoration-blue-300/80 dark:hover:prose-a:text-blue-200">{children}</div>
 
       <footer className="mt-10 border-t border-slate-200 pt-6 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
         Questions about this page? Contact us at{' '}
-        <a className="font-semibold text-brand hover:underline" href="mailto:support@financesphere.io">
+        <a className="utility-link font-semibold" href="mailto:support@financesphere.io">
           support@financesphere.io
         </a>{' '}
-        or visit our <Link className="font-semibold text-brand hover:underline" href="/contact">Contact page</Link>.
+        or visit our <AppLink className="font-semibold" variant="utility" href="/contact">Contact page</AppLink>.
       </footer>
     </article>
   );

@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { AppLink } from '@/components/ui/AppLink';
 
 export function IndiaAuthorityNote() {
   return (
@@ -8,8 +8,8 @@ export function IndiaAuthorityNote() {
         Written by Anil Chowdhary — Lead Software Engineer building data-driven finance tools.
       </p>
       <p className="mt-2 text-xs">
-        References: <Link className="content-link" href="https://www.rbi.org.in/" target="_blank" rel="noreferrer">Reserve Bank of India (RBI)</Link> and{' '}
-        <Link className="content-link" href="https://incometaxindia.gov.in/" target="_blank" rel="noreferrer">Income Tax Department India</Link>.
+        References: <AppLink variant="editorial" href="https://www.rbi.org.in/" target="_blank" rel="noreferrer">Reserve Bank of India (RBI)</AppLink> and{' '}
+        <AppLink variant="editorial" href="https://incometaxindia.gov.in/" target="_blank" rel="noreferrer">Income Tax Department India</AppLink>.
       </p>
     </aside>
   );

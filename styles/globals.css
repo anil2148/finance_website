@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 @layer components {
+  .app-link-base {
+    @apply cursor-pointer underline decoration-2 underline-offset-4 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950;
+    text-underline-offset: 0.2em;
+  }
+
   .content-link {
-    @apply cursor-pointer font-medium text-blue-700 underline decoration-blue-500/80 underline-offset-4 transition hover:text-blue-800 hover:decoration-blue-700 visited:text-violet-700 visited:decoration-violet-500/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-blue-300 dark:decoration-blue-300/80 dark:hover:text-blue-200 dark:hover:decoration-blue-200 dark:visited:text-violet-300 dark:visited:decoration-violet-300/70 dark:focus-visible:ring-offset-slate-950;
+    @apply app-link-base font-medium text-blue-700 decoration-blue-500/80 hover:text-blue-800 hover:decoration-blue-700 visited:text-violet-700 visited:decoration-violet-500/70 dark:text-blue-300 dark:decoration-blue-300/80 dark:hover:text-blue-200 dark:hover:decoration-blue-200 dark:visited:text-violet-300 dark:visited:decoration-violet-300/70;
   }
 
   .link-card {
@@ -16,7 +21,7 @@
   }
 
   .utility-link {
-    @apply cursor-pointer text-blue-700 underline decoration-blue-500/70 underline-offset-4 transition hover:text-blue-800 hover:decoration-blue-700 visited:text-violet-700 visited:decoration-violet-500/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-blue-300 dark:decoration-blue-300/70 dark:hover:text-blue-200 dark:hover:decoration-blue-200 dark:visited:text-violet-300 dark:visited:decoration-violet-300/70 dark:focus-visible:ring-offset-slate-950;
+    @apply app-link-base text-blue-700 decoration-blue-500/70 hover:text-blue-800 hover:decoration-blue-700 visited:text-violet-700 visited:decoration-violet-500/70 dark:text-blue-300 dark:decoration-blue-300/70 dark:hover:text-blue-200 dark:hover:decoration-blue-200 dark:visited:text-violet-300 dark:visited:decoration-violet-300/70;
   }
 
   .breadcrumb-shell {
@@ -67,8 +72,16 @@
     @apply ml-2;
   }
 
+  .editorial-content :where(p, li, td, th, figcaption) :is(a + a, a + span + a, a + strong + a, strong + a) {
+    @apply ml-1;
+  }
+
   .editorial-content :where(.prose, article, section) a:visited:not([class*='rounded-']):not(.btn-primary):not(.comparison-cta) {
     @apply text-violet-700 decoration-violet-500/70 dark:text-violet-300 dark:decoration-violet-300/70;
+  }
+
+  .editorial-content :where(.prose) a:not([class*='rounded-']):not(.btn-primary):not(.comparison-cta):not([class*='content-link']):not([class*='utility-link']) {
+    @apply content-link;
   }
 
   .btn-primary {
