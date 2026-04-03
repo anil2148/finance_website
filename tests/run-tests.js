@@ -18,6 +18,8 @@ const { runUtilsTests } = require('./utils.test.ts');
 const { runCalculatorTests } = require('./calculators.test.ts');
 const { runLinkIntegrityTests } = require('./linkIntegrity.test.ts');
 const { runRegionRoutingTests } = require('./region-routing.test.ts');
+const { runFinanceSphereRenderingSeoRegressionTests } = require('./financesphere-rendering-seo-regressions.test.ts');
+const { runSitemapValidationRegressionTests } = require('./sitemap-validation-regression.test.ts');
 
 runUtilsTests();
 console.log('✅ utils tests passed');
@@ -30,5 +32,11 @@ console.log('✅ link integrity tests passed');
 
 runRegionRoutingTests();
 console.log('✅ region routing tests passed');
+
+runFinanceSphereRenderingSeoRegressionTests();
+console.log('✅ FinanceSphere rendering + SEO regressions tests passed');
+
+runSitemapValidationRegressionTests();
+console.log('✅ sitemap validation regression tests passed');
 
 console.log('🎉 all unit tests passed');

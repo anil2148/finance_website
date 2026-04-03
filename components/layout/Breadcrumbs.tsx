@@ -54,7 +54,7 @@ const toTitleCaseWord = (word: string, labelMap: Record<string, string>) => {
   return `${word[0].toUpperCase()}${word.slice(1).toLowerCase()}`;
 };
 
-const formatSegmentLabel = (segment: string, labelMap: Record<string, string>) => {
+export const formatBreadcrumbSegmentLabel = (segment: string, labelMap: Record<string, string>) => {
   const cleanSegment = decodeURIComponent(segment.replace(/^\/|\/$/g, '').trim());
   const normalized = cleanSegment.toLowerCase();
 
@@ -82,7 +82,7 @@ export function Breadcrumbs({ labelMap = breadcrumbLabelMap }: BreadcrumbsProps)
         {segments.map((segment, index) => {
           const href = `/${segments.slice(0, index + 1).join('/')}`;
           const isLast = index === segments.length - 1;
-          const label = formatSegmentLabel(segment, labelMap);
+          const label = formatBreadcrumbSegmentLabel(segment, labelMap);
 
           return (
             <li key={href} className="breadcrumb-item">

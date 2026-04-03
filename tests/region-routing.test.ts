@@ -42,6 +42,18 @@ export function runRegionRoutingTests() {
   );
 
   assert.deepEqual(
+    getHomepageRoutingDecision({ pathname: '/in/blog', preferredRegion: null, userAgent: null, countryCode: 'IN' }),
+    { action: 'next' },
+    'India deep links should never be redirected when already off root'
+  );
+
+  assert.deepEqual(
+    getHomepageRoutingDecision({ pathname: '/in/blog/sip-vs-fd', preferredRegion: 'in', userAgent: null, countryCode: 'US' }),
+    { action: 'next' },
+    'Saved India cookie should only redirect root visits and should not override deep links'
+  );
+
+  assert.deepEqual(
     getHomepageRoutingDecision({ pathname: '/', preferredRegion: null, userAgent: 'Googlebot', countryCode: 'IN' }),
     { action: 'next' },
     'Bots should not be redirected to preserve crawlability'
