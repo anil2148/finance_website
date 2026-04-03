@@ -282,6 +282,35 @@ export default function IndiaLoansHubPage() {
         <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">A ₹10L prepayment on a ₹50L, 20-year loan at 9% saves roughly ₹14L–₹16L in interest over tenure. Run your scenario in the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link> before deciding.</p>
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When NOT to take the maximum loan the bank offers</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Banks maximise their loan book. Their eligibility ceiling is designed for the borrower who can service the loan under ideal conditions. That is not your safe ceiling. If any of the following apply, the maximum sanction is too large for your situation.</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Income risk signals</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-rose-900/80 dark:text-rose-100/80">
+              <li>Single income household — if that income stops for 2 months, can EMI still be paid without touching emergency savings?</li>
+              <li>Variable or commission-based income — a bad quarter makes max EMI impossible, not just uncomfortable.</li>
+              <li>Recent job change or probation period — lenders ignore this; your cashflow plan should not.</li>
+              <li>Industry exposed to cycles (IT, real estate, fintech) — income stability over a 20-year tenure is not guaranteed.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Cashflow risk signals</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-rose-900/80 dark:text-rose-100/80">
+              <li>Down payment has consumed emergency savings — you enter a 20-year obligation with no buffer.</li>
+              <li>EMI at current rate already exceeds 35–40% of take-home — a +1% reset creates a cashflow crisis.</li>
+              <li>You need to pause SIP or insurance to service the EMI — this is a structural warning, not a trade-off.</li>
+              <li>Post-possession costs (interiors, maintenance, stamp duty) are not yet budgeted — year-one real cost is far above what the sanction letter shows.</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-sm dark:border-amber-500/30 dark:bg-amber-500/10">
+          <p className="font-semibold text-amber-900 dark:text-amber-100">The rule: if the plan breaks in a bad month, the loan is too large.</p>
+          <p className="mt-1 text-amber-900/80 dark:text-amber-100/80">Reducing loan size by ₹15L cuts EMI by roughly ₹12,000–₹13,500/month on a 20-year loan at 9%. That monthly difference between surviving a bad month and entering card rollover is worth more than the extra room the bank is willing to fund. Use the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link> to find your own safe ceiling, not the bank&apos;s maximum.</p>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">India loans journey: from eligibility to execution</h2>
         <p className="mt-2 text-slate-700 dark:text-slate-300">
