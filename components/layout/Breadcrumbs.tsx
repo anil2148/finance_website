@@ -37,6 +37,16 @@ export function Breadcrumbs() {
         <li>
           <Link href="/" className="utility-link text-xs">Home</Link>
         </li>
+        {isIndiaPath && (
+          <li className="breadcrumb-item">
+            <span aria-hidden="true" className="breadcrumb-separator">/</span>
+            {segments.length === 1 ? (
+              <span aria-current="page" className="breadcrumb-current">India</span>
+            ) : (
+              <Link href="/in" className="breadcrumb-link">India</Link>
+            )}
+          </li>
+        )}
         {segments.map((segment, index) => {
           const href = `/${segments.slice(0, index + 1).join('/')}`;
           const isLast = index === segments.length - 1;

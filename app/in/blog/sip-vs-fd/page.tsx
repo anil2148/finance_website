@@ -24,20 +24,20 @@ export default function SipVsFdIndiaPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Real monthly example: ₹5,000 vs ₹10,000 vs ₹25,000 for 10 years</h2>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-[720px] text-left text-sm">
+        <div className="table-shell mt-4">
+          <table className="comparison-table min-w-[720px]">
             <thead>
-              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
-                <th className="px-3 py-2">Monthly amount</th>
-                <th className="px-3 py-2">If SIP averages 11%</th>
-                <th className="px-3 py-2">If FD averages 6.8%</th>
-                <th className="px-3 py-2">How this usually feels in real life</th>
+              <tr>
+                <th>Monthly amount</th>
+                <th>If SIP averages 11%</th>
+                <th>If FD averages 6.8%</th>
+                <th>How this usually feels in real life</th>
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-slate-100 dark:border-slate-800"><td className="px-3 py-2">₹5,000</td><td className="px-3 py-2">~₹10.3 lakh</td><td className="px-3 py-2">~₹8.4 lakh</td><td className="px-3 py-2">Good starter amount for first-time investors learning volatility.</td></tr>
-              <tr className="border-b border-slate-100 dark:border-slate-800"><td className="px-3 py-2">₹10,000</td><td className="px-3 py-2">~₹20.6 lakh</td><td className="px-3 py-2">~₹16.8 lakh</td><td className="px-3 py-2">Common salaried household split: growth + safety bucket.</td></tr>
-              <tr><td className="px-3 py-2">₹25,000</td><td className="px-3 py-2">~₹51.4 lakh</td><td className="px-3 py-2">~₹42.0 lakh</td><td className="px-3 py-2">Works when income is stable and emergency fund already strong.</td></tr>
+              <tr><td>₹5,000</td><td>~₹10.3 lakh</td><td>~₹8.4 lakh</td><td>Good starter amount for first-time investors learning volatility.</td></tr>
+              <tr><td>₹10,000</td><td>~₹20.6 lakh</td><td>~₹16.8 lakh</td><td>Common salaried household split: growth + safety bucket.</td></tr>
+              <tr><td>₹25,000</td><td>~₹51.4 lakh</td><td>~₹42.0 lakh</td><td>Works when income is stable and emergency fund already strong.</td></tr>
             </tbody>
           </table>
         </div>
@@ -103,6 +103,26 @@ export default function SipVsFdIndiaPage() {
           <Link href="/in/calculators/emi-calculator" className="content-link-chip">EMI calculator</Link>
           <Link href="/in/blog" className="content-link-chip">India blog hub</Link>
         </div>
+      </section>
+      <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 dark:border-blue-500/40 dark:bg-blue-900/20">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">FAQ: SIP vs FD</h2>
+        <dl className="mt-3 space-y-4 text-sm">
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">Is SIP always better than FD?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">No. SIP generally fits long timelines, while FD usually fits near-term certainty and low volatility tolerance.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">Can I combine both in one plan?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Yes. Many households keep short-term goals in FD and long-term goals in SIP.</dd>
+          </div>
+        </dl>
+      </section>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">References</h2>
+        <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">
+          <li><Link href="https://www.rbi.org.in/" target="_blank" rel="noreferrer" className="content-link">Reserve Bank of India (RBI)</Link></li>
+          <li><Link href="https://www.sebi.gov.in/" target="_blank" rel="noreferrer" className="content-link">Securities and Exchange Board of India (SEBI)</Link></li>
+        </ul>
       </section>
       <IndiaAuthorityNote />
     </article>

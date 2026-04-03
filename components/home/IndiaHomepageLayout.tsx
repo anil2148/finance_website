@@ -181,6 +181,7 @@ export function IndiaHomepageLayout() {
             <Link key={item.salary} href={item.path} className="link-card no-underline">
               <h3 className="font-semibold text-slate-900 dark:text-slate-100">{item.salary}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.decision}</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Open pathway →</p>
             </Link>
           ))}
         </div>
