@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'SIP vs FD in India: A Scenario-Based Decision Guide (2026)',
@@ -31,92 +32,61 @@ export default function SipVsFdIndiaPage() {
                 <th>Monthly amount</th>
                 <th>If SIP averages 11%</th>
                 <th>If FD averages 6.8%</th>
-                <th>How this usually feels in real life</th>
+                <th>Gap after 10 years</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>₹5,000</td><td>~₹10.3 lakh</td><td>~₹8.4 lakh</td><td>Good starter amount for first-time investors learning volatility.</td></tr>
-              <tr><td>₹10,000</td><td>~₹20.6 lakh</td><td>~₹16.8 lakh</td><td>Common salaried household split: growth + safety bucket.</td></tr>
-              <tr><td>₹25,000</td><td>~₹51.4 lakh</td><td>~₹42.0 lakh</td><td>Works when income is stable and emergency fund already strong.</td></tr>
+              <tr><td>₹5,000</td><td>~₹10.3 lakh</td><td>~₹8.4 lakh</td><td>~₹1.9 lakh more via SIP</td></tr>
+              <tr><td>₹10,000</td><td>~₹20.6 lakh</td><td>~₹16.8 lakh</td><td>~₹3.8 lakh more via SIP</td></tr>
+              <tr><td>₹25,000</td><td>~₹51.4 lakh</td><td>~₹42.0 lakh</td><td>~₹9.4 lakh more via SIP</td></tr>
             </tbody>
           </table>
         </div>
-        <p className="mt-4 text-sm text-slate-600 dark:text-slate-300">
-          These are directional planning illustrations, not guaranteed returns. SIP may build larger corpus over long periods, but it can look uncomfortable during market falls. FD feels calmer month to month, which is exactly why many people still keep one.
-        </p>
-      </section>
-
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Common household statements (and what they usually mean)</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li><strong>“I want growth but don’t want to see losses every month.”</strong> Keep a stability sleeve in FD and start SIP at an amount you can continue through volatility.</li>
-          <li><strong>“I need this money in 2–3 years.”</strong> Prioritize capital safety over return chasing.</li>
-          <li><strong>“I can invest more when bonus comes.”</strong> Build baseline SIP from regular salary first, then top-up from variable income.</li>
-        </ul>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Who usually prefers FD, and why that can be the right call</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li>Households with a known expense in the next 12–36 months (fees, wedding, down payment) where capital loss is unacceptable.</li>
-          <li>Families under monthly cashflow pressure who cannot tolerate seeing investment value drop during a rough market year.</li>
-          <li>People entering investing for the first time who need confidence and consistency before increasing equity exposure.</li>
-        </ul>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Timeline decision depth (5y, 10y, 20y)</h2>
+        <div className="table-shell mt-4">
+          <table className="comparison-table min-w-[720px]">
+            <thead><tr><th>Horizon</th><th>₹10,000/month SIP @11%</th><th>₹10,000/month FD @6.8%</th><th>Break-even interpretation</th></tr></thead>
+            <tbody>
+              <tr><td>5 years</td><td>~₹8.3 lakh</td><td>~₹7.1 lakh</td><td>Gap is modest; volatility risk may dominate comfort.</td></tr>
+              <tr><td>10 years</td><td>~₹20.6 lakh</td><td>~₹16.8 lakh</td><td>Gap becomes meaningful for long goals.</td></tr>
+              <tr><td>20 years</td><td>~₹75.9 lakh</td><td>~₹50.0 lakh</td><td>Long compounding strongly favors SIP if you stay invested.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-300">Break-even mindset: if your goal is under ~3 years, certainty usually matters more than return spread. Beyond ~7 years, consistency and behavioral discipline become the main driver.</p>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When SIP volatility is usually acceptable</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li>Goal is 7+ years away and you can continue SIP during market corrections.</li>
-          <li>You already have 6+ months of expenses in liquid/emergency buffers.</li>
-          <li>You can mentally separate short-term market noise from long-term goal planning.</li>
-        </ul>
-        <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-          A practical middle path: keep short-term money in FD or low-volatility options, and run SIP for long-term goals like retirement or children’s higher education.
-        </p>
-      </section>
+      <DecisionSupportPanel
+        title="What happens if you choose wrong"
+        tone="amber"
+        points={[
+          { label: 'Choosing SIP for near-term goal', text: 'A 20% market drawdown in year 2 can delay a fixed down-payment goal by 12–24 months.' },
+          { label: 'Choosing FD for very long-term goal', text: 'Lower growth can reduce retirement corpus by double-digit lakhs over 15–20 years.' },
+          { label: 'Choosing either without emergency fund', text: 'You may break investments early, losing return compounding and confidence together.' }
+        ]}
+      />
 
-      <section id="emi-transition" className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Before home buying, separate down-payment money from wealth-building money</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          If you are targeting a home purchase in 2–4 years, keep down-payment funds in safety-first buckets. Don’t let equity volatility decide your booking timeline. Then pressure-test EMI at current rate, +0.5%, and +1% so your monthly budget stays realistic.
-        </p>
-        <Link href="/in/calculators/emi-calculator" className="mt-4 inline-flex content-link text-sm font-semibold">Run the India EMI calculator →</Link>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Quick decide framework (use this in 2 minutes)</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li><strong>Need this money in under 3 years?</strong> Keep majority in FD-like safety buckets.</li>
-          <li><strong>Need this money after 7+ years?</strong> SIP can be your growth engine.</li>
-          <li><strong>Confused during tax-saving season?</strong> Keep SIP/FD decision separate from 80C decisions like PPF/ELSS.</li>
-          <li><strong>Unsure emotionally?</strong> Start with a split (for example, 60% SIP, 40% FD) and review every 6 months.</li>
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Continue your India planning path</h2>
-        <div className="mt-3 india-link-cluster text-sm">
-          <Link href="/in/blog/ppf-vs-elss" className="content-link-chip">PPF vs ELSS guide</Link>
-          <Link href="/in/calculators/sip-calculator" className="content-link-chip">SIP calculator</Link>
-          <Link href="/in/calculators/emi-calculator" className="content-link-chip">EMI calculator</Link>
-          <Link href="/in/blog" className="content-link-chip">India blog hub</Link>
+      <section id="emi-transition" className="cta-block">
+        <h2 className="cta-block-title">Before home buying, separate down-payment money from wealth-building money</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">If you are targeting a home purchase in 2–4 years, keep down-payment funds in safety-first buckets. Then pressure-test EMI at current rate, +0.5%, and +1% so your monthly budget stays realistic.</p>
+        <div className="cta-block-actions">
+          <Link href="/in/calculators/emi-calculator" className="content-link-chip">Run the India EMI calculator</Link>
+          <Link href="/in/home-affordability-india" className="content-link-chip">Check home affordability path</Link>
         </div>
       </section>
-      <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 dark:border-blue-500/40 dark:bg-blue-900/20">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">FAQ: SIP vs FD</h2>
-        <dl className="mt-3 space-y-4 text-sm">
-          <div>
-            <dt className="font-semibold text-slate-900 dark:text-slate-100">Is SIP always better than FD?</dt>
-            <dd className="mt-1 text-slate-700 dark:text-slate-300">No. SIP generally fits long timelines, while FD usually fits near-term certainty and low volatility tolerance.</dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-slate-900 dark:text-slate-100">Can I combine both in one plan?</dt>
-            <dd className="mt-1 text-slate-700 dark:text-slate-300">Yes. Many households keep short-term goals in FD and long-term goals in SIP.</dd>
-          </div>
-        </dl>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Next decision path</h2>
+        <div className="decision-path-grid mt-4 text-sm">
+          <article className="decision-path-card"><h3 className="font-semibold">Investing cluster</h3><p className="mt-2 text-slate-600 dark:text-slate-300">Choose SIP allocation and automation rules.</p><div className="mt-3 inline-link-row"><Link href="/in/investing" className="content-link-chip">India investing hub</Link><Link href="/in/calculators/sip-calculator" className="content-link-chip">SIP calculator</Link></div></article>
+          <article className="decision-path-card"><h3 className="font-semibold">Savings cluster</h3><p className="mt-2 text-slate-600 dark:text-slate-300">Use safety buckets for near-term goals.</p><div className="mt-3 inline-link-row"><Link href="/in/banking" className="content-link-chip">Banking hub</Link><Link href="/in/best-fixed-deposits-india" className="content-link-chip">FD comparison page</Link></div></article>
+          <article className="decision-path-card"><h3 className="font-semibold">Tax cluster</h3><p className="mt-2 text-slate-600 dark:text-slate-300">Don’t mix tax panic with allocation decisions.</p><div className="mt-3 inline-link-row"><Link href="/in/tax" className="content-link-chip">India tax hub</Link><Link href="/in/blog/ppf-vs-elss" className="content-link-chip">PPF vs ELSS scenario</Link></div></article>
+        </div>
       </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">References</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">

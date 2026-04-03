@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'PPF vs ELSS: India Tax-Saving Decision Guide for 2026',
@@ -26,13 +27,7 @@ export default function PpfVsElssIndiaPage() {
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">PPF vs ELSS at a glance</h2>
         <div className="table-shell mt-4">
           <table className="comparison-table">
-            <thead>
-              <tr>
-                <th>Factor</th>
-                <th>PPF</th>
-                <th>ELSS</th>
-              </tr>
-            </thead>
+            <thead><tr><th>Factor</th><th>PPF</th><th>ELSS</th></tr></thead>
             <tbody>
               <tr><td>Lock-in</td><td>15 years (partial withdrawal rules apply)</td><td>3 years</td></tr>
               <tr><td>Return profile</td><td>Government-backed, stable but moderate</td><td>Equity-linked, can outperform over long periods with volatility</td></tr>
@@ -44,76 +39,57 @@ export default function PpfVsElssIndiaPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When PPF lock-in is a feature (not a problem)</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li>You want disciplined long-term savings that you are less likely to interrupt.</li>
-          <li>You already have volatile assets and need one stable tax-saving bucket in the portfolio.</li>
-          <li>Family priorities require predictability over maximum possible return.</li>
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When PPF lock-in becomes a friction point</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li>You may need flexible access in 3–6 years for education, business, or home down payment.</li>
-          <li>You are trying to build long-term inflation-beating growth with higher equity exposure.</li>
-          <li>You contribute only in March for tax-saving and skip year-round investing discipline.</li>
-        </ul>
-      </section>
-
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">A practical way to avoid March tax-saving panic</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          If your usual thought is “I want tax-saving but not if money gets locked too tightly,” split the ₹1.5 lakh target into monthly contributions. Keep a stable core in PPF, then direct the growth sleeve to ELSS only if your emergency fund is intact.
-        </p>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Timeline and break-even outcome (₹1.5 lakh/year)</h2>
+        <div className="table-shell mt-4">
+          <table className="comparison-table min-w-[720px]">
+            <thead><tr><th>Horizon</th><th>PPF at 7.1%</th><th>ELSS at 11% (illustrative)</th><th>Gap</th></tr></thead>
+            <tbody>
+              <tr><td>5 years</td><td>~₹8.8 lakh</td><td>~₹10.2 lakh</td><td>~₹1.4 lakh</td></tr>
+              <tr><td>10 years</td><td>~₹22.0 lakh</td><td>~₹30.5 lakh</td><td>~₹8.5 lakh</td></tr>
+              <tr><td>20 years</td><td>~₹65.4 lakh</td><td>~₹1.24 crore</td><td>~₹58.6 lakh</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-300">Break-even insight: if you need liquidity before year 5, high ELSS allocation can create timing risk. If your goal is 15+ years and you can tolerate volatility, growth differential becomes very large.</p>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Practical ₹1.5 lakh Section 80C allocation examples</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
-          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-            <h3 className="font-semibold text-slate-900 dark:text-slate-100">Stability-first household</h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">₹1,00,000 in PPF + ₹50,000 in ELSS SIP. Works for families that value peace of mind but still want some growth.</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-            <h3 className="font-semibold text-slate-900 dark:text-slate-100">Growth-first salaried professional</h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">₹50,000 in PPF + ₹1,00,000 in ELSS SIP. Better when emergency fund exists and equity volatility is acceptable.</p>
-          </article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700"><h3 className="font-semibold text-slate-900 dark:text-slate-100">Stability-first household</h3><p className="mt-2 text-sm text-slate-600 dark:text-slate-300">₹1,00,000 in PPF + ₹50,000 in ELSS SIP. Suitable when income is stable but liquidity comfort is low.</p></article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700"><h3 className="font-semibold text-slate-900 dark:text-slate-100">Growth-first salaried professional</h3><p className="mt-2 text-sm text-slate-600 dark:text-slate-300">₹50,000 in PPF + ₹1,00,000 in ELSS SIP. Suitable when emergency fund is strong and volatility tolerance is high.</p></article>
+        </div>
+      </section>
+
+      <DecisionSupportPanel
+        title="What happens if you choose wrong"
+        tone="amber"
+        points={[
+          { label: 'Too much PPF for a growth goal', text: 'You can lose long-term purchasing power; inflation-adjusted wealth may lag by tens of lakhs over 20 years.' },
+          { label: 'Too much ELSS for a near-term need', text: 'A market decline near withdrawal can force exits at poor values exactly when you need cash.' },
+          { label: 'March-only tax investing habit', text: 'Lump-sum panic decisions often create mismatch between risk profile and real household timeline.' }
+        ]}
+      />
+
+      <section className="cta-block">
+        <h2 className="cta-block-title">Build a tax plan that survives real life cashflow</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Set a monthly 80C contribution, then stress-test how much volatility you can tolerate without stopping contributions in bad market months.</p>
+        <div className="cta-block-actions">
+          <Link href="/in/tax" className="content-link-chip">Open India tax hub</Link>
+          <Link href="/in/old-vs-new-tax-regime" className="content-link-chip">Compare old vs new regime</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link-chip">Run SIP scenario</Link>
         </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Who should choose what?</h2>
-        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li><strong>Choose PPF-heavy</strong> if your family values capital safety and long-term discipline over chasing higher returns.</li>
-          <li><strong>Choose ELSS-heavy</strong> if you have 7+ year horizon, stable income, and are comfortable with temporary market falls.</li>
-          <li><strong>Choose a blend</strong> if you want tax-saving with both emotional comfort and growth potential.</li>
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Next India pages to use</h2>
-        <div className="mt-3 india-link-cluster text-sm">
-          <Link href="/in/blog/sip-vs-fd" className="content-link-chip">SIP vs FD</Link>
-          <Link href="/in/calculators/emi-calculator" className="content-link-chip">EMI calculator</Link>
-          <Link href="/in/calculators/sip-calculator" className="content-link-chip">SIP calculator</Link>
-          <Link href="/in/blog" className="content-link-chip">India blog hub</Link>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Next decision path</h2>
+        <div className="decision-path-grid mt-4 text-sm">
+          <article className="decision-path-card"><h3 className="font-semibold">Tax cluster</h3><p className="mt-2 text-slate-600 dark:text-slate-300">Finalize 80C + regime + contribution timing.</p><div className="mt-3 inline-link-row"><Link href="/in/tax" className="content-link-chip">Tax hub</Link><Link href="/in/80c-deductions-guide" className="content-link-chip">80C guide</Link></div></article>
+          <article className="decision-path-card"><h3 className="font-semibold">Investing cluster</h3><p className="mt-2 text-slate-600 dark:text-slate-300">Use ELSS as long-term growth sleeve only when fit.</p><div className="mt-3 inline-link-row"><Link href="/in/investing" className="content-link-chip">Investing hub</Link><Link href="/in/blog/sip-vs-fd" className="content-link-chip">SIP vs FD</Link></div></article>
+          <article className="decision-path-card"><h3 className="font-semibold">Savings cluster</h3><p className="mt-2 text-slate-600 dark:text-slate-300">Keep near-term goals separate from tax buckets.</p><div className="mt-3 inline-link-row"><Link href="/in/banking" className="content-link-chip">Banking hub</Link><Link href="/in/best-savings-accounts-india" className="content-link-chip">Savings options</Link></div></article>
         </div>
       </section>
-      <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 dark:border-blue-500/40 dark:bg-blue-900/20">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">FAQ: PPF vs ELSS</h2>
-        <dl className="mt-3 space-y-4 text-sm">
-          <div>
-            <dt className="font-semibold text-slate-900 dark:text-slate-100">Does ELSS replace PPF?</dt>
-            <dd className="mt-1 text-slate-700 dark:text-slate-300">Usually no. Many investors use PPF for stability and ELSS for long-term growth potential.</dd>
-          </div>
-          <div>
-            <dt className="font-semibold text-slate-900 dark:text-slate-100">Should all 80C money go in one option?</dt>
-            <dd className="mt-1 text-slate-700 dark:text-slate-300">Often a split is easier to sustain and aligns better with liquidity and risk comfort.</dd>
-          </div>
-        </dl>
-      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">References</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">

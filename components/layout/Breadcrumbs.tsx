@@ -3,11 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const segmentLabelMap: Record<string, string> = {
+const breadcrumbLabelMap: Record<string, string> = {
   in: 'India',
+  us: 'US',
   blog: 'Blog',
   calculators: 'Calculators',
   comparison: 'Comparisons',
+  investing: 'Investing',
+  savings: 'Savings',
+  tax: 'Tax',
+  loans: 'Loans',
   sip: 'SIP',
   fd: 'FD',
   ppf: 'PPF',
@@ -18,12 +23,16 @@ const segmentLabelMap: Record<string, string> = {
   'ppf-vs-elss': 'PPF vs ELSS'
 };
 
-const toLabel = (segment: string) =>
-  segment
+const toLabel = (segment: string) => {
+  const normalized = segment.toLowerCase();
+  if (breadcrumbLabelMap[normalized]) return breadcrumbLabelMap[normalized];
+
+  return segment
     .split('-')
-    .map((word) => segmentLabelMap[word.toLowerCase()] ?? (word[0]?.toUpperCase() + word.slice(1)))
+    .map((word) => breadcrumbLabelMap[word.toLowerCase()] ?? `${word[0]?.toUpperCase() ?? ''}${word.slice(1)}`)
     .join(' ')
     .replace(/^In$/, 'India');
+};
 
 export function Breadcrumbs() {
   const pathname = usePathname();
@@ -33,34 +42,24 @@ export function Breadcrumbs() {
 
   return (
     <nav aria-label="Breadcrumb" className="mb-6">
-      <ol className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-300">
+      <ol className="breadcrumb-shell">
         <li>
-          <Link href="/" className="utility-link text-xs">Home</Link>
+          <Link href="/" className="breadcrumb-link">Home</Link>
         </li>
-        {isIndiaPath && (
-          <li className="breadcrumb-item">
-            <span aria-hidden="true" className="breadcrumb-separator">/</span>
-            {segments.length === 1 ? (
-              <span aria-current="page" className="breadcrumb-current">India</span>
-            ) : (
-              <Link href="/in" className="breadcrumb-link">India</Link>
-            )}
-          </li>
-        )}
         {segments.map((segment, index) => {
           const href = `/${segments.slice(0, index + 1).join('/')}`;
           const isLast = index === segments.length - 1;
           const label = toLabel(segment);
 
           return (
-            <li key={href} className="flex items-center gap-2">
-              <span aria-hidden="true" className="text-slate-400 dark:text-slate-500">›</span>
+            <li key={href} className="breadcrumb-item">
+              <span aria-hidden="true" className="breadcrumb-separator">&gt;</span>
               {isLast ? (
-                <span aria-current="page" className="rounded-full border border-slate-300 bg-slate-100 px-2 py-0.5 font-semibold text-slate-800 dark:border-slate-600 dark:bg-slate-800 dark:text-white">
+                <span aria-current="page" className="breadcrumb-current">
                   {label}
                 </span>
               ) : (
-                <Link href={href} className="utility-link text-xs">{label}</Link>
+                <Link href={href} className="breadcrumb-link">{label}</Link>
               )}
             </li>
           );
