@@ -236,7 +236,7 @@ export default function BankingPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">FD vs liquidity: when each makes sense</h2>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">The question is not "what gives the best rate?" It is "what gives the best rate for this specific purpose and horizon?"</p>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">The question is not &ldquo;what gives the best rate?&rdquo; It is &ldquo;what gives the best rate for this specific purpose and horizon?&rdquo;</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">When FD is appropriate</h3>
@@ -259,7 +259,7 @@ export default function BankingPage() {
         </div>
         <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-sm dark:border-amber-500/30 dark:bg-amber-500/10">
           <p className="font-semibold text-amber-900 dark:text-amber-100">Yield optimization comes after resilience.</p>
-          <p className="mt-1 text-amber-900/80 dark:text-amber-100/80">A sweep-in FD earns FD-level rates while keeping your money accessible on demand. For emergency reserves, this is often the right structure. Compare your bank's sweep-in terms before booking a standard FD for money you might need quickly.</p>
+          <p className="mt-1 text-amber-900/80 dark:text-amber-100/80">A sweep-in FD earns FD-level rates while keeping your money accessible on demand. For emergency reserves, this is often the right structure. Compare your bank&rsquo;s sweep-in terms before booking a standard FD for money you might need quickly.</p>
         </div>
       </section>
 

@@ -128,7 +128,7 @@ export default function IndiaRealEstateHubPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Rent vs buy is a flexibility decision first, EMI decision second</h2>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">The most common buying mistake in India is treating "EMI ≈ rent" as sufficient reason to buy. The real comparison is about risk allocation, not monthly payments.</p>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">The most common buying mistake in India is treating &ldquo;EMI ≈ rent&rdquo; as sufficient reason to buy. The real comparison is about risk allocation, not monthly payments.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">What renting preserves</h3>
@@ -224,7 +224,7 @@ export default function IndiaRealEstateHubPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Down payment vs liquidity: when bigger is risky</h2>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A larger down payment reduces loan size and total interest. But it can also drain savings to dangerous levels. The question is not "how much can I put down?" — it is "how much can I put down while still having an emergency reserve?"</p>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A larger down payment reduces loan size and total interest. But it can also drain savings to dangerous levels. The question is not &ldquo;how much can I put down?&rdquo; — it is &ldquo;how much can I put down while still having an emergency reserve?&rdquo;</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>
             <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">When a larger down payment makes sense</h3>
