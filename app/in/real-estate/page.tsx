@@ -300,6 +300,28 @@ export default function IndiaRealEstateHubPage() {
         <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">Use the <Link href="/in/calculators/emi-calculator" className="content-link">EMI stress test calculator</Link> and the <Link href="/in/loans" className="content-link">loans hub fee section</Link> before running lender comparisons.</p>
       </section>
 
+      <section className="rounded-2xl border border-amber-200 bg-amber-50/40 p-6 dark:border-amber-500/30 dark:bg-amber-500/10">
+        <h2 className="text-xl font-semibold text-amber-900 dark:text-amber-100">Three minimum checks before signing anything</h2>
+        <p className="mt-2 text-sm text-amber-900/80 dark:text-amber-100/80">Run these three checks before any booking amount is paid. All three must pass. If any fails, do not book yet — resolve the gap first.</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <div className="rounded-xl border border-amber-300 bg-white p-4 dark:border-amber-500/40 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">1. Reserve after booking</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">After paying booking amount, stamp duty, registration, and interiors estimate — do you still have 6 months of core expenses in a liquid account?</p>
+            <p className="mt-2 text-xs font-semibold text-rose-700 dark:text-rose-400">If no: do not book. Build reserve first or reduce property budget.</p>
+          </div>
+          <div className="rounded-xl border border-amber-300 bg-white p-4 dark:border-amber-500/40 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">2. EMI survivability</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Run EMI at current rate and at +1%. Does the higher EMI still leave room for SIP, insurance, school fees, and monthly essentials — without cutting savings?</p>
+            <p className="mt-2 text-xs font-semibold text-rose-700 dark:text-rose-400">If no: reduce loan size. Rate resets happen — plan for them, not around them.</p>
+          </div>
+          <div className="rounded-xl border border-amber-300 bg-white p-4 dark:border-amber-500/40 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">3. Total cost, not just EMI</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Add EMI + maintenance + property tax + insurance. Does the total stay below 45% of take-home — even after a rate reset? EMI alone routinely understates true monthly housing cost by 30–50%.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-700 dark:text-rose-400">If no: model a smaller ticket or wait until income grows.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">India real estate journey: from ambition to decision</h2>
         <p className="mt-2 text-slate-700 dark:text-slate-300">

@@ -313,6 +313,38 @@ export default function BankingPage() {
         <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Rule of thumb: keep your 3–6 month emergency reserve in savings or sweep-in FD. Only park surplus beyond that in standard FDs.</p>
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How the system looks at your salary level</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">The same principles apply at every income level, but the failure modes and priorities differ. Here is what a stable banking system looks like — and where it usually breaks — at three common salary points.</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">₹8L annual salary</h3>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Take-home: ~₹55,000–₹60,000/month</p>
+            <p className="mt-2 text-sm text-rose-800 dark:text-rose-300"><strong>Typical failure:</strong> One account for everything. Salary arrives, bills leave, spending fills the gap. Month-end shortfall is ₹5,000–₹12,000 with no visible leak.</p>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>The problem:</strong> Surplus exists — roughly ₹8,000–₹12,000/month — but it is invisible and unprotected. Emergency reserve never gets built because there is no transfer rule to protect it.</p>
+            <p className="mt-2 text-sm text-emerald-800 dark:text-emerald-300"><strong>First move:</strong> Set a ₹5,000 auto-transfer to a separate savings account on salary day. Build to ₹1.2L–₹1.5L (3 months expenses) before any FD or SIP step.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">₹15L annual salary (dual-income)</h3>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Combined take-home: ~₹95,000–₹1,05,000/month</p>
+            <p className="mt-2 text-sm text-rose-800 dark:text-rose-300"><strong>Typical failure:</strong> Two salaries, two banks, no shared reserve. EMI debited from one account, daily spend from another. No single-income stress test ever run. One maternity leave or job gap triggers card rollover.</p>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>The problem:</strong> Two incomes feel safe but the system is not designed for one. Spending has crept up to match combined salaries. A joint reserve account has never been opened.</p>
+            <p className="mt-2 text-sm text-emerald-800 dark:text-emerald-300"><strong>First move:</strong> Open a shared reserve account and transfer ₹15,000–₹20,000/month combined. Then run the test: if one salary stopped today, which EMIs and bills survive?</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">₹25L annual salary</h3>
+            <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Take-home: ~₹1,55,000–₹1,70,000/month</p>
+            <p className="mt-2 text-sm text-rose-800 dark:text-rose-300"><strong>Typical failure:</strong> Four accounts at three banks, two RDs from different years, one FD that auto-renewed into the wrong tenure. Confusion every time a large expense hits.</p>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>The problem:</strong> Good income but the banking structure grew without design. No clear operating account, no reserve with rules, no SIP pipeline sized to survive a bad month. Surplus disappears into complexity.</p>
+            <p className="mt-2 text-sm text-emerald-800 dark:text-emerald-300"><strong>First move:</strong> Consolidate to one operating account and one reserve account. Document transfer rules. Audit all existing accounts and close dormant ones. Only add a new product after writing down its purpose and horizon.</p>
+          </article>
+        </div>
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-sm dark:border-amber-500/30 dark:bg-amber-500/10">
+          <p className="font-semibold text-amber-900 dark:text-amber-100">Good fit vs bad fit: one signal each.</p>
+          <p className="mt-1 text-amber-900/80 dark:text-amber-100/80"><strong>Good fit:</strong> you can automate salary-day transfers and not override them mid-month. <strong>Bad fit:</strong> monthly cashflow is too fragile — any unexpected ₹5,000–₹8,000 expense forces you to undo the automation. Fix cashflow before fixing the system design.</p>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">India banking journey: from stability to returns</h2>
         <p className="mt-2 text-slate-700 dark:text-slate-300">
