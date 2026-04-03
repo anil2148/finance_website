@@ -1,6 +1,84 @@
-import React from 'react';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { createPageMetadata } from '@/lib/seo';
+import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
-const BankingPage = () => {
+export const metadata: Metadata = createPageMetadata({
+  title: 'India Banking Hub 2026: Build Liquidity, Reduce Fee Leakage, and Choose Safer Account Systems',
+  description:
+    'Use this India banking hub to design emergency-liquidity buckets, reduce avoidable account fees, and connect decisions to calculators and comparison pages.',
+  pathname: '/in/banking'
+});
+
+const scenarioRows = [
+  {
+    salary: '₹35k–₹60k/month',
+    mistake: 'Keeping only one account and losing control of bill, spend, and emergency buckets.',
+    framework: 'Create separate salary, bills, and reserve buckets with automation on salary day.',
+    startingPlan: 'Start with 70/20/10 flow: essentials / goals / cushion with weekly checkpoint.'
+  },
+  {
+    salary: '₹60k–₹1.2L/month',
+    mistake: 'Chasing high rates while paying hidden penalties and missing liquidity windows.',
+    framework: 'Prioritize reliability and fee transparency before yield optimization.',
+    startingPlan: 'Audit quarterly charges, disable optional paid add-ons, and cap low-balance risk.'
+  },
+  {
+    salary: '₹1.2L+/month',
+    mistake: 'Over-fragmenting across products without a clear operating system.',
+    framework: 'Use one operating account, one reserve account, and deliberate investment pipelines.',
+    startingPlan: 'Document transfer rules and monthly exception handling for bad-month cashflow.'
+  }
+];
+
+const pathwayLinks = {
+  calculators: [
+    { href: '/in/calculators/emi-calculator', label: 'Stress-test EMI before increasing fixed obligations' },
+    { href: '/in/calculators/sip-calculator', label: 'Model SIP contribution ranges for long-term goals' }
+  ],
+  comparisons: [
+    { href: '/in/best-savings-accounts-india', label: 'Compare savings-account reliability, limits, and fee terms' },
+    { href: '/in/fixed-deposit-vs-sip-india', label: 'Compare FD vs SIP by liquidity and horizon fit' }
+  ],
+  deepGuides: [
+    { href: '/in/investing', label: 'India investing hub: process over prediction' },
+    { href: '/in/loans', label: 'India loans hub: safe borrowing thresholds' },
+    { href: '/in/blog', label: 'Read India-focused finance guides' }
+  ]
+};
+
+export default function BankingPage() {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'How should Indian households structure everyday banking?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Many households do best with separate salary, bills, and emergency buckets so monthly cashflow remains stable and spending leakage is easier to detect.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'What is a common banking mistake in India?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'A common mistake is optimizing for headline interest rates before checking fee terms, penalties, and liquidity needs for bad-month scenarios.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'When should I add more banking products?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Add new products only after your base banking workflow is stable, automated, and reviewed periodically for hidden charges and friction.'
+        }
+      }
+    ]
+  };
+
   return (
     <section className="space-y-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -99,6 +177,4 @@ const BankingPage = () => {
       <IndiaAuthorityNote />
     </section>
   );
-};
-
-export default BankingPage;
+}
