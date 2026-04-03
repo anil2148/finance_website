@@ -26,7 +26,7 @@ export default function TaxSlabs2026IndiaPage() {
       <section className="rounded-2xl border bg-white p-6 text-sm">
         <p><strong>Biggest mistake to avoid:</strong> deciding regime before validating documents and actual contributions.</p>
         <p className="mt-2"><strong>Best choice by scenario:</strong> when deductions are low, new regime typically wins on simplicity and net cashflow.</p>
-        <div className="mt-3 india-link-cluster"><Link href="/in/tax">Tax hub</Link><Link href="/in/old-vs-new-tax-regime">Old vs new regime</Link><Link href="/in/80c-deductions-guide">80C guide</Link><Link href="/in/calculators/sip-calculator">SIP calculator</Link><Link href="/in/best-investment-apps-india">Investment apps comparison</Link></div>
+        <div className="mt-3 india-link-cluster"><Link className="content-link-chip" href="/in/tax">Tax hub</Link><Link className="content-link-chip" href="/in/old-vs-new-tax-regime">Old vs new regime</Link><Link className="content-link-chip" href="/in/80c-deductions-guide">80C guide</Link><Link className="content-link-chip" href="/in/calculators/sip-calculator">SIP calculator</Link><Link className="content-link-chip" href="/in/best-investment-apps-india">Investment apps comparison</Link></div>
       </section>
       <IndiaAuthorityNote />
     </article>

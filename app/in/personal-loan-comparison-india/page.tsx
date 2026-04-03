@@ -53,13 +53,13 @@ export default function PersonalLoanComparisonIndiaPage() {
         </ul>
         <p className="mt-3"><strong>Counterintuitive insight:</strong> temporary spending cuts plus partial prepayment often beat refinancing into a longer tenure.</p>
         <div className="mt-3 india-link-cluster">
-          <Link href="/in/loans">loans hub for debt decision flow</Link>
-          <Link href="/in/home-loan-interest-rates-india">compare home loan rates before top-up loans</Link>
-          <Link href="/in/best-credit-cards-india">use card strategy to avoid revolving debt</Link>
-          <Link href="/in/best-savings-accounts-india">rebuild liquidity buffer in savings accounts</Link>
-          <Link href="/in/fixed-deposit-vs-sip-india">allocate surplus after debt stabilization</Link>
-          <Link href="/in/calculators/emi-calculator">run EMI affordability stress tests</Link>
-          <Link href="/in/calculators/sip-calculator">model post-debt investing restart in ₹</Link>
+          <Link className="content-link-chip" href="/in/loans">loans hub for debt decision flow</Link>
+          <Link className="content-link-chip" href="/in/home-loan-interest-rates-india">compare home loan rates before top-up loans</Link>
+          <Link className="content-link-chip" href="/in/best-credit-cards-india">use card strategy to avoid revolving debt</Link>
+          <Link className="content-link-chip" href="/in/best-savings-accounts-india">rebuild liquidity buffer in savings accounts</Link>
+          <Link className="content-link-chip" href="/in/fixed-deposit-vs-sip-india">allocate surplus after debt stabilization</Link>
+          <Link className="content-link-chip" href="/in/calculators/emi-calculator">run EMI affordability stress tests</Link>
+          <Link className="content-link-chip" href="/in/calculators/sip-calculator">model post-debt investing restart in ₹</Link>
         </div>
       </section>
       <IndiaAuthorityNote />

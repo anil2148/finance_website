@@ -13,6 +13,7 @@ const requiredRegressionPages = [
 ];
 
 const allowedLinkTokens = ['content-link', 'content-link-chip', 'utility-link', 'link-card', 'underline', 'prose-a:', 'btn-primary', 'comparison-cta'];
+const requiredClassTokens = ['content-link', 'content-link-chip', 'utility-link', 'link-card', 'btn-primary', 'comparison-cta'];
 
 function walk(dir) {
   if (!fs.existsSync(dir)) return [];
@@ -57,8 +58,12 @@ for (const file of allFiles) {
       failures.push(`[weak-link-style] ${rel} :: ${tag[0]}`);
     }
 
-    if (!classValue && !source.includes('india-link-cluster') && !source.includes('editorial-content')) {
-      failures.push(`[unstyled-link-without-container] ${rel} :: ${tag[0]}`);
+    if (!classValue) {
+      failures.push(`[missing-link-class] ${rel} :: ${tag[0]}`);
+    }
+
+    if (classValue && !requiredClassTokens.some((token) => classValue.includes(token)) && !classValue.includes('underline')) {
+      failures.push(`[link-not-using-shared-token] ${rel} :: ${tag[0]}`);
     }
   }
 

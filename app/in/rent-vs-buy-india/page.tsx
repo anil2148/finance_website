@@ -46,13 +46,13 @@ export default function RentVsBuyIndiaPage() {
         <p className="mt-2">“EMI equals rent” is not a buy signal. Total ownership cost and liquidity lock-in matter more.</p>
         <p className="mt-2"><strong>Real-world FY 2025–26 example:</strong> a ₹12 lakh salaried employee in Bengaluru may still prefer renting if down payment wipes out emergency buffer.</p>
         <div className="mt-3 india-link-cluster">
-          <Link href="/in/real-estate">real-estate hub for complete buy workflow</Link>
-          <Link href="/in/home-affordability-india">check home affordability in India</Link>
-          <Link href="/in/home-loan-interest-rates-india">compare home loan rates and reset risk</Link>
-          <Link href="/in/personal-loan-comparison-india">avoid layering expensive personal debt on top</Link>
-          <Link href="/in/fixed-deposit-vs-sip-india">decide where down-payment money should sit</Link>
-          <Link href="/in/calculators/emi-calculator">run EMI stress test with +1% interest</Link>
-          <Link href="/in/calculators/sip-calculator">model opportunity-cost of down payment</Link>
+          <Link className="content-link-chip" href="/in/real-estate">real-estate hub for complete buy workflow</Link>
+          <Link className="content-link-chip" href="/in/home-affordability-india">check home affordability in India</Link>
+          <Link className="content-link-chip" href="/in/home-loan-interest-rates-india">compare home loan rates and reset risk</Link>
+          <Link className="content-link-chip" href="/in/personal-loan-comparison-india">avoid layering expensive personal debt on top</Link>
+          <Link className="content-link-chip" href="/in/fixed-deposit-vs-sip-india">decide where down-payment money should sit</Link>
+          <Link className="content-link-chip" href="/in/calculators/emi-calculator">run EMI stress test with +1% interest</Link>
+          <Link className="content-link-chip" href="/in/calculators/sip-calculator">model opportunity-cost of down payment</Link>
         </div>
       </section>
       <IndiaAuthorityNote />
