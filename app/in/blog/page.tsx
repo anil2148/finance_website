@@ -17,10 +17,10 @@ const indiaGuides = [
 ];
 
 const pathways = [
-  { label: 'Run EMI stress test (+0.5%, +1.0%)', href: '/in/calculators/emi-calculator' },
-  { label: 'Model SIP at ₹5,000 / ₹10,000 / ₹25,000', href: '/in/calculators/sip-calculator' },
-  { label: 'Choose SIP vs FD by timeline', href: '/in/blog/sip-vs-fd' },
-  { label: 'Build 80C allocation plan', href: '/in/blog/ppf-vs-elss' }
+  { label: 'Run EMI stress test (+0.5%, +1.0%)', href: '/in/calculators/emi-calculator', group: 'Loan pressure check' },
+  { label: 'Model SIP at ₹5,000 / ₹10,000 / ₹25,000', href: '/in/calculators/sip-calculator', group: 'Investing setup' },
+  { label: 'Choose SIP vs FD by timeline', href: '/in/blog/sip-vs-fd', group: 'Allocation decision' },
+  { label: 'Build 80C allocation plan', href: '/in/blog/ppf-vs-elss', group: 'Tax optimization' }
 ];
 
 export const metadata: Metadata = createPageMetadata({
@@ -43,13 +43,16 @@ export default function IndiaBlogHubPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Start with your immediate blocker</h2>
-        <div className="mt-3 india-link-cluster text-sm">
+        <ul className="mt-3 grid gap-3 text-sm sm:grid-cols-2" aria-label="Immediate blocker pathways">
           {pathways.map((item) => (
-            <Link key={item.href} href={item.href} className="content-link-chip">
-              {item.label}
-            </Link>
+            <li key={item.href}>
+              <Link href={item.href} className="link-card rounded-lg p-4 no-underline">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.group}</p>
+                <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{item.label}</p>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">

@@ -61,6 +61,12 @@ const decisionLinks = [
   { label: 'India calculators hub', href: '/in/calculators' }
 ];
 
+const heroActions = [
+  { href: '/in/calculators/emi-calculator', label: 'Start with EMI planning', tone: 'primary' as const },
+  { href: '/in/old-vs-new-tax-regime', label: 'Calculate your tax under new regime', tone: 'secondary' as const },
+  { href: '/in/best-savings-accounts-india', label: 'Compare top Indian savings accounts', tone: 'secondary' as const }
+];
+
 const trustSignals = [
   { label: 'Educational content; not investment advice', href: '/financial-disclaimer' },
   { label: 'Editorial standards and review process', href: '/editorial-policy' },
@@ -119,17 +125,22 @@ export function IndiaHomepageLayout() {
             <p className="max-w-xl text-blue-100/95">
               Plan SIPs, compare FD vs SIP honestly, evaluate PPF vs ELSS by timeline, and stress-test EMI before committing to a home loan.
             </p>
-            <div className="india-link-cluster">
-              <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950" href="/in/calculators/emi-calculator">
-                Start with EMI planning
-              </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950" href="/in/old-vs-new-tax-regime">
-                Calculate your tax under new regime
-              </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950" href="/in/best-savings-accounts-india">
-                Compare top Indian savings accounts
-              </Link>
-            </div>
+            <ul className="grid gap-2 sm:grid-cols-3" aria-label="India hero actions">
+              {heroActions.map((action) => (
+                <li key={action.href}>
+                  <Link
+                    className={
+                      action.tone === 'primary'
+                        ? 'block rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950'
+                        : 'block rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950'
+                    }
+                    href={action.href}
+                  >
+                    {action.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
             <p className="text-xs text-blue-200">Last India hub review: April 2, 2026 • Educational content only; verify rates, tax rules, and provider terms before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
@@ -220,13 +231,15 @@ export function IndiaHomepageLayout() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular India money decisions</h2>
-        <div className="mt-3 india-link-cluster text-sm">
+        <ul className="mt-3 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3" aria-label="Popular India money decision links">
           {decisionLinks.map((item) => (
-            <Link key={item.href} href={item.href} className="content-link-chip">
-              {item.label}
-            </Link>
+            <li key={item.href}>
+              <Link href={item.href} className="link-card rounded-lg p-3 text-sm font-semibold no-underline">
+                {item.label}
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
