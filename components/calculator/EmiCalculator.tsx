@@ -1,13 +1,16 @@
-import React from 'react';
+'use client';
 
-const EmiCalculator = ({ isIndiaCurrency }) => {
-    const principal = isIndiaCurrency ? 5000000 : 350000;
-    const rate = isIndiaCurrency ? 8 : 6.8;
-    const years = isIndiaCurrency ? 20 : 30;
+import { useMemo, useState } from 'react';
+import { FinanceLineChart } from '@/components/charts/FinanceLineChart';
+import { usePreferences } from '@/components/providers/PreferenceProvider';
+import { getCurrencySymbol, getLocaleForCurrency } from '@/lib/utils';
 
-    // Other calculator logic
+type CalculatorType = 'loan' | 'mortgage' | 'compound' | 'retirement' | 'networth';
 
-    const title = isIndiaCurrency ? 'Home Loan EMI Calculator (India)' : 'Home Loan EMI Calculator';
+type GrowthPoint = {
+  year: number;
+  value: number;
+};
 
 function buildLoanProjection(principal: number, monthlyPayment: number, annualRate: number, years: number): GrowthPoint[] {
   const monthlyRate = annualRate / 12 / 100;
@@ -30,6 +33,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   const { currency, formatCurrency } = usePreferences();
   const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
+
   const [principal, setPrincipal] = useState(
     type === 'mortgage'
       ? (isIndiaCurrency ? 5000000 : 350000)
@@ -37,32 +41,21 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         ? (isIndiaCurrency ? 500000 : 10000)
         : 10000
   );
-  const [rate, setRate] = useState(
-    type === 'mortgage'
-      ? (isIndiaCurrency ? 8 : 6.8)
-      : type === 'loan'
-        ? (isIndiaCurrency ? 10 : 10)
-        : 10
-  );
-  const [years, setYears] = useState(
-    type === 'mortgage'
-      ? (isIndiaCurrency ? 20 : 30)
-      : type === 'loan'
-        ? 5
-        : 5
-  );
+  const [rate, setRate] = useState(type === 'mortgage' ? (isIndiaCurrency ? 8 : 6.8) : 10);
+  const [years, setYears] = useState(type === 'mortgage' ? (isIndiaCurrency ? 20 : 30) : 5);
   const [contribution, setContribution] = useState(type === 'retirement' ? 800 : 500);
   const [assets, setAssets] = useState(100000);
   const [liabilities, setLiabilities] = useState(25000);
 
   const result = useMemo(() => {
     if (type === 'networth') {
+      const value = assets - liabilities;
       return {
-        value: assets - liabilities,
-        chartData: [
-          { year: 1, value: assets },
-          { year: 2, value: liabilities },
-          { year: 3, value: assets - liabilities }
+        value,
+        points: [
+          { name: 'Assets', value: assets },
+          { name: 'Liabilities', value: liabilities },
+          { name: 'Net Worth', value }
         ]
       };
     }
@@ -78,21 +71,24 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
       return {
         value: emi,
-        chartData: buildLoanProjection(principal, emi, rate, years)
+        points: buildLoanProjection(principal, emi, rate, years).map((point) => ({
+          name: `Year ${point.year}`,
+          value: point.value
+        }))
       };
     }
 
-    const growthData: GrowthPoint[] = [];
+    const points: Array<{ name: string; value: number }> = [];
     let futureValue = principal;
 
     for (let y = 1; y <= years; y++) {
       futureValue = futureValue * (1 + rate / 100) + contribution * 12;
-      growthData.push({ year: y, value: Number(futureValue.toFixed(0)) });
+      points.push({ name: `Year ${y}`, value: Number(futureValue.toFixed(0)) });
     }
 
     return {
-      value: growthData.at(-1)?.value ?? 0,
-      chartData: growthData
+      value: points.at(-1)?.value ?? 0,
+      points
     };
   }, [assets, contribution, liabilities, principal, rate, type, years]);
 
@@ -102,9 +98,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
       : type === 'loan'
         ? (isIndiaCurrency ? 'Loan EMI Calculator (India)' : 'Loan EMI Calculator')
         : type === 'compound'
-          ? isIndiaCurrency
-            ? 'SIP Calculator (India)'
-            : 'Compound Interest Calculator'
+          ? (isIndiaCurrency ? 'SIP Calculator (India)' : 'Compound Interest Calculator')
           : type === 'retirement'
             ? 'Retirement Calculator'
             : 'Net Worth Calculator';
@@ -115,35 +109,65 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
       : type === 'loan'
         ? 'Calculate your monthly EMI with principal, rate, and tenure inputs.'
         : type === 'compound'
-          ? isIndiaCurrency
+          ? (isIndiaCurrency
             ? 'Forecast SIP growth with monthly ₹ contributions and return assumptions.'
-            : 'Forecast investment growth with compounding and monthly contributions.'
+            : 'Forecast investment growth with compounding and monthly contributions.')
           : type === 'retirement'
             ? 'Project retirement corpus using expected return and annual timeline.'
             : 'Calculate net worth by subtracting liabilities from assets.';
 
-  const principalLabel =
-    type === 'mortgage'
-      ? `Home Loan Amount (${currencySymbol})`
-      : type === 'compound'
-        ? `Starting Amount (${currencySymbol})`
-        : `Principal (${currencySymbol})`;
-
-  const rateLabel = type === 'mortgage' ? 'Interest Rate (% p.a.)' : 'Annual Rate (%)';
-  const yearsLabel = type === 'mortgage' ? 'Loan Tenure (Years)' : 'Years';
-  const contributionLabel =
-    type === 'compound' && isIndiaCurrency
-      ? `Monthly SIP Amount (${currencySymbol})`
-      : `Monthly Contribution (${currencySymbol})`;
-
   return (
-    <div className="grid gap-4 lg:grid-cols-2">
-      <div className="card space-y-4">
-        <div className="space-y-1">
-          <h2 className="text-lg font-semibold">{title}</h2>
-          <p className="text-sm text-slate-600">{description}</p>
+    <section className="grid gap-4 lg:grid-cols-2">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{description}</p>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {type === 'networth' ? (
+            <>
+              <label className="text-sm text-slate-700 dark:text-slate-300">
+                Assets ({currencySymbol})
+                <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={assets} onChange={(event) => setAssets(Number(event.target.value))} />
+              </label>
+              <label className="text-sm text-slate-700 dark:text-slate-300">
+                Liabilities ({currencySymbol})
+                <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={liabilities} onChange={(event) => setLiabilities(Number(event.target.value))} />
+              </label>
+            </>
+          ) : (
+            <>
+              <label className="text-sm text-slate-700 dark:text-slate-300">
+                Principal ({currencySymbol})
+                <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={principal} onChange={(event) => setPrincipal(Number(event.target.value))} />
+              </label>
+              <label className="text-sm text-slate-700 dark:text-slate-300">
+                Annual Rate (%)
+                <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={rate} onChange={(event) => setRate(Number(event.target.value))} />
+              </label>
+              <label className="text-sm text-slate-700 dark:text-slate-300">
+                Years
+                <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={years} onChange={(event) => setYears(Math.max(1, Number(event.target.value)))} />
+              </label>
+              {(type === 'compound' || type === 'retirement') && (
+                <label className="text-sm text-slate-700 dark:text-slate-300">
+                  Monthly Contribution ({currencySymbol})
+                  <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={contribution} onChange={(event) => setContribution(Number(event.target.value))} />
+                </label>
+              )}
+            </>
+          )}
         </div>
-    );
-};
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <p className="text-sm text-slate-500 dark:text-slate-400">Result</p>
+        <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(result.value)}</p>
+        <div className="mt-4">
+          <FinanceLineChart data={result.points} dataKey="value" />
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default EmiCalculator;
