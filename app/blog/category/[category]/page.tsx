@@ -75,7 +75,7 @@ const categoryJourneyLinks: Record<string, Array<{ href: string; label: string }
   ],
   mortgages: [
     { href: '/learn/loans', label: 'Mortgage & Loans Hub' },
-    { href: '/calculators/mortgage-calculator', label: 'Home Loan EMI Calculator (India)' },
+    { href: '/calculators/mortgage-calculator', label: 'Mortgage Calculator' },
     { href: '/compare/mortgage-rate-comparison', label: 'Compare Mortgage Rates' }
   ],
   'credit-cards': [
