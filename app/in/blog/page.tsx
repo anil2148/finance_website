@@ -31,7 +31,7 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function IndiaBlogHubPage() {
   return (
-    <section className="space-y-6">
+    <section className="article-prose space-y-6">
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">FinanceSphere India Blog</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">India money guides built for real household decisions</h1>
