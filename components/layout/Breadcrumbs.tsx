@@ -20,7 +20,7 @@ export function Breadcrumbs() {
     <nav aria-label="Breadcrumb" className="mb-6 text-xs text-slate-500 dark:text-slate-300">
       <ol className="flex flex-wrap items-center gap-2">
         <li>
-          <Link href="/" className="hover:text-brand">Home</Link>
+          <Link href="/" className="utility-link text-xs">Home</Link>
         </li>
         {segments.map((segment, index) => {
           const href = `/${segments.slice(0, index + 1).join('/')}`;
@@ -28,8 +28,8 @@ export function Breadcrumbs() {
 
           return (
             <li key={href} className="flex items-center gap-2">
-              <span>/</span>
-              {isLast ? <span className="font-medium text-slate-700 dark:text-white">{toLabel(segment)}</span> : <Link href={href} className="hover:text-brand">{toLabel(segment)}</Link>}
+              <span aria-hidden="true" className="text-slate-400 dark:text-slate-500">/</span>
+              {isLast ? <span aria-current="page" className="rounded-full bg-slate-200 px-2 py-0.5 font-medium text-slate-800 dark:bg-slate-700 dark:text-white">{toLabel(segment)}</span> : <Link href={href} className="utility-link text-xs">{toLabel(segment)}</Link>}
             </li>
           );
         })}

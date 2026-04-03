@@ -54,14 +54,14 @@ export default function BestSavingsIndiaPage() {
           <li>Convenience-first strategy fails if you ignore idle-cash opportunity cost for years.</li>
           <li>Branch-first choice fails when digital transfer limits create friction during emergencies.</li>
         </ul>
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/in/banking" className="text-blue-700">India banking hub decision path</Link>
-          <Link href="/in/best-fixed-deposits-india" className="text-blue-700">compare fixed deposits in India</Link>
-          <Link href="/in/best-credit-cards-india" className="text-blue-700">match card strategy to savings behavior</Link>
-          <Link href="/in/fixed-deposit-vs-sip-india" className="text-blue-700">decide FD vs SIP after emergency fund</Link>
-          <Link href="/in/personal-loan-comparison-india" className="text-blue-700">reduce debt-cost leakage before investing</Link>
-          <Link href="/in/calculators/sip-calculator" className="text-blue-700">estimate SIP growth from surplus cash</Link>
-          <Link href="/in/calculators/emi-calculator" className="text-blue-700">check EMI safety before locking surplus</Link>
+        <div className="mt-3 india-link-cluster">
+          <Link href="/in/banking" className="content-link">India banking hub decision path</Link>
+          <Link href="/in/best-fixed-deposits-india" className="content-link">compare fixed deposits in India</Link>
+          <Link href="/in/best-credit-cards-india" className="content-link">match card strategy to savings behavior</Link>
+          <Link href="/in/fixed-deposit-vs-sip-india" className="content-link">decide FD vs SIP after emergency fund</Link>
+          <Link href="/in/personal-loan-comparison-india" className="content-link">reduce debt-cost leakage before investing</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link">estimate SIP growth from surplus cash</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link">check EMI safety before locking surplus</Link>
         </div>
       </section>
     </article>

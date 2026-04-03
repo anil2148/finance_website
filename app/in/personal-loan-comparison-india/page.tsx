@@ -52,7 +52,7 @@ export default function PersonalLoanComparisonIndiaPage() {
           <li>Debt consolidation fails when spending behavior is unchanged after loan sanction.</li>
         </ul>
         <p className="mt-3"><strong>Counterintuitive insight:</strong> temporary spending cuts plus partial prepayment often beat refinancing into a longer tenure.</p>
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-3 india-link-cluster">
           <Link href="/in/loans">loans hub for debt decision flow</Link>
           <Link href="/in/home-loan-interest-rates-india">compare home loan rates before top-up loans</Link>
           <Link href="/in/best-credit-cards-india">use card strategy to avoid revolving debt</Link>

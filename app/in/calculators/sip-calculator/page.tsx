@@ -46,9 +46,9 @@ export default function IndiaSipCalculatorPage() {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Use with these India decisions</h2>
         <div className="mt-3 flex flex-wrap gap-4 text-sm">
-          <Link href="/in/blog/sip-vs-fd" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">SIP vs FD comparison</Link>
-          <Link href="/in/blog/ppf-vs-elss" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">PPF vs ELSS comparison</Link>
-          <Link href="/in/calculators/emi-calculator" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Home-loan EMI planning</Link>
+          <Link href="/in/blog/sip-vs-fd" className="content-link">SIP vs FD comparison</Link>
+          <Link href="/in/blog/ppf-vs-elss" className="content-link">PPF vs ELSS comparison</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link">Home-loan EMI planning</Link>
         </div>
       </section>
     </section>

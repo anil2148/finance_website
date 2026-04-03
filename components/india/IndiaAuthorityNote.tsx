@@ -8,8 +8,8 @@ export function IndiaAuthorityNote() {
         Written by Anil Chowdhary — Lead Software Engineer building data-driven finance tools.
       </p>
       <p className="mt-2 text-xs">
-        References: <Link className="underline" href="https://www.rbi.org.in/" target="_blank" rel="noreferrer">Reserve Bank of India (RBI)</Link> and{' '}
-        <Link className="underline" href="https://incometaxindia.gov.in/" target="_blank" rel="noreferrer">Income Tax Department India</Link>.
+        References: <Link className="content-link" href="https://www.rbi.org.in/" target="_blank" rel="noreferrer">Reserve Bank of India (RBI)</Link> and{' '}
+        <Link className="content-link" href="https://incometaxindia.gov.in/" target="_blank" rel="noreferrer">Income Tax Department India</Link>.
       </p>
     </aside>
   );

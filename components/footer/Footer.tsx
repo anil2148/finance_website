@@ -71,8 +71,8 @@ export function Footer() {
             We may earn compensation from partners, but pages are built to prioritize user fit, clarity, and downside-risk awareness over conversion pressure.
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
-            <Link href="/editorial-policy" className="rounded-full border border-slate-300 px-2 py-1 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600">Editorial policy</Link>
-            <Link href="/affiliate-disclosure" className="rounded-full border border-slate-300 px-2 py-1 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600">Affiliate disclosure</Link>
+            <Link href="/editorial-policy" className="content-link-chip text-xs">Editorial policy</Link>
+            <Link href="/affiliate-disclosure" className="content-link-chip text-xs">Affiliate disclosure</Link>
           </div>
         </section>
 
@@ -81,7 +81,7 @@ export function Footer() {
           <ul className="space-y-1 text-sm">
             {contextualPrimaryLinks.map((link) => (
               <li key={link.href}>
-                <Link className="font-medium hover:text-slate-900 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
+                <Link className="utility-link font-medium" href={link.href}>{link.label}</Link>
               </li>
             ))}
           </ul>
@@ -92,7 +92,7 @@ export function Footer() {
           <ul className="space-y-1 text-sm">
             {contextualDiscoveryLinks.map((link) => (
               <li key={link.href}>
-                <Link className="font-medium hover:text-slate-900 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
+                <Link className="utility-link font-medium" href={link.href}>{link.label}</Link>
               </li>
             ))}
           </ul>
@@ -103,12 +103,12 @@ export function Footer() {
           <ul className="space-y-1 text-sm">
             {legalLinks.map((link) => (
               <li key={link.href}>
-                <Link className="hover:text-slate-900 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
+                <Link className="utility-link" href={link.href}>{link.label}</Link>
               </li>
             ))}
             {supportLinks.map((link) => (
               <li key={link.href}>
-                <Link className="font-medium hover:text-slate-900 dark:hover:text-slate-100" href={link.href}>{link.label}</Link>
+                <Link className="utility-link font-medium" href={link.href}>{link.label}</Link>
               </li>
             ))}
           </ul>

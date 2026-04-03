@@ -47,14 +47,14 @@ export default function FdVsSipIndiaMoneyPage() {
         </ul>
         <p className="mt-3">“FD is safe” and “SIP is always better” are both incomplete. The winner changes by timeline certainty and withdrawal risk.</p>
         <p className="mt-2"><strong>Practical insight:</strong> many households do better with a rule-based split like ₹12,000 SIP + ₹8,000 FD than with all-in switches every market cycle.</p>
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/in/investing" className="text-blue-700">India investing hub for allocation rules</Link>
-          <Link href="/in/banking" className="text-blue-700">India banking hub for liquidity setup</Link>
-          <Link href="/in/best-fixed-deposits-india" className="text-blue-700">compare fixed deposits in India</Link>
-          <Link href="/in/best-investment-apps-india" className="text-blue-700">compare investment apps for SIP execution</Link>
-          <Link href="/in/blog/sip-vs-fd" className="text-blue-700">read SIP vs FD strategy guide</Link>
-          <Link href="/in/calculators/sip-calculator" className="text-blue-700">run SIP return scenarios in ₹</Link>
-          <Link href="/in/calculators/emi-calculator" className="text-blue-700">protect EMI commitments before taking risk</Link>
+        <div className="mt-3 india-link-cluster">
+          <Link href="/in/investing" className="content-link">India investing hub for allocation rules</Link>
+          <Link href="/in/banking" className="content-link">India banking hub for liquidity setup</Link>
+          <Link href="/in/best-fixed-deposits-india" className="content-link">compare fixed deposits in India</Link>
+          <Link href="/in/best-investment-apps-india" className="content-link">compare investment apps for SIP execution</Link>
+          <Link href="/in/blog/sip-vs-fd" className="content-link">read SIP vs FD strategy guide</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link">run SIP return scenarios in ₹</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link">protect EMI commitments before taking risk</Link>
         </div>
       </section>
       <IndiaAuthorityNote />

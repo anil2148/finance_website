@@ -45,7 +45,7 @@ export default function RentVsBuyIndiaPage() {
         <h2 className="text-xl font-semibold">What most people get wrong</h2>
         <p className="mt-2">“EMI equals rent” is not a buy signal. Total ownership cost and liquidity lock-in matter more.</p>
         <p className="mt-2"><strong>Real-world FY 2025–26 example:</strong> a ₹12 lakh salaried employee in Bengaluru may still prefer renting if down payment wipes out emergency buffer.</p>
-        <div className="mt-3 flex flex-wrap gap-3">
+        <div className="mt-3 india-link-cluster">
           <Link href="/in/real-estate">real-estate hub for complete buy workflow</Link>
           <Link href="/in/home-affordability-india">check home affordability in India</Link>
           <Link href="/in/home-loan-interest-rates-india">compare home loan rates and reset risk</Link>

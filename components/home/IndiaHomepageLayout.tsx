@@ -119,7 +119,7 @@ export function IndiaHomepageLayout() {
             <p className="max-w-xl text-blue-100/95">
               Plan SIPs, compare FD vs SIP honestly, evaluate PPF vs ELSS by timeline, and stress-test EMI before committing to a home loan.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="india-link-cluster">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/in/calculators/emi-calculator">
                 Start with EMI planning
               </Link>
@@ -219,7 +219,7 @@ export function IndiaHomepageLayout() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular India money decisions</h2>
-        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+        <div className="mt-3 india-link-cluster text-sm">
           {decisionLinks.map((item) => (
             <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
               {item.label}

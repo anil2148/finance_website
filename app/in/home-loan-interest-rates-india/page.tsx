@@ -49,14 +49,14 @@ export default function HomeLoanRatesIndiaPage() {
           <li>Fixed-EMI assumptions fail during RBI policy-cycle shocks and floating-rate resets.</li>
         </ul>
 
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/in/loans" className="text-blue-700">India loans hub for debt strategy</Link>
-          <Link href="/in/real-estate" className="text-blue-700">India real-estate decision hub</Link>
-          <Link href="/in/rent-vs-buy-india" className="text-blue-700">rent vs buy decision framework in India</Link>
-          <Link href="/in/home-affordability-india" className="text-blue-700">test home affordability before approval</Link>
-          <Link href="/in/personal-loan-comparison-india" className="text-blue-700">compare personal loans for short-tenure needs</Link>
-          <Link href="/in/calculators/emi-calculator" className="text-blue-700">run EMI stress tests at +0.5% and +1.0%</Link>
-          <Link href="/in/calculators/sip-calculator" className="text-blue-700">compare prepayment vs SIP opportunity cost</Link>
+        <div className="mt-3 india-link-cluster">
+          <Link href="/in/loans" className="content-link">India loans hub for debt strategy</Link>
+          <Link href="/in/real-estate" className="content-link">India real-estate decision hub</Link>
+          <Link href="/in/rent-vs-buy-india" className="content-link">rent vs buy decision framework in India</Link>
+          <Link href="/in/home-affordability-india" className="content-link">test home affordability before approval</Link>
+          <Link href="/in/personal-loan-comparison-india" className="content-link">compare personal loans for short-tenure needs</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link">run EMI stress tests at +0.5% and +1.0%</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link">compare prepayment vs SIP opportunity cost</Link>
         </div>
       </section>
       <IndiaAuthorityNote />
