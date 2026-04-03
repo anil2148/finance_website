@@ -2,12 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import redirectMap from '@/content/audit/blog-redirect-map.json';
 import { getCategories, getPosts, getTags, normalizeTag } from '@/lib/markdown';
-import { isIndexableRoute } from '@/lib/seo-locale-routes';
+import { getCanonicalUrl, isIndexableRoute } from '@/lib/seo-locale-routes';
 import { shouldIncludeInSitemap, type RouteMeta } from '@/lib/seo/sitemap-filter';
-
-import { generateStaticParams as generateLearnStaticParams } from '@/app/learn/[cluster]/page';
-import { generateStaticParams as generateCreditCardRegionParams } from '@/app/compare/credit-cards-for/[region]/page';
-import { generateStaticParams as generateInvestmentAudienceParams } from '@/app/compare/best-investment-apps/[audience]/page';
 
 export type SitemapEntry = {
   pathname: string;
@@ -19,6 +15,10 @@ export type SitemapRegion = 'us' | 'in';
 const APP_DIR = path.join(process.cwd(), 'app');
 const BLOG_DIR = path.join(process.cwd(), 'content/blog');
 const BUILD_TIMESTAMP = new Date();
+
+const LEARN_CLUSTERS = ['budgeting', 'credit-cards', 'investing', 'loans', 'passive-income'];
+const CREDIT_CARD_REGIONS = ['california', 'texas', 'florida'];
+const INVESTMENT_AUDIENCES = ['beginners', 'students', 'professionals'];
 
 const LEGACY_REDIRECT_ROUTES = new Set<string>([
   '/compare/best-credit-cards-2026',
@@ -79,6 +79,10 @@ function isRegionMatch(pathname: string, region: SitemapRegion): boolean {
   return pathname !== '/in' && !pathname.startsWith('/in/');
 }
 
+function isCanonicalForRegion(pathname: string, region: SitemapRegion): boolean {
+  return getCanonicalUrl(pathname, region) === pathname;
+}
+
 function isSitemapEligible(pathname: string, meta?: RouteMeta): boolean {
   if (isLegacyRedirectRoute(pathname)) return false;
   if (!isIndexableRoute(pathname)) return false;
@@ -134,8 +138,8 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
     }))
     .filter((entry) => isSitemapEligible(entry.pathname));
 
-  const learnEntries = generateLearnStaticParams()
-    .map(({ cluster }) => ({
+  const learnEntries = LEARN_CLUSTERS
+    .map((cluster) => ({
       pathname: `/learn/${cluster}`,
       lastModified: BUILD_TIMESTAMP,
       meta: {
@@ -144,15 +148,15 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
     }))
     .filter((entry) => isSitemapEligible(entry.pathname, entry.meta));
 
-  const regionEntries = generateCreditCardRegionParams()
-    .map(({ region }) => ({
+  const regionEntries = CREDIT_CARD_REGIONS
+    .map((region) => ({
       pathname: `/compare/credit-cards-for/${region}`,
       lastModified: BUILD_TIMESTAMP
     }))
     .filter((entry) => isSitemapEligible(entry.pathname));
 
-  const audienceEntries = generateInvestmentAudienceParams()
-    .map(({ audience }) => ({
+  const audienceEntries = INVESTMENT_AUDIENCES
+    .map((audience) => ({
       pathname: `/compare/best-investment-apps/${audience}`,
       lastModified: BUILD_TIMESTAMP
     }))
@@ -184,5 +188,7 @@ export function getAllIndexableRoutes(): SitemapEntry[] {
 }
 
 export function getSitemapRoutesByRegion(region: SitemapRegion): SitemapEntry[] {
-  return getAllIndexableRoutes().filter((entry) => isRegionMatch(entry.pathname, region));
+  return getAllIndexableRoutes()
+    .filter((entry) => isRegionMatch(entry.pathname, region))
+    .filter((entry) => isCanonicalForRegion(entry.pathname, region));
 }
