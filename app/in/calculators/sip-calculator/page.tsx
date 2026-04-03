@@ -39,6 +39,7 @@ export default function IndiaSipCalculatorPage() {
           <li>Run the same goal at ₹5,000, ₹10,000, and ₹25,000 monthly to find a contribution you can sustain in bad months.</li>
           <li>Test 10-year and 15-year horizons separately; short horizons can feel emotionally difficult during drawdowns.</li>
           <li>If salary is variable, base SIP on your lower in-hand month and step-up only after 3 stable salary cycles.</li>
+          <li>Pair SIP with emergency cash in savings/FD so market volatility does not force premature withdrawals.</li>
         </ul>
       </section>
 

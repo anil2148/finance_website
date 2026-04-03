@@ -49,14 +49,14 @@ export default function BestAppsIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">When this advice FAILS</h2>
+        <h2 className="text-xl font-semibold">Platform failure patterns to avoid</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
           <li>SIP automation fails if bank mandate errors are ignored for multiple months.</li>
           <li>Low-cost brokers fail your goal when reporting is too poor for FY 2025–26 tax evidence.</li>
           <li>Advanced trader tools fail long-term investors who actually need simple behavior nudges.</li>
         </ul>
 
-        <h3 className="mt-4 text-lg font-semibold">What most people get wrong</h3>
+        <h3 className="mt-4 text-lg font-semibold">The real drag most investors miss</h3>
         <p className="mt-2">Brokerage is usually not the largest leak; inconsistent execution, random exits, and missed SIP months are bigger drags.</p>
 
         <div className="mt-3 flex flex-wrap gap-3">

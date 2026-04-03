@@ -46,9 +46,9 @@ export default function BestSavingsIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">What most people get wrong</h2>
+        <h2 className="text-xl font-semibold">Fee leakage matters more than headline rate for most households</h2>
         <p className="mt-2">The highest savings rate does not dominate when the usable balance is small and fee leakage is large.</p>
-        <h3 className="mt-4 text-lg font-semibold">When this advice FAILS</h3>
+        <h3 className="mt-4 text-lg font-semibold">Failure signals to watch each quarter</h3>
         <ul className="mt-2 list-disc pl-5 space-y-2">
           <li>High-rate strategy fails when promotional slabs are temporary.</li>
           <li>Convenience-first strategy fails if you ignore idle-cash opportunity cost for years.</li>

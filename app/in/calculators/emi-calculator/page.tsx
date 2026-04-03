@@ -71,9 +71,9 @@ export default function IndiaEmiCalculatorPage() {
           Suppose target EMI is around ₹28,000 today. If rates move up and EMI reaches ₹31,000–₹32,000, you should still have room for essentials, insurance, and an emergency top-up. If that feels tight, reduce loan size or delay purchase rather than hoping income will catch up.
         </p>
         <div className="mt-4 flex flex-wrap gap-4 text-sm">
-          <Link href="/in/blog/sip-vs-fd" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Read SIP vs FD</Link>
-          <Link href="/in/blog/ppf-vs-elss" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Read PPF vs ELSS</Link>
-          <Link href="/in/calculators/sip-calculator" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Try SIP calculator</Link>
+          <Link href="/in/home-loan-interest-rates-india" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Compare live home-loan rate ranges</Link>
+          <Link href="/in/home-affordability-india" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Check home affordability before booking</Link>
+          <Link href="/in/personal-loan-comparison-india" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Compare personal-loan fallback options</Link>
         </div>
       </section>
     </section>
