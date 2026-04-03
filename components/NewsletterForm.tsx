@@ -142,7 +142,11 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
         </div>
       ) : (
         <>
+          <label htmlFor="newsletter-email" className="text-sm font-medium text-slate-800 dark:text-slate-100">
+            Email address
+          </label>
           <input
+            id="newsletter-email"
             className="input"
             type="email"
             autoComplete="email"
@@ -150,7 +154,6 @@ export function NewsletterForm({ className, source, leadMagnet = 'weekly-finance
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="you@example.com"
-            aria-label="Email address"
             aria-invalid={status === 'error'}
           />
           <button className="btn-primary disabled:opacity-70" type="submit" disabled={status === 'loading'}>

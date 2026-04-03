@@ -120,13 +120,13 @@ export function IndiaHomepageLayout() {
               Plan SIPs, compare FD vs SIP honestly, evaluate PPF vs ELSS by timeline, and stress-test EMI before committing to a home loan.
             </p>
             <div className="india-link-cluster">
-              <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/in/calculators/emi-calculator">
+              <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950" href="/in/calculators/emi-calculator">
                 Start with EMI planning
               </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/in/old-vs-new-tax-regime">
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950" href="/in/old-vs-new-tax-regime">
                 Calculate your tax under new regime
               </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/in/best-savings-accounts-india">
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950" href="/in/best-savings-accounts-india">
                 Compare top Indian savings accounts
               </Link>
             </div>
@@ -178,7 +178,7 @@ export function IndiaHomepageLayout() {
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Salary-based India entry points</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {salaryEntryPoints.map((item) => (
-            <Link key={item.salary} href={item.path} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <Link key={item.salary} href={item.path} className="link-card no-underline">
               <h3 className="font-semibold text-slate-900 dark:text-slate-100">{item.salary}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.decision}</p>
             </Link>
@@ -235,7 +235,7 @@ export function IndiaHomepageLayout() {
             <article key={item.q} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.q}</h3>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.a}</p>
-              <Link href={item.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Open related guide</Link>
+              <Link href={item.href} className="mt-3 inline-block content-link text-sm font-semibold">Open related guide</Link>
             </article>
           ))}
         </div>

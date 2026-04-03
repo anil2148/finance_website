@@ -98,10 +98,10 @@ export default function SipVsFdIndiaPage() {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Continue your India planning path</h2>
         <div className="mt-3 india-link-cluster text-sm">
-          <Link href="/in/blog/ppf-vs-elss" className="content-link">PPF vs ELSS guide</Link>
-          <Link href="/in/calculators/sip-calculator" className="content-link">SIP calculator</Link>
-          <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link>
-          <Link href="/in/blog" className="content-link">India blog hub</Link>
+          <Link href="/in/blog/ppf-vs-elss" className="content-link-chip">PPF vs ELSS guide</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link-chip">SIP calculator</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link-chip">EMI calculator</Link>
+          <Link href="/in/blog" className="content-link-chip">India blog hub</Link>
         </div>
       </section>
       <IndiaAuthorityNote />

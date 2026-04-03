@@ -40,11 +40,15 @@ function renderInline(text: string) {
     } else {
       const parts = token.match(/^\[([^\]]+)\]\(([^\)]+)\)$/);
       if (parts) {
+        const href = parts[2];
+        const isExternal = /^https?:\/\//.test(href);
         nodes.push(
           <a
             key={`a-${key++}`}
-            className="text-blue-600 underline decoration-blue-300 underline-offset-4 hover:text-blue-700 dark:text-blue-400 dark:decoration-blue-500 dark:hover:text-blue-300"
-            href={parts[2]}
+            className="content-link"
+            href={href}
+            target={isExternal ? '_blank' : undefined}
+            rel={isExternal ? 'noreferrer' : undefined}
           >
             {parts[1]}
           </a>
