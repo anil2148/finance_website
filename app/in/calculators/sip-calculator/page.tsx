@@ -15,13 +15,22 @@ export default function IndiaSipCalculatorPage() {
     <section className="space-y-6">
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">FinanceSphere India calculator</p>
-        <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">SIP calculator for India goals</h1>
+        <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">SIP Calculator (India)</h1>
         <p className="mt-3 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
           Estimate your potential corpus from monthly SIP contributions and compare outcome ranges before committing to a fixed monthly amount.
         </p>
       </header>
 
       <EmiCalculator type="compound" />
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What this means for you</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li><strong>Affordability guidance:</strong> Pick a SIP amount you can continue through weak markets and high-expense months.</li>
+          <li><strong>Risk warning:</strong> Short horizons and frequent SIP pauses can break expected compounding outcomes.</li>
+          <li><strong>Next step:</strong> Pair this output with FD vs SIP and tax planning pages before final monthly allocation.</li>
+        </ul>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Use realistic SIP checkpoints</h2>
