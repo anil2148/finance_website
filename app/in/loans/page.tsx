@@ -90,6 +90,8 @@ export default function IndiaLoansHubPage() {
         </p>
       </header>
 
+      <IndiaAuthorityNote />
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Borrowing framework you can actually execute</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
@@ -112,6 +114,84 @@ export default function IndiaLoansHubPage() {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">The full fee stack: what lenders actually charge</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Most borrowers compare only interest rates. The true cost of a loan includes fees that rarely appear in the headline offer.</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
+                <th className="px-3 py-2">Fee type</th>
+                <th className="px-3 py-2">Typical range</th>
+                <th className="px-3 py-2">On a ₹50L loan</th>
+                <th className="px-3 py-2">Watch out for</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Processing fee</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">0.25%–1% of loan</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹12,500–₹50,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Non-refundable if offer is rejected or you switch lender</td>
+              </tr>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Loan insurance (HLPP)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">0.5%–1.5% of loan</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹25,000–₹75,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Often bundled at disbursal — not mandatory, negotiate separately</td>
+              </tr>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Legal / technical fee</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹5,000–₹15,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹5,000–₹15,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Paid regardless of whether loan is finally sanctioned</td>
+              </tr>
+              <tr className="align-top">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Foreclosure / prepayment charge</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">0% (floating) to 2–3% (fixed)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹0–₹1,00,000+</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Always choose floating-rate loans to preserve free prepayment option</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Add all upfront fees to your total borrowing cost before comparing lender offers on interest rate alone.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Prepayment vs flexibility: a common trade-off</h2>
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">When prepayment wins</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+              <li>Your home loan rate is above 9% — prepayment effectively delivers a guaranteed post-tax return at that rate.</li>
+              <li>Prepaying reduces tenure, not EMI — this is usually more interest-efficient over a 20-year horizon.</li>
+              <li>You have a bonus or windfall that will sit idle in a low-yield savings account otherwise.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">When flexibility wins</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+              <li>Your loan rate is below 8.5% and long-term SIP returns are reasonably above that post-tax.</li>
+              <li>Your emergency fund is below 6 months — never prepay at the cost of liquidity.</li>
+              <li>A near-term goal (child education, renovation) needs capital within 3–5 years.</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">A ₹10L prepayment on a ₹50L, 20-year loan at 9% saves roughly ₹14L–₹16L in interest over tenure. Run your scenario in the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link> before deciding.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">India loans journey: from eligibility to execution</h2>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">
+          Start with the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link> at current rate and then at +1% — this sets your safe borrowing ceiling before any lender talks.
+          Then compare offers using the <Link href="/in/home-loan-interest-rates-india" className="content-link">home-loan rate comparison</Link> to find floating-rate options without heavy fee stacks.
+        </p>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">
+          If you are deciding between buying now vs waiting, read the <Link href="/in/real-estate" className="content-link">real-estate hub</Link> for full cost clarity. And once the loan is active, the <Link href="/in/banking" className="content-link">banking hub</Link> will help you maintain emergency liquidity alongside EMI obligations.
+        </p>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
@@ -181,8 +261,6 @@ export default function IndiaLoansHubPage() {
           </div>
         </dl>
       </section>
-
-      <IndiaAuthorityNote />
     </section>
   );
 }
