@@ -107,6 +107,59 @@ export default function IndiaRealEstateHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What goes wrong (real estate)</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Liquidity wiped out at booking</h3>
+            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Down payment + stamp duty + interiors consume cash that should cover 6 months of core costs.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">If your reserve disappears after booking, you are exposed.</p>
+          </article>
+          <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Wrong stay horizon</h3>
+            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Buying with a 2–4 year stay plan creates an exit-cost problem, not an asset-building strategy.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">A forced early sale can erase years of EMI effort.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Failure simulation before you book</h2>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[760px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
+                <th className="px-3 py-2">Scenario</th>
+                <th className="px-3 py-2">Failure point</th>
+                <th className="px-3 py-2">Consequence</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹12L salary (fragile case)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">EMI close to 50% and one salary-delay month hits during school-fee cycle.</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">No absorption capacity; credit use rises and buying decision becomes a recovery exercise.</td>
+              </tr>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹18L salary (base case)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹25L+ down payment leaves only ₹2L–₹3L after registration and furnishing setup.</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">One emergency forces liquidation or costly debt right after possession.</td>
+              </tr>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹25L salary (optimization case)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Upgrade decision pauses SIP and uses reserve for interiors.</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Household becomes asset-rich but cashflow-fragile for 18–24 months.</td>
+              </tr>
+              <tr className="align-top">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Any salary, 3-year stay horizon</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Job relocation forces exit before transaction costs are recovered.</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Net proceeds disappoint; renting would have preserved flexibility and liquidity.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Stay horizon: why 5+ years changes the math</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Buying a home locks you into a geography. If your city, career, or family situation changes within 3 years of purchase, you do not just lose flexibility — you lose money. Here is why the 5-year threshold matters:</p>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
