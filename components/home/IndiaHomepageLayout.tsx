@@ -6,36 +6,36 @@ import AuthorBox from '@/components/common/AuthorBox';
 
 const goalCards = [
   {
-    title: 'Build long-term wealth with SIPs',
-    description: 'Start with ₹5,000, ₹10,000, or ₹25,000 SIP scenarios, then decide how much should stay in safer FD-style buckets.',
-    primaryLabel: 'Open SIP calculator',
+    title: 'Grow wealth',
+    description: 'Run SIP at ₹5,000, ₹10,000, and ₹20,000/month and decide your SIP-vs-stability split.',
+    primaryLabel: 'Calculate SIP growth in ₹',
     primaryHref: '/in/calculators/sip-calculator',
-    secondaryLabel: 'Read SIP vs FD decision guide',
-    secondaryHref: '/in/blog/sip-vs-fd'
+    secondaryLabel: 'Compare FD vs SIP',
+    secondaryHref: '/in/fixed-deposit-vs-sip-india'
   },
   {
-    title: 'Choose tax-saving investments',
-    description: 'Plan Section 80C calmly: identify what should stay stable (PPF) and what can accept growth volatility (ELSS).',
-    primaryLabel: 'Read PPF vs ELSS',
-    primaryHref: '/in/blog/ppf-vs-elss',
-    secondaryLabel: 'See India blog hub',
-    secondaryHref: '/in/blog'
+    title: 'Save taxes',
+    description: 'Choose old vs new regime and structure 80C + 80D without March panic investing.',
+    primaryLabel: 'Calculate your tax under new regime',
+    primaryHref: '/in/old-vs-new-tax-regime',
+    secondaryLabel: 'Open India tax hub',
+    secondaryHref: '/in/tax'
   },
   {
-    title: 'Plan home-loan affordability',
-    description: 'Test EMI with +0.5% and +1% rate shocks so your plan still works during tight-cashflow months.',
-    primaryLabel: 'Use EMI calculator',
-    primaryHref: '/in/calculators/emi-calculator',
-    secondaryLabel: 'Review home-loan planning tips',
-    secondaryHref: '/in/blog/sip-vs-fd#emi-transition'
+    title: 'Buy home',
+    description: 'Stress test EMI with +0.5% and +1.0% shocks before booking in Mumbai or Bangalore.',
+    primaryLabel: 'Compare India home-loan rates',
+    primaryHref: '/in/home-loan-interest-rates-india',
+    secondaryLabel: 'Use EMI calculator',
+    secondaryHref: '/in/calculators/emi-calculator'
   },
   {
-    title: 'Build a yearly money system',
-    description: 'Balance tax-saving, emergency reserves, and long-term investing with monthly contributions you can actually sustain.',
-    primaryLabel: 'PPF vs ELSS framework',
-    primaryHref: '/in/blog/ppf-vs-elss#decision-framework',
-    secondaryLabel: 'Start from India blog hub',
-    secondaryHref: '/in/blog'
+    title: 'Reduce debt',
+    description: 'Cut ₹10,000 monthly avoidable expense and redirect ₹1,20,000/year to debt prepayment or investing.',
+    primaryLabel: 'Open loans decision hub',
+    primaryHref: '/in/loans',
+    secondaryLabel: 'Pick best credit card for your spend type',
+    secondaryHref: '/in/best-credit-cards-india'
   }
 ];
 
@@ -53,10 +53,12 @@ const indiaCalculators = [
 ];
 
 const decisionLinks = [
-  { label: 'SIP vs FD: ₹10,000/month scenario', href: '/in/blog/sip-vs-fd' },
-  { label: 'PPF vs ELSS: 80C trade-offs', href: '/in/blog/ppf-vs-elss' },
-  { label: 'India blog hub', href: '/in/blog' },
-  { label: 'India EMI planning', href: '/in/calculators/emi-calculator' }
+  { label: 'Tax hub', href: '/in/tax' },
+  { label: 'Banking hub', href: '/in/banking' },
+  { label: 'Investing hub', href: '/in/investing' },
+  { label: 'Loans hub', href: '/in/loans' },
+  { label: 'Real-estate hub', href: '/in/real-estate' },
+  { label: 'India calculators hub', href: '/in/calculators' }
 ];
 
 const trustSignals = [
@@ -101,11 +103,11 @@ export function IndiaHomepageLayout() {
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/in/calculators/emi-calculator">
                 Start with EMI planning
               </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/in/blog/sip-vs-fd">
-                Compare SIP vs FD
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/in/old-vs-new-tax-regime">
+                Calculate your tax under new regime
               </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/in/blog">
-                Explore India guides
+              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/in/best-savings-accounts-india">
+                Compare top Indian savings accounts
               </Link>
             </div>
             <p className="text-xs text-blue-200">Last India hub review: April 2, 2026 • Educational content only; verify rates, tax rules, and provider terms before action.</p>

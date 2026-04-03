@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
+import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'SIP vs FD in India: A Scenario-Based Decision Guide (2026)',
@@ -103,6 +104,7 @@ export default function SipVsFdIndiaPage() {
           <Link href="/in/blog" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">India blog hub</Link>
         </div>
       </section>
+      <IndiaAuthorityNote />
     </article>
   );
 }

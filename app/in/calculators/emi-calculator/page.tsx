@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { EmiCalculator } from '@/components/calculator/EmiCalculator';
 import { createPageMetadata } from '@/lib/seo';
+import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'India Home Loan EMI Calculator (₹) | FinanceSphere India',
@@ -65,6 +66,7 @@ export default function IndiaEmiCalculatorPage() {
           <Link href="/in/calculators/sip-calculator" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Try SIP calculator</Link>
         </div>
       </section>
+      <IndiaAuthorityNote />
     </section>
   );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
+import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'PPF vs ELSS: India Tax-Saving Decision Guide for 2026',
@@ -100,6 +101,7 @@ export default function PpfVsElssIndiaPage() {
           <Link href="/in/blog" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">India blog hub</Link>
         </div>
       </section>
+      <IndiaAuthorityNote />
     </article>
   );
 }
