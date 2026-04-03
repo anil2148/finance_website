@@ -103,7 +103,7 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
     ...learnEntries,
     ...regionEntries,
     ...audienceEntries
-  ];
+  ].filter((entry) => isIndexableRoute(entry.pathname));
 }
 
 export function getAllIndexableRoutes(): SitemapEntry[] {

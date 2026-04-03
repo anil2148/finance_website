@@ -1,6 +1,6 @@
 import { normalizePathname, type RegionCode } from '@/lib/seo-urls';
 
-const EXCLUDED_ROUTE_PREFIXES = ['/api', '/admin'];
+const EXCLUDED_ROUTE_PREFIXES = ['/api', '/admin', '/blog/tag'];
 const EXCLUDED_EXACT_PATHS = new Set<string>([
   '/us',
   '/hello',
@@ -19,7 +19,10 @@ const EXCLUDED_EXACT_PATHS = new Set<string>([
   '/compare/best-credit-cards-2026',
   '/compare/best-investment-apps',
   '/compare/best-savings-accounts-usa',
-  '/compare/high-yield-savings-accounts'
+  '/compare/high-yield-savings-accounts',
+  '/dashboard',
+  '/help',
+  '/legal'
 ]);
 
 const CROSS_REGION_EQUIVALENCE: Record<string, string> = {
