@@ -8,8 +8,7 @@ const primaryLinks = [
   { href: '/calculators', label: 'Calculators' },
   { href: '/comparison', label: 'Comparisons' },
   { href: '/blog', label: 'Blog' },
-  { href: '/tools', label: 'Tools' },
-  { href: '/in', label: 'India Hub' }
+  { href: '/tools', label: 'Tools' }
 ];
 
 const discoveryLinks = [
