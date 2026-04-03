@@ -164,7 +164,7 @@ export default function IndiaLoansHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Rate reset shock: what a 1% increase actually does to your decision</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What a 1% rate increase actually does to your decision</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Floating rate loans reset periodically. A 1% rate increase on a large loan is not a small rounding error — it can shift a manageable EMI into a month-end crisis. Here is what the numbers look like:</p>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">

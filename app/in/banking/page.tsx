@@ -171,7 +171,6 @@ export default function BankingPage() {
             <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Failure point: no account is clearly funded for any purpose. Consequence: decision fatigue and ₹3–5L drifting at low savings rates.</p>
           </article>
         </div>
-        <p className="mt-4 text-sm font-semibold text-rose-800 dark:text-rose-300">If this breaks in one bad month, the system is too aggressive.</p>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
