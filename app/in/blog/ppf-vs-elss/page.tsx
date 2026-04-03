@@ -60,6 +60,14 @@ export default function PpfVsElssIndiaPage() {
         </ul>
       </section>
 
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">A practical way to avoid March tax-saving panic</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          If your usual thought is “I want tax-saving but not if money gets locked too tightly,” split the ₹1.5 lakh target into monthly contributions. Keep a stable core in PPF, then direct the growth sleeve to ELSS only if your emergency fund is intact.
+        </p>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Practical ₹1.5 lakh Section 80C allocation examples</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-2">

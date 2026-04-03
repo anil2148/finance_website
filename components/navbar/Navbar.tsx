@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
-import { getCountryForPath, SUPPORTED_APP_CURRENCIES, SUPPORTED_COUNTRIES } from '@/lib/preferences';
+import { getCountryForPath, getCountrySwitchPath, SUPPORTED_APP_CURRENCIES, SUPPORTED_COUNTRIES } from '@/lib/preferences';
 
 type NavLink = {
   label: string;
@@ -101,23 +101,11 @@ export function Navbar() {
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
   const links = isIndiaContext ? indiaLinks : globalLinks;
 
-  function getCountryLandingPath(targetCountry: (typeof SUPPORTED_COUNTRIES)[number]) {
-    if (targetCountry === 'India') return '/in';
-    if (!isIndiaContext) return pathname;
-    if (pathname === '/in') return '/';
-    if (pathname === '/in/blog') return '/blog';
-    if (pathname === '/in/blog/sip-vs-fd') return '/blog';
-    if (pathname === '/in/blog/ppf-vs-elss') return '/blog';
-    if (pathname === '/in/calculators/emi-calculator') return '/calculators/loan-calculator';
-    if (pathname === '/in/calculators/sip-calculator') return '/calculators/compound-interest-calculator';
-    return '/';
-  }
-
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
       <nav className="mx-auto max-w-7xl px-4 py-3" role="navigation" aria-label="Primary">
         <div className="flex items-center justify-between gap-3">
-          <Link href="/" className="inline-flex items-center" aria-label="FinanceSphere home">
+          <Link href={isIndiaContext ? '/in' : '/'} className="inline-flex items-center" aria-label="FinanceSphere home">
             <Image src="/images/financesphere-logo.svg" alt="FinanceSphere logo" width={190} height={40} loading="lazy" priority={false} className="h-10 w-auto" />
           </Link>
 
@@ -173,17 +161,17 @@ export function Navbar() {
               onChange={(event) => {
                 const nextCountry = event.target.value as (typeof SUPPORTED_COUNTRIES)[number];
                 setCountry(nextCountry);
-                const nextPath = getCountryLandingPath(nextCountry);
+                const nextPath = getCountrySwitchPath(pathname, nextCountry);
                 if (nextPath !== pathname) router.push(nextPath);
               }}
             >
               {SUPPORTED_COUNTRIES.map((item) => (
-                <option key={item}>{item}</option>
+                <option key={item} value={item}>{item}</option>
               ))}
             </select>
             <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof SUPPORTED_APP_CURRENCIES)[number])}>
               {SUPPORTED_APP_CURRENCIES.map((item) => (
-                <option key={item}>{item}</option>
+                <option key={item} value={item}>{item}</option>
               ))}
             </select>
             <button onClick={toggleDarkMode} className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">

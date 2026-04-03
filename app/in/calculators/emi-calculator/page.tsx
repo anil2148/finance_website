@@ -33,6 +33,27 @@ export default function IndiaEmiCalculatorPage() {
         </ul>
       </section>
 
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Affordability reality check by in-hand salary</h2>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
+                <th className="px-3 py-2">In-hand income</th>
+                <th className="px-3 py-2">Comfort EMI zone</th>
+                <th className="px-3 py-2">Stress signal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100 dark:border-slate-800"><td className="px-3 py-2">₹70,000</td><td className="px-3 py-2">₹18,000–₹23,000</td><td className="px-3 py-2">EMI above ₹26,000 with no emergency reserve refill.</td></tr>
+              <tr className="border-b border-slate-100 dark:border-slate-800"><td className="px-3 py-2">₹85,000</td><td className="px-3 py-2">₹22,000–₹28,000</td><td className="px-3 py-2">EMI above ₹32,000 if school fees/rent also rising.</td></tr>
+              <tr><td className="px-3 py-2">₹1,20,000</td><td className="px-3 py-2">₹32,000–₹40,000</td><td className="px-3 py-2">If one income gap month breaks the budget.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Quick example: ₹85,000 in-hand household income</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">

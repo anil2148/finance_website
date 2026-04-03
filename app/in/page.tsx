@@ -10,13 +10,19 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: {
-    canonical: absoluteUrl('/in')
+    canonical: absoluteUrl('/in'),
+    languages: {
+      'en-US': '/',
+      'en-IN': '/in',
+      'x-default': '/'
+    }
   },
   openGraph: {
     title,
     description,
     url: absoluteUrl('/in'),
-    type: 'website'
+    type: 'website',
+    locale: 'en_IN'
   },
   twitter: {
     card: 'summary_large_image',

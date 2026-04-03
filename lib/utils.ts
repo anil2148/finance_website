@@ -6,6 +6,10 @@ export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 export function getLocaleForCurrency(currency: string) {
   if (currency === 'INR') return 'en-IN';
   if (currency === 'USD') return 'en-US';
+  if (currency === 'GBP') return 'en-GB';
+  if (currency === 'CAD') return 'en-CA';
+  if (currency === 'AUD') return 'en-AU';
+  if (currency === 'EUR') return 'en-IE';
   return undefined;
 }
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getCountryForPath, getMarketConfig } from '@/lib/preferences';
 
 type ArticleSchemaArgs = {
   title: string;
@@ -12,6 +13,13 @@ type ArticleSchemaArgs = {
 };
 
 export const SITE_ORIGIN = 'https://www.financesphere.io';
+
+const hreflangPathEquivalents: Record<string, { us: string; india: string }> = {
+  '/': { us: '/', india: '/in' },
+  '/blog': { us: '/blog', india: '/in/blog' },
+  '/calculators/loan-calculator': { us: '/calculators/loan-calculator', india: '/in/calculators/emi-calculator' },
+  '/calculators/compound-interest-calculator': { us: '/calculators/compound-interest-calculator', india: '/in/calculators/sip-calculator' }
+};
 
 export function normalizePathname(pathname: string): string {
   if (!pathname || pathname === '/') return '/';
@@ -45,17 +53,27 @@ type CreatePageMetadataArgs = {
 
 export function createPageMetadata({ title, description, pathname, type = 'website' }: CreatePageMetadataArgs): Metadata {
   const canonicalPath = normalizeCanonicalPath(pathname);
+  const market = getMarketConfig(getCountryForPath(canonicalPath));
+  const alternates = hreflangPathEquivalents[canonicalPath];
 
   return {
     title,
     description,
     alternates: {
-      canonical: canonicalPath
+      canonical: canonicalPath,
+      languages: alternates
+        ? {
+            'en-US': alternates.us,
+            'en-IN': alternates.india,
+            'x-default': alternates.us
+          }
+        : undefined
     },
     openGraph: {
       title,
       description,
       type,
+      locale: market.ogLocale,
       url: createCanonicalUrl(canonicalPath)
     },
     twitter: {

@@ -45,6 +45,16 @@ export default function SipVsFdIndiaPage() {
         </p>
       </section>
 
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Common household statements (and what they usually mean)</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li><strong>“I want growth but don’t want to see losses every month.”</strong> Keep a stability sleeve in FD and start SIP at an amount you can continue through volatility.</li>
+          <li><strong>“I need this money in 2–3 years.”</strong> Prioritize capital safety over return chasing.</li>
+          <li><strong>“I can invest more when bonus comes.”</strong> Build baseline SIP from regular salary first, then top-up from variable income.</li>
+        </ul>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Who usually prefers FD, and why that can be the right call</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
