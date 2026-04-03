@@ -63,7 +63,9 @@ const indiaLinks: NavLink[] = [
     children: [
       { label: 'Best Savings Accounts India', href: '/in/best-savings-accounts-india' },
       { label: 'Best Credit Cards India', href: '/in/best-credit-cards-india' },
-      { label: 'Best Investment Apps India', href: '/in/best-investment-apps-india' }
+      { label: 'Best Investment Apps India', href: '/in/best-investment-apps-india' },
+      { label: 'Best Fixed Deposits India', href: '/in/best-fixed-deposits-india' },
+      { label: 'Personal Loan Comparison India', href: '/in/personal-loan-comparison-india' }
     ]
   },
   {
@@ -153,23 +155,31 @@ export function Navbar() {
               Start planning
             </Link>
 
-            <select
-              className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
-              value={country}
-              onChange={(event) => {
-                const nextCountry = event.target.value as (typeof SUPPORTED_COUNTRIES)[number];
-                setCountry(nextCountry);
-                const nextPath = getCountrySwitchPath(pathname, nextCountry);
-                if (nextPath !== pathname) router.push(nextPath);
-              }}
-            >
-              {SUPPORTED_COUNTRIES.map((item) => (
-                <option key={item} value={item}>{item}</option>
-              ))}
-            </select>
-            <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
-              {getMarketConfig(country).label} ({currency})
-            </span>
+            {isIndiaContext ? (
+              <span className="rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-200">
+                India mode locked (INR)
+              </span>
+            ) : (
+              <>
+                <select
+                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                  value={country}
+                  onChange={(event) => {
+                    const nextCountry = event.target.value as (typeof SUPPORTED_COUNTRIES)[number];
+                    setCountry(nextCountry);
+                    const nextPath = getCountrySwitchPath(pathname, nextCountry);
+                    if (nextPath !== pathname) router.push(nextPath);
+                  }}
+                >
+                  {SUPPORTED_COUNTRIES.map((item) => (
+                    <option key={item} value={item}>{item}</option>
+                  ))}
+                </select>
+                <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+                  {getMarketConfig(country).label} ({currency})
+                </span>
+              </>
+            )}
             <button onClick={toggleDarkMode} className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">
               {darkMode ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
             </button>

@@ -67,6 +67,26 @@ const trustSignals = [
   { label: 'Affiliate and revenue disclosure', href: '/affiliate-disclosure' }
 ];
 
+
+
+const salaryEntryPoints = [
+  {
+    salary: '₹6–12 lakh salary band',
+    path: '/in/tax',
+    decision: 'Start with tax regime choice, then 80C basics and emergency fund discipline.'
+  },
+  {
+    salary: '₹12–20 lakh salary band',
+    path: '/in/investing',
+    decision: 'Layer SIP growth on top of EPF while keeping 6-month buffer in banking products.'
+  },
+  {
+    salary: '₹20 lakh+ salary band',
+    path: '/in/real-estate',
+    decision: 'Model home affordability and opportunity cost before increasing EMI burden.'
+  }
+];
+
 const indiaFaq = [
   {
     q: 'Should I keep part in FD and part in SIP?',
@@ -138,6 +158,30 @@ export function IndiaHomepageLayout() {
                 <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline dark:text-slate-200 dark:hover:text-blue-300">{goal.secondaryLabel}</Link>
               </div>
             </article>
+          ))}
+        </div>
+      </section>
+
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Choose your India money journey</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Go straight to the path that matches your immediate decision.</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-4">
+          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/tax">Save Taxes → Tax Hub</Link>
+          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/investing">Grow Wealth → Investing Hub</Link>
+          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/real-estate">Buy Home → Real Estate Hub</Link>
+          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/loans">Reduce Debt → Loans Hub</Link>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Salary-based India entry points</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {salaryEntryPoints.map((item) => (
+            <Link key={item.salary} href={item.path} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="font-semibold text-slate-900 dark:text-slate-100">{item.salary}</h3>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.decision}</p>
+            </Link>
           ))}
         </div>
       </section>
