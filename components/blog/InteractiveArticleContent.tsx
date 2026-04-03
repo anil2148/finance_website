@@ -43,7 +43,7 @@ function renderInline(text: string) {
         nodes.push(
           <a
             key={`a-${key++}`}
-            className="text-blue-600 underline decoration-blue-300 underline-offset-4 hover:text-blue-700 dark:text-blue-400 dark:decoration-blue-500 dark:hover:text-blue-300"
+            className="content-link"
             href={parts[2]}
           >
             {parts[1]}
@@ -284,7 +284,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
               <div
                 key={`${section.id}-table-${i}`}
                 {...wrapperProps}
-                className="my-6 overflow-x-auto rounded-xl border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900"
+                className="table-shell my-6"
               >
                 <table className="min-w-full text-sm text-neutral-900 dark:text-neutral-100">
                   <thead>

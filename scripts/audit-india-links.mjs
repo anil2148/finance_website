@@ -6,6 +6,8 @@ const indiaAppDir = path.join(root, 'app', 'in');
 const indiaComponentsDir = path.join(root, 'components', 'india');
 
 const requiredRegressionPages = [
+  'app/page.tsx',
+  'app/blog/page.tsx',
   'app/in/page.tsx',
   'app/in/blog/page.tsx',
   'app/in/blog/sip-vs-fd/page.tsx',
@@ -14,6 +16,14 @@ const requiredRegressionPages = [
 
 const allowedLinkTokens = ['content-link', 'content-link-chip', 'utility-link', 'link-card', 'underline', 'prose-a:', 'btn-primary', 'comparison-cta'];
 const requiredClassTokens = ['content-link', 'content-link-chip', 'utility-link', 'link-card', 'btn-primary', 'comparison-cta'];
+const routeSourceChecks = [
+  { route: '/in', file: 'app/in/page.tsx' },
+  { route: '/in/blog', file: 'app/in/blog/page.tsx' },
+  { route: '/in/blog/sip-vs-fd', file: 'app/in/blog/sip-vs-fd/page.tsx' },
+  { route: '/in/blog/ppf-vs-elss', file: 'app/in/blog/ppf-vs-elss/page.tsx' },
+  { route: '/', file: 'app/page.tsx' },
+  { route: '/blog', file: 'app/blog/page.tsx' }
+];
 
 function walk(dir) {
   if (!fs.existsSync(dir)) return [];
@@ -35,6 +45,12 @@ const failures = [];
 for (const regressionPage of requiredRegressionPages) {
   if (!fs.existsSync(path.join(root, regressionPage))) {
     failures.push(`[missing-regression-page] ${regressionPage}`);
+  }
+}
+
+for (const check of routeSourceChecks) {
+  if (!fs.existsSync(path.join(root, check.file))) {
+    failures.push(`[missing-route-source] ${check.route} -> ${check.file}`);
   }
 }
 
@@ -73,6 +89,12 @@ for (const file of allFiles) {
     failures.push(`[adjacent-links-without-spacing] ${rel}`);
   }
 
+  const hasMarkdownPipeTable = /(^|\n)\|.+\|(\n|$)/m.test(source);
+  const hasRealTableMarkup = /<table\b/.test(source);
+  if (hasMarkdownPipeTable && !hasRealTableMarkup && rel.includes('app/in/blog/')) {
+    failures.push(`[markdown-table-not-rendered] ${rel}`);
+  }
+
 }
 
 const cssFile = path.join(root, 'styles', 'globals.css');
@@ -80,9 +102,25 @@ if (!fs.existsSync(cssFile)) {
   failures.push('[missing-file] styles/globals.css');
 } else {
   const css = fs.readFileSync(cssFile, 'utf8');
-  const requiredTokens = ['.editorial-content', '.content-link', '.content-link-chip', '.link-card'];
+  const requiredTokens = ['.editorial-content', '.content-link', '.content-link-chip', '.link-card', '.breadcrumb-link', '.breadcrumb-current', '.comparison-table'];
   for (const token of requiredTokens) {
     if (!css.includes(token)) failures.push(`[missing-token] styles/globals.css :: ${token}`);
+  }
+}
+
+const breadcrumbFile = path.join(root, 'components', 'layout', 'Breadcrumbs.tsx');
+if (!fs.existsSync(breadcrumbFile)) {
+  failures.push('[missing-file] components/layout/Breadcrumbs.tsx');
+} else {
+  const breadcrumbsSource = fs.readFileSync(breadcrumbFile, 'utf8');
+  const requiredBreadcrumbTokens = ['Home', 'India', 'breadcrumbLabelMap'];
+  for (const token of requiredBreadcrumbTokens) {
+    if (!breadcrumbsSource.includes(token)) {
+      failures.push(`[breadcrumb-label-missing] components/layout/Breadcrumbs.tsx :: ${token}`);
+    }
+  }
+  if (!breadcrumbsSource.includes('aria-current="page"')) {
+    failures.push('[breadcrumb-a11y-missing] components/layout/Breadcrumbs.tsx');
   }
 }
 
