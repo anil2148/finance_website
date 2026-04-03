@@ -100,7 +100,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PreferenceProvider>
           <ErrorMonitoring />
           <Navbar />
-          <main className="mx-auto min-h-screen max-w-7xl px-4 py-8">
+          <main className="editorial-content mx-auto min-h-screen max-w-7xl px-4 py-8">
             <Breadcrumbs />
             <PageTransition>{children}</PageTransition>
           </main>
