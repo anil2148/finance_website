@@ -53,8 +53,7 @@ export const MARKET_CONFIG: Record<AppCountry, MarketConfig> = {
 };
 
 export const SUPPORTED_COUNTRIES = ['US', 'India', 'UK', 'Canada'] as const;
-export const SUPPORTED_APP_CURRENCIES = ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'] as const;
-export type AppCurrency = (typeof SUPPORTED_APP_CURRENCIES)[number];
+export type AppCurrency = 'USD' | 'INR' | 'GBP' | 'CAD';
 
 const INDIA_ROUTE_EQUIVALENTS: Record<string, string> = {
   '/': '/in',
@@ -86,13 +85,6 @@ export function normalizeCountry(country?: string): AppCountry {
   if (country === 'UK' || country.toUpperCase() === 'GB') return 'UK';
   if (country === 'Canada' || country.toUpperCase() === 'CA') return 'Canada';
   return 'US';
-}
-
-export function normalizeCurrency(currency?: string, fallback: AppCountry = 'US'): AppCurrency {
-  if (currency && SUPPORTED_APP_CURRENCIES.includes(currency as AppCurrency)) {
-    return currency as AppCurrency;
-  }
-  return getDefaultCurrencyForCountry(fallback);
 }
 
 export function getCountryForPath(pathname: string): AppCountry {

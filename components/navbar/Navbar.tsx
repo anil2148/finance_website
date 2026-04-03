@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
-import { getCountryForPath, getCountrySwitchPath, SUPPORTED_APP_CURRENCIES, SUPPORTED_COUNTRIES } from '@/lib/preferences';
+import { getCountryForPath, getCountrySwitchPath, getMarketConfig, SUPPORTED_COUNTRIES } from '@/lib/preferences';
 
 type NavLink = {
   label: string;
@@ -90,7 +90,7 @@ export function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const { currency, country, darkMode, setCountry, setCurrency, toggleDarkMode } = usePreferences();
+  const { currency, country, darkMode, setCountry, toggleDarkMode } = usePreferences();
 
   useEffect(() => {
     const pathCountry = getCountryForPath(pathname);
@@ -167,17 +167,9 @@ export function Navbar() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            {isIndiaContext ? (
-              <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
-                Currency: INR (locked for India)
-              </span>
-            ) : (
-              <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof SUPPORTED_APP_CURRENCIES)[number])}>
-                {SUPPORTED_APP_CURRENCIES.map((item) => (
-                  <option key={item} value={item}>{item}</option>
-                ))}
-              </select>
-            )}
+            <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+              {getMarketConfig(country).label} ({currency})
+            </span>
             <button onClick={toggleDarkMode} className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">
               {darkMode ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
             </button>

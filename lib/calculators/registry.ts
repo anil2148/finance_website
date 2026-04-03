@@ -1,4 +1,4 @@
-import { asCurrency, buildAmortizationProjection, buildInvestmentProjection, paymentFromPrincipal } from '@/lib/calculators/engine';
+import { buildAmortizationProjection, buildInvestmentProjection, currencyBreakdown, paymentFromPrincipal } from '@/lib/calculators/engine';
 import { calculateCompoundInterest } from '@/lib/calculators/compoundInterest';
 import { calculateLoan } from '@/lib/calculators/loan';
 import { calculateMortgage } from '@/lib/calculators/mortgage';
@@ -19,8 +19,8 @@ const debtPayoffResult = (title: string, inputs: BaseCalculatorInputs): Calculat
     ],
     projection,
     breakdown: [
-      { label: 'Debt Balance', value: asCurrency(inputs.loanAmount) },
-      { label: 'Extra Monthly Payment', value: asCurrency(inputs.monthlyContribution) },
+      currencyBreakdown('Debt Balance', inputs.loanAmount),
+      currencyBreakdown('Extra Monthly Payment', inputs.monthlyContribution),
       { label: 'Interest Rate', value: `${inputs.interestRate}%` }
     ],
     chartKinds: ['amortization', 'bar', 'pie']
@@ -40,8 +40,8 @@ const growthResult = (title: string, inputs: BaseCalculatorInputs): CalculatorRe
     ],
     projection,
     breakdown: [
-      { label: 'Current Amount', value: asCurrency(inputs.loanAmount) },
-      { label: 'Monthly Contribution', value: asCurrency(inputs.monthlyContribution) },
+      currencyBreakdown('Current Amount', inputs.loanAmount),
+      currencyBreakdown('Monthly Contribution', inputs.monthlyContribution),
       { label: 'Expected Return', value: `${inputs.expectedReturn}%` }
     ],
     chartKinds: ['growth', 'bar', 'pie']
@@ -218,7 +218,7 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
         ],
         projection: [{ month: 12, year: 1, balance: afterTax, contributed: afterTax, interestEarned: 0 }],
         breakdown: [
-          { label: 'Gross Salary', value: asCurrency(inputs.loanAmount) },
+          currencyBreakdown('Gross Salary', inputs.loanAmount),
           { label: 'Effective Tax Rate', value: `${inputs.interestRate}%` },
           { label: 'Inflation', value: `${inputs.inflationRate}%` }
         ],

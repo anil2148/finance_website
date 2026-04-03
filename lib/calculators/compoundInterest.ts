@@ -1,4 +1,4 @@
-import { asCurrency, buildInvestmentProjection } from '@/lib/calculators/engine';
+import { buildInvestmentProjection, currencyBreakdown } from '@/lib/calculators/engine';
 import { BaseCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
 export const calculateCompoundInterest = (inputs: BaseCalculatorInputs): CalculatorResult => {
@@ -16,8 +16,8 @@ export const calculateCompoundInterest = (inputs: BaseCalculatorInputs): Calcula
     ],
     projection,
     breakdown: [
-      { label: 'Starting Balance', value: asCurrency(inputs.loanAmount) },
-      { label: 'Monthly Contribution', value: asCurrency(inputs.monthlyContribution) },
+      currencyBreakdown('Starting Balance', inputs.loanAmount),
+      currencyBreakdown('Monthly Contribution', inputs.monthlyContribution),
       { label: 'Expected Return', value: `${inputs.expectedReturn}%` }
     ],
     chartKinds: ['growth', 'pie']

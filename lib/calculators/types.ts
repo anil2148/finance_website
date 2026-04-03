@@ -29,6 +29,8 @@ export type SummaryMetric = {
 export type BreakdownRow = {
   label: string;
   value: string;
+  amount?: number;
+  currency?: boolean;
 };
 
 export type ChartKind = 'growth' | 'amortization' | 'pie' | 'bar';

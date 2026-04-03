@@ -1,4 +1,4 @@
-import { asCurrency, buildAmortizationProjection, paymentFromPrincipal } from '@/lib/calculators/engine';
+import { buildAmortizationProjection, currencyBreakdown, paymentFromPrincipal } from '@/lib/calculators/engine';
 import { BaseCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
 export const calculateLoan = (inputs: BaseCalculatorInputs): CalculatorResult => {
@@ -16,7 +16,7 @@ export const calculateLoan = (inputs: BaseCalculatorInputs): CalculatorResult =>
     ],
     projection,
     breakdown: [
-      { label: 'Principal', value: asCurrency(inputs.loanAmount) },
+      currencyBreakdown('Principal', inputs.loanAmount),
       { label: 'Term', value: `${inputs.years} years` },
       { label: 'APR', value: `${inputs.interestRate}%` }
     ],
