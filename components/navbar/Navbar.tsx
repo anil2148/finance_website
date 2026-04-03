@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
@@ -69,7 +69,6 @@ function isActive(pathname: string, href: string) {
 
 export function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
@@ -99,7 +98,12 @@ export function Navbar() {
     }
 
     setCountry(nextRegion);
-    if (nextPath !== pathname) router.push(nextPath);
+
+    if (nextPath !== pathname) {
+      // Use a hard navigation so the next request always carries the freshly-written
+      // cookie and avoids stale client-side routing caches during rapid switches.
+      window.location.assign(nextPath);
+    }
   };
 
   return (
