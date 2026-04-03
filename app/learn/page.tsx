@@ -55,6 +55,12 @@ const decisionPath = [
   }
 ];
 
+const failureSnapshot = {
+  scenario: 'You earn $82,000, your rent jumps by $300, and you still try to follow a debt-plus-investing plan built for a lower housing ratio.',
+  failure: 'The transfer schedule looks strong in month one, then fails when one irregular bill lands.',
+  consequence: 'You stop both debt prepayments and investing, then restart from zero two months later.'
+};
+
 export const metadata: Metadata = createPageMetadata({
   title: 'Learn Hubs | FinanceSphere',
   description: 'Explore FinanceSphere learning hubs for investing, credit cards, loans, budgeting, and passive income.',
@@ -70,7 +76,7 @@ export default function LearnIndexPage() {
         <p className="mt-2 max-w-3xl text-slate-600">
           Each hub is built for one decision type. Not general reading — specific guidance on what to do first, what commonly fails, which calculator to run, and where to compare options before you commit.
         </p>
-        <p className="mt-2 text-sm font-medium italic text-slate-500">Lower payments are not safer if they hide long-term cost.</p>
+        <p className="mt-2 text-sm font-medium italic text-slate-500">Lower payments are not safer if they remove flexibility.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {decisionPath.map((item) => (
             <article key={item.step} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
@@ -90,6 +96,24 @@ export default function LearnIndexPage() {
           </div>
         </div>
       </header>
+
+      <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
+        <h2 className="text-xl font-semibold text-slate-900">When this fails</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
+          <article className="rounded-xl border border-amber-200 bg-white p-3">
+            <p className="font-semibold text-amber-700">Scenario</p>
+            <p className="mt-1 text-slate-700">{failureSnapshot.scenario}</p>
+          </article>
+          <article className="rounded-xl border border-amber-200 bg-white p-3">
+            <p className="font-semibold text-amber-700">Failure</p>
+            <p className="mt-1 text-slate-700">{failureSnapshot.failure}</p>
+          </article>
+          <article className="rounded-xl border border-amber-200 bg-white p-3">
+            <p className="font-semibold text-amber-700">Consequence</p>
+            <p className="mt-1 text-slate-700">{failureSnapshot.consequence}</p>
+          </article>
+        </div>
+      </section>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {hubCards.map((hub) => (
