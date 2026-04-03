@@ -84,6 +84,14 @@ export default function BankingPage() {
           '@type': 'Answer',
           text: 'Add new products only after your base banking workflow is stable, automated, and reviewed periodically for hidden charges and friction.'
         }
+      },
+      {
+        '@type': 'Question',
+        name: 'How much emergency fund should I keep in a bank savings account?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'A common target is 3–6 months of core household expenses in a liquid, accessible account — not locked in FDs. If your income is variable or you are self-employed, 6 months is a safer floor.'
+        }
       }
     ]
   };

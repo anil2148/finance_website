@@ -13,21 +13,24 @@ export const metadata: Metadata = createPageMetadata({
 const loanScenarios = [
   {
     loan: '₹40L home loan',
-    setup: 'In-hand ₹90k, 20 years, floating rate',
-    failure: 'Plan works only at teaser rate and breaks after +1.0% reset.',
-    saferMove: 'Downsize ticket or increase down payment until bad-month EMI remains manageable.'
+    setup: 'In-hand ₹90k/month, single-income household, 20 years, floating rate',
+    failure: 'At 8.5%, EMI is ~₹34,700 — manageable at 38% of take-home. After a +1% reset, EMI rises to ~₹37,500. One month with a medical or car expense pushes the household into card rollover.',
+    whatBreaks: 'Fragile single-income month. No emergency reserve after down payment. Rate reset at year 3 makes the plan unsustainable.',
+    saferMove: 'Downsize ticket to ₹32–₹35L, or increase down payment so post-reset EMI stays below 32% of take-home with 6-month reserve still intact.'
   },
   {
     loan: '₹60L home loan',
-    setup: 'In-hand ₹1.2L, dual-income household',
-    failure: 'EMI fine on two salaries, fragile if one income pauses for 2 months.',
-    saferMove: 'Run single-income month simulation and hold 6-month reserve before booking.'
+    setup: 'Combined in-hand ₹1.4L, dual-income household, 20 years, floating rate',
+    failure: 'EMI of ~₹52,000 is fine on two salaries (37% of take-home). If one income pauses for 2 months — maternity, medical leave, job gap — EMI alone consumes 74% of single salary.',
+    whatBreaks: 'No single-income survivability tested before booking. Down payment exhausted emergency fund. Dual-income assumed to be permanent.',
+    saferMove: 'Run single-income month simulation. Hold 6-month reserve before booking. If single salary cannot service EMI + essentials, the loan is structurally too large for this household.'
   },
   {
     loan: '₹90L+ home loan',
-    setup: 'In-hand ₹1.7L+, metro city purchase',
-    failure: 'Ignoring interior, maintenance, and schooling cost stack post-possession.',
-    saferMove: 'Model total housing cost, not just EMI, before sanction acceptance.'
+    setup: 'In-hand ₹1.8L+, metro city purchase, 20 years, floating rate',
+    failure: 'EMI of ~₹78,000 looks like 43% of take-home — tight but survivable. After adding ₹8,000 maintenance, ₹2,000 property tax, ₹15,000 schooling cost post-possession, and a rate reset to 9.5%, total fixed monthly outflow exceeds ₹1.1L.',
+    whatBreaks: 'Post-possession cost stack not modelled. Interior/furnishing budget (₹10–₹18L for bare-shell) not planned. Rate shock + cost stack together exceed monthly surplus.',
+    saferMove: 'Model total housing cost including possession-day costs. Preserve a 6-month reserve after all one-time charges. If total housing cost exceeds 50% of take-home, reduce loan or wait until income improves.'
   }
 ];
 
@@ -173,11 +176,12 @@ export default function IndiaLoansHubPage() {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">₹ loan scenarios and failure modes</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
-          {loanScenarios.map((item) => (
+        {loanScenarios.map((item) => (
             <article key={item.loan} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{item.loan}</h3>
               <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.setup}</p>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>Where it goes wrong:</strong> {item.failure}</p>
+              <p className="mt-2 text-sm text-rose-800 dark:text-rose-300"><strong>What breaks:</strong> {item.whatBreaks}</p>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>Safer move:</strong> {item.saferMove}</p>
             </article>
           ))}

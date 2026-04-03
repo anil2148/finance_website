@@ -14,20 +14,23 @@ const scenarios = [
   {
     profile: '₹12L salary household, metro renter',
     decision: 'Buy now vs wait 18 months',
-    tradeoff: 'Higher EMI today may reduce flexibility for job/location changes.',
-    action: 'Run rent-vs-buy + EMI stress test; buy only if 5+ year stay looks realistic.'
+    whatBreaks: 'EMI on a ₹45–₹50L loan would be ~₹39,000–₹43,400/month — over 50% of take-home (₹85k–₹90k). Down payment exhausts emergency fund. Any rate reset or income dip triggers card rollover.',
+    whatLooksSafe: 'Renting at ₹18,000–₹22,000/month while building down payment and emergency reserve over 18 months. SIP continues. No liquidity crunch.',
+    action: 'Wait until take-home exceeds ₹1.05L or down payment + 6-month reserve are simultaneously available. Run EMI stress test before any property visit.'
   },
   {
     profile: '₹18L salary, planning first home',
     decision: 'Larger down payment vs keeping liquidity',
-    tradeoff: 'Aggressive down payment lowers EMI but may leave no emergency cushion.',
-    action: 'Keep minimum 6 months expenses post-booking before maximizing down payment.'
+    whatBreaks: 'Putting ₹25L+ down on a ₹60L property leaves ₹2–₹3L in savings. No buffer for interiors (₹8–₹12L), moving costs, rate reset, or a medical emergency in year one.',
+    whatLooksSafe: '₹15L down payment, ₹8L emergency reserve intact, ₹5L interiors budget set aside. EMI at ₹43,400 on ₹48L loan (9%) = 35% of take-home. Stress EMI at +1% = ₹47,200 (38%) — survivable.',
+    action: 'Keep minimum 6 months expenses post-booking before maximizing down payment. Budget separately for stamp duty, registration, and interiors before booking.'
   },
   {
     profile: '₹25L salary, upgrade buyer',
     decision: 'Stretch budget for larger home vs protect investment pace',
-    tradeoff: 'Housing upgrade can crowd out SIP and increase long-term concentration risk.',
-    action: 'Model total housing cost and preserve a non-housing investment lane.'
+    whatBreaks: 'Upgrading to ₹1.2Cr home with ₹96L loan: EMI ~₹85,000/month (49% of ₹1.75L take-home). SIP paused. No emergency reserve after possession costs. One income gap creates crisis.',
+    whatLooksSafe: 'Buying ₹90L home with ₹72L loan: EMI ~₹64,000 (37% of take-home). SIP at ₹15,000/month continues. 6-month reserve intact. Stress EMI at +1% still manageable.',
+    action: 'Model total housing cost and preserve a non-housing investment lane at ≥₹12,000/month. If that is not possible at current ticket size, reduce budget or delay.'
   }
 ];
 
@@ -159,7 +162,8 @@ export default function IndiaRealEstateHubPage() {
             <article key={item.profile} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
               <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">{item.profile}</h3>
               <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.decision}</p>
-              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>Trade-off:</strong> {item.tradeoff}</p>
+              <p className="mt-2 text-sm text-rose-800 dark:text-rose-300"><strong>What breaks:</strong> {item.whatBreaks}</p>
+              <p className="mt-2 text-sm text-emerald-800 dark:text-emerald-300"><strong>What looks safe:</strong> {item.whatLooksSafe}</p>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><strong>Next step:</strong> {item.action}</p>
             </article>
           ))}
