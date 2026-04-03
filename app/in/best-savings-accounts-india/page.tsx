@@ -14,8 +14,9 @@ export default function BestSavingsIndiaPage() {
     <article className="space-y-6">
       <header className="rounded-2xl border bg-white p-6">
         <h1 className="text-3xl font-semibold">Best savings accounts in India (2026): choose the account that protects cashflow first</h1>
-        <p className="mt-2 text-sm">Who this is for: salary-account users and families parking emergency funds with low friction access.</p>
+        <p className="mt-2 text-sm">For salary-account users and families who need fast access to emergency money without minimum-balance penalties.</p>
       </header>
+      <IndiaAuthorityNote />
 
       <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
         <table className="w-full min-w-[760px] text-sm">
@@ -29,14 +30,14 @@ export default function BestSavingsIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best choice based on your situation</h2>
+        <h2 className="text-xl font-semibold">Pick account type by balance behavior</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
           <li><strong>Emergency reserve of ₹3–6 lakh:</strong> use zero-minimum accounts where penalty risk is near zero.</li>
           <li><strong>Monthly operating float of ₹50,000–₹2,00,000:</strong> pick higher-rate variants only when minimum-balance rules are realistic.</li>
           <li><strong>Freelance or variable income:</strong> prefer accounts with predictable charges even if headline interest is lower.</li>
           <li><strong>₹1,20,000 monthly take-home household:</strong> keep 2 months&apos; expenses in instant-access savings before shifting surplus to FD/SIP.</li>
         </ul>
-        <h3 className="mt-4 text-lg font-semibold">When this advice fails</h3>
+        <h3 className="mt-4 text-lg font-semibold">Where this breaks in real life</h3>
         <ul className="mt-2 list-disc pl-5 space-y-2">
           <li>If promotional slabs drop after onboarding and you do not re-check effective yield.</li>
           <li>If your balance repeatedly falls below minimum thresholds due to uneven monthly spending.</li>
@@ -63,7 +64,6 @@ export default function BestSavingsIndiaPage() {
           <Link href="/in/calculators/emi-calculator" className="text-blue-700">check EMI safety before locking surplus</Link>
         </div>
       </section>
-      <IndiaAuthorityNote />
     </article>
   );
 }

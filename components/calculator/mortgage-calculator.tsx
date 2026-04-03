@@ -57,13 +57,13 @@ export function MortgageCalculator() {
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <DownloadPdfButton targetRef={exportRef} calculatorTitle="Mortgage Calculator" />
+        <DownloadPdfButton targetRef={exportRef} calculatorTitle="Home Loan EMI Calculator (India)" />
       </div>
 
       <div ref={exportRef} className="space-y-4 rounded-xl bg-white p-2">
         <div className="border-b border-slate-200 pb-3">
-          <h2 className="text-xl font-bold text-slate-900">Mortgage Calculator</h2>
-          <p className="text-sm text-slate-600">Live mortgage breakdown with visual amortization and payment mix.</p>
+          <h2 className="text-xl font-bold text-slate-900">Home Loan EMI Calculator (India)</h2>
+          <p className="text-sm text-slate-600">Estimate your monthly EMI based on loan amount, interest rate, and tenure.</p>
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[1.1fr_1fr]">

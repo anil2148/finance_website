@@ -39,6 +39,7 @@ export default function IndiaBlogHubPage() {
           Use these guides with India calculators to choose trade-offs before committing money. The focus here is practical monthly execution: what to keep stable, what to grow, and how to avoid cashflow stress.
         </p>
       </header>
+      <IndiaAuthorityNote />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Start with your immediate blocker</h2>
@@ -60,7 +61,6 @@ export default function IndiaBlogHubPage() {
           </article>
         ))}
       </section>
-      <IndiaAuthorityNote />
     </section>
   );
 }

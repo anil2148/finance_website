@@ -10,15 +10,15 @@ export default function IndiaCalculatorsHubPage() {
     <section className="space-y-6">
       <header className="rounded-2xl border bg-white p-6">
         <h1 className="text-3xl font-semibold">India Calculators Hub: model your next money move in ₹</h1>
-        <p className="mt-2 text-sm">Who this is for: people who want clear outputs in INR with Indian number formatting (1,00,000).</p>
+        <p className="mt-2 text-sm">Best for households that need one practical answer: safe EMI range or realistic SIP amount in Indian number format (1,00,000).</p>
       </header>
+      <IndiaAuthorityNote />
       <div className="grid gap-3 md:grid-cols-2">
         <Link href="/in/calculators/emi-calculator" className="rounded-xl border p-4">Home Loan EMI Calculator (India)</Link>
         <Link href="/in/calculators/sip-calculator" className="rounded-xl border p-4">SIP Calculator (India)</Link>
         <Link href="/in/home-loan-interest-rates-india" className="rounded-xl border p-4">Compare lender rates</Link>
         <Link href="/in/fixed-deposit-vs-sip-india" className="rounded-xl border p-4">FD vs SIP comparison</Link>
       </div>
-      <IndiaAuthorityNote />
     </section>
   );
 }
