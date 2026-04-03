@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { createPageMetadata } from '@/lib/seo';
+import { breadcrumbSchema, createPageMetadata, webpageSchema } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
@@ -13,8 +13,28 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function SipVsFdIndiaPage() {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      webpageSchema({
+        pathname: '/in/blog/sip-vs-fd',
+        name: 'SIP vs FD in India: A Scenario-Based Decision Guide (2026)',
+        description:
+          'Compare SIP and FD in India with ₹5,000/₹10,000/₹25,000 examples, volatility reality, and practical decision rules based on timeline and cashflow.'
+      }),
+      breadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'India', item: '/in' },
+        { name: 'Blog', item: '/in/blog' },
+        { name: 'SIP vs FD', item: '/in/blog/sip-vs-fd' }
+      ])
+    ]
+  };
+
   return (
-    <article className="article-prose space-y-6">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <article className="article-prose space-y-6">
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">India investing decision guide</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">SIP vs FD in India: which one should you choose?</h1>
@@ -94,7 +114,8 @@ export default function SipVsFdIndiaPage() {
           <li className="reference-item"><Link href="https://www.sebi.gov.in/" target="_blank" rel="noreferrer" className="content-link">Securities and Exchange Board of India (SEBI)</Link></li>
         </ul>
       </section>
-      <IndiaAuthorityNote />
-    </article>
+        <IndiaAuthorityNote />
+      </article>
+    </>
   );
 }
