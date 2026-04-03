@@ -1,6 +1,7 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Card } from '@/components/ui/card';
-import { ChartBarIcon, HomeModernIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
+import { ChartBarIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import AuthorBox from '@/components/common/AuthorBox';
 
@@ -49,22 +50,18 @@ const indiaCalculators = [
     title: 'SIP Calculator (India)',
     href: '/in/calculators/sip-calculator',
     description: 'Project corpus growth from monthly SIP contributions across conservative and growth assumptions.'
+  },
+  {
+    title: 'PPF vs ELSS Decision Framework',
+    href: '/in/blog/ppf-vs-elss',
+    description: 'Use timeline, risk, and deduction goals together instead of making a one-factor tax choice.'
   }
 ];
 
-const decisionLinks = [
-  { label: 'Tax hub', href: '/in/tax' },
-  { label: 'Banking hub', href: '/in/banking' },
-  { label: 'Investing hub', href: '/in/investing' },
-  { label: 'Loans hub', href: '/in/loans' },
-  { label: 'Real-estate hub', href: '/in/real-estate' },
-  { label: 'India calculators hub', href: '/in/calculators' }
-];
-
 const heroActions = [
-  { href: '/in/calculators/emi-calculator', label: 'Start with EMI planning', tone: 'primary' as const },
-  { href: '/in/old-vs-new-tax-regime', label: 'Calculate your tax under new regime', tone: 'secondary' as const },
-  { href: '/in/best-savings-accounts-india', label: 'Compare top Indian savings accounts', tone: 'secondary' as const }
+  { href: '/in/calculators', label: 'Start with your India scenario', tone: 'primary' as const },
+  { href: '/in/banking', label: 'Compare India options', tone: 'secondary' as const },
+  { href: '/in/blog', label: 'Explore India guides', tone: 'secondary' as const }
 ];
 
 const trustSignals = [
@@ -73,24 +70,46 @@ const trustSignals = [
   { label: 'Affiliate and revenue disclosure', href: '/affiliate-disclosure' }
 ];
 
-
-
-const salaryEntryPoints = [
+const trustStory = [
   {
-    salary: '₹6–12 lakh salary band',
-    path: '/in/tax',
-    decision: 'Start with tax regime choice, then 80C basics and emergency fund discipline.'
+    title: 'Who this is for',
+    text: 'Indian households making high-impact decisions on tax regime, SIP level, savings buffers, and EMI commitments.'
   },
   {
-    salary: '₹12–20 lakh salary band',
-    path: '/in/investing',
-    decision: 'Layer SIP growth on top of EPF while keeping 6-month buffer in banking products.'
+    title: 'Why this India hub exists',
+    text: 'Most advice is generic or product-pushy. This hub keeps decisions anchored to cashflow resilience and timeline realism.'
   },
   {
-    salary: '₹20 lakh+ salary band',
-    path: '/in/real-estate',
-    decision: 'Model home affordability and opportunity cost before increasing EMI burden.'
+    title: 'What makes it useful',
+    text: 'Every pathway connects calculator outputs to a practical next action plan for Indian salary and expense patterns.'
   }
+];
+
+const moneyImpactExamples = [
+  {
+    label: 'Increase SIP from ₹10,000 to ₹12,000/month',
+    outcome: '≈ ₹20 lakh+ additional corpus over 20 years',
+    note: 'Illustrative long-run projection; real outcomes vary by returns, tenure, and fund behavior.'
+  },
+  {
+    label: 'Lower a ₹60 lakh loan from 9.0% to 8.25%',
+    outcome: 'Can materially reduce lifetime interest burden',
+    note: 'Always compare processing fees, reset clauses, and tenure before switching.'
+  },
+  {
+    label: 'Avoid ₹2,500/month bank+card fee leakage',
+    outcome: '≈ ₹3 lakh preserved over 10 years',
+    note: 'Small recurring leaks can rival the benefit of chasing marginal headline rate differences.'
+  }
+];
+
+const decisionLinks = [
+  { href: '/in/tax', label: 'Tax planning hub' },
+  { href: '/in/banking', label: 'Banking hub' },
+  { href: '/in/investing', label: 'Investing hub' },
+  { href: '/in/loans', label: 'Loans hub' },
+  { href: '/in/real-estate', label: 'Real-estate hub' },
+  { href: '/in/calculators', label: 'All India calculators' }
 ];
 
 const indiaFaq = [
@@ -111,6 +130,24 @@ const indiaFaq = [
   }
 ];
 
+const indiaTools = [
+  {
+    title: 'Model India money moves',
+    desc: 'Run SIP, EMI, and tax-regime scenarios before committing to fixed monthly plans.',
+    href: '/in/calculators'
+  },
+  {
+    title: 'Read decision-first guides',
+    desc: 'Use practical frameworks for FD vs SIP, PPF vs ELSS, and salary-band planning.',
+    href: '/in/blog'
+  },
+  {
+    title: 'Compare product trade-offs',
+    desc: 'Review rates, fees, penalties, and suitability side-by-side with Indian context.',
+    href: '/in/banking'
+  }
+];
+
 export function IndiaHomepageLayout() {
   return (
     <section className="space-y-10" aria-label="FinanceSphere India homepage">
@@ -119,38 +156,42 @@ export function IndiaHomepageLayout() {
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
           <div className="relative space-y-4">
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">
-              FinanceSphere India • Calculator-first planning for Indian households
+              FinanceSphere India • Interactive personal finance platform
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make better money decisions in India with real ₹ scenarios</h1>
             <p className="max-w-xl text-blue-100/95">
               Plan SIPs, compare FD vs SIP honestly, evaluate PPF vs ELSS by timeline, and stress-test EMI before committing to a home loan.
             </p>
-            <ul className="grid gap-2 sm:grid-cols-3" aria-label="India hero actions">
+            <div className="flex flex-wrap gap-3" aria-label="India hero actions">
               {heroActions.map((action) => (
-                <li key={action.href}>
-                  <Link
-                    className={
-                      action.tone === 'primary'
-                        ? 'block rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950'
-                        : 'block rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950'
-                    }
-                    href={action.href}
-                  >
-                    {action.label}
-                  </Link>
-                </li>
+                <Link
+                  key={action.href}
+                  className={
+                    action.tone === 'primary'
+                      ? 'rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200'
+                      : 'rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15'
+                  }
+                  href={action.href}
+                >
+                  {action.label}
+                </Link>
               ))}
-            </ul>
+            </div>
             <p className="text-xs text-blue-200">Last India hub review: April 2, 2026 • Educational content only; verify rates, tax rules, and provider terms before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
+            <div className="relative h-36 overflow-hidden rounded-lg border border-white/20">
+              <Image
+                src="/images/home-hero-finance-dashboard.svg"
+                alt="Finance dashboard illustration for India workflows with SIP growth, EMI planning, and tax checks"
+                fill
+                priority
+                sizes="(max-width: 768px) 100vw, 40vw"
+                className="object-cover"
+              />
+            </div>
             <h2 className="text-xl font-semibold">India decision workflow</h2>
-            <ul className="space-y-2 text-sm text-cyan-100">
-              <li>1) Run calculator (SIP or EMI)</li>
-              <li>2) Compare trade-offs (FD vs SIP, PPF vs ELSS)</li>
-              <li>3) Pick a monthly plan you can continue in bad months</li>
-              <li>4) Re-check after salary/rate changes</li>
-            </ul>
+            <p className="text-sm text-cyan-100">In under 10 minutes: quantify your scenario, compare trade-offs, and choose a resilient monthly plan.</p>
           </div>
         </div>
       </Card>
@@ -165,91 +206,35 @@ export function IndiaHomepageLayout() {
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{goal.title}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{goal.description}</p>
               <div className="mt-3 space-y-1 text-sm">
-                <Link href={goal.primaryHref} className="block content-link">{goal.primaryLabel}</Link>
-                <Link href={goal.secondaryHref} className="block content-link">{goal.secondaryLabel}</Link>
+                <Link href={goal.primaryHref} className="block font-semibold text-blue-700 hover:underline dark:text-blue-300">{goal.primaryLabel}</Link>
+                <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline dark:text-slate-200 dark:hover:text-blue-300">{goal.secondaryLabel}</Link>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Choose your India money journey</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Go straight to the path that matches your immediate decision.</p>
-        <div className="mt-4 grid gap-3 md:grid-cols-4">
-          <Link className="link-card text-sm font-semibold" href="/in/tax">Save Taxes → Tax Hub</Link>
-          <Link className="link-card text-sm font-semibold" href="/in/investing">Grow Wealth → Investing Hub</Link>
-          <Link className="link-card text-sm font-semibold" href="/in/real-estate">Buy Home → Real Estate Hub</Link>
-          <Link className="link-card text-sm font-semibold" href="/in/loans">Reduce Debt → Loans Hub</Link>
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Salary-based India entry points</h2>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="india-real-number-examples">
+        <h2 id="india-real-number-examples" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Money impact snapshot (India)</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
-          {salaryEntryPoints.map((item) => (
-            <Link key={item.salary} href={item.path} className="link-card no-underline">
-              <h3 className="font-semibold text-slate-900 dark:text-slate-100">{item.salary}</h3>
-              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.decision}</p>
-              <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Open pathway →</p>
-            </Link>
+          {moneyImpactExamples.map((example) => (
+            <article key={example.label} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Illustrative scenario</p>
+              <h3 className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{example.label}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{example.outcome}</p>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{example.note}</p>
+            </article>
           ))}
         </div>
-      </section>
-
-      <section>
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Popular India calculators</h2>
-          <Link href="/in/calculators/emi-calculator" className="content-link text-sm font-semibold">Open EMI calculator</Link>
-        </div>
-        <div className="grid gap-4 md:grid-cols-2">
-          {indiaCalculators.map((calculator) => (
-            <Link key={calculator.href} href={calculator.href} className="group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
-              <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)] transition-transform duration-200 group-hover:-translate-y-1 group-hover:shadow-lg">
-                <ChartBarIcon className="h-6 w-6 text-blue-700 dark:text-blue-300" aria-hidden="true" />
-                <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{calculator.title}</h3>
-                <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{calculator.description}</p>
-              </Card>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-2">
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-          <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300"><HomeModernIcon className="h-5 w-5" /> <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Home-loan / EMI planning</h2></div>
-          <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">If one month has school fees, medical costs, and travel together, can your EMI still feel manageable? Use affordability with a safety buffer, not just lender eligibility.</p>
-          <Link href="/in/calculators/emi-calculator" className="mt-3 inline-flex content-link text-sm font-semibold">Run EMI scenarios →</Link>
-        </article>
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Tax-saving without cashflow mistakes</h2>
-          <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Avoid March panic investments. Set monthly 80C contributions and choose a PPF/ELSS mix aligned to both liquidity and risk comfort.</p>
-          <Link href="/in/blog/ppf-vs-elss" className="mt-3 inline-flex content-link text-sm font-semibold">Use the 80C framework →</Link>
-        </article>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular India money decisions</h2>
-        <ul className="mt-3 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-3" aria-label="Popular India money decision links">
-          {decisionLinks.map((item) => (
-            <li key={item.href}>
-              <Link href={item.href} className="link-card rounded-lg p-3 text-sm font-semibold no-underline">
-                {item.label}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Quick answers for India households</h2>
-        <div className="mt-4 grid gap-3 md:grid-cols-3">
-          {indiaFaq.map((item) => (
-            <article key={item.q} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.q}</h3>
-              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.a}</p>
-              <Link href={item.href} className="mt-3 inline-block content-link text-sm font-semibold">Open related guide</Link>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Trust and purpose</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {trustStory.map((item) => (
+            <article key={item.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.title}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.text}</p>
             </article>
           ))}
         </div>
@@ -262,6 +247,58 @@ export function IndiaHomepageLayout() {
             <span className="font-medium text-slate-700 dark:text-slate-200">{signal.label}</span>
           </Link>
         ))}
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="india-popular-links-heading">
+        <h2 id="india-popular-links-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular India pathways</h2>
+        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+          {decisionLinks.map((item) => (
+            <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
+              {item.label}
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Popular India calculators</h2>
+          <Link href="/in/calculators" className="text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">See all India calculators</Link>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {indiaCalculators.map((calculator) => (
+            <Link key={calculator.href} href={calculator.href} className="group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+              <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)] transition-transform duration-200 group-hover:-translate-y-1 group-hover:shadow-lg">
+                <ChartBarIcon className="h-6 w-6 text-blue-700 dark:text-blue-300" aria-hidden="true" />
+                <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{calculator.title}</h3>
+                <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{calculator.description}</p>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="grid gap-4 lg:grid-cols-3">
+        {indiaTools.map((tool) => (
+          <Card key={tool.title} className="rounded-2xl border-slate-200/90 bg-gradient-to-b from-white to-slate-50 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{tool.title}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">{tool.desc}</p>
+            <Link href={tool.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 dark:text-blue-300">Open section →</Link>
+          </Card>
+        ))}
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Quick answers for India households</h2>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {indiaFaq.map((item) => (
+            <article key={item.q} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.q}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.a}</p>
+              <Link href={item.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Open related guide</Link>
+            </article>
+          ))}
+        </div>
       </section>
 
       <AuthorBox className="mt-0" />
