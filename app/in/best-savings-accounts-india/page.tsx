@@ -29,14 +29,19 @@ export default function BestSavingsIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best for YOU if…</h2>
+        <h2 className="text-xl font-semibold">Best choice based on your situation</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
-          <li>Emergency fund is ₹3–6 lakh and conservative risk: choose zero-penalty, zero-minimum variants.</li>
-          <li>Monthly float is ₹50,000 to ₹2 lakh: choose high-rate accounts only if balance rules are easy to maintain.</li>
-          <li>Income is variable (moderate/high risk): prioritize fee predictability over headline rate.</li>
+          <li><strong>Emergency reserve of ₹3–6 lakh:</strong> use zero-minimum accounts where penalty risk is near zero.</li>
+          <li><strong>Monthly operating float of ₹50,000–₹2,00,000:</strong> pick higher-rate variants only when minimum-balance rules are realistic.</li>
+          <li><strong>Freelance or variable income:</strong> prefer accounts with predictable charges even if headline interest is lower.</li>
+          <li><strong>₹1,20,000 monthly take-home household:</strong> keep 2 months&apos; expenses in instant-access savings before shifting surplus to FD/SIP.</li>
         </ul>
-        <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
-        <p className="mt-2">You routinely fall below minimum balance or need frequent cash movement. Penalty drag can erase rate advantage.</p>
+        <h3 className="mt-4 text-lg font-semibold">When this advice fails</h3>
+        <ul className="mt-2 list-disc pl-5 space-y-2">
+          <li>If promotional slabs drop after onboarding and you do not re-check effective yield.</li>
+          <li>If your balance repeatedly falls below minimum thresholds due to uneven monthly spending.</li>
+          <li>If frequent cash movement triggers service fees that offset the interest gap.</li>
+        </ul>
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">

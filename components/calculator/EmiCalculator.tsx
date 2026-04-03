@@ -81,9 +81,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const title =
     type === 'mortgage'
-      ? isIndiaCurrency
-        ? 'Home Loan EMI Calculator (India)'
-        : 'Mortgage Calculator'
+      ? 'Home Loan EMI Calculator (India)'
       : type === 'loan'
         ? 'Loan EMI Calculator'
         : type === 'compound'
@@ -96,9 +94,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const description =
     type === 'mortgage'
-      ? isIndiaCurrency
-        ? 'Estimate EMI, total interest, and affordability for common India home-loan ranges (₹5L to ₹5Cr).'
-        : 'Estimate monthly mortgage payments and visualize loan balance reduction over time.'
+      ? 'Estimate your monthly EMI based on loan amount, rate, and tenure.'
       : type === 'loan'
         ? 'Calculate your monthly EMI with principal, rate, and tenure inputs.'
         : type === 'compound'
