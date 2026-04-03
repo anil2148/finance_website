@@ -96,6 +96,7 @@ export function normalizeCurrency(currency?: string, fallback: AppCountry = 'US'
 }
 
 export function getCountryForPath(pathname: string): AppCountry {
+  if (pathname === '/us' || pathname.startsWith('/us/')) return 'US';
   if (pathname === '/in' || pathname.startsWith('/in/')) return 'India';
   if (pathname === '/uk' || pathname.startsWith('/uk/')) return 'UK';
   if (pathname === '/ca' || pathname.startsWith('/ca/')) return 'Canada';

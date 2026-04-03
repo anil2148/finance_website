@@ -45,6 +45,10 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
   }, []);
 
   const setCurrency = useCallback((nextCurrency: AppCurrency) => {
+    if (country === 'India') {
+      setCurrencyState('INR');
+      return;
+    }
     setCurrencyState(normalizeCurrency(nextCurrency, country));
   }, [country]);
 
@@ -64,7 +68,7 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
       const parsed = JSON.parse(raw) as { currency?: string; country?: string; darkMode?: boolean };
       const persistedCountry = normalizeCountry(parsed.country);
       const nextCountry = inferredCountry || persistedCountry;
-      const nextCurrency = normalizeCurrency(parsed.currency, nextCountry);
+      const nextCurrency = nextCountry === 'India' ? 'INR' : normalizeCurrency(parsed.currency, nextCountry);
 
       setCountryState(nextCountry);
       setCurrencyState(nextCurrency);
@@ -74,6 +78,12 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
       // Ignore malformed storage values.
     }
   }, [inferredCountry]);
+
+  useEffect(() => {
+    if (country === 'India' && currency !== 'INR') {
+      setCurrencyState('INR');
+    }
+  }, [country, currency]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ currency, country, darkMode }));

@@ -15,10 +15,15 @@ type ArticleSchemaArgs = {
 export const SITE_ORIGIN = 'https://www.financesphere.io';
 
 const hreflangPathEquivalents: Record<string, { us: string; india: string }> = {
-  '/': { us: '/', india: '/in' },
+  '/': { us: '/us', india: '/in' },
+  '/us': { us: '/us', india: '/in' },
+  '/in': { us: '/us', india: '/in' },
   '/blog': { us: '/blog', india: '/in/blog' },
+  '/in/blog': { us: '/blog', india: '/in/blog' },
   '/calculators/loan-calculator': { us: '/calculators/loan-calculator', india: '/in/calculators/emi-calculator' },
-  '/calculators/compound-interest-calculator': { us: '/calculators/compound-interest-calculator', india: '/in/calculators/sip-calculator' }
+  '/in/calculators/emi-calculator': { us: '/calculators/loan-calculator', india: '/in/calculators/emi-calculator' },
+  '/calculators/compound-interest-calculator': { us: '/calculators/compound-interest-calculator', india: '/in/calculators/sip-calculator' },
+  '/in/calculators/sip-calculator': { us: '/calculators/compound-interest-calculator', india: '/in/calculators/sip-calculator' }
 };
 
 export function normalizePathname(pathname: string): string {

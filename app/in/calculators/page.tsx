@@ -1,0 +1,24 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { createPageMetadata } from '@/lib/seo';
+import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+
+export const metadata: Metadata = createPageMetadata({ title: 'India Calculators Hub: EMI and SIP tools with INR formatting', description: 'Use India calculators with INR output and lakh/crore formatting for EMI and SIP planning decisions.', pathname: '/in/calculators' });
+
+export default function IndiaCalculatorsHubPage() {
+  return (
+    <section className="space-y-6">
+      <header className="rounded-2xl border bg-white p-6">
+        <h1 className="text-3xl font-semibold">India Calculators Hub: model your next money move in ₹</h1>
+        <p className="mt-2 text-sm">Who this is for: people who want clear outputs in INR with Indian number formatting (1,00,000).</p>
+      </header>
+      <div className="grid gap-3 md:grid-cols-2">
+        <Link href="/in/calculators/emi-calculator" className="rounded-xl border p-4">Home loan EMI calculator</Link>
+        <Link href="/in/calculators/sip-calculator" className="rounded-xl border p-4">SIP corpus calculator</Link>
+        <Link href="/in/home-loan-interest-rates-india" className="rounded-xl border p-4">Compare lender rates</Link>
+        <Link href="/in/fixed-deposit-vs-sip-india" className="rounded-xl border p-4">FD vs SIP comparison</Link>
+      </div>
+      <IndiaAuthorityNote />
+    </section>
+  );
+}

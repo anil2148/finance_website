@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
+import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
 const indiaGuides = [
   {
@@ -59,6 +60,7 @@ export default function IndiaBlogHubPage() {
           </article>
         ))}
       </section>
+      <IndiaAuthorityNote />
     </section>
   );
 }

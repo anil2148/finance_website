@@ -53,30 +53,28 @@ const globalLinks: NavLink[] = [
 
 const indiaLinks: NavLink[] = [
   { label: 'Home', href: '/in' },
-  {
-    label: 'Learn',
-    children: [
-      { label: 'SIP vs FD', href: '/in/blog/sip-vs-fd' },
-      { label: 'PPF vs ELSS', href: '/in/blog/ppf-vs-elss' },
-      { label: 'India Blog Hub', href: '/in/blog' }
-    ]
-  },
+  { label: 'Tax', href: '/in/tax' },
+  { label: 'Banking', href: '/in/banking' },
+  { label: 'Investing', href: '/in/investing' },
+  { label: 'Loans', href: '/in/loans' },
+  { label: 'Real Estate', href: '/in/real-estate' },
   {
     label: 'Compare',
     children: [
-      { label: 'SIP vs FD', href: '/in/blog/sip-vs-fd' },
-      { label: 'PPF vs ELSS', href: '/in/blog/ppf-vs-elss' },
-      { label: 'EMI Planning', href: '/in/calculators/emi-calculator' }
+      { label: 'Best Savings Accounts India', href: '/in/best-savings-accounts-india' },
+      { label: 'Best Credit Cards India', href: '/in/best-credit-cards-india' },
+      { label: 'Best Investment Apps India', href: '/in/best-investment-apps-india' }
     ]
   },
   {
     label: 'Tools',
     children: [
+      { label: 'India Calculator Hub', href: '/in/calculators' },
       { label: 'India EMI Calculator', href: '/in/calculators/emi-calculator' },
       { label: 'India SIP Calculator', href: '/in/calculators/sip-calculator' }
     ]
   },
-  { label: 'Blog', href: '/in/blog' },
+  { label: 'Learn', href: '/in/blog' },
   { label: 'Help', href: '/help' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' }
@@ -169,11 +167,17 @@ export function Navbar() {
                 <option key={item} value={item}>{item}</option>
               ))}
             </select>
-            <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof SUPPORTED_APP_CURRENCIES)[number])}>
-              {SUPPORTED_APP_CURRENCIES.map((item) => (
-                <option key={item} value={item}>{item}</option>
-              ))}
-            </select>
+            {isIndiaContext ? (
+              <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+                Currency: INR (locked for India)
+              </span>
+            ) : (
+              <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof SUPPORTED_APP_CURRENCIES)[number])}>
+                {SUPPORTED_APP_CURRENCIES.map((item) => (
+                  <option key={item} value={item}>{item}</option>
+                ))}
+              </select>
+            )}
             <button onClick={toggleDarkMode} className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">
               {darkMode ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
             </button>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { EmiCalculator } from '@/components/calculator/EmiCalculator';
 import { createPageMetadata } from '@/lib/seo';
+import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'India SIP Calculator (₹) | Monthly Investment Projection',
@@ -39,6 +40,7 @@ export default function IndiaSipCalculatorPage() {
           <Link href="/in/calculators/emi-calculator" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Home-loan EMI planning</Link>
         </div>
       </section>
+      <IndiaAuthorityNote />
     </section>
   );
 }
