@@ -18,6 +18,7 @@ const { runUtilsTests } = require('./utils.test.ts');
 const { runCalculatorTests } = require('./calculators.test.ts');
 const { runLinkIntegrityTests } = require('./linkIntegrity.test.ts');
 const { runRegionRoutingTests } = require('./region-routing.test.ts');
+const { runSitemapTests } = require('./sitemap.test.ts');
 const { runFinanceSphereRenderingSeoRegressionTests } = require('./financesphere-rendering-seo-regressions.test.ts');
 const { runSitemapValidationRegressionTests } = require('./sitemap-validation-regression.test.ts');
 
