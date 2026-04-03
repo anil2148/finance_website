@@ -37,8 +37,9 @@ export default function IndiaTaxHubPage() {
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h1 className="text-3xl font-semibold text-slate-900 dark:text-slate-100">India Tax Hub (FY 2025–26): start here to reduce tax without cashflow mistakes</h1>
         <p className="mt-3 text-sm text-slate-600 dark:text-slate-300"><strong>Start here:</strong> (1) Pick regime, (2) map deductions, (3) convert yearly tax targets into monthly contributions.</p>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-200"><strong>Who this is for:</strong> salaried households at ₹8 lakh to ₹30 lakh income. <strong>Biggest mistake:</strong> investing only for deduction. <strong>Best choice by scenario:</strong> low deductions usually favor new regime; higher declared deductions can favor old regime.</p>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-200"><strong>Who should use this first:</strong> salaried households comparing take-home impact before locking tax-saving products. <strong>Common miss:</strong> buying ELSS/PPF in March without checking monthly liquidity. <strong>Practical call:</strong> if declared deductions stay modest, new regime often keeps execution cleaner.</p>
       </header>
+      <IndiaAuthorityNote />
 
       <div className="grid gap-3 md:grid-cols-2">
         {links.map((item) => (
@@ -61,7 +62,6 @@ export default function IndiaTaxHubPage() {
           <li>Job switch or bonus structure changes, but you continue with last year&apos;s plan.</li>
         </ul>
       </section>
-      <IndiaAuthorityNote />
     </section>
   );
 }

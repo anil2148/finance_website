@@ -20,6 +20,7 @@ export default function IndiaSipCalculatorPage() {
           Estimate your potential corpus from monthly SIP contributions and compare outcome ranges before committing to a fixed monthly amount.
         </p>
       </header>
+      <IndiaAuthorityNote />
 
       <EmiCalculator type="compound" />
 
@@ -49,7 +50,6 @@ export default function IndiaSipCalculatorPage() {
           <Link href="/in/calculators/emi-calculator" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Home-loan EMI planning</Link>
         </div>
       </section>
-      <IndiaAuthorityNote />
     </section>
   );
 }

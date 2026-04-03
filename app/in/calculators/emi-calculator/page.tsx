@@ -21,6 +21,7 @@ export default function IndiaEmiCalculatorPage() {
           Use this before you finalise a loan amount. Many buyers can handle EMI on paper, but monthly budget pressure appears after possession costs, maintenance, school fees, and rate resets. Stress-test now, not later.
         </p>
       </header>
+      <IndiaAuthorityNote />
 
       <EmiCalculator type="mortgage" />
 
@@ -75,7 +76,6 @@ export default function IndiaEmiCalculatorPage() {
           <Link href="/in/calculators/sip-calculator" className="font-semibold text-blue-700 hover:underline dark:text-blue-300">Try SIP calculator</Link>
         </div>
       </section>
-      <IndiaAuthorityNote />
     </section>
   );
 }

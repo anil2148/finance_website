@@ -14,8 +14,9 @@ export default function BestCardsIndiaPage() {
     <article className="space-y-6">
       <header className="rounded-2xl border bg-white p-6">
         <h1 className="text-3xl font-semibold">Best credit cards in India (2026): choose by annual spend, not by launch offer</h1>
-        <p className="mt-2 text-sm">Who this is for: users choosing a primary card for cashback, travel rewards, or fee-free reliability.</p>
+        <p className="mt-2 text-sm">Built for users selecting one primary card based on yearly spend and waiver eligibility, not banner rewards.</p>
       </header>
+      <IndiaAuthorityNote />
 
       <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
         <table className="w-full min-w-[760px] text-sm">
@@ -36,13 +37,13 @@ export default function BestCardsIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best for YOU if…</h2>
+        <h2 className="text-xl font-semibold">Choose card depth by annual spend band</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
           <li>₹1–2 lakh annual card spend: no-fee cards usually win because waiver miss-risk is high.</li>
           <li>₹5–10 lakh annual spend: a paid cashback card dominates if your categories match reward multipliers.</li>
           <li>Frequent flyers with predictable travel: airline/travel cards only win if redemption value beats fee drag.</li>
         </ul>
-        <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
+        <h3 className="mt-4 text-lg font-semibold">Skip premium cards when…</h3>
         <p className="mt-2">You cannot reliably cross the annual-fee waiver threshold or pay in full each month. High APR + fee wipes out rewards.</p>
         <p className="mt-3"><strong>Counterintuitive insight:</strong> a lower-reward no-fee card can create higher net value than a premium card when annual spend is irregular.</p>
       </section>
@@ -65,7 +66,6 @@ export default function BestCardsIndiaPage() {
           <Link href="/in/calculators/sip-calculator" className="text-blue-700">project long-term SIP alternatives in ₹</Link>
         </div>
       </section>
-      <IndiaAuthorityNote />
     </article>
   );
 }

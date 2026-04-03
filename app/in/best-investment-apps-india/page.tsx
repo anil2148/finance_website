@@ -14,8 +14,9 @@ export default function BestAppsIndiaPage() {
     <article className="space-y-6">
       <header className="rounded-2xl border bg-white p-6">
         <h1 className="text-3xl font-semibold">Best investment apps in India: pick the app your behavior can sustain for 10 years</h1>
-        <p className="mt-2 text-sm">Who this is for: SIP investors, hybrid investors, and active users choosing one core platform.</p>
+        <p className="mt-2 text-sm">For SIP-first investors and hybrid users who need dependable execution, clean reports, and fewer behavior mistakes.</p>
       </header>
+      <IndiaAuthorityNote />
 
       <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
         <table className="w-full min-w-[760px] text-sm">
@@ -37,13 +38,13 @@ export default function BestAppsIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best for YOU if…</h2>
+        <h2 className="text-xl font-semibold">Platform fit by investing style</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
           <li>₹5,000–₹10,000 monthly SIP and low trading: choose the cleanest SIP automation + direct mutual fund flow.</li>
           <li>₹25,000 monthly investing with moderate trading: pick transparent brokerage + strong reporting for tax filing.</li>
           <li>₹50,000+ monthly with aggressive style: choose robust order execution only if risk controls are pre-set.</li>
         </ul>
-        <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
+        <h3 className="mt-4 text-lg font-semibold">Red flag scenario</h3>
         <p className="mt-2">You select an app for social buzz but it encourages overtrading. Behavioral slippage destroys compounding faster than brokerage fees.</p>
       </section>
 
@@ -68,7 +69,6 @@ export default function BestAppsIndiaPage() {
           <Link href="/in/calculators/emi-calculator" className="text-blue-700">check EMI burden before increasing SIPs</Link>
         </div>
       </section>
-      <IndiaAuthorityNote />
     </article>
   );
 }

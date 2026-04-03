@@ -18,7 +18,7 @@ const decisionTracks = [
     title: 'Borrowing decisions',
     summary: 'Home purchase, refinance, personal loan, or debt consolidation choices.',
     tools: [
-      { href: '/calculators/mortgage-calculator', label: 'Mortgage Calculator' },
+      { href: '/calculators/mortgage-calculator', label: 'Home Loan EMI Calculator (India)' },
       { href: '/calculators/loan-calculator', label: 'Loan Calculator' },
       { href: '/calculators/debt-payoff-calculator', label: 'Debt Payoff Calculator' }
     ],

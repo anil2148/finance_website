@@ -14,8 +14,9 @@ export default function BestFixedDepositsIndiaPage() {
     <article className="space-y-6">
       <header className="rounded-2xl border bg-white p-6">
         <h1 className="text-3xl font-semibold">Best fixed deposits in India (2026): use FD for stability windows, not for every goal</h1>
-        <p className="mt-2 text-sm">Who this is for: households protecting short-term money against volatility while preserving predictable cashflow.</p>
+        <p className="mt-2 text-sm">Useful for households ring-fencing 1–3 year goals where capital swings can derail plans.</p>
       </header>
+      <IndiaAuthorityNote />
 
       <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
         <table className="w-full min-w-[760px] text-sm">
@@ -29,13 +30,13 @@ export default function BestFixedDepositsIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best for YOU if…</h2>
+        <h2 className="text-xl font-semibold">FD fit-check by surplus and timeline</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
           <li>₹5,000–₹10,000 monthly surplus with a 3-year goal: FD ladder dominates because principal stability matters more than upside.</li>
           <li>₹25,000 monthly surplus with a 5-year goal: hybrid FD + SIP generally dominates risk-adjusted outcomes.</li>
           <li>₹50,000 monthly surplus with 10-year horizon: FD should be a stability sleeve, not the core wealth engine.</li>
         </ul>
-        <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
+        <h3 className="mt-4 text-lg font-semibold">Avoid this setup when…</h3>
         <p className="mt-2">You lock all long-term money in post-tax low-yield FDs during high inflation. Purchasing power erosion becomes the hidden loss.</p>
       </section>
 
@@ -59,7 +60,6 @@ export default function BestFixedDepositsIndiaPage() {
         </div>
       </section>
 
-      <IndiaAuthorityNote />
     </article>
   );
 }

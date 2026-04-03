@@ -94,7 +94,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const description =
     type === 'mortgage'
-      ? 'Estimate your monthly EMI based on loan amount, rate, and tenure.'
+      ? 'Estimate your monthly EMI based on loan amount, interest rate, and tenure.'
       : type === 'loan'
         ? 'Calculate your monthly EMI with principal, rate, and tenure inputs.'
         : type === 'compound'
