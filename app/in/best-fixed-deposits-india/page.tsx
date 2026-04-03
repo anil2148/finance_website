@@ -17,6 +17,17 @@ export default function BestFixedDepositsIndiaPage() {
         </tbody></table>
       </section>
       <section className="rounded-2xl border bg-white p-6 text-sm"><h2 className="text-xl font-semibold">Best for by scenario</h2><ul className="mt-3 list-disc pl-5 space-y-2"><li>₹5 lakh emergency fund: prioritize easy premature withdrawal terms.</li><li>₹10 lakh near-term down payment: ladder FD tenures to reduce reinvestment risk.</li><li>₹20 lakh retired household corpus: mix monthly payout and cumulative FDs.</li></ul><p className="mt-3"><strong>CTA:</strong> Compare with SIP before locking long tenures.</p><div className="mt-3 flex flex-wrap gap-3"><Link href="/in/banking">Banking hub</Link><Link href="/in/fixed-deposit-vs-sip-india">FD vs SIP comparison</Link><Link href="/in/best-savings-accounts-india">Savings accounts comparison</Link><Link href="/in/calculators/sip-calculator">SIP calculator</Link><Link href="/in/best-investment-apps-india">Investment apps comparison</Link></div></section>
+
+      <section className="rounded-2xl border bg-white p-6 text-sm">
+        <h2 className="text-xl font-semibold">Best for YOU if…</h2>
+        <ul className="mt-3 list-disc pl-5 space-y-2">
+          <li>₹1–2 lakh annual discretionary spend: pick low-fee, low-maintenance products with easy exit.</li>
+          <li>₹5–10 lakh annual spend or surplus: choose higher-reward options only when usage is consistent.</li>
+          <li>High variability in monthly income: prioritize flexibility and penalty-light structures over headline return.</li>
+        </ul>
+        <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
+        <p className="mt-2">You cannot meet annual usage thresholds or you may need early liquidity, because fee drag and penalty clauses can erase the apparent benefit.</p>
+      </section>
       <IndiaAuthorityNote />
     </article>
   );
