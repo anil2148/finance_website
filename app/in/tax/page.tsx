@@ -40,7 +40,6 @@ export default function IndiaTaxHubPage() {
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-200"><strong>Who should use this first:</strong> salaried households comparing take-home impact before locking tax-saving products. <strong>Common miss:</strong> buying ELSS/PPF in March without checking monthly liquidity. <strong>Practical call:</strong> if declared deductions stay modest, new regime often keeps execution cleaner.</p>
       </header>
       <IndiaAuthorityNote />
-
       <div className="grid gap-3 md:grid-cols-2">
         {links.map((item) => (
           <Link key={item.href} href={item.href} className="rounded-xl border border-slate-200 bg-white p-4 font-medium text-blue-700 hover:underline dark:border-slate-700 dark:bg-slate-900 dark:text-blue-300">{item.label}</Link>
@@ -48,14 +47,14 @@ export default function IndiaTaxHubPage() {
       </div>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Best choice based on your situation</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Regime trigger map by salary band</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
-          <li><strong>Salary around ₹8–12 lakh:</strong> start with new regime check first, then use only deductions you can automate monthly.</li>
-          <li><strong>Salary around ₹15–20 lakh:</strong> compare old vs new only after adding EPF, HRA, 80C, and 80D with documented amounts.</li>
-          <li><strong>Salary above ₹25 lakh:</strong> use regime selection and investment planning as separate decisions to avoid forced lock-ins.</li>
+          <li><strong>₹8–12 lakh salary:</strong> new regime usually wins when HRA and 80C proofs are limited; verify with one quick comparison before investing extra.</li>
+          <li><strong>₹15–20 lakh salary:</strong> old regime can still outperform only when EPF + HRA + 80C + 80D are fully documented and consistent through the year.</li>
+          <li><strong>₹25 lakh+ salary:</strong> avoid mixing tax and investing decisions; first lock the regime, then build a separate monthly wealth allocation plan.</li>
         </ul>
 
-        <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">When this advice fails</h3>
+        <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">Where tax plans break during filing season</h3>
         <ul className="mt-2 list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
           <li>You estimate deductions but do not have proof-ready documents by filing time.</li>
           <li>Your monthly cashflow is tight and tax-saving contributions stop mid-year.</li>

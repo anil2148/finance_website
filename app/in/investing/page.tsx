@@ -36,8 +36,16 @@ export default function IndiaInvestingHubPage() {
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h1 className="text-3xl font-semibold text-slate-900 dark:text-slate-100">India Investing Hub: build wealth with SIP strategy, tax awareness, and downside discipline</h1>
         <p className="mt-3 text-sm text-slate-600 dark:text-slate-300"><strong>Start here:</strong> lock emergency reserve, set monthly SIP amount, then choose platform and fund mix.</p>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-200"><strong>Who this is for:</strong> first-time and intermediate investors. <strong>Biggest mistake:</strong> changing SIP plan every market dip. <strong>Best choice by scenario:</strong> combine FD stability for 0–3 year goals with SIP growth for 7+ year goals.</p>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-200"><strong>Who this is for:</strong> first-time and intermediate investors. <strong>Biggest mistake:</strong> setting SIP amounts that fail in one bad salary month. <strong>Practical call:</strong> fund 0–3 year goals in stable buckets, then use SIP for 7+ year goals.</p>
       </header>
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How to set SIP amount without guesswork</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
+          <li>Use your lower in-hand month as baseline, then test ₹5,000, ₹10,000, and ₹25,000 SIP options.</li>
+          <li>If any option forces card rollover in a high-expense month, step down SIP and protect consistency first.</li>
+          <li>Review every quarter; increase SIP only after at least 3 stable salary cycles.</li>
+        </ul>
+      </section>
       <div className="grid gap-3 md:grid-cols-2">
         {links.map(([href, label]) => (
           <Link key={href} href={href} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">{label}</Link>

@@ -105,6 +105,20 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
             ? 'Project retirement corpus using expected return and annual timeline.'
             : 'Calculate net worth by subtracting liabilities from assets.';
 
+  const principalLabel =
+    type === 'mortgage'
+      ? `Home Loan Amount (${currencySymbol})`
+      : type === 'compound'
+        ? `Starting Amount (${currencySymbol})`
+        : `Principal (${currencySymbol})`;
+
+  const rateLabel = type === 'mortgage' ? 'Interest Rate (% p.a.)' : 'Annual Rate (%)';
+  const yearsLabel = type === 'mortgage' ? 'Loan Tenure (Years)' : 'Years';
+  const contributionLabel =
+    type === 'compound' && isIndiaCurrency
+      ? `Monthly SIP Amount (${currencySymbol})`
+      : `Monthly Contribution (${currencySymbol})`;
+
   return (
     <div className="grid gap-4 lg:grid-cols-2">
       <div className="card space-y-4">
@@ -113,11 +127,11 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
           <p className="text-sm text-slate-600">{description}</p>
         </div>
 
-        {type !== 'networth' && <CalculatorInput label={`Principal (${currencySymbol})`} value={principal} onChange={setPrincipal} />}
-        {type !== 'networth' && <CalculatorInput label="Annual Rate (%)" value={rate} onChange={setRate} />}
-        {type !== 'networth' && <CalculatorInput label="Years" value={years} onChange={setYears} />}
+        {type !== 'networth' && <CalculatorInput label={principalLabel} value={principal} onChange={setPrincipal} />}
+        {type !== 'networth' && <CalculatorInput label={rateLabel} value={rate} onChange={setRate} />}
+        {type !== 'networth' && <CalculatorInput label={yearsLabel} value={years} onChange={setYears} />}
         {(type === 'compound' || type === 'retirement') && (
-          <CalculatorInput label={`Monthly Contribution (${currencySymbol})`} value={contribution} onChange={setContribution} />
+          <CalculatorInput label={contributionLabel} value={contribution} onChange={setContribution} />
         )}
 
         {type === 'networth' && (

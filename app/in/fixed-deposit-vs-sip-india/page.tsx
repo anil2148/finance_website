@@ -30,24 +30,23 @@ export default function FdVsSipIndiaMoneyPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best choice based on your situation</h2>
+        <h2 className="text-xl font-semibold">Choose allocation by goal window, not headline return</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
-          <li><strong>Timeline decision:</strong> goal &lt;5 years → FD-heavy wins; goal &gt;7 years → SIP-heavy dominates; uncertain goal → 60/40 hybrid.</li>
-          <li><strong>Risk decision:</strong> conservative users cap SIP at 20–30%; moderate users run 40–60%; aggressive users can go 70%+ SIP after emergency fund.</li>
-          <li><strong>Income decision:</strong> variable income households should prioritize FD ladder before increasing SIP commitments.</li>
-        </ul>
-        <h3 className="mt-4 text-lg font-semibold">When this advice FAILS</h3>
-        <ul className="mt-2 list-disc pl-5 space-y-2">
-          <li>SIP strategy fails when equity money is required during a 12–36 month drawdown.</li>
-          <li>FD strategy fails when inflation remains above post-tax yield for prolonged periods.</li>
-          <li>Hybrid strategy fails when allocations are not reviewed annually.</li>
+          <li><strong>0–3 year goal (fees, car, wedding):</strong> keep most money in FD or high-liquidity buckets to avoid market-timing exits.</li>
+          <li><strong>5+ year goal:</strong> SIP can take larger allocation, but keep one year of expected withdrawals in stable assets.</li>
+          <li><strong>Variable monthly income:</strong> build FD ladder first; increase SIP only after cashflow stabilizes for 2–3 quarters.</li>
         </ul>
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">What most people get wrong</h2>
-        <p className="mt-2">“FD is safe” and “SIP is always better” are both incomplete. The winner changes by horizon, risk tolerance, and job stability.</p>
-        <p className="mt-2"><strong>Counterintuitive insight:</strong> in rate-cut cycles, locking medium-term FD ladders while continuing SIP can reduce behavioral panic and improve total outcomes.</p>
+        <h2 className="text-xl font-semibold">Failure checkpoints before you finalize split</h2>
+        <ul className="mt-2 list-disc pl-5 space-y-2">
+          <li>SIP-heavy plan fails when equity money is needed in a 12–24 month drawdown.</li>
+          <li>FD-only plan fails if post-tax return trails inflation for several years.</li>
+          <li>Hybrid plan fails when you never rebalance after salary or goal-timeline changes.</li>
+        </ul>
+        <p className="mt-3">“FD is safe” and “SIP is always better” are both incomplete. The winner changes by timeline certainty and withdrawal risk.</p>
+        <p className="mt-2"><strong>Practical insight:</strong> many households do better with a rule-based split like ₹12,000 SIP + ₹8,000 FD than with all-in switches every market cycle.</p>
         <div className="mt-3 flex flex-wrap gap-3">
           <Link href="/in/investing" className="text-blue-700">India investing hub for allocation rules</Link>
           <Link href="/in/banking" className="text-blue-700">India banking hub for liquidity setup</Link>
