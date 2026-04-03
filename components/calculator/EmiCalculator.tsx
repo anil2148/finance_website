@@ -31,13 +31,25 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
   const [principal, setPrincipal] = useState(
-    type === 'mortgage' ? (isIndiaCurrency ? 5000000 : 350000) : 10000
+    type === 'mortgage'
+      ? (isIndiaCurrency ? 5000000 : 350000)
+      : type === 'loan'
+        ? (isIndiaCurrency ? 500000 : 10000)
+        : 10000
   );
   const [rate, setRate] = useState(
-    type === 'mortgage' ? (isIndiaCurrency ? 8 : 6.8) : 10
+    type === 'mortgage'
+      ? (isIndiaCurrency ? 8 : 6.8)
+      : type === 'loan'
+        ? (isIndiaCurrency ? 10 : 10)
+        : 10
   );
   const [years, setYears] = useState(
-    type === 'mortgage' ? (isIndiaCurrency ? 20 : 30) : 5
+    type === 'mortgage'
+      ? (isIndiaCurrency ? 20 : 30)
+      : type === 'loan'
+        ? 5
+        : 5
   );
   const [contribution, setContribution] = useState(type === 'retirement' ? 800 : 500);
   const [assets, setAssets] = useState(100000);
@@ -86,9 +98,9 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const title =
     type === 'mortgage'
-      ? isIndiaCurrency ? 'Home Loan EMI Calculator (India)' : 'Home Loan EMI Calculator'
+      ? (isIndiaCurrency ? 'Home Loan EMI Calculator (India)' : 'Home Loan EMI Calculator')
       : type === 'loan'
-        ? 'Loan EMI Calculator'
+        ? (isIndiaCurrency ? 'Loan EMI Calculator (India)' : 'Loan EMI Calculator')
         : type === 'compound'
           ? isIndiaCurrency
             ? 'SIP Calculator (India)'
