@@ -31,6 +31,19 @@ const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
 export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
   const [query, setQuery] = useState('');
 
+  const latestGuides = useMemo(
+    () => [...guides].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).slice(0, 4),
+    [guides]
+  );
+
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    guides.forEach((guide) => {
+      counts[guide.category] = (counts[guide.category] || 0) + 1;
+    });
+    return counts;
+  }, [guides]);
+
   const filteredGuides = useMemo(() => {
     if (!query.trim()) {
       return guides;
@@ -89,6 +102,28 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
           aria-label="Search India blog guides"
         />
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Showing {filteredGuides.length} guide{filteredGuides.length === 1 ? '' : 's'}.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Coverage map: what this hub already covers</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {Object.entries(CATEGORY_LABELS).map(([category, meta]) => (
+            <article key={category} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{meta.emoji} {meta.label}</p>
+              <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{categoryCounts[category] || 0} published guides</p>
+            </article>
+          ))}
+        </div>
+        <h3 className="mt-5 text-base font-semibold text-slate-900 dark:text-slate-100">Recently updated</h3>
+        <ul className="mt-2 space-y-2 text-sm">
+          {latestGuides.map((guide) => (
+            <li key={guide.slug}>
+              <Link href={`/in/blog/${guide.slug}`} className="content-link">
+                {guide.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">

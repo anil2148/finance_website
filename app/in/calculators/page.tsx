@@ -52,8 +52,40 @@ const scenarios = [
 ];
 
 export default function IndiaCalculatorsHubPage() {
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Should I run EMI and SIP calculators together?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Yes. Run EMI first to protect fixed obligations, then size SIP so it survives weak-income months.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'What stress case should I test in an India home-loan EMI plan?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Test at least a +1% rate move and temporary surplus drop to confirm your emergency buffer stays intact.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'How do I use SIP calculator output for decisions?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Treat output as a range. Pick the contribution that still works during high-expense months, not just best-case return months.'
+        }
+      }
+    ]
+  };
+
   return (
     <section className="space-y-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">FinanceSphere India • Calculator orchestration hub</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">India Calculators Hub: test the decision before comparing providers</h1>
@@ -106,6 +138,24 @@ export default function IndiaCalculatorsHubPage() {
       <section className="grid gap-3 md:grid-cols-2">
         <Link href="/in/loans" className="link-card">Next pathway: EMI calculator → loans hub → home-loan comparisons</Link>
         <Link href="/in/investing" className="link-card">Next pathway: SIP calculator → investing hub → FD vs SIP / PPF vs ELSS</Link>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">FAQ: India calculator decision workflow</h2>
+        <div className="mt-3 space-y-4 text-slate-700 dark:text-slate-300">
+          <div>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">Should I run EMI and SIP calculators together?</h3>
+            <p className="mt-1">Yes. Fix your EMI safety limit first, then allocate SIP from the remaining monthly surplus.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">What stress case should I always include?</h3>
+            <p className="mt-1">Test a +1% rate scenario and one bad-cashflow month to ensure the plan still holds.</p>
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">How often should assumptions be updated?</h3>
+            <p className="mt-1">Re-run both calculators when salary, rent, loan terms, or family obligations change materially.</p>
+          </div>
+        </div>
       </section>
 
       <IndiaAuthorityNote />

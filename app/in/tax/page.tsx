@@ -14,6 +14,7 @@ const links = [
   { href: '/in/old-vs-new-tax-regime', label: 'Old vs New Tax Regime Decision' },
   { href: '/in/80c-deductions', label: '80C Deductions Guide' },
   { href: '/in/tax-saving-strategies', label: 'Tax Saving Strategies by Salary Band' },
+  { href: '/in/calculators/emi-calculator', label: 'Calculator: EMI Affordability in ₹' },
   { href: '/in/sip-strategy-india', label: 'Post-tax SIP Strategy India' },
   { href: '/in/best-investment-apps-india', label: 'Comparison: Best Investment Apps India' },
   { href: '/in/calculators/sip-calculator', label: 'Calculator: SIP Growth in ₹' },
@@ -52,6 +53,10 @@ export default function IndiaTaxHubPage() {
           Start with <Link href="/in/old-vs-new-tax-regime" className="content-link">old vs new regime</Link>, then build monthly 80C through{' '}
           <Link href="/in/80c-deductions" className="content-link">80C planning</Link>, and finally separate tax-saving from wealth-building with{' '}
           <Link href="/in/calculators/sip-calculator" className="content-link">SIP sizing</Link>.
+        </p>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">
+          If your plan includes a loan commitment, run an <Link href="/in/calculators/emi-calculator" className="content-link">EMI stress test</Link> before locking tax-saving contributions.
+          This prevents a common mismatch where deductions are optimized but monthly cashflow becomes fragile.
         </p>
       </section>
 
