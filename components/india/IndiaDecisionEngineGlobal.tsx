@@ -98,15 +98,15 @@ export function IndiaDecisionEngineGlobal() {
         <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Continue your India decision path</h3>
         <div className="mt-3 india-link-cluster text-sm">
           {clusterLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="rounded-full border border-slate-300 px-3 py-1 text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">{link.label}</Link>
+            <Link key={link.href} href={link.href} className="content-link-chip">{link.label}</Link>
           ))}
         </div>
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
           {calculatorLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="rounded-full border border-blue-300 px-3 py-1 font-medium text-blue-700 hover:bg-blue-50 dark:border-blue-400 dark:text-blue-300 dark:hover:bg-blue-500/10">{link.label}</Link>
+            <Link key={link.href} href={link.href} className="content-link-chip">{link.label}</Link>
           ))}
           {comparisonLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="rounded-full border border-indigo-300 px-3 py-1 font-medium text-indigo-700 hover:bg-indigo-50 dark:border-indigo-400 dark:text-indigo-300 dark:hover:bg-indigo-500/10">{link.label}</Link>
+            <Link key={link.href} href={link.href} className="content-link-chip">{link.label}</Link>
           ))}
         </div>
       </section>

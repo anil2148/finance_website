@@ -154,8 +154,8 @@ export function IndiaHomepageLayout() {
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{goal.title}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{goal.description}</p>
               <div className="mt-3 space-y-1 text-sm">
-                <Link href={goal.primaryHref} className="block font-semibold text-blue-700 hover:underline dark:text-blue-300">{goal.primaryLabel}</Link>
-                <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline dark:text-slate-200 dark:hover:text-blue-300">{goal.secondaryLabel}</Link>
+                <Link href={goal.primaryHref} className="block content-link">{goal.primaryLabel}</Link>
+                <Link href={goal.secondaryHref} className="block content-link">{goal.secondaryLabel}</Link>
               </div>
             </article>
           ))}
@@ -167,10 +167,10 @@ export function IndiaHomepageLayout() {
         <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Choose your India money journey</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Go straight to the path that matches your immediate decision.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-4">
-          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/tax">Save Taxes → Tax Hub</Link>
-          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/investing">Grow Wealth → Investing Hub</Link>
-          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/real-estate">Buy Home → Real Estate Hub</Link>
-          <Link className="rounded-xl border border-slate-200 p-4 text-sm font-semibold text-blue-700 hover:underline dark:border-slate-700 dark:text-blue-300" href="/in/loans">Reduce Debt → Loans Hub</Link>
+          <Link className="link-card text-sm font-semibold" href="/in/tax">Save Taxes → Tax Hub</Link>
+          <Link className="link-card text-sm font-semibold" href="/in/investing">Grow Wealth → Investing Hub</Link>
+          <Link className="link-card text-sm font-semibold" href="/in/real-estate">Buy Home → Real Estate Hub</Link>
+          <Link className="link-card text-sm font-semibold" href="/in/loans">Reduce Debt → Loans Hub</Link>
         </div>
       </section>
 
@@ -189,7 +189,7 @@ export function IndiaHomepageLayout() {
       <section>
         <div className="mb-4 flex items-center justify-between gap-3">
           <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Popular India calculators</h2>
-          <Link href="/in/calculators/emi-calculator" className="text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Open EMI calculator</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link text-sm font-semibold">Open EMI calculator</Link>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {indiaCalculators.map((calculator) => (
@@ -208,12 +208,12 @@ export function IndiaHomepageLayout() {
         <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300"><HomeModernIcon className="h-5 w-5" /> <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Home-loan / EMI planning</h2></div>
           <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">If one month has school fees, medical costs, and travel together, can your EMI still feel manageable? Use affordability with a safety buffer, not just lender eligibility.</p>
-          <Link href="/in/calculators/emi-calculator" className="mt-3 inline-flex text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Run EMI scenarios →</Link>
+          <Link href="/in/calculators/emi-calculator" className="mt-3 inline-flex content-link text-sm font-semibold">Run EMI scenarios →</Link>
         </article>
         <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
           <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Tax-saving without cashflow mistakes</h2>
           <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Avoid March panic investments. Set monthly 80C contributions and choose a PPF/ELSS mix aligned to both liquidity and risk comfort.</p>
-          <Link href="/in/blog/ppf-vs-elss" className="mt-3 inline-flex text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Use the 80C framework →</Link>
+          <Link href="/in/blog/ppf-vs-elss" className="mt-3 inline-flex content-link text-sm font-semibold">Use the 80C framework →</Link>
         </article>
       </section>
 
@@ -221,7 +221,7 @@ export function IndiaHomepageLayout() {
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular India money decisions</h2>
         <div className="mt-3 india-link-cluster text-sm">
           {decisionLinks.map((item) => (
-            <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
+            <Link key={item.href} href={item.href} className="content-link-chip">
               {item.label}
             </Link>
           ))}

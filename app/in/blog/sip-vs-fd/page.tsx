@@ -82,7 +82,7 @@ export default function SipVsFdIndiaPage() {
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
           If you are targeting a home purchase in 2–4 years, keep down-payment funds in safety-first buckets. Don’t let equity volatility decide your booking timeline. Then pressure-test EMI at current rate, +0.5%, and +1% so your monthly budget stays realistic.
         </p>
-        <Link href="/in/calculators/emi-calculator" className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Run the India EMI calculator →</Link>
+        <Link href="/in/calculators/emi-calculator" className="mt-4 inline-flex content-link text-sm font-semibold">Run the India EMI calculator →</Link>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">

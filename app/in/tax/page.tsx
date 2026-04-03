@@ -42,7 +42,7 @@ export default function IndiaTaxHubPage() {
       <IndiaAuthorityNote />
       <div className="grid gap-3 md:grid-cols-2">
         {links.map((item) => (
-          <Link key={item.href} href={item.href} className="rounded-xl border border-slate-200 bg-white p-4 font-medium text-blue-700 hover:underline dark:border-slate-700 dark:bg-slate-900 dark:text-blue-300">{item.label}</Link>
+          <Link key={item.href} href={item.href} className="link-card">{item.label}</Link>
         ))}
       </div>
 
