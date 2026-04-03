@@ -183,11 +183,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const boostedContributionLabel = primaryMetric?.currency ? formatCurrency(contributionBoost) : `${contributionBoost.toFixed(0)}`;
 
   const formattedBreakdown = result.breakdown.map((row) => {
-    if (!row.value.startsWith('$')) return row;
-    const numericValue = Number(row.value.replace(/[^0-9.-]/g, ''));
-    if (!Number.isFinite(numericValue)) return row;
-
-    return { ...row, value: formatCurrency(numericValue) };
+    if (!row.currency || typeof row.amount !== 'number') return row;
+    return { ...row, value: formatCurrency(row.amount) };
   });
   const rateBase = inputs.interestRate ?? 0;
   const improvedRate = Math.max(rateBase - 1, 0);

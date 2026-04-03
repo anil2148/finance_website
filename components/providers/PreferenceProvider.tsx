@@ -5,14 +5,13 @@ import { usePathname } from 'next/navigation';
 import { fetcher } from '@/lib/api/fetcher';
 import type { ExchangeRateResponse, SupportedCurrency } from '@/lib/api/currency';
 import { getLocaleForCurrency } from '@/lib/utils';
-import { AppCountry, AppCurrency, getCountryForPath, getDefaultCurrencyForCountry, normalizeCountry, normalizeCurrency } from '@/lib/preferences';
+import { AppCountry, AppCurrency, getCountryForPath, getDefaultCurrencyForCountry, normalizeCountry } from '@/lib/preferences';
 
 type PreferenceContextValue = {
   currency: AppCurrency;
   country: AppCountry;
   darkMode: boolean;
   isRatesLoading: boolean;
-  setCurrency: (currency: AppCurrency) => void;
   setCountry: (country: AppCountry) => void;
   toggleDarkMode: () => void;
   formatCurrency: (value: number, maximumFractionDigits?: number) => string;
@@ -34,44 +33,29 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
   const pathname = usePathname();
   const inferredCountry = getCountryForPath(pathname);
   const [country, setCountryState] = useState<AppCountry>(inferredCountry);
-  const [currency, setCurrencyState] = useState<AppCurrency>(getDefaultCurrencyForCountry(inferredCountry));
   const [darkMode, setDarkMode] = useState(false);
   const [rates, setRates] = useState<Record<SupportedCurrency, number>>(DEFAULT_RATES);
   const [isRatesLoading, setIsRatesLoading] = useState(true);
+  const currency = getDefaultCurrencyForCountry(country);
 
   const setCountry = useCallback((nextCountry: AppCountry) => {
     setCountryState(nextCountry);
-    setCurrencyState(getDefaultCurrencyForCountry(nextCountry));
   }, []);
-
-  const setCurrency = useCallback((nextCurrency: AppCurrency) => {
-    if (country === 'India') {
-      setCurrencyState('INR');
-      return;
-    }
-    setCurrencyState(normalizeCurrency(nextCurrency, country));
-  }, [country]);
 
   useEffect(() => {
     setCountryState(inferredCountry);
-    setCurrencyState((current) => {
-      const currentIsDefault = current === getDefaultCurrencyForCountry(country);
-      return currentIsDefault ? getDefaultCurrencyForCountry(inferredCountry) : current;
-    });
-  }, [country, inferredCountry]);
+  }, [inferredCountry]);
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
 
     try {
-      const parsed = JSON.parse(raw) as { currency?: string; country?: string; darkMode?: boolean };
+      const parsed = JSON.parse(raw) as { country?: string; darkMode?: boolean };
       const persistedCountry = normalizeCountry(parsed.country);
       const nextCountry = inferredCountry || persistedCountry;
-      const nextCurrency = nextCountry === 'India' ? 'INR' : normalizeCurrency(parsed.currency, nextCountry);
 
       setCountryState(nextCountry);
-      setCurrencyState(nextCurrency);
 
       if (typeof parsed.darkMode === 'boolean') setDarkMode(parsed.darkMode);
     } catch {
@@ -80,15 +64,9 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
   }, [inferredCountry]);
 
   useEffect(() => {
-    if (country === 'India' && currency !== 'INR') {
-      setCurrencyState('INR');
-    }
-  }, [country, currency]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ currency, country, darkMode }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ country, darkMode }));
     document.documentElement.classList.toggle('dark', darkMode);
-  }, [country, currency, darkMode]);
+  }, [country, darkMode]);
 
   useEffect(() => {
     let cancelled = false;
@@ -125,7 +103,6 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
       country,
       darkMode,
       isRatesLoading,
-      setCurrency,
       setCountry,
       toggleDarkMode: () => setDarkMode((prev) => !prev),
       formatCurrency: (rawValue: number, maximumFractionDigits = 0) => {
@@ -138,7 +115,7 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
         }).format(source);
       }
     }),
-    [country, currency, darkMode, isRatesLoading, setCountry, setCurrency]
+    [country, currency, darkMode, isRatesLoading, setCountry]
   );
 
   return <PreferenceContext.Provider value={value}>{children}</PreferenceContext.Provider>;

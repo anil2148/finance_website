@@ -79,4 +79,11 @@ export const asCurrency = (value: number) =>
     maximumFractionDigits: 0
   }).format(value);
 
+export const currencyBreakdown = (label: string, amount: number) => ({
+  label,
+  value: asCurrency(amount),
+  amount,
+  currency: true as const
+});
+
 export const asPercent = (value: number) => `${value.toFixed(2)}%`;

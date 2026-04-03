@@ -1,4 +1,4 @@
-import { asCurrency, buildInvestmentProjection } from '@/lib/calculators/engine';
+import { buildInvestmentProjection, currencyBreakdown } from '@/lib/calculators/engine';
 import { BaseCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
 export const calculateRetirement = (inputs: BaseCalculatorInputs): CalculatorResult => {
