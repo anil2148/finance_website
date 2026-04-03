@@ -104,6 +104,55 @@ export default function IndiaRealEstateHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Stay horizon: why 5+ years changes the math</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Buying a home locks you into a geography. If your city, career, or family situation changes within 3 years of purchase, you do not just lose flexibility — you lose money. Here is why the 5-year threshold matters:</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Transaction cost recovery</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Stamp duty (5–8%), registration, brokerage (1–2%), and interiors are sunk costs. A ₹60L flat needs property appreciation of ₹6L–₹9L just to break even on transaction costs before capital gains tax.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Early exit cost</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Selling within 2 years triggers short-term capital gains at your income tax rate. After 2 years, 20% LTCG with indexation applies. Factor these into any exit calculation — the EMI savings from buying can disappear in one early exit.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Mobility risk households</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Startup employees, IT professionals with relocation exposure, and dual-income households where either partner might move cities face real mobility risk. Renting preserves career optionality that a locked home does not.</p>
+          </article>
+        </div>
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-sm dark:border-amber-500/30 dark:bg-amber-500/10">
+          <p className="font-semibold text-amber-900 dark:text-amber-100">Buying too early creates mobility risk that cannot be solved with savings.</p>
+          <p className="mt-1 text-amber-900/80 dark:text-amber-100/80">If your 5-year plan has more uncertainty than stability, renting is a financial decision, not a concession. The rent vs buy calculation should include exit costs, not just monthly payment comparison.</p>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Rent vs buy is a flexibility decision first, EMI decision second</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">The most common buying mistake in India is treating "EMI ≈ rent" as sufficient reason to buy. The real comparison is about risk allocation, not monthly payments.</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">What renting preserves</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+              <li>Geographic flexibility — you can move for a better career opportunity without financial penalty.</li>
+              <li>Liquidity — down payment money stays available for emergencies, investments, or income gap coverage.</li>
+              <li>Rate shock immunity — you are not exposed to home loan rate resets.</li>
+              <li>Time flexibility — you can buy when prices and personal readiness align, not under pressure.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">What buying provides</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+              <li>Long-term cost certainty — EMI is fixed (floating rate aside), rent escalates annually.</li>
+              <li>Asset creation — principal repayment builds equity over time.</li>
+              <li>Stability — no eviction risk, ability to customize, sense of permanence.</li>
+              <li>Inflation hedge — property in tier-1 cities has historically beaten inflation over 10+ year horizons.</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">Use the <Link href="/in/rent-vs-buy-india" className="content-link">rent vs buy comparison guide</Link> to run your own numbers with actual rental rates and property prices. Do not decide based on intuition alone.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">₹ scenarios: buy decision in real life</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {scenarios.map((item) => (
@@ -174,6 +223,33 @@ export default function IndiaRealEstateHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Down payment vs liquidity: when bigger is risky</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A larger down payment reduces loan size and total interest. But it can also drain savings to dangerous levels. The question is not "how much can I put down?" — it is "how much can I put down while still having an emergency reserve?"</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">When a larger down payment makes sense</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+              <li>You will still have 6+ months of core expenses in liquid savings after paying down, stamp duty, registration, and interiors.</li>
+              <li>A larger down payment reduces your EMI enough to survive a +1% rate shock without strain.</li>
+              <li>Your income is stable and a job gap in the next 2 years is unlikely.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">When a smaller down payment is safer</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+              <li>A larger down payment would leave you with under 3 months of emergency reserve — this is a dangerous position for a household entering a 20-year obligation.</li>
+              <li>Your income is variable or you are self-employed. Liquidity is more important than debt reduction during uncertain income phases.</li>
+              <li>Interiors, registration, and moving costs are likely to exceed your estimate. Keep a buffer.</li>
+            </ul>
+          </div>
+        </div>
+        <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50/50 p-4 text-sm dark:border-rose-500/30 dark:bg-rose-500/10">
+          <p className="font-semibold text-rose-900 dark:text-rose-100">Protect liquidity before optimizing yield or debt reduction.</p>
+          <p className="mt-1 text-rose-900/80 dark:text-rose-100/80">A household that puts ₹25L down and has ₹1.5L left in savings has no buffer for a medical emergency, EMI delay, or income gap. A ₹15L down payment with ₹11.5L in liquid savings is significantly safer — even if the loan is larger and monthly EMI is slightly higher.</p>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Mobility risk: when location flexibility matters more than ownership</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A home is not just a financial decision — it is a geography lock. If your career, family, or industry may require a city change in the next 3–5 years, the financial math changes significantly.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
@@ -190,6 +266,34 @@ export default function IndiaRealEstateHubPage() {
             <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Startup employees, IT professionals in uncertain roles, and dual-income households where one partner may relocate should delay buying until 5+ year location stability is likely. Renting preserves mobility premium.</p>
           </article>
         </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Pre-booking checklist</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Before committing to a booking amount or signing any agreement, verify all of the following. If any item fails, resolve it before proceeding.</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Financial readiness tests</h3>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Stay horizon is 5+ years with high confidence.</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Emergency reserve (6 months) survives after down payment, stamp duty, and interiors estimate.</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> EMI at current rate passed. EMI at +1% also passed.</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Bad-month test: one income paused for 2 months — EMI still serviceable?</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> SIP and insurance continue after EMI starts — nothing is paused to accommodate the purchase.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Lender and cost verification</h3>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Total housing cost modelled (not just EMI): maintenance + tax + insurance + commute delta.</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Lender fee stack reviewed: processing, insurance bundling, legal/tech, reset clause.</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Floating-rate loan confirmed (free prepayment option preserved).</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Interior/furnishing budget estimated — bare shell units require ₹8L–₹12L to become liveable.</li>
+              <li className="flex items-start gap-2"><span className="mt-0.5 text-blue-600 dark:text-blue-400">☐</span> Stamp duty + registration cost calculated for your state (typically 6–8% of property value).</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">Use the <Link href="/in/calculators/emi-calculator" className="content-link">EMI stress test calculator</Link> and the <Link href="/in/loans" className="content-link">loans hub fee section</Link> before running lender comparisons.</p>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
@@ -211,6 +315,7 @@ export default function IndiaRealEstateHubPage() {
             <li>5+ year stay probability is high.</li>
             <li>Emergency reserve survives even after registration/interiors.</li>
             <li>EMI stress test still supports insurance + SIP continuity.</li>
+            <li>Total housing cost (not just EMI) fits comfortably in monthly budget.</li>
           </ul>
         </article>
         <article className="rounded-2xl border border-rose-200 bg-rose-50/60 p-5 dark:border-rose-500/30 dark:bg-rose-500/10">
@@ -219,6 +324,7 @@ export default function IndiaRealEstateHubPage() {
             <li>Location/job mobility is still uncertain over next 2–3 years.</li>
             <li>Down payment drains all savings and forces future borrowing.</li>
             <li>One bad month would cause card rollover or SIP shutdown.</li>
+            <li>Total housing cost exceeds 50% of take-home income.</li>
           </ul>
         </article>
       </section>

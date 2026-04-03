@@ -94,9 +94,9 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const title =
     type === 'mortgage'
-      ? (isIndiaCurrency ? 'Home Loan EMI Calculator (India)' : 'Home Loan EMI Calculator')
+      ? (isIndiaCurrency ? 'Home Loan EMI Calculator (India)' : 'Home Loan Calculator')
       : type === 'loan'
-        ? (isIndiaCurrency ? 'Loan EMI Calculator (India)' : 'Loan EMI Calculator')
+        ? (isIndiaCurrency ? 'Loan EMI Calculator (India)' : 'Loan Calculator')
         : type === 'compound'
           ? (isIndiaCurrency ? 'SIP Calculator (India)' : 'Compound Interest Calculator')
           : type === 'retirement'
@@ -105,9 +105,13 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const description =
     type === 'mortgage'
-      ? 'Estimate your monthly EMI based on loan amount, interest rate, and tenure.'
+      ? (isIndiaCurrency
+        ? 'Estimate your monthly EMI based on loan amount, interest rate, and tenure.'
+        : 'Estimate your monthly payment based on loan amount, interest rate, and term.')
       : type === 'loan'
-        ? 'Calculate your monthly EMI with principal, rate, and tenure inputs.'
+        ? (isIndiaCurrency
+          ? 'Calculate your monthly EMI with principal, rate, and tenure inputs.'
+          : 'Calculate your monthly payment with principal, rate, and term inputs.')
         : type === 'compound'
           ? (isIndiaCurrency
             ? 'Forecast SIP growth with monthly ₹ contributions and return assumptions.'

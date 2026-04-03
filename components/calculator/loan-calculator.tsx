@@ -46,7 +46,7 @@ export function LoanCalculator() {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card className="space-y-5">
-        <h2 className="text-xl font-bold">Loan EMI Calculator</h2>
+        <h2 className="text-xl font-bold">Loan Calculator</h2>
         <InputSlider label="Loan amount" prefix="$" value={principal} min={1000} max={200000} step={500} onChange={setPrincipal} />
         <InputSlider label="Interest rate" suffix="%" value={interestRate} min={1} max={30} step={0.1} onChange={setInterestRate} />
         <InputSlider label="Tenure" suffix=" years" value={loanTerm} min={1} max={15} onChange={setLoanTerm} />
@@ -56,7 +56,7 @@ export function LoanCalculator() {
         </motion.button>
 
         <div className="space-y-3 rounded-xl bg-slate-900 p-4 text-white">
-          <p className="text-sm text-slate-300">Monthly EMI</p>
+          <p className="text-sm text-slate-300">Monthly Payment</p>
           <p className="text-3xl font-bold"><AnimatedNumber value={monthlyPayment} /></p>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between"><span>Principal share</span><span>{principalPct.toFixed(1)}%</span></div>

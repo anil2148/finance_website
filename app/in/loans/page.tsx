@@ -92,6 +92,32 @@ export default function IndiaLoansHubPage() {
 
       <IndiaAuthorityNote />
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Affordability vs eligibility: the gap that causes most loan regret</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Banks sanction based on income multiples and credit scores. They do not model your school fees, your dependent parents, or what happens if one income pauses for two months. That is your job.</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-xl border border-blue-200 bg-blue-50/40 p-4 dark:border-blue-500/30 dark:bg-blue-500/10">
+            <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">What eligibility means</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-blue-900/80 dark:text-blue-100/80">
+              <li>The maximum loan a lender will sanction given your declared income and credit score.</li>
+              <li>Calculated on gross income, not take-home.</li>
+              <li>Does not account for your actual monthly obligations or lifestyle expenses.</li>
+              <li>A ₹1.5L gross income household can often get ₹80L+ eligibility. That does not mean ₹80L is safe.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">What affordability means</h3>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-rose-900/80 dark:text-rose-100/80">
+              <li>The loan size where EMI fits monthly cashflow without breaking in a bad month.</li>
+              <li>Calculated on actual take-home after tax, PF, and existing obligations.</li>
+              <li>Accounts for rate resets: +0.5% and +1.0% above current rate.</li>
+              <li>Leaves emergency reserve intact, not depleted, after down payment and fees.</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-4 text-sm font-medium text-slate-700 dark:text-slate-300">Bank approval is not proof of affordability. Use the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link> to find your own ceiling before any lender conversation.</p>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Borrowing framework you can actually execute</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
@@ -100,6 +126,48 @@ export default function IndiaLoansHubPage() {
           <li><strong>Step 3:</strong> Test one bad month (bonus delay, medical spend, or one-income period).</li>
           <li><strong>Step 4:</strong> Only then compare lenders, fees, and reset clauses.</li>
         </ul>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Rate shock: what a 1% increase actually does to your decision</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Floating rate loans reset periodically. A 1% rate increase on a large loan is not a small rounding error — it can shift a manageable EMI into a month-end crisis. Here is what the numbers look like:</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[640px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
+                <th className="px-3 py-2">Loan size</th>
+                <th className="px-3 py-2">EMI at 8.5% (20 yr)</th>
+                <th className="px-3 py-2">EMI at 9.0% (+0.5%)</th>
+                <th className="px-3 py-2">EMI at 9.5% (+1.0%)</th>
+                <th className="px-3 py-2">Monthly delta at +1%</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹30L</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹26,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹27,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹28,000</td>
+                <td className="px-3 py-2 font-medium text-rose-700 dark:text-rose-400">+₹2,000/month</td>
+              </tr>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹50L</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹43,400</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹45,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹46,600</td>
+                <td className="px-3 py-2 font-medium text-rose-700 dark:text-rose-400">+₹3,200/month</td>
+              </tr>
+              <tr className="align-top">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹80L</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹69,500</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹72,000</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">~₹74,500</td>
+                <td className="px-3 py-2 font-medium text-rose-700 dark:text-rose-400">+₹5,000/month</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">If your current monthly surplus cannot absorb the +1% delta without cutting SIP or emergency savings, your loan size is too aggressive. Run your own numbers in the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link>.</p>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
@@ -161,6 +229,33 @@ export default function IndiaLoansHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What to verify before comparing lenders</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Comparison is the last step, not the first. Lender comparison only makes sense once you know your safe EMI ceiling and have stress-tested the loan size. Before comparing:</p>
+        <ol className="mt-3 list-decimal space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li><strong>Confirm loan size survives rate shock:</strong> Run +1% scenario in the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link>. If cashflow breaks, reduce loan before shopping.</li>
+          <li><strong>Check total housing cost, not just EMI:</strong> Add maintenance, insurance, commute change, and interiors. The real cost is 30–50% above EMI for most properties.</li>
+          <li><strong>Verify emergency reserve survives down payment:</strong> If booking cost drains all savings, you enter ownership without a buffer for rate resets or income gaps.</li>
+          <li><strong>Understand reset clause before rate:</strong> A slightly lower headline rate with quarterly reset terms can cost more over 5 years than a slightly higher rate with annual benchmark reset.</li>
+          <li><strong>Check foreclosure terms:</strong> Floating-rate loans from regulated banks in India allow free prepayment. Fixed-rate loans often do not. Know your flexibility before signing.</li>
+        </ol>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When to reduce loan size instead of stretching tenure</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Stretching tenure reduces monthly EMI but dramatically increases total interest paid. A ₹50L loan at 9% over 20 years costs ₹57L in interest. Extended to 30 years, that rises to ₹96L — nearly double the loan amount paid in interest alone. When to reduce loan size instead:</p>
+        <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li>The stress-rate EMI (current rate +1%) is already at the edge of survivable cashflow.</li>
+          <li>You have no emergency reserve left after down payment — a smaller loan reduces risk more than a longer tenure.</li>
+          <li>You are a single-income household — income disruption risk is higher and a smaller EMI provides more real resilience than a longer tenure.</li>
+          <li>You plan to prepay aggressively — a smaller loan with shorter tenure saves more interest than a larger loan you prepay after 5 years.</li>
+        </ul>
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-sm dark:border-amber-500/30 dark:bg-amber-500/10">
+          <p className="font-semibold text-amber-900 dark:text-amber-100">A lower EMI is not safer if it hides weak flexibility elsewhere.</p>
+          <p className="mt-1 text-amber-900/80 dark:text-amber-100/80">Tenure extension keeps EMI low but keeps you in debt longer. If income stability is uncertain over 20+ years, a smaller loan you can actually service is safer than the maximum the bank will sanction at stretched tenure.</p>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Prepayment vs flexibility: a common trade-off</h2>
         <div className="mt-3 grid gap-4 md:grid-cols-2">
           <div>
@@ -201,6 +296,7 @@ export default function IndiaLoansHubPage() {
             <li>Emergency reserve remains intact after down payment and fees.</li>
             <li>EMI remains manageable even in stress-rate scenarios.</li>
             <li>You can prepay strategically without breaking monthly liquidity.</li>
+            <li>Affordability test passes even on single-income month simulation.</li>
           </ul>
         </article>
         <article className="rounded-2xl border border-rose-200 bg-rose-50/60 p-5 dark:border-rose-500/30 dark:bg-rose-500/10">
@@ -209,6 +305,7 @@ export default function IndiaLoansHubPage() {
             <li>You need perfect income stability for EMI to work.</li>
             <li>You have to pause insurance or emergency savings to service the loan.</li>
             <li>You are ignoring processing, legal, and reset-cost clauses.</li>
+            <li>Rate shock (+1%) would push EMI above 45% of take-home.</li>
           </ul>
         </article>
       </section>
