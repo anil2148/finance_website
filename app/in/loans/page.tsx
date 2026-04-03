@@ -129,63 +129,42 @@ export default function IndiaLoansHubPage() {
           <li><strong>Step 3:</strong> Test one bad month (bonus delay, medical spend, or one-income period).</li>
           <li><strong>Step 4:</strong> Only then compare lenders, fees, and reset clauses.</li>
         </ul>
-        <p className="mt-3 font-medium text-slate-700 dark:text-slate-300">Bank approval is not affordability.</p>
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Three micro reality checks:</p>
+          <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+            <li>→ Bank approval is not affordability.</li>
+            <li>→ If the plan breaks in one bad month, the loan is too large.</li>
+            <li>→ Rate resets happen. Plan for them, not around them.</li>
+          </ul>
+        </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What goes wrong (loans)</h2>
+      <section className="rounded-2xl border border-rose-200 bg-rose-50/30 p-6 dark:border-rose-500/30 dark:bg-rose-500/10">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What goes wrong: two named failure modes</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
-            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Maximum eligibility trap</h3>
-            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Borrowers treat sanction size as target. That typically leaves no cushion for possession costs, family obligations, or income dips.</p>
-            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">If one weak month forces card rollover, the loan was oversized.</p>
+          <article className="rounded-xl border border-rose-300 bg-white p-4 dark:border-rose-500/40 dark:bg-slate-900">
+            <h3 className="text-base font-semibold text-rose-900 dark:text-rose-100">Max eligibility trap</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A household with ₹1.5L gross income gets ₹90L+ eligibility. They take it. At 8.5%, EMI is ~₹78,000 — 52% of actual take-home (₹1.5L gross ≠ ₹1.5L in-hand). After tax and PF deductions, in-hand may be ₹1.1–₹1.2L. The math never worked.</p>
+            <ul className="mt-3 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Failure point:</span> Borrowing based on lender ceiling, not personal cashflow ceiling.</li>
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Consequence:</span> EMI consumes too much of take-home → SIP paused → emergency reserve depleted → card usage begins.</li>
+            </ul>
+            <p className="mt-3 text-xs font-semibold text-rose-800 dark:text-rose-200">Rule: use the EMI calculator with your actual in-hand salary, not gross income.</p>
           </article>
-          <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
-            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Rate reset shock</h3>
-            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Floating-rate changes are normal, not rare. A +1% move can erase the monthly buffer of households that borrowed to their edge.</p>
-            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">If this breaks in one bad month, it&apos;s too aggressive.</p>
+          <article className="rounded-xl border border-rose-300 bg-white p-4 dark:border-rose-500/40 dark:bg-slate-900">
+            <h3 className="text-base font-semibold text-rose-900 dark:text-rose-100">Rate reset shock</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A ₹60L floating-rate loan at 8.5% has an EMI of ~₹52,000. Two years after disbursal, rates reset to 9.5%. EMI rises to ~₹56,400 — a ₹4,400/month jump. If monthly surplus was ₹5,000 at the original rate, the household now has ₹600 in surplus.</p>
+            <ul className="mt-3 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Failure point:</span> Budget modelled only at origination rate. No stress test for +1% scenario.</li>
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Consequence:</span> Buffer gone → any unexpected expense triggers card rollover → compound debt begins.</li>
+            </ul>
+            <p className="mt-3 text-xs font-semibold text-rose-800 dark:text-rose-200">Rule: if you cannot survive the +1% EMI without cutting SIP or emergency savings, reduce loan size before booking.</p>
           </article>
         </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">EMI vs flexibility: practical borrowing system</h2>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full min-w-[760px] text-left text-sm">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
-                <th className="px-3 py-2">Case</th>
-                <th className="px-3 py-2">EMI posture</th>
-                <th className="px-3 py-2">Failure point</th>
-                <th className="px-3 py-2">Consequence</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
-                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹12L salary (fragile)</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Keep EMI near lower bound; prioritize liquidity over bigger ticket size.</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Extending tenure to &gt;25 years to make EMI &ldquo;look affordable.&rdquo;</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Short-term comfort, long-term interest trap and weak optionality.</td>
-              </tr>
-              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
-                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹18L salary (base)</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Size EMI to survive +1% reset and one irregular month.</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹60L loan works at current rate but not at stress rate.</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">₹3,000–₹4,000 EMI rise wipes buffer; revolving debt starts.</td>
-              </tr>
-              <tr className="align-top">
-                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">₹25L salary (optimization)</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Balance EMI with continued SIP + reserve top-up.</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Taking full sanction and pausing all investing lanes.</td>
-                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">High fixed costs remove flexibility for career and family changes.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Rate shock: what a 1% increase actually does to your decision</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What a 1% rate increase actually does to your decision</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Floating rate loans reset periodically. A 1% rate increase on a large loan is not a small rounding error — it can shift a manageable EMI into a month-end crisis. Here is what the numbers look like:</p>
         <div className="mt-3 overflow-x-auto">
           <table className="w-full min-w-[640px] text-left text-sm">
@@ -336,7 +315,7 @@ export default function IndiaLoansHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When NOT to take the maximum loan the bank offers</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Max eligibility trap: when NOT to take the maximum loan the bank offers</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Banks maximise their loan book. Their eligibility ceiling is designed for the borrower who can service the loan under ideal conditions. That is not your safe ceiling. If any of the following apply, the maximum sanction is too large for your situation.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
