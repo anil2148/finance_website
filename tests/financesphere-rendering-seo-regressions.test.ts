@@ -35,13 +35,18 @@ export function runFinanceSphereRenderingSeoRegressionTests() {
     assertPageLinksAreStyled(filePath);
   }
 
-  const indiaBlogHub = read('app/in/blog/page.tsx');
-  assert.match(indiaBlogHub, /className=\"link-card[^\"]*\"/, 'India blog hub paths should render as styled link cards');
+  // India blog hub delegates link-card rendering to the IndiaBlogHub component
+  const indiaBlogHubComponent = read('components/india/IndiaBlogHub.tsx');
+  assert.match(indiaBlogHubComponent, /className=\"link-card[^\"]*\"/, 'India blog hub paths should render as styled link cards');
+
+  // Article pages use IndiaArticleRenderer; inline-link-row is rendered by the component for nextDecisions
+  const indiaArticleRenderer = read('components/india/IndiaArticleRenderer.tsx');
+  assert.match(indiaArticleRenderer, /inline-link-row/, 'IndiaArticleRenderer should render adjacent link clusters with inline-link-row wrappers');
 
   const sipVsFd = read('app/in/blog/sip-vs-fd/page.tsx');
   const ppfVsElss = read('app/in/blog/ppf-vs-elss/page.tsx');
-  assert.match(sipVsFd, /inline-link-row/, 'SIP vs FD page should render adjacent link clusters with inline-link-row wrappers');
-  assert.match(ppfVsElss, /inline-link-row/, 'PPF vs ELSS page should render adjacent link clusters with inline-link-row wrappers');
+  assert.match(sipVsFd, /nextDecisions/, 'SIP vs FD page should declare nextDecisions clusters for inline-link-row rendering');
+  assert.match(ppfVsElss, /nextDecisions/, 'PPF vs ELSS page should declare nextDecisions clusters for inline-link-row rendering');
 
   const interactiveArticleContent = read('components/blog/InteractiveArticleContent.tsx');
   assert.match(interactiveArticleContent, /className=\"inline-link-row\"/, 'Adjacent markdown links should render in a dedicated inline-link-row wrapper');

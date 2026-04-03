@@ -10,7 +10,7 @@ import AuthorBox from '@/components/common/AuthorBox';
 
 const popularCalculators = [
   {
-    title: 'Home Loan EMI Calculator (India)',
+    title: 'Mortgage Calculator',
     href: '/calculators/mortgage-calculator',
     description: 'Estimate monthly principal-and-interest payments before you choose a home budget or loan term.'
   },
@@ -46,7 +46,7 @@ const goalCards = [
   {
     title: 'Estimate mortgage costs',
     description: 'Test home prices, down payments, and rates to see affordable monthly payments before speaking with lenders.',
-    primaryLabel: 'Use the Home Loan EMI Calculator (India)',
+    primaryLabel: 'Use the Mortgage Calculator',
     primaryHref: '/calculators/mortgage-calculator',
     secondaryLabel: 'Compare mortgage offers',
     secondaryHref: '/compare/mortgage-rate-comparison'
