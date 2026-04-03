@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Fragment, useEffect, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
-import { getCountryForPath, getCountrySwitchPath, getMarketConfig, SUPPORTED_COUNTRIES } from '@/lib/preferences';
+import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
 
 type NavLink = {
   label: string;
@@ -71,7 +71,7 @@ export function Navbar() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const { currency, country, darkMode, setCountry, toggleDarkMode } = usePreferences();
+  const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
 
   useEffect(() => {
     const pathCountry = getCountryForPath(pathname);
@@ -79,6 +79,13 @@ export function Navbar() {
   }, [country, pathname, setCountry]);
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
   const links = isIndiaContext ? indiaLinks : globalLinks;
+  const currentRegionLabel = isIndiaContext ? 'India' : 'United States';
+  const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
+  const switchRegion = (nextRegion: 'India' | 'US') => {
+    const nextPath = getCountrySwitchPath(pathname, nextRegion);
+    setCountry(nextRegion);
+    if (nextPath !== pathname) router.push(nextPath);
+  };
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
@@ -134,31 +141,21 @@ export function Navbar() {
               Start planning
             </Link>
 
-            {isIndiaContext ? (
-              <span className="rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-200">
-                Currency: INR (locked for India)
-              </span>
-            ) : (
-              <>
-                <select
-                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
-                  value={country}
-                  onChange={(event) => {
-                    const nextCountry = event.target.value as (typeof SUPPORTED_COUNTRIES)[number];
-                    setCountry(nextCountry);
-                    const nextPath = getCountrySwitchPath(pathname, nextCountry);
-                    if (nextPath !== pathname) router.push(nextPath);
-                  }}
-                >
-                  {SUPPORTED_COUNTRIES.map((item) => (
-                    <option key={item} value={item}>{item}</option>
-                  ))}
-                </select>
-                <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
-                  {getMarketConfig(country).label} ({currency})
-                </span>
-              </>
-            )}
+            <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+              <span>Region</span>
+              <select
+                className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                aria-label="Region"
+                value={isIndiaContext ? 'India' : 'US'}
+                onChange={(event) => switchRegion(event.target.value as 'India' | 'US')}
+              >
+                <option value="India">India</option>
+                <option value="US">United States</option>
+              </select>
+            </label>
+            <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+              {currentRegionLabel} ({currentCurrencyLabel})
+            </span>
             <button onClick={toggleDarkMode} className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">
               {darkMode ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
             </button>
@@ -208,6 +205,25 @@ export function Navbar() {
             <Link href={isIndiaContext ? '/in/calculators/emi-calculator' : '/tools'} className="btn-primary w-full text-sm" onClick={() => setOpen(false)}>
               Start planning
             </Link>
+
+            <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+              <label className="mb-2 block text-xs font-semibold text-slate-600 dark:text-slate-300">Region</label>
+              <select
+                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                aria-label="Region"
+                value={isIndiaContext ? 'India' : 'US'}
+                onChange={(event) => {
+                  switchRegion(event.target.value as 'India' | 'US');
+                  setOpen(false);
+                }}
+              >
+                <option value="India">India</option>
+                <option value="US">United States</option>
+              </select>
+              <p className="mt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                Current: {currentRegionLabel} ({currentCurrencyLabel})
+              </p>
+            </div>
           </div>
         )}
       </nav>
