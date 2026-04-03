@@ -3,24 +3,59 @@ import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
-export const metadata: Metadata = createPageMetadata({ title: 'Personal Loan Comparison India 2026: HDFC vs SBI vs ICICI vs Fintech Lenders', description: 'Compare personal loans in India by rates, processing fees, disbursal speed, and borrower profile fit.', pathname: '/in/personal-loan-comparison-india' });
+export const metadata: Metadata = createPageMetadata({
+  title: 'Personal Loan Comparison India 2026: HDFC vs SBI vs ICICI vs Fintech Lenders',
+  description: 'Compare personal loans in India by rates, processing fees, disbursal speed, and borrower profile fit.',
+  pathname: '/in/personal-loan-comparison-india'
+});
 
 export default function PersonalLoanComparisonIndiaPage() {
   return (
     <article className="space-y-6">
-      <header className="rounded-2xl border bg-white p-6"><h1 className="text-3xl font-semibold">Personal loan comparison India: total cost first, speed second</h1><p className="mt-2 text-sm">Who this is for: borrowers handling medical, relocation, or debt-consolidation needs.</p></header>
-      <section className="rounded-2xl border bg-white p-6 overflow-x-auto"><table className="w-full min-w-[760px] text-sm"><thead><tr className="border-b"><th className="px-3 py-2 text-left">Lender type</th><th className="px-3 py-2 text-left">Typical rate range</th><th className="px-3 py-2 text-left">Best for</th><th className="px-3 py-2 text-left">Pros / Cons</th></tr></thead><tbody><tr className="border-b"><td className="px-3 py-2">Large banks</td><td className="px-3 py-2">~10.5%–16%</td><td className="px-3 py-2">Strong-credit salaried borrowers</td><td className="px-3 py-2">Pro: predictability / Con: slower approval</td></tr><tr className="border-b"><td className="px-3 py-2">Private banks</td><td className="px-3 py-2">~11%–19%</td><td className="px-3 py-2">Existing account holders</td><td className="px-3 py-2">Pro: faster processing / Con: fee stack varies</td></tr><tr><td className="px-3 py-2">Fintech lenders</td><td className="px-3 py-2">~12%–24%</td><td className="px-3 py-2">Urgent disbursal users</td><td className="px-3 py-2">Pro: quick disbursal / Con: higher all-in cost risk</td></tr></tbody></table></section>
-      <section className="rounded-2xl border bg-white p-6 text-sm"><h2 className="text-xl font-semibold">Best for by scenario</h2><ul className="mt-3 list-disc pl-5 space-y-2"><li>₹3,00,000 emergency loan: prioritize lower processing fee + no foreclosure penalty.</li><li>₹7,00,000 consolidation loan: compare effective annualized total, not EMI alone.</li><li>₹10,00,000 planned expense: borrow only if repayment under 20% of monthly take-home.</li></ul><p className="mt-3"><strong>Biggest mistake:</strong> taking longest tenure to minimize EMI while paying excess interest.</p><div className="mt-3 flex flex-wrap gap-3"><Link href="/in/loans">Loans hub</Link><Link href="/in/home-loan-interest-rates-india">Home loan comparison</Link><Link href="/in/best-credit-cards-india">Credit cards comparison</Link><Link href="/in/calculators/emi-calculator">EMI calculator</Link><Link href="/in/best-savings-accounts-india">Savings comparison</Link></div></section>
+      <header className="rounded-2xl border bg-white p-6">
+        <h1 className="text-3xl font-semibold">Personal loan comparison India: pick the loan that minimizes total damage to future cashflow</h1>
+        <p className="mt-2 text-sm">Who this is for: borrowers funding medical, relocation, or consolidation needs with clear repayment limits.</p>
+      </header>
+
+      <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
+        <table className="w-full min-w-[760px] text-sm">
+          <thead><tr className="border-b"><th className="px-3 py-2 text-left">Lender type</th><th className="px-3 py-2 text-left">Typical rate range</th><th className="px-3 py-2 text-left">Best for</th><th className="px-3 py-2 text-left">Pros / Cons</th></tr></thead>
+          <tbody>
+            <tr className="border-b"><td className="px-3 py-2">Large banks</td><td className="px-3 py-2">~10.5%–16%</td><td className="px-3 py-2">Strong-credit salaried borrowers</td><td className="px-3 py-2">Pro: predictability / Con: slower approval</td></tr>
+            <tr className="border-b"><td className="px-3 py-2">Private banks</td><td className="px-3 py-2">~11%–19%</td><td className="px-3 py-2">Existing account holders</td><td className="px-3 py-2">Pro: faster processing / Con: fee stack varies</td></tr>
+            <tr><td className="px-3 py-2">Fintech lenders</td><td className="px-3 py-2">~12%–24%</td><td className="px-3 py-2">Urgent disbursal users</td><td className="px-3 py-2">Pro: quick disbursal / Con: higher all-in cost risk</td></tr>
+          </tbody>
+        </table>
+      </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
         <h2 className="text-xl font-semibold">Best for YOU if…</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
-          <li>₹1–2 lakh annual discretionary spend: pick low-fee, low-maintenance products with easy exit.</li>
-          <li>₹5–10 lakh annual spend or surplus: choose higher-reward options only when usage is consistent.</li>
-          <li>High variability in monthly income: prioritize flexibility and penalty-light structures over headline return.</li>
+          <li>₹3,00,000 urgent need and conservative profile: established banks usually dominate due to lower fee volatility.</li>
+          <li>₹7,00,000 consolidation and moderate profile: choose the lowest 24-month total payout, not lowest EMI.</li>
+          <li>₹10,00,000 planned expense and aggressive prepayment ability: choose lender with zero/low foreclosure friction.</li>
         </ul>
         <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
-        <p className="mt-2">You cannot meet annual usage thresholds or you may need early liquidity, because fee drag and penalty clauses can erase the apparent benefit.</p>
+        <p className="mt-2">You take the longest tenure just to reduce EMI visibility. Interest drag can exceed the value created by the borrowing.</p>
+      </section>
+
+      <section className="rounded-2xl border bg-white p-6 text-sm">
+        <h2 className="text-xl font-semibold">What most people get wrong</h2>
+        <ul className="mt-3 list-disc pl-5 space-y-2">
+          <li>Fast disbursal does not mean cheap borrowing once fees and insurance add-ons are included.</li>
+          <li>Pre-approved offer messages are not proof of best rates.</li>
+          <li>Debt consolidation fails when spending behavior is unchanged after loan sanction.</li>
+        </ul>
+        <p className="mt-3"><strong>Counterintuitive insight:</strong> in many cases, temporary spending cuts + partial prepayment beat refinancing into a longer personal loan.</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <Link href="/in/loans">loans hub for debt decision flow</Link>
+          <Link href="/in/home-loan-interest-rates-india">compare home loan rates before top-up loans</Link>
+          <Link href="/in/best-credit-cards-india">use card strategy to avoid revolving debt</Link>
+          <Link href="/in/best-savings-accounts-india">rebuild liquidity buffer in savings accounts</Link>
+          <Link href="/in/fixed-deposit-vs-sip-india">allocate surplus after debt stabilization</Link>
+          <Link href="/in/calculators/emi-calculator">run EMI affordability stress tests</Link>
+          <Link href="/in/calculators/sip-calculator">model post-debt investing restart in ₹</Link>
+        </div>
       </section>
       <IndiaAuthorityNote />
     </article>
