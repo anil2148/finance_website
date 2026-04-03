@@ -46,7 +46,7 @@ export function Footer() {
         { href: '/in/calculators/emi-calculator', label: 'India EMI Calculator' },
         { href: '/in/calculators/sip-calculator', label: 'India SIP Calculator' },
         { href: '/in/blog', label: 'India Blog' },
-        { href: '/tools', label: 'Tools' }
+        { href: '/in/calculators', label: 'Tools' }
       ]
     : primaryLinks;
 
