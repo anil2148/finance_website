@@ -40,7 +40,7 @@ export default function IndiaRealEstateHubPage() {
       </header>
       <div className="grid gap-3 md:grid-cols-2">
         {links.map(([href, label]) => (
-          <Link key={href} href={href} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">{label}</Link>
+          <Link key={href} href={href} className="link-card">{label}</Link>
         ))}
       </div>
       <IndiaAuthorityNote />

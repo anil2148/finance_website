@@ -14,10 +14,10 @@ export default function IndiaCalculatorsHubPage() {
       </header>
       <IndiaAuthorityNote />
       <div className="grid gap-3 md:grid-cols-2">
-        <Link href="/in/calculators/emi-calculator" className="rounded-xl border p-4">Home Loan EMI Calculator (India)</Link>
-        <Link href="/in/calculators/sip-calculator" className="rounded-xl border p-4">SIP Calculator (India)</Link>
-        <Link href="/in/home-loan-interest-rates-india" className="rounded-xl border p-4">Compare lender rates</Link>
-        <Link href="/in/fixed-deposit-vs-sip-india" className="rounded-xl border p-4">FD vs SIP comparison</Link>
+        <Link href="/in/calculators/emi-calculator" className="link-card">Home Loan EMI Calculator (India)</Link>
+        <Link href="/in/calculators/sip-calculator" className="link-card">SIP Calculator (India)</Link>
+        <Link href="/in/home-loan-interest-rates-india" className="link-card">Compare lender rates</Link>
+        <Link href="/in/fixed-deposit-vs-sip-india" className="link-card">FD vs SIP comparison</Link>
       </div>
     </section>
   );
