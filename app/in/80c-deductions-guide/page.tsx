@@ -19,7 +19,7 @@ export default function DeductionsGuideIndiaPage() {
         </ul>
         <p className="mt-3"><strong>Biggest mistake to avoid:</strong> locking funds beyond comfort level. <strong>Best choice by scenario:</strong> keep PPF-heavy mix when near-term commitments are high.</p>
       </section>
-      <section className="rounded-2xl border bg-white p-6"><div className="india-link-cluster text-sm"><Link href="/in/tax">Tax hub</Link><Link href="/in/tax-slabs-2026-india">Tax slabs 2026</Link><Link href="/in/old-vs-new-tax-regime">Old vs new regime</Link><Link href="/in/blog/ppf-vs-elss">PPF vs ELSS</Link><Link href="/in/calculators/sip-calculator">SIP calculator</Link><Link href="/in/best-investment-apps-india">Investment apps comparison</Link></div></section>
+      <section className="rounded-2xl border bg-white p-6"><div className="india-link-cluster text-sm"><Link className="content-link-chip" href="/in/tax">Tax hub</Link><Link className="content-link-chip" href="/in/tax-slabs-2026-india">Tax slabs 2026</Link><Link className="content-link-chip" href="/in/old-vs-new-tax-regime">Old vs new regime</Link><Link className="content-link-chip" href="/in/blog/ppf-vs-elss">PPF vs ELSS</Link><Link className="content-link-chip" href="/in/calculators/sip-calculator">SIP calculator</Link><Link className="content-link-chip" href="/in/best-investment-apps-india">Investment apps comparison</Link></div></section>
       <IndiaAuthorityNote />
     </article>
   );
