@@ -23,17 +23,51 @@ type ScenarioRow = {
   note: string;
 };
 
+type ContentQualityMetrics = {
+  wordCount: number;
+  sentenceCount: number;
+  uniqueHeadings: number;
+  internalLinks: number;
+  readabilityScore: number;
+  templateMatches: number;
+  hasIntroduction: boolean;
+  hasConclusion: boolean;
+};
+
+// ============================================================================
+// IMPROVED: Enhanced thin content detection patterns
+// ============================================================================
 const THIN_PATTERNS = [
-  'A complete overview for',
-  'can accelerate your long-term wealth strategy when done consistently',
-  'Action plan:',
-  'Step-by-step plan:',
-  'Option A',
-  'Option B',
-  'with practical steps, examples, and expert tips'
+  /^a complete overview for/i,
+  /can accelerate your long-term wealth strategy when done consistently/i,
+  /^action plan:/i,
+  /^step-by-step plan:/i,
+  /^option [a-z]$/i,
+  /with practical steps, examples, and expert tips/i,
+  /actionable tactics and smart decision frameworks/i,
+  /learn (more about|how to)/i,
+  /this guide (covers|explains|breaks down)/i,
+  /in this (article|guide|post)/i
 ];
 
-const REPETITIVE_TITLE_PATTERNS = [/practical\s+\d{4}\s+guide\s*#\d+/i, /complete guide\s*\(\d{4}\)/i, /guide\s*#\d+/i];
+const REPETITIVE_TITLE_PATTERNS = [
+  /practical\s+\d{4}\s+guide\s*#\d+/i,
+  /complete guide\s*\(\d{4}\)/i,
+  /guide\s*#\d+/i,
+  /(\d{4})\s+guide\s+\(updated\)/i,
+  /^(the\s+)?ultimate\s+\w+\s+guide/i,
+  /^how\s+to\s+\w+\s+\(\d{4}\)/i
+];
+
+// ============================================================================
+// IMPROVED: Content deduplication and normalization
+// ============================================================================
+const STOPWORDS_FOR_DEDUP = new Set([
+  'a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
+  'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'or', 'that',
+  'the', 'to', 'was', 'will', 'with'
+]);
+
 function hashNumber(value: string) {
   return [...value].reduce((acc, char) => ((acc << 5) - acc + char.charCodeAt(0)) | 0, 0);
 }
@@ -58,7 +92,6 @@ function titleCase(value: string) {
 
 function cleanSlug(slug: string) {
   return slug
-    
     .replace(/-\d+$/, '')
     .replace(/-guide$/, '')
     .replace(/-tips$/, '')
@@ -66,24 +99,91 @@ function cleanSlug(slug: string) {
     .trim();
 }
 
-export function canonicalTopicKey(post: BlogPost) {
-  return cleanSlug(post.slug)
-    .replace(/\b(best|how|to|for|with|and|the|a|an|guide|roadmap|basics|explained)\b/g, '')
+// ============================================================================
+// IMPROVED: Canonical topic key with better deduplication
+// ============================================================================
+export function canonicalTopicKey(post: BlogPost): string {
+  const base = cleanSlug(post.slug)
+    .replace(/\b(best|how|to|for|with|and|the|a|an|guide|roadmap|basics|explained|complete|ultimate|practical)\b/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+
+  // Further normalize by removing years and common suffixes
+  const normalized = base
+    .replace(/\s*\b\d{4}\b\s*/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+
+  return normalized;
 }
 
-function isLowValueContent(content: string) {
+// ============================================================================
+// IMPROVED: Content quality metrics calculation
+// ============================================================================
+export function calculateContentMetrics(content: string): ContentQualityMetrics {
   const wordCount = content.split(/\s+/).filter(Boolean).length;
-  return wordCount < 220 || THIN_PATTERNS.some((phrase) => content.includes(phrase));
+  const sentenceCount = (content.match(/[.!?]+/g) || []).length;
+  const headingMatches = content.match(/^#+\s+/gm) || [];
+  const uniqueHeadings = new Set(headingMatches.map(h => h.trim())).size;
+  const internalLinks = (content.match(/\]\((\/[^)]+)\)/g) || []).length;
+  
+  // Calculate readability: penalize very short sentences (< 5 words)
+  const sentences = content.split(/[.!?]+/).filter(s => s.trim());
+  const avgWordsPerSentence = sentences.length > 0 
+    ? sentences.reduce((sum, s) => sum + s.split(/\s+/).length, 0) / sentences.length 
+    : 0;
+  
+  const readabilityScore = Math.max(0, Math.min(100, 
+    50 + (avgWordsPerSentence - 10) * 2 // Target: 10-15 words per sentence
+  ));
+
+  const templateMatches = THIN_PATTERNS.filter(p => p.test(content)).length;
+  const hasIntroduction = /^#+\s+(introduction|overview|start here|quick answer)/im.test(content);
+  const hasConclusion = /^#+\s+(conclusion|bottom line|takeaway|summary|next step)/im.test(content);
+
+  return {
+    wordCount,
+    sentenceCount,
+    uniqueHeadings,
+    internalLinks,
+    readabilityScore,
+    templateMatches,
+    hasIntroduction,
+    hasConclusion
+  };
 }
 
-function hasTemplatedTitle(title: string) {
+// ============================================================================
+// IMPROVED: Thin content detection with configurable thresholds
+// ============================================================================
+function isLowValueContent(content: string, minWords = 220, maxTemplateMatches = 2): boolean {
+  const metrics = calculateContentMetrics(content);
+  
+  // Multiple quality signals
+  if (metrics.wordCount < minWords) return true;
+  if (metrics.templateMatches > maxTemplateMatches) return true;
+  if (metrics.sentenceCount === 0 && metrics.wordCount > 0) return true; // No punctuation
+  if (metrics.internalLinks < 2) return true; // Insufficient linking
+  if (!metrics.hasIntroduction || !metrics.hasConclusion) return true;
+  
+  return false;
+}
+
+// ============================================================================
+// IMPROVED: Template title detection
+// ============================================================================
+function hasTemplatedTitle(title: string): boolean {
   return REPETITIVE_TITLE_PATTERNS.some((pattern) => pattern.test(title));
 }
 
+// ============================================================================
+// IMPROVED: Blueprint inference with better categorization
+// ============================================================================
 function inferBlueprint(topic: string): TopicBlueprint {
-  if (topic.includes('credit') || topic.includes('card')) {
+  const lowerTopic = topic.toLowerCase();
+  
+  if (lowerTopic.includes('credit') || lowerTopic.includes('card')) {
     return {
       archetype: 'credit-cards',
       audience: 'cardholders choosing between rewards, intro APR offers, or annual-fee upgrades',
@@ -107,7 +207,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
     };
   }
 
-  if (topic.includes('mortgage') || topic.includes('loan') || topic.includes('heloc')) {
+  if (lowerTopic.includes('mortgage') || lowerTopic.includes('loan') || lowerTopic.includes('heloc')) {
     return {
       archetype: 'loans',
       audience: 'borrowers comparing lenders, rates, and monthly payment risk before applying',
@@ -131,7 +231,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
     };
   }
 
-  if (topic.includes('invest') || topic.includes('retirement') || topic.includes('dividend') || topic.includes('asset')) {
+  if (lowerTopic.includes('invest') || lowerTopic.includes('retirement') || lowerTopic.includes('dividend') || lowerTopic.includes('asset')) {
     return {
       archetype: 'investing',
       audience: 'beginners and intermediate investors building a repeatable long-term contribution plan',
@@ -155,7 +255,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
     };
   }
 
-  if (topic.includes('tax')) {
+  if (lowerTopic.includes('tax')) {
     return {
       archetype: 'tax',
       audience: 'workers and investors trying to improve after-tax returns legally and consistently',
@@ -179,7 +279,7 @@ function inferBlueprint(topic: string): TopicBlueprint {
     };
   }
 
-  if (topic.includes('budget') || topic.includes('save') || topic.includes('emergency')) {
+  if (lowerTopic.includes('budget') || lowerTopic.includes('save') || lowerTopic.includes('emergency')) {
     return {
       archetype: 'budgeting',
       audience: 'households tightening cash flow while still saving for short-term goals',
@@ -217,6 +317,10 @@ function inferBlueprint(topic: string): TopicBlueprint {
     descriptionTemplates: ['Get practical %TOPIC_LOWER% guidance with examples, tradeoffs, and next-step tools.']
   };
 }
+
+// ============================================================================
+// Content building functions (unchanged for brevity - keep original implementations)
+// ============================================================================
 
 function buildInvestingBody(topicLabel: string, blueprint: TopicBlueprint) {
   return `## Start with the investor scenario you are actually in
@@ -566,12 +670,12 @@ const scenarioRowsByArchetype: Record<TopicBlueprint['archetype'], ScenarioRow[]
     { monthly: '$800 contribution', annual: '$9,600 saved', longTerm: '≈ $53,000 in 5 years at 4.0% APY', note: 'Missing six deposits in a bad cash-flow year can reduce the 5-year result by ~$5,000.' }
   ],
   'credit-cards': [
-    { monthly: '$400 revolving balance', annual: '≈ $1,056 annual interest at 22% APR', longTerm: '≈ $5,280 over 5 years if balance persists', note: 'A payoff plan that clears this in 18 months can save thousands.' },
-    { monthly: '$1,200 revolving balance', annual: '≈ $3,168 annual interest at 22% APR', longTerm: '≈ $15,800 over 5 years if unchanged', note: 'Chasing rewards while carrying debt is often negative expected value.' }
+    { monthly: '$400 revolving balance', annual: '≈ $1,056 annual interest at 22% APR', longTerm: '≈ $5,280 over 5 years if balance persists', note: 'A payoff plan that clears this in 18 months saves ~$1,000+ in interest.' },
+    { monthly: '$1,200 revolving balance', annual: '≈ $3,168 annual interest at 22% APR', longTerm: '≈ $15,800 over 5 years if unchanged', note: 'Chasing rewards while carrying debt is often a net loss after interest.' }
   ],
   tax: [
-    { monthly: '$700 pre-tax contribution', annual: '$8,400 sheltered from current tax', longTerm: 'Potentially $170,000+ account value in 12 years at 7%', note: 'Wrong account mix can create avoidable tax drag on withdrawals later.' },
-    { monthly: '$500 Roth contribution', annual: '$6,000 after-tax invested', longTerm: '≈ $250,000 in 20 years at 7%', note: 'Deferring tax planning until retirement can reduce withdrawal flexibility.' }
+    { monthly: '$700 pre-tax contribution', annual: '$8,400 sheltered from current tax', longTerm: 'Potentially $170,000+ account value in 12 years at 7%', note: 'Wrong account mix can create avoidable tax drag of 0.3–0.8% annually.' },
+    { monthly: '$500 Roth contribution', annual: '$6,000 after-tax invested', longTerm: '≈ $250,000 in 20 years at 7%', note: 'Deferring tax planning until retirement can reduce withdrawal flexibility and increase final tax bill.' }
   ]
 };
 
@@ -662,30 +766,69 @@ function enrichContent(post: BlogPost, blueprint: TopicBlueprint) {
   return content;
 }
 
-export function qualityScore(post: BlogPost) {
-  const wordCount = post.content.split(/\s+/).filter(Boolean).length;
-  let score = Math.min(60, Math.floor(wordCount / 10));
-
+// ============================================================================
+// IMPROVED: Quality scoring with enhanced metrics
+// ============================================================================
+export function qualityScore(post: BlogPost): number {
+  const metrics = calculateContentMetrics(post.content);
   
+  // Base score from word count (max 60 points)
+  let score = Math.min(60, Math.floor(metrics.wordCount / 10));
+
+  // Title quality (max 15 points)
   if (!hasTemplatedTitle(post.title)) score += 10;
   if (!/\(\d{4}\)/.test(post.title)) score += 5;
-  if (!isLowValueContent(post.content)) score += 15;
-  if (/^-?\d+$/.test(post.slug.split('-').at(-1) ?? '')) score -= 8;
 
-  return score;
+  // Content quality (max 25 points)
+  if (!isLowValueContent(post.content)) score += 15;
+  if (metrics.sentenceCount > 0 && metrics.readabilityScore > 40) score += 10;
+
+  // Structure quality (max 10 points)
+  if (metrics.hasIntroduction) score += 5;
+  if (metrics.hasConclusion) score += 5;
+
+  // Link quality (max 5 points)
+  if (metrics.internalLinks >= 5) score += 5;
+
+  // Penalize numeric slugs with weak content
+  if (/-\d+$/.test(post.slug)) score -= 8;
+
+  return Math.max(0, Math.min(100, score));
 }
 
-export function shouldExcludePost(post: BlogPost) {
+// ============================================================================
+// IMPROVED: Post exclusion with better logic
+// ============================================================================
+export function shouldExcludePost(post: BlogPost): boolean {
+  const metrics = calculateContentMetrics(post.content);
   const numericTail = /-\d+$/.test(post.slug);
   const thin = isLowValueContent(post.content);
-  const templated = hasTemplatedTitle(post.title) || /with practical steps, examples, and expert tips/i.test(post.description);
+  const templated = hasTemplatedTitle(post.title) || 
+    /with practical steps, examples, and expert tips/i.test(post.description);
 
-  if (!numericTail) return false;
-  return thin && templated;
+  // Exclude if:
+  // 1. Has numeric tail AND (thin OR templated)
+  // 2. Word count critically low
+  // 3. No internal links AND thin content
+  if (numericTail && (thin || templated)) return true;
+  if (metrics.wordCount < 150) return true;
+  if (metrics.internalLinks < 2 && thin) return true;
+
+  return false;
 }
 
-export function enhancePost(post: BlogPost): BlogPost {
+// ============================================================================
+// IMPROVED: Post enhancement with deduplication awareness
+// ============================================================================
+export function enhancePost(post: BlogPost, deduplicationMap?: Map<string, string>): BlogPost {
   const topicLabel = cleanSlug(post.slug);
+  const canonicalKey = canonicalTopicKey(post);
+  
+  // Check for duplicates using canonical topic key
+  if (deduplicationMap?.has(canonicalKey)) {
+    console.warn(`[blogEnhancer] Duplicate content detected: "${post.slug}" matches existing "${deduplicationMap.get(canonicalKey)}"`);
+  }
+
   const blueprint = inferBlueprint(`${post.category} ${post.slug}`.toLowerCase());
   const title = normalizeTitle(post, topicLabel, blueprint);
   const description = normalizeDescription(post, topicLabel, blueprint);
@@ -698,4 +841,41 @@ export function enhancePost(post: BlogPost): BlogPost {
     metaDescription: description,
     content: enrichContent(post, blueprint)
   };
+}
+
+// ============================================================================
+// NEW: Batch deduplication utility
+// ============================================================================
+export function buildDeduplicationMap(posts: BlogPost[]): Map<string, string> {
+  const map = new Map<string, string>();
+  const duplicates: Array<{ canonical: string; posts: string[] }> = [];
+
+  for (const post of posts) {
+    const key = canonicalTopicKey(post);
+    
+    if (map.has(key)) {
+      // Find the group this belongs to
+      const existing = duplicates.find(d => d.canonical === key);
+      if (existing) {
+        existing.posts.push(post.slug);
+      } else {
+        duplicates.push({
+          canonical: key,
+          posts: [map.get(key)!, post.slug]
+        });
+      }
+    } else {
+      map.set(key, post.slug);
+    }
+  }
+
+  // Log duplicates for manual review
+  if (duplicates.length > 0) {
+    console.warn(`[blogEnhancer] Found ${duplicates.length} duplicate topic groups:`);
+    duplicates.forEach(dup => {
+      console.warn(`  ${dup.canonical}: ${dup.posts.join(', ')}`);
+    });
+  }
+
+  return map;
 }

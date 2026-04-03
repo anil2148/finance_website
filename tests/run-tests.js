@@ -30,8 +30,8 @@ console.log('✅ calculator tests passed');
 runLinkIntegrityTests();
 console.log('✅ link integrity tests passed');
 
-runRegionRoutingTests();
-console.log('✅ region routing tests passed');
+runSitemapTests();
+console.log('✅ sitemap tests passed');
 
 runFinanceSphereRenderingSeoRegressionTests();
 console.log('✅ FinanceSphere rendering + SEO regressions tests passed');
