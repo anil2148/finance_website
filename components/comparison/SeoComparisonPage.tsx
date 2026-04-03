@@ -14,6 +14,34 @@ type SeoComparisonPageProps = {
   pathname?: string;
 };
 
+const pageFlowByCategory: Record<FinancialCategory, { sectionLead: string; wrongTitle: string; actionCta: string }> = {
+  credit_card: {
+    sectionLead: 'Mistake → fix workflow',
+    wrongTitle: 'What people get wrong',
+    actionCta: 'Run the numbers first'
+  },
+  savings_account: {
+    sectionLead: 'Scenario → reliability check',
+    wrongTitle: 'Where this breaks',
+    actionCta: 'Test transfer reliability before committing'
+  },
+  investment_app: {
+    sectionLead: 'Comparison → behavior decision',
+    wrongTitle: 'When this fails',
+    actionCta: 'Compare after stress-testing'
+  },
+  mortgage_lender: {
+    sectionLead: 'Quote comparison → execution risk',
+    wrongTitle: 'Where this breaks',
+    actionCta: 'Test timeline risk before signing'
+  },
+  personal_loan: {
+    sectionLead: 'Payment relief → total-cost reality',
+    wrongTitle: 'What people get wrong',
+    actionCta: 'Run the payoff tradeoff first'
+  }
+};
+
 const methodologyWeights: Record<FinancialCategory, Array<{ factor: string; weight: string; why: string }>> = {
   credit_card: [
     { factor: 'Total annual value after fees', weight: '35%', why: 'Rewards only matter if net value stays positive for your real spending mix.' },
@@ -310,12 +338,14 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
     { name: 'Comparison', item: '/comparison' },
     { name: pageTitle, item: resolvedPath }
   ]);
+  const flow = pageFlowByCategory[category];
 
   return (
     <section className="space-y-8">
       <header className="space-y-3" id="methodology">
         <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{pageTitle}</h1>
         <p className="max-w-3xl text-slate-600 dark:text-slate-300">{intro}</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{flow.sectionLead}</p>
         <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
           We use transparent evaluation frameworks, real-world scenarios, and provider disclosures so you can compare options confidently.
         </p>
@@ -405,7 +435,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
       </section>
 
       <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5 dark:border-amber-900/40 dark:bg-amber-950/20">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What goes wrong</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{flow.wrongTitle}</h2>
         <p className="mt-1 text-xs font-medium italic text-slate-500 dark:text-slate-400">&ldquo;{microRealityLineByCategory[category]}&rdquo;</p>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
@@ -566,7 +596,7 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
       <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-900/40">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Continue your decision workflow</h2>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
-          <Link href="/blog/how-to-increase-your-savings-rate" className="rounded-full border border-slate-300 bg-white px-3 py-1 dark:border-slate-600 dark:bg-slate-900">Read related blog: Increase your savings rate</Link>
+          <Link href="/blog/how-to-increase-your-savings-rate" className="rounded-full border border-slate-300 bg-white px-3 py-1 dark:border-slate-600 dark:bg-slate-900">{flow.actionCta}</Link>
           <Link href="/blog/personal-loan-comparison-for-bad-month-resilience" className="rounded-full border border-slate-300 bg-white px-3 py-1 dark:border-slate-600 dark:bg-slate-900">Read related blog: Bad-month resilience</Link>
         </div>
       </section>

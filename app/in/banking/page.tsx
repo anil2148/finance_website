@@ -12,7 +12,7 @@ export const metadata: Metadata = createPageMetadata({
 
 const scenarioRows = [
   {
-    salary: '₹8L–₹12L annual salary',
+    salary: '₹12L annual salary (fragile case)',
     mistake: 'Keeping only one account and losing control of bill, spend, and emergency buckets.',
     whatBreaks: 'Salary arrives and immediately bleeds into bills, daily spend, and unplanned purchases — nothing reaches savings.',
     whatToAutomate: 'Auto-transfer to bills and reserve on salary day. Do not leave money in one account waiting to be spent.',
@@ -21,7 +21,7 @@ const scenarioRows = [
     startingPlan: 'Start with 70/20/10 flow: essentials / goals / cushion. Emergency fund target: 3 months expenses in liquid savings.'
   },
   {
-    salary: '₹12L–₹18L annual salary',
+    salary: '₹18L annual salary (base case)',
     mistake: 'Chasing high FD rates while paying hidden card penalties and missing liquidity windows.',
     whatBreaks: 'Card rollover at 36–42% annual interest eliminates any FD return in the same month. Net position is negative.',
     whatToAutomate: 'Full statement balance auto-pay for cards. Quarterly fee audit scheduled in calendar. Reserve auto-transfer on salary day.',
@@ -30,13 +30,36 @@ const scenarioRows = [
     startingPlan: 'Audit quarterly charges, disable optional paid add-ons, and keep 4–5 month emergency reserve accessible.'
   },
   {
-    salary: '₹18L–₹25L+ annual salary',
+    salary: '₹25L annual salary (optimization case)',
     mistake: 'Over-fragmenting across multiple products without a clear operating system.',
     whatBreaks: 'Four accounts with no rules. Salary arrives; confusion about which account to pull from in an emergency. Manual decisions on every expense.',
     whatToAutomate: 'One operating account for daily spend. Auto SIP on the 2nd of the month. Auto reserve top-up on salary day.',
     whatToAvoidFirst: 'Opening new savings or investment products before documenting existing account rules. More accounts ≠ better system.',
     framework: 'Use one operating account, one reserve account, and deliberate SIP/investment pipelines.',
     startingPlan: 'Document transfer rules, build 6-month reserve, and handle bad-month exceptions without breaking investment cadence.'
+  }
+];
+
+const failureSimulations = [
+  {
+    scenario: '₹12L salary, one-account setup',
+    failurePoint: 'Unexpected ₹35,000 medical expense hits in same month as annual insurance premium.',
+    consequence: 'Emergency cash gets mixed with daily spending, card balance carries forward, and next month starts in deficit.'
+  },
+  {
+    scenario: '₹18L salary, ₹4L locked in FD',
+    failurePoint: 'Job transition delays one salary cycle by 20 days while EMI + school fees are due.',
+    consequence: 'FD breaks with penalty and still leaves a temporary gap, forcing short-term card borrowing.'
+  },
+  {
+    scenario: '₹25L salary, four accounts with no rules',
+    failurePoint: 'Major appliance replacement (₹70,000) occurs when bill account is already committed.',
+    consequence: 'Money sits fragmented across accounts; transfers are delayed and cashflow planning collapses for 1–2 months.'
+  },
+  {
+    scenario: '₹18L salary, high-SIP automation before reserve',
+    failurePoint: 'One bad month (bonus delay + vehicle repair) reduces free cash by ₹45,000.',
+    consequence: 'SIP is paused, then restarted inconsistently; system becomes reactive instead of reliable.'
   }
 ];
 
@@ -152,6 +175,22 @@ export default function BankingPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What goes wrong (banking)</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Single account chaos</h3>
+            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Salary, EMI, UPI spend, and emergency money in one account hides reality. You feel funded at month start and exposed by month-end.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">If this breaks in one bad month, it&apos;s too aggressive.</p>
+          </article>
+          <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">FD lock-in issues</h3>
+            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Higher rates look attractive, but locking liquidity before reserve completion creates forced-break penalties at exactly the wrong time.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Return is irrelevant if emergency access fails.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Where banking systems fail in real life</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Most Indian banking problems are not about rates. They are about structure — or the absence of it.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
@@ -174,8 +213,8 @@ export default function BankingPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Practical account system: four lanes, clear rules</h2>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A useful banking system does not need to be complicated. It needs to have rules. Four accounts with clear purposes handle most Indian household needs without over-engineering.</p>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Practical system: 3-account operating model (with optional investing lane)</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Start with three accounts only: operating, bills, and reserve. Add a separate investing lane only after the core system survives a bad month without overrides.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <article className="rounded-xl border border-blue-200 bg-blue-50/40 p-4 dark:border-blue-500/30 dark:bg-blue-500/10">
             <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">Operating account (salary account)</h3>
