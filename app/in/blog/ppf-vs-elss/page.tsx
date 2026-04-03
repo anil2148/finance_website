@@ -95,10 +95,10 @@ export default function PpfVsElssIndiaPage() {
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Next India pages to use</h2>
         <div className="mt-3 india-link-cluster text-sm">
-          <Link href="/in/blog/sip-vs-fd" className="content-link">SIP vs FD</Link>
-          <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link>
-          <Link href="/in/calculators/sip-calculator" className="content-link">SIP calculator</Link>
-          <Link href="/in/blog" className="content-link">India blog hub</Link>
+          <Link href="/in/blog/sip-vs-fd" className="content-link-chip">SIP vs FD</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link-chip">EMI calculator</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link-chip">SIP calculator</Link>
+          <Link href="/in/blog" className="content-link-chip">India blog hub</Link>
         </div>
       </section>
       <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-6 dark:border-blue-500/40 dark:bg-blue-900/20">
