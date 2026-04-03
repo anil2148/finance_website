@@ -28,7 +28,7 @@ export default function IndiaLayout({ children }: { children: React.ReactNode })
           })
         }}
       />
-      {children}
+      <div className="india-content">{children}</div>
     </>
   );
 }

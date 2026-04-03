@@ -59,14 +59,14 @@ export default function BestAppsIndiaPage() {
         <h3 className="mt-4 text-lg font-semibold">The real drag most investors miss</h3>
         <p className="mt-2">Brokerage is usually not the largest leak; inconsistent execution, random exits, and missed SIP months are bigger drags.</p>
 
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/in/investing" className="text-blue-700">India investing hub with timeline-based strategy</Link>
-          <Link href="/in/sip-strategy-india" className="text-blue-700">build a SIP strategy in India by income stability</Link>
-          <Link href="/in/fixed-deposit-vs-sip-india" className="text-blue-700">decide FD vs SIP for 3, 5, and 10-year goals</Link>
-          <Link href="/in/blog/ppf-vs-elss" className="text-blue-700">compare PPF vs ELSS for 80C planning</Link>
-          <Link href="/in/best-savings-accounts-india" className="text-blue-700">park emergency liquidity in savings accounts</Link>
-          <Link href="/in/calculators/sip-calculator" className="text-blue-700">project SIP outcomes in ₹</Link>
-          <Link href="/in/calculators/emi-calculator" className="text-blue-700">check EMI burden before increasing SIPs</Link>
+        <div className="mt-3 india-link-cluster">
+          <Link href="/in/investing" className="content-link">India investing hub with timeline-based strategy</Link>
+          <Link href="/in/sip-strategy-india" className="content-link">build a SIP strategy in India by income stability</Link>
+          <Link href="/in/fixed-deposit-vs-sip-india" className="content-link">decide FD vs SIP for 3, 5, and 10-year goals</Link>
+          <Link href="/in/blog/ppf-vs-elss" className="content-link">compare PPF vs ELSS for 80C planning</Link>
+          <Link href="/in/best-savings-accounts-india" className="content-link">park emergency liquidity in savings accounts</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link">project SIP outcomes in ₹</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link">check EMI burden before increasing SIPs</Link>
         </div>
       </section>
     </article>

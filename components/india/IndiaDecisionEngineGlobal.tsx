@@ -96,7 +96,7 @@ export function IndiaDecisionEngineGlobal() {
 
       <section>
         <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Continue your India decision path</h3>
-        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+        <div className="mt-3 india-link-cluster text-sm">
           {clusterLinks.map((link) => (
             <Link key={link.href} href={link.href} className="rounded-full border border-slate-300 px-3 py-1 text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">{link.label}</Link>
           ))}

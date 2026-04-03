@@ -87,7 +87,7 @@ export function IndiaPageEssentials() {
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Calculators</p>
           <ul className="mt-2 space-y-1 text-sm">
             {sharedLinks.calculators.map((item) => (
-              <li key={item.href}><Link className="font-medium text-blue-700 hover:underline dark:text-blue-300" href={item.href}>{item.label}</Link></li>
+              <li key={item.href}><Link className="content-link" href={item.href}>{item.label}</Link></li>
             ))}
           </ul>
         </div>
@@ -95,7 +95,7 @@ export function IndiaPageEssentials() {
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Comparisons</p>
           <ul className="mt-2 space-y-1 text-sm">
             {sharedLinks.comparisons.map((item) => (
-              <li key={item.href}><Link className="font-medium text-blue-700 hover:underline dark:text-blue-300" href={item.href}>{item.label}</Link></li>
+              <li key={item.href}><Link className="content-link" href={item.href}>{item.label}</Link></li>
             ))}
           </ul>
         </div>
@@ -103,7 +103,7 @@ export function IndiaPageEssentials() {
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-600 dark:text-slate-300">Related content</p>
           <ul className="mt-2 space-y-1 text-sm">
             {sharedLinks.related.map((item) => (
-              <li key={item.href}><Link className="font-medium text-blue-700 hover:underline dark:text-blue-300" href={item.href}>{item.label}</Link></li>
+              <li key={item.href}><Link className="content-link" href={item.href}>{item.label}</Link></li>
             ))}
           </ul>
         </div>

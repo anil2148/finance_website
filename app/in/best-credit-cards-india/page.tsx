@@ -56,14 +56,14 @@ export default function BestCardsIndiaPage() {
           <li>Using multiple cards without spend-tracking often reduces total reward capture.</li>
         </ul>
         <p className="mt-3"><strong>FY 2025–26 lens:</strong> Use one primary card + one backup no-fee card, then review every quarter against actual spend statements.</p>
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/in/banking" className="text-blue-700">Banking hub for liquidity-first money decisions</Link>
-          <Link href="/in/best-savings-accounts-india" className="text-blue-700">compare savings accounts in India</Link>
-          <Link href="/in/personal-loan-comparison-india" className="text-blue-700">compare personal loans in India before revolving card debt</Link>
-          <Link href="/in/home-loan-interest-rates-india" className="text-blue-700">compare home loan rates in India</Link>
-          <Link href="/in/best-investment-apps-india" className="text-blue-700">compare investment apps in India</Link>
-          <Link href="/in/calculators/emi-calculator" className="text-blue-700">stress-test fixed obligations with the EMI calculator</Link>
-          <Link href="/in/calculators/sip-calculator" className="text-blue-700">project long-term SIP alternatives in ₹</Link>
+        <div className="mt-3 india-link-cluster">
+          <Link href="/in/banking" className="content-link">Banking hub for liquidity-first money decisions</Link>
+          <Link href="/in/best-savings-accounts-india" className="content-link">compare savings accounts in India</Link>
+          <Link href="/in/personal-loan-comparison-india" className="content-link">compare personal loans in India before revolving card debt</Link>
+          <Link href="/in/home-loan-interest-rates-india" className="content-link">compare home loan rates in India</Link>
+          <Link href="/in/best-investment-apps-india" className="content-link">compare investment apps in India</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link">stress-test fixed obligations with the EMI calculator</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link">project long-term SIP alternatives in ₹</Link>
         </div>
       </section>
     </article>

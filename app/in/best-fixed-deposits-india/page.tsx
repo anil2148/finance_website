@@ -49,14 +49,14 @@ export default function BestFixedDepositsIndiaPage() {
           <li>Hybrid strategy fails when SIP amount is stopped during volatility.</li>
           <li>Monthly payout FD fails for retirees if inflation rises above post-tax FD yield.</li>
         </ul>
-        <div className="mt-3 flex flex-wrap gap-3">
-          <Link href="/in/banking" className="text-blue-700">banking hub for liquidity and rate decisions</Link>
-          <Link href="/in/fixed-deposit-vs-sip-india" className="text-blue-700">deep FD vs SIP timeline comparison</Link>
-          <Link href="/in/best-savings-accounts-india" className="text-blue-700">compare savings accounts for emergency money</Link>
-          <Link href="/in/investing" className="text-blue-700">build long-term investing allocation</Link>
-          <Link href="/in/best-investment-apps-india" className="text-blue-700">select execution apps for SIP discipline</Link>
-          <Link href="/in/calculators/sip-calculator" className="text-blue-700">run SIP growth projections in ₹</Link>
-          <Link href="/in/calculators/emi-calculator" className="text-blue-700">check EMI burden before locking funds</Link>
+        <div className="mt-3 india-link-cluster">
+          <Link href="/in/banking" className="content-link">banking hub for liquidity and rate decisions</Link>
+          <Link href="/in/fixed-deposit-vs-sip-india" className="content-link">deep FD vs SIP timeline comparison</Link>
+          <Link href="/in/best-savings-accounts-india" className="content-link">compare savings accounts for emergency money</Link>
+          <Link href="/in/investing" className="content-link">build long-term investing allocation</Link>
+          <Link href="/in/best-investment-apps-india" className="content-link">select execution apps for SIP discipline</Link>
+          <Link href="/in/calculators/sip-calculator" className="content-link">run SIP growth projections in ₹</Link>
+          <Link href="/in/calculators/emi-calculator" className="content-link">check EMI burden before locking funds</Link>
         </div>
       </section>
 

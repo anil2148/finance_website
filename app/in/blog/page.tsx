@@ -43,9 +43,9 @@ export default function IndiaBlogHubPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Start with your immediate blocker</h2>
-        <div className="mt-3 flex flex-wrap gap-2 text-sm">
+        <div className="mt-3 india-link-cluster text-sm">
           {pathways.map((item) => (
-            <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
+            <Link key={item.href} href={item.href} className="content-link-chip">
               {item.label}
             </Link>
           ))}
@@ -57,7 +57,7 @@ export default function IndiaBlogHubPage() {
           <article key={guide.href} className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{guide.title}</h2>
             <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{guide.description}</p>
-            <Link href={guide.href} className="mt-4 inline-flex text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Read guide →</Link>
+            <Link href={guide.href} className="mt-4 inline-flex content-link">Read guide →</Link>
           </article>
         ))}
       </section>
