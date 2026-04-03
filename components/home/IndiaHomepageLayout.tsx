@@ -5,7 +5,7 @@ import { ChartBarIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 const goalCards = [
   {
     title: 'Build long-term wealth with SIPs',
-    description: 'Use a monthly SIP projection first, then compare FD fallback options if your timeline is under 5 years.',
+    description: 'Start with a ₹5,000, ₹10,000, or ₹25,000 SIP scenario, then decide what portion should stay in safer FD-style buckets.',
     primaryLabel: 'Open SIP calculator',
     primaryHref: '/in/calculators/sip-calculator',
     secondaryLabel: 'Read SIP vs FD decision guide',
@@ -13,7 +13,7 @@ const goalCards = [
   },
   {
     title: 'Choose tax-saving investments',
-    description: 'Compare lock-in period, liquidity, and return expectations before choosing PPF, ELSS, or a split approach.',
+    description: 'Plan Section 80C without panic in tax-saving season—decide what stays stable (PPF) and what can take growth risk (ELSS).',
     primaryLabel: 'Read PPF vs ELSS',
     primaryHref: '/in/blog/ppf-vs-elss',
     secondaryLabel: 'See India blog hub',
@@ -21,7 +21,7 @@ const goalCards = [
   },
   {
     title: 'Plan home loan affordability',
-    description: 'Estimate EMI at multiple interest rates and pressure-test affordability against salary and emergency-fund needs.',
+    description: 'Test EMI with +0.5% and +1% rate shocks so your plan still works during tight-cashflow months.',
     primaryLabel: 'Use EMI calculator',
     primaryHref: '/in/calculators/emi-calculator',
     secondaryLabel: 'Review home-loan planning tips',
@@ -29,7 +29,7 @@ const goalCards = [
   },
   {
     title: 'Build tax-efficient yearly workflow',
-    description: 'Map Section 80C choices, liquidity needs, and contribution cadence so tax-saving does not hurt cashflow.',
+    description: 'Build an annual money workflow that balances tax-saving, emergency reserves, and long-term investing discipline.',
     primaryLabel: 'PPF vs ELSS framework',
     primaryHref: '/in/blog/ppf-vs-elss#decision-framework',
     secondaryLabel: 'Start from India homepage',
@@ -75,7 +75,7 @@ export function IndiaHomepageLayout() {
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make better money decisions in India with real ₹ scenarios</h1>
             <p className="max-w-xl text-blue-100/95">
-              Plan SIPs, compare FD vs SIP, evaluate PPF vs ELSS, and test home-loan EMI affordability before you commit.
+              Plan SIPs, compare FD vs SIP honestly, evaluate PPF vs ELSS by timeline, and stress-test EMI before you commit to a loan.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/in/calculators/emi-calculator">
@@ -104,7 +104,7 @@ export function IndiaHomepageLayout() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Start with your India goal</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Follow the same calculator → compare → learn model, localized for India.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Start where your immediate decision is stuck—monthly investing, tax-saving, or home-loan affordability.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">

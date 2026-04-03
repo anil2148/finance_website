@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { CalculatorInput } from './CalculatorInput';
 import { ChartComponent } from './ChartComponent';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
+import { getCurrencySymbol, getLocaleForCurrency } from '@/lib/utils';
 
 type CalculatorType = 'loan' | 'mortgage' | 'compound' | 'retirement' | 'networth';
 
@@ -28,7 +29,8 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   const [principal, setPrincipal] = useState(type === 'mortgage' ? 350000 : 10000);
-  const { formatCurrency } = usePreferences();
+  const { currency, formatCurrency } = usePreferences();
+  const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
   const [rate, setRate] = useState(type === 'mortgage' ? 6.8 : 10);
   const [years, setYears] = useState(type === 'mortgage' ? 30 : 5);
   const [contribution, setContribution] = useState(type === 'retirement' ? 800 : 500);
@@ -106,17 +108,17 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
           <p className="text-sm text-slate-600">{description}</p>
         </div>
 
-        {type !== 'networth' && <CalculatorInput label="Principal ($)" value={principal} onChange={setPrincipal} />}
+        {type !== 'networth' && <CalculatorInput label={`Principal (${currencySymbol})`} value={principal} onChange={setPrincipal} />}
         {type !== 'networth' && <CalculatorInput label="Annual Rate (%)" value={rate} onChange={setRate} />}
         {type !== 'networth' && <CalculatorInput label="Years" value={years} onChange={setYears} />}
         {(type === 'compound' || type === 'retirement') && (
-          <CalculatorInput label="Monthly Contribution ($)" value={contribution} onChange={setContribution} />
+          <CalculatorInput label={`Monthly Contribution (${currencySymbol})`} value={contribution} onChange={setContribution} />
         )}
 
         {type === 'networth' && (
           <>
-            <CalculatorInput label="Total Assets ($)" value={assets} onChange={setAssets} />
-            <CalculatorInput label="Total Liabilities ($)" value={liabilities} onChange={setLiabilities} />
+            <CalculatorInput label={`Total Assets (${currencySymbol})`} value={assets} onChange={setAssets} />
+            <CalculatorInput label={`Total Liabilities (${currencySymbol})`} value={liabilities} onChange={setLiabilities} />
           </>
         )}
 

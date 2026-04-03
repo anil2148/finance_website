@@ -4,14 +4,15 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { fetcher } from '@/lib/api/fetcher';
 import type { ExchangeRateResponse, SupportedCurrency } from '@/lib/api/currency';
 import { getLocaleForCurrency } from '@/lib/utils';
+import { AppCountry, AppCurrency, getDefaultCurrencyForCountry, normalizeCountry, normalizeCurrency } from '@/lib/preferences';
 
 type PreferenceContextValue = {
-  currency: SupportedCurrency;
-  country: 'US' | 'India' | 'UK' | 'Canada';
+  currency: AppCurrency;
+  country: AppCountry;
   darkMode: boolean;
   isRatesLoading: boolean;
-  setCurrency: (currency: SupportedCurrency) => void;
-  setCountry: (country: 'US' | 'India' | 'UK' | 'Canada') => void;
+  setCurrency: (currency: AppCurrency) => void;
+  setCountry: (country: AppCountry) => void;
   toggleDarkMode: () => void;
   formatCurrency: (value: number, maximumFractionDigits?: number) => string;
 };
@@ -29,20 +30,33 @@ const DEFAULT_RATES: Record<SupportedCurrency, number> = {
 };
 
 export function PreferenceProvider({ children }: { children: React.ReactNode }) {
-  const [currency, setCurrency] = useState<SupportedCurrency>('USD');
-  const [country, setCountry] = useState<'US' | 'India' | 'UK' | 'Canada'>('US');
+  const [country, setCountryState] = useState<AppCountry>('US');
+  const [currency, setCurrencyState] = useState<AppCurrency>(getDefaultCurrencyForCountry('US'));
   const [darkMode, setDarkMode] = useState(false);
   const [rates, setRates] = useState<Record<SupportedCurrency, number>>(DEFAULT_RATES);
   const [isRatesLoading, setIsRatesLoading] = useState(true);
+
+  const setCountry = (nextCountry: AppCountry) => {
+    setCountryState(nextCountry);
+    setCurrencyState(getDefaultCurrencyForCountry(nextCountry));
+  };
+
+  const setCurrency = (nextCurrency: AppCurrency) => {
+    setCurrencyState(nextCurrency);
+  };
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
 
     try {
-      const parsed = JSON.parse(raw) as { currency?: SupportedCurrency; country?: 'US' | 'India' | 'UK' | 'Canada'; darkMode?: boolean };
-      if (parsed.currency) setCurrency(parsed.currency);
-      if (parsed.country) setCountry(parsed.country);
+      const parsed = JSON.parse(raw) as { currency?: string; country?: string; darkMode?: boolean };
+      const nextCountry = normalizeCountry(parsed.country);
+      const nextCurrency = normalizeCurrency(parsed.currency, nextCountry);
+
+      setCountryState(nextCountry);
+      setCurrencyState(nextCurrency);
+
       if (typeof parsed.darkMode === 'boolean') setDarkMode(parsed.darkMode);
     } catch {
       // Ignore malformed storage values.
