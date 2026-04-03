@@ -92,6 +92,8 @@ export default function BankingPage() {
         </p>
       </header>
 
+      <IndiaAuthorityNote />
+
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision framework (India banking)</h2>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-slate-700 dark:text-slate-300">
@@ -147,6 +149,60 @@ export default function BankingPage() {
             <li>Annual fee cards only make sense when benefits exceed fee by 2× or more.</li>
           </ul>
         </article>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Savings account vs FD vs sweep-in FD: which works when</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Each instrument has a different liquidity-and-yield trade-off. Picking the wrong one for the wrong goal is a common fee and penalty source.</p>
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full min-w-[700px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
+                <th className="px-3 py-2">Instrument</th>
+                <th className="px-3 py-2">Typical rate</th>
+                <th className="px-3 py-2">Liquidity</th>
+                <th className="px-3 py-2">Best used for</th>
+                <th className="px-3 py-2">Hidden cost risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Savings account</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">2.5%–7% (varies by bank)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Immediate, any amount</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Emergency fund, salary buffer, monthly bills</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Quarterly maintenance fees if balance falls below minimum</td>
+              </tr>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Fixed Deposit (FD)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">6.5%–7.5% (12–24 months)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Restricted — penalty on early break (0.5%–1% lower rate)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Predictable goals 1–3 years out (vacation fund, school fees)</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Breaking early for emergencies costs ₹2,000–₹5,000 on a ₹5L FD</td>
+              </tr>
+              <tr className="align-top">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Sweep-in FD</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">FD rate with savings liquidity</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Auto-broken in units; no formal penalty in most banks</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Emergency reserve that should also earn more than savings rate</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Terms vary by bank — check auto-renewal and reverse-sweep rules before relying on it</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">Rule of thumb: keep your 3–6 month emergency reserve in savings or sweep-in FD. Only park surplus beyond that in standard FDs.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">India banking journey: from stability to returns</h2>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">
+          Start with your emergency reserve — use the <Link href="/in/best-savings-accounts-india" className="content-link">savings account comparison</Link> to find a zero-fee, high-liquidity base account.
+          Once 3–6 months of expenses are parked, run the <Link href="/in/calculators/emi-calculator" className="content-link">EMI calculator</Link> before taking on any new fixed obligation.
+          Then use the <Link href="/in/fixed-deposit-vs-sip-india" className="content-link">FD vs SIP comparison</Link> to allocate surplus above that reserve.
+        </p>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">
+          If you are carrying credit card debt, clear it before any FD or SIP step — card rollovers at 36–42% annual interest erase any investment benefit.
+        </p>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
@@ -216,8 +272,6 @@ export default function BankingPage() {
           </div>
         </dl>
       </section>
-
-      <IndiaAuthorityNote />
     </section>
   );
 }

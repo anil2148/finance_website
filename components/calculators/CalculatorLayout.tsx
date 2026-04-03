@@ -29,8 +29,8 @@ const guideMessageBySlug: Record<string, { title: string; body: string }> = {
     body: 'Set loan amount, APR, and term, then compare monthly payment and total interest to keep housing costs within your budget.'
   },
   'loan-calculator': {
-    title: 'Loan EMI walkthrough',
-    body: 'Enter borrowing details and compare installment amounts across terms so you can pick a repayment plan you can sustain.'
+    title: 'Loan monthly payment walkthrough',
+    body: 'Enter borrowing details and compare monthly payment amounts across terms so you can pick a repayment plan you can sustain.'
   },
   'compound-interest-calculator': {
     title: 'Compounding walkthrough',
