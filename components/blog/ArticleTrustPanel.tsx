@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import { AppLink } from '@/components/ui/AppLink';
 import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 
 function formatDate(date: string) {
@@ -62,12 +62,12 @@ export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { autho
 
         <p className="text-xs text-slate-600">
           FinanceSphere content is educational and does not constitute personalized financial advice.
-          <Link href="/financial-disclaimer" className="ml-1 text-brand underline">Read disclaimer</Link>
+          <AppLink href="/financial-disclaimer" className="ml-1">Read disclaimer</AppLink>
         </p>
 
         <div className="flex flex-wrap gap-2 text-xs">
-          <Link href="/editorial-policy" className="rounded-full border bg-white px-2 py-1">Editorial policy</Link>
-          <Link href="/how-we-make-money" className="rounded-full border bg-white px-2 py-1">How we make money</Link>
+          <AppLink href="/editorial-policy" variant="chip" className="bg-white px-2 py-1">Editorial policy</AppLink>
+          <AppLink href="/how-we-make-money" variant="chip" className="bg-white px-2 py-1">How we make money</AppLink>
         </div>
       </div>
     </aside>

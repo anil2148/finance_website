@@ -1,7 +1,7 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { AppLink } from '@/components/ui/AppLink';
 
 const breadcrumbLabelMap: Record<string, string> = {
   in: 'India',
@@ -46,7 +46,7 @@ export function Breadcrumbs() {
     <nav aria-label="Breadcrumb" className="mb-6">
       <ol className="breadcrumb-shell">
         <li>
-          <Link href="/" className="breadcrumb-link">Home</Link>
+          <AppLink href="/" variant="breadcrumb">Home</AppLink>
         </li>
         {isIndiaPath && (
           <li className="breadcrumb-item">
@@ -54,7 +54,7 @@ export function Breadcrumbs() {
             {visibleSegments.length === 0 ? (
               <span aria-current="page" className="breadcrumb-current">India</span>
             ) : (
-              <Link href="/in" className="breadcrumb-link">India</Link>
+              <AppLink href="/in" variant="breadcrumb">India</AppLink>
             )}
           </li>
         )}
@@ -72,9 +72,9 @@ export function Breadcrumbs() {
                   {label}
                 </span>
               ) : (
-                <Link href={href} className="breadcrumb-link">{label}</Link>
-              )}
-            </li>
+                  <AppLink href={href} variant="breadcrumb">{label}</AppLink>
+                )}
+              </li>
           );
         })}
       </ol>
