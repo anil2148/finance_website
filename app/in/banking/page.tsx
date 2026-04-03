@@ -328,7 +328,7 @@ export default function BankingPage() {
           </ul>
         </article>
         <article className="rounded-2xl border border-rose-200 bg-rose-50/60 p-5 dark:border-rose-500/30 dark:bg-rose-500/10">
-          <h3 className="text-lg font-semibold text-rose-900 dark:text-rose-100">Bad fit — pause before optimizing</h3>
+          <h3 className="text-lg font-semibold text-rose-900 dark:text-rose-100">Bad fit</h3>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-rose-900/90 dark:text-rose-100/90">
             <li>You frequently dip into overdraft or card rollovers to survive month-end.</li>
             <li>You lock most surplus into long FD tenure without liquidity backup.</li>
