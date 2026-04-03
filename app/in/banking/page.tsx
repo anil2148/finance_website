@@ -426,6 +426,37 @@ export default function BankingPage() {
           </div>
         </dl>
       </section>
+
+      <section className="rounded-2xl border border-red-200 bg-red-50/40 p-6 dark:border-red-500/30 dark:bg-red-500/10">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Where this breaks in real life</h2>
+        <div className="mt-4 space-y-5">
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹12L salary → single account setup</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Rent, card bill, and SIP all hit the same account.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Emergency fund used unintentionally during a high-spend month.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Next month runs a deficit → credit card usage begins → rollover cycle starts.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹15L salary → chasing FD returns</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Savings locked into FDs for better rates.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Liquidity locked. Unexpected ₹80k expense arrives.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Premature FD break with penalty, or a personal loan at 14–18% interest.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹25L salary → multiple accounts, no system</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Money spread across 3–4 accounts with no routing rules.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Money fragmentation — no account is clearly funded for any purpose.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Under-investing + idle cash at low savings rates + ₹3–5L drifting between accounts missing compounding.</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-5 text-sm font-semibold text-red-800 dark:text-red-300">If your emergency fund is not isolated, it is not an emergency fund.</p>
+      </section>
     </section>
   );
 }

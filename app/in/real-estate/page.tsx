@@ -403,6 +403,37 @@ export default function IndiaRealEstateHubPage() {
           </div>
         </dl>
       </section>
+
+      <section className="rounded-2xl border border-red-200 bg-red-50/40 p-6 dark:border-red-500/30 dark:bg-red-500/10">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What buyers regret later</h2>
+        <div className="mt-4 space-y-5">
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹18L salary → most savings used for down payment</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Large down payment made to reduce EMI. Savings nearly exhausted.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> No liquidity left after booking.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Interiors cost ₹8–12L. First emergency arrives. Stress begins within 3 months of possession.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹12L salary → buys early, &lt;5 year stay planned</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Buys believing relocation will not happen.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Job change or life event forces relocation in year 3–4.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Stamp duty loss + broker fees + price stagnation = net financial loss on exit.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹25L salary → EMI looks comfortable</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> EMI at 30–33% of income. Feels manageable.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Total cost ignored: maintenance + society charges + lifestyle upgrade creep.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Actual housing cost reaches 45–50% of income. SIP and goals quietly stall.</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-5 text-sm font-semibold text-red-800 dark:text-red-300">If one bad month breaks your EMI, the house is too expensive.</p>
+      </section>
     </section>
   );
 }

@@ -391,6 +391,37 @@ export default function IndiaLoansHubPage() {
           </div>
         </dl>
       </section>
+
+      <section className="rounded-2xl border border-red-200 bg-red-50/40 p-6 dark:border-red-500/30 dark:bg-red-500/10">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Where loan decisions go wrong</h2>
+        <div className="mt-4 space-y-5">
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹18L salary → ₹60L loan</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> EMI affordable at current rate.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> +1% rate reset → EMI rises ₹3,000–₹4,000/month. Monthly buffer disappears.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Card rollover begins. A small rate change becomes a compounding debt problem.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹25L salary → ₹90L sanctioned, full amount taken</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Takes maximum bank eligibility.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> EMI + maintenance + school fees → fixed costs dominate monthly income.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> No financial flexibility. Any income disruption has no buffer to absorb it.</li>
+            </ul>
+          </div>
+          <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹12L salary → low EMI, long tenure</p>
+            <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Low monthly EMI chosen for breathing room.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Flexibility illusion — total interest paid over 25–30 years is extremely high.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Trapped long-term. Total loan cost far exceeds asset value appreciation.</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-5 text-sm font-semibold text-red-800 dark:text-red-300">Bank approval is not a safety signal.</p>
+      </section>
     </section>
   );
 }
