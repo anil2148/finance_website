@@ -7,6 +7,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
+import { setPreferredRegionCookie } from '@/lib/region-preference';
 
 type NavLink = {
   label: string;
@@ -83,6 +84,7 @@ export function Navbar() {
   const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
   const switchRegion = (nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);
+    setPreferredRegionCookie(nextRegion === 'India' ? 'in' : 'us');
     setCountry(nextRegion);
     if (nextPath !== pathname) router.push(nextPath);
   };
