@@ -104,10 +104,42 @@ export default function IndiaRealEstateHubPage() {
           <li>Protect <strong>liquidity reserve</strong>: do not optimize yield before securing resilience.</li>
           <li>Use EMI calculator before lender comparison. Then confirm clauses and processing fees.</li>
         </ol>
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Three micro reality checks:</p>
+          <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+            <li>→ If your reserve disappears after booking, you are exposed.</li>
+            <li>→ Bank approval is not affordability.</li>
+            <li>→ If one bad month breaks your EMI plan, the house is too expensive.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-rose-200 bg-rose-50/30 p-6 dark:border-rose-500/30 dark:bg-rose-500/10">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What goes wrong: two named failure modes</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <article className="rounded-xl border border-rose-300 bg-white p-4 dark:border-rose-500/40 dark:bg-slate-900">
+            <h3 className="text-base font-semibold text-rose-900 dark:text-rose-100">Liquidity wiped out</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">₹18L salary household puts ₹25L down on a ₹60L property. After stamp duty (₹3.6L) and booking fees, savings are ₹1.5L. Interiors cost ₹8L. Within 3 months of possession, the household takes a personal loan at 14% to finish the flat.</p>
+            <ul className="mt-3 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Failure point:</span> Down payment maximized without protecting post-booking liquidity.</li>
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Consequence:</span> Reserve gone → first emergency triggers new high-cost debt → ownership becomes financially stressful from month one.</li>
+            </ul>
+            <p className="mt-3 text-xs font-semibold text-rose-800 dark:text-rose-200">Rule: 6 months of expenses must survive after paying all booking costs including stamp duty, registration, and interiors estimate.</p>
+          </article>
+          <article className="rounded-xl border border-rose-300 bg-white p-4 dark:border-rose-500/40 dark:bg-slate-900">
+            <h3 className="text-base font-semibold text-rose-900 dark:text-rose-100">Wrong stay horizon</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">₹12L salary buyer purchases a ₹45L flat confident about staying 5 years. A career opportunity in another city arrives in year 3. Selling means absorbing stamp duty loss (₹2.7L), brokerage (₹90k), STCG tax on appreciation, and price stagnation. Net financial loss: ₹4L–₹8L.</p>
+            <ul className="mt-3 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Failure point:</span> Bought before career and location stability were genuinely confirmed.</li>
+              <li><span className="font-medium text-rose-700 dark:text-rose-400">Consequence:</span> Forced to either sell at a loss or stay in a location that limits career growth.</li>
+            </ul>
+            <p className="mt-3 text-xs font-semibold text-rose-800 dark:text-rose-200">Rule: if there is more than 25% chance of relocating in the next 4 years, renting preserves career and financial optionality.</p>
+          </article>
+        </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Stay horizon: why 5+ years changes the math</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Wrong stay horizon: why 5+ years changes the math</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Buying a home locks you into a geography. If your city, career, or family situation changes within 3 years of purchase, you do not just lose flexibility — you lose money. Here is why the 5-year threshold matters:</p>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -227,7 +259,7 @@ export default function IndiaRealEstateHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Down payment vs liquidity: when bigger is risky</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Down payment vs liquidity: when bigger is riskier</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A larger down payment reduces loan size and total interest. But it can also drain savings to dangerous levels. The question is not &ldquo;how much can I put down?&rdquo; — it is &ldquo;how much can I put down while still having an emergency reserve?&rdquo;</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div>

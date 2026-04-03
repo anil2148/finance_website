@@ -141,6 +141,14 @@ export default function BankingPage() {
           <li><strong>Separate horizons:</strong> 0–3 year goals in stable buckets; 7+ year goals can use SIP.</li>
           <li><strong>Pressure test:</strong> If this plan fails in a bad month, it is too aggressive.</li>
         </ol>
+        <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Three micro reality checks:</p>
+          <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
+            <li>→ If this breaks in one bad month, it is too aggressive.</li>
+            <li>→ Bank approval is not affordability.</li>
+            <li>→ If your emergency fund is in the same account as daily spend, it does not exist.</li>
+          </ul>
+        </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
@@ -148,21 +156,22 @@ export default function BankingPage() {
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Most Indian banking problems are not about rates. They are about structure — or the absence of it.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
-            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">One account for everything</h3>
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Single account chaos</h3>
             <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Salary, bills, EMI, emergency, and daily spend all in the same account. No rules. Money disappears each month without a clear leak.</p>
-            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Outcome: chronic month-end shortfall even at good salary levels.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Failure point: emergency fund is used unintentionally. Consequence: month-end shortfall → card rollover starts.</p>
           </article>
           <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
-            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Chasing FD rates while paying card penalties</h3>
-            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Booking a ₹2L FD at 7.5% while carrying a ₹20,000 card rollover at 36% annual interest. Net position: deeply negative.</p>
-            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Outcome: household earns ₹15,000/year on FD, loses ₹7,200/year on card interest.</p>
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">FD lock-in trap</h3>
+            <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Booking a ₹2L FD at 7.5% while carrying a ₹20,000 card rollover at 36% annual interest. Net position: deeply negative. If a ₹80k emergency arrives, you break the FD at penalty or take a personal loan at 14–18%.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Failure point: liquidity locked before emergency fund is secured. Consequence: premature FD break or new high-cost debt.</p>
           </article>
           <article className="rounded-xl border border-rose-200 bg-rose-50/40 p-4 dark:border-rose-500/30 dark:bg-rose-500/10">
-            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Too many fragmented accounts, no rules</h3>
+            <h3 className="text-sm font-semibold text-rose-900 dark:text-rose-100">Account fragmentation without rules</h3>
             <p className="mt-2 text-sm text-rose-900/80 dark:text-rose-100/80">Four accounts at three banks. Two RD accounts from different years. One salary account with low balance. Confusion on which account to use in an emergency.</p>
-            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Outcome: decision fatigue and money locked in low-value products.</p>
+            <p className="mt-2 text-xs font-semibold text-rose-800 dark:text-rose-200">Failure point: no account is clearly funded for any purpose. Consequence: decision fatigue and ₹3–5L drifting at low savings rates.</p>
           </article>
         </div>
+        <p className="mt-4 text-sm font-semibold text-rose-800 dark:text-rose-300">If this breaks in one bad month, the system is too aggressive.</p>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
@@ -191,6 +200,47 @@ export default function BankingPage() {
           </article>
         </div>
         <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">When not to overcomplicate: if monthly surplus is under ₹15,000, start with just two accounts — operating and reserve. Add lanes only when surplus is stable enough to warrant routing rules.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">3-account minimum system (starting point)</h2>
+        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">If you are early in building your system or monthly surplus is under ₹20,000, start here. Three accounts with one rule each is enough to prevent the most common failures.</p>
+        <div className="mt-4 overflow-x-auto">
+          <table className="w-full min-w-[600px] text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 text-slate-700 dark:border-slate-700 dark:text-slate-300">
+                <th className="px-3 py-2">Account</th>
+                <th className="px-3 py-2">Purpose</th>
+                <th className="px-3 py-2">One rule</th>
+                <th className="px-3 py-2">What breaks without it</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Operating account</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Salary lands here. Daily spend and card payments.</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Auto-transfer reserve contribution on salary day before touching anything else.</td>
+                <td className="px-3 py-2 text-rose-700 dark:text-rose-400">All money gets spent — reserve never gets built.</td>
+              </tr>
+              <tr className="border-b border-slate-100 align-top dark:border-slate-800">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Reserve / emergency account</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">3–6 months expenses. Do not touch unless genuine emergency.</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Keep at a different bank or at least a different login. Remove debit card if needed.</td>
+                <td className="px-3 py-2 text-rose-700 dark:text-rose-400">Reserve bleeds into day-to-day spend — you have savings on paper but zero in reality.</td>
+              </tr>
+              <tr className="align-top">
+                <td className="px-3 py-2 font-medium text-slate-900 dark:text-slate-100">Goals / SIP account</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Auto-debit for SIP, insurance premiums, or specific goal savings.</td>
+                <td className="px-3 py-2 text-slate-700 dark:text-slate-300">Only activate after reserve is at 3+ months. Size contributions to survive a bad income month.</td>
+                <td className="px-3 py-2 text-rose-700 dark:text-rose-400">SIP breaks every third month because cashflow is too tight — compounding never gets a chance to work.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/50 p-4 text-sm dark:border-amber-500/30 dark:bg-amber-500/10">
+          <p className="font-semibold text-amber-900 dark:text-amber-100">Reserve first. Always.</p>
+          <p className="mt-1 text-amber-900/80 dark:text-amber-100/80">Do not open the goals / SIP account until the reserve account has at least ₹1L or 3 months of core expenses, whichever is higher. Bank approval for a home loan, car loan, or credit card is not a signal that your cashflow is ready.</p>
+        </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
@@ -439,9 +489,9 @@ export default function BankingPage() {
             </ul>
           </div>
           <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
-            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹15L salary → chasing FD returns</p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹18L salary → FD lock-in trap</p>
             <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
-              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Savings locked into FDs for better rates.</li>
+              <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Savings locked into FDs for better rates. Emergency fund not separated.</li>
               <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Liquidity locked. Unexpected ₹80k expense arrives.</li>
               <li><span className="font-medium text-red-700 dark:text-red-400">Consequence:</span> Premature FD break with penalty, or a personal loan at 14–18% interest.</li>
             </ul>
