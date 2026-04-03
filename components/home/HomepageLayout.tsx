@@ -133,6 +133,30 @@ const homepageFaqs = [
   }
 ];
 
+
+const userSegments = [
+  {
+    title: 'Beginner with stable income',
+    note: 'Start with a conservative baseline, then raise contributions only after 3 stable months.',
+    next: { href: '/calculators/budget-planner', label: 'Run budget planner first' }
+  },
+  {
+    title: 'Variable income household',
+    note: 'Use your lowest income month as baseline. If the plan fails there, it is too aggressive.',
+    next: { href: '/calculators/savings-goal-calculator', label: 'Model emergency runway' }
+  },
+  {
+    title: 'Debt payoff vs investing split',
+    note: 'Compare interest drag vs expected return, then prioritize the decision with lower failure risk.',
+    next: { href: '/calculators/debt-payoff-calculator', label: 'Test debt payoff scenarios' }
+  },
+  {
+    title: 'Homeowner or future buyer',
+    note: 'Stress-test mortgage affordability before comparing lenders or listing budgets.',
+    next: { href: '/calculators/mortgage-calculator', label: 'Stress-test mortgage payment' }
+  }
+];
+
 const momentumExamples = [
   {
     label: 'Increase investing from $500 to $550/month',
@@ -208,6 +232,20 @@ export function HomepageLayout() {
                 <Link href={goal.primaryHref} className="block font-semibold text-blue-700 hover:underline dark:text-blue-300">{goal.primaryLabel}</Link>
                 <Link href={goal.secondaryHref} className="block font-medium text-slate-700 hover:text-blue-700 hover:underline dark:text-slate-200 dark:hover:text-blue-300">{goal.secondaryLabel}</Link>
               </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="segment-plans">
+        <h2 id="segment-plans" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Pick a pathway that matches your reality</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Better decisions come from matching strategy to income stability, debt pressure, and housing risk.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          {userSegments.map((segment) => (
+            <article key={segment.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{segment.title}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{segment.note}</p>
+              <Link href={segment.next.href} className="mt-2 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">{segment.next.label}</Link>
             </article>
           ))}
         </div>
