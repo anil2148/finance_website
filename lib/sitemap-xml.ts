@@ -14,11 +14,17 @@ function escapeXml(value: string): string {
 }
 
 export function createSitemapIndexXml(sitemaps: string[]): string {
+  const generatedAt = new Date().toISOString();
   const items = sitemaps
-    .map((pathname) => `<sitemap><loc>${escapeXml(absoluteUrl(pathname))}</loc><lastmod>${new Date().toISOString()}</lastmod></sitemap>`)
-    .join('');
+    .map((pathname) => `  <sitemap>\n    <loc>${escapeXml(absoluteUrl(pathname))}</loc>\n    <lastmod>${generatedAt}</lastmod>\n  </sitemap>`)
+    .join('\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?><sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${items}</sitemapindex>`;
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    items,
+    '</sitemapindex>'
+  ].join('\n');
 }
 
 export function createUrlSetXml(entries: SitemapEntry[]): string {
@@ -26,14 +32,27 @@ export function createUrlSetXml(entries: SitemapEntry[]): string {
     .map((entry) => {
       const alternates = getAlternateUrls(entry.pathname);
       const alternateLinks = Object.entries(alternates)
-        .map(([lang, path]) => `<xhtml:link rel="alternate" hreflang="${lang}" href="${escapeXml(absoluteUrl(path))}" />`)
-        .join('');
+        .map(([lang, path]) => `    <xhtml:link rel="alternate" hreflang="${lang}" href="${escapeXml(absoluteUrl(path))}" />`)
+        .join('\n');
 
-      return `<url><loc>${escapeXml(absoluteUrl(entry.pathname))}</loc><lastmod>${entry.lastModified.toISOString()}</lastmod>${alternateLinks}</url>`;
+      return [
+        '  <url>',
+        `    <loc>${escapeXml(absoluteUrl(entry.pathname))}</loc>`,
+        `    <lastmod>${entry.lastModified.toISOString()}</lastmod>`,
+        alternateLinks,
+        '  </url>'
+      ]
+        .filter(Boolean)
+        .join('\n');
     })
-    .join('');
+    .join('\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">${items}</urlset>`;
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">',
+    items,
+    '</urlset>'
+  ].join('\n');
 }
 
 export function sitemapXmlResponse(xml: string) {

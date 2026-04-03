@@ -8,13 +8,12 @@
     "start": "next start",
     "lint": "next lint",
     "generate:blog": "node scripts/generate-blog.mjs",
-    "test": "node tests/run-tests.js",
+    "test": "node tests/run-tests.js && npm run test:sitemaps",
     "test:links": "node scripts/link-audit.mjs",
     "validate:links": "npm run test && npm run test:links",
-    "postbuild": "node generate-sitemap.js",
-    "sitemap:watch": "node scripts/sitemap-watch.mjs",
     "verify:fullsite": "node scripts/verify-full-site-execution.mjs",
-    "test:india-links": "node scripts/audit-india-links.mjs"
+    "test:india-links": "node scripts/audit-india-links.mjs",
+    "test:sitemaps": "node scripts/validate-sitemaps.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
