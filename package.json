@@ -14,7 +14,8 @@
     "verify:fullsite": "node scripts/verify-full-site-execution.mjs",
     "test:india-links": "node scripts/audit-india-links.mjs",
     "test:sitemaps": "node scripts/validate-sitemaps.mjs",
-    "test:render-parity": "node scripts/audit-rendering-parity.mjs"
+    "test:render-parity": "node scripts/audit-rendering-parity.mjs",
+    "generate:india-blog": "node scripts/generate-india-blog.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
