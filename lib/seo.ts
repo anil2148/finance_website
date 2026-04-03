@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { getCountryForPath, getMarketConfig } from '@/lib/preferences';
+import { getAlternateUrls } from '@/lib/seo-locale-routes';
+import { SITE_ORIGIN, absoluteUrl, buildSiteUrl, normalizePathname } from '@/lib/seo-urls';
 
 type ArticleSchemaArgs = {
   title: string;
@@ -12,40 +14,13 @@ type ArticleSchemaArgs = {
   modifiedTime?: string;
 };
 
-export const SITE_ORIGIN = 'https://www.financesphere.io';
-
-const hreflangPathEquivalents: Record<string, { us: string; india: string }> = {
-  '/': { us: '/us', india: '/in' },
-  '/us': { us: '/us', india: '/in' },
-  '/in': { us: '/us', india: '/in' },
-  '/blog': { us: '/blog', india: '/in/blog' },
-  '/in/blog': { us: '/blog', india: '/in/blog' },
-  '/calculators/loan-calculator': { us: '/calculators/loan-calculator', india: '/in/calculators/emi-calculator' },
-  '/in/calculators/emi-calculator': { us: '/calculators/loan-calculator', india: '/in/calculators/emi-calculator' },
-  '/calculators/compound-interest-calculator': { us: '/calculators/compound-interest-calculator', india: '/in/calculators/sip-calculator' },
-  '/in/calculators/sip-calculator': { us: '/calculators/compound-interest-calculator', india: '/in/calculators/sip-calculator' }
-};
-
-export function normalizePathname(pathname: string): string {
-  if (!pathname || pathname === '/') return '/';
-  const normalized = pathname.startsWith('/') ? pathname : `/${pathname}`;
-  return normalized.replace(/\/+$/, '') || '/';
-}
+export { SITE_ORIGIN, absoluteUrl, buildSiteUrl, normalizePathname };
 
 export function normalizeCanonicalPath(pathname: string): string {
   return normalizePathname(pathname);
 }
 
-export function buildSiteUrl(pathname: string): string {
-  const normalizedPath = normalizeCanonicalPath(pathname);
-  return normalizedPath === '/' ? `${SITE_ORIGIN}/` : `${SITE_ORIGIN}${normalizedPath}`;
-}
-
 export function createCanonicalUrl(pathname: string): string {
-  return buildSiteUrl(pathname);
-}
-
-export function absoluteUrl(pathname: string): string {
   return buildSiteUrl(pathname);
 }
 
@@ -59,20 +34,14 @@ type CreatePageMetadataArgs = {
 export function createPageMetadata({ title, description, pathname, type = 'website' }: CreatePageMetadataArgs): Metadata {
   const canonicalPath = normalizeCanonicalPath(pathname);
   const market = getMarketConfig(getCountryForPath(canonicalPath));
-  const alternates = hreflangPathEquivalents[canonicalPath];
+  const languageAlternates = getAlternateUrls(canonicalPath);
 
   return {
     title,
     description,
     alternates: {
       canonical: canonicalPath,
-      languages: alternates
-        ? {
-            'en-US': alternates.us,
-            'en-IN': alternates.india,
-            'x-default': alternates.us
-          }
-        : undefined
+      languages: Object.keys(languageAlternates).length > 0 ? languageAlternates : undefined
     },
     openGraph: {
       title,
