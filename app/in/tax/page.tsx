@@ -11,25 +11,25 @@ export const metadata: Metadata = createPageMetadata({
 
 const salaryScenarios = [
   {
-    band: '₹8L annual (₹67k/month in-hand)',
+    band: '₹8L annual salary',
     regime: 'New regime usually wins',
     whyItFails: 'Buying ELSS in February without budgeting the ₹5,000–₹8,000/month cashflow impact.',
     saferMove: 'Run take-home comparison first. If new regime gap is under ₹8,000, skip old regime complexity.'
   },
   {
-    band: '₹12L annual (₹1L/month in-hand)',
+    band: '₹12L annual salary',
     regime: 'Compare both; old wins only with full proofs',
     whyItFails: 'Choosing old regime without consistent HRA, EPF, and 80C documents across the full year.',
     saferMove: 'Calculate monthly contribution needed (₹12,500) and automate it from April, not March.'
   },
   {
-    band: '₹18L annual (₹1.4L/month in-hand)',
+    band: '₹18L annual salary',
     regime: 'Old regime can save ₹30,000–₹60,000 if fully executed',
     whyItFails: 'Mixing investment and tax goals in March panic, breaking monthly liquidity.',
     saferMove: 'Lock regime by April, divide ₹1.5L 80C limit into ₹12,500/month systematic contributions.'
   },
   {
-    band: '₹25L+ annual (₹1.9L+/month in-hand)',
+    band: '₹25L+ annual salary',
     regime: 'Requires deliberate split: tax vs wealth',
     whyItFails: 'Over-optimizing deductions and crowding out SIP with lumpy year-end tax investments.',
     saferMove: 'Separate deduction lane (80C/80D) from wealth lane (SIP, NPS). Run both monthly, not annually.'

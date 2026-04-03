@@ -12,19 +12,19 @@ export const metadata: Metadata = createPageMetadata({
 
 const scenarioRows = [
   {
-    salary: '₹8L–₹12L annual (₹67k–₹1L/month)',
+    salary: '₹8L–₹12L annual salary',
     mistake: 'Keeping only one account and losing control of bill, spend, and emergency buckets.',
     framework: 'Create separate salary, bills, and reserve buckets with automation on salary day.',
     startingPlan: 'Start with 70/20/10 flow: essentials / goals / cushion. Emergency fund target: 3 months expenses in liquid savings.'
   },
   {
-    salary: '₹12L–₹18L annual (₹1L–₹1.5L/month)',
+    salary: '₹12L–₹18L annual salary',
     mistake: 'Chasing high FD rates while paying hidden card penalties and missing liquidity windows.',
     framework: 'Prioritize fee transparency and liquidity before yield optimization.',
     startingPlan: 'Audit quarterly charges, disable optional paid add-ons, and keep 4–5 month emergency reserve accessible.'
   },
   {
-    salary: '₹18L–₹25L+ annual (₹1.5L–₹2L+/month)',
+    salary: '₹18L–₹25L+ annual salary',
     mistake: 'Over-fragmenting across multiple products without a clear operating system.',
     framework: 'Use one operating account, one reserve account, and deliberate SIP/investment pipelines.',
     startingPlan: 'Document transfer rules, build 6-month reserve, and handle bad-month exceptions without breaking investment cadence.'
