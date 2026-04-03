@@ -30,6 +30,7 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   const [principal, setPrincipal] = useState(type === 'mortgage' ? 350000 : 10000);
   const { currency, formatCurrency } = usePreferences();
+  const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
   const [rate, setRate] = useState(type === 'mortgage' ? 6.8 : 10);
   const [years, setYears] = useState(type === 'mortgage' ? 30 : 5);
@@ -80,22 +81,30 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const title =
     type === 'mortgage'
-      ? 'Mortgage Calculator'
+      ? isIndiaCurrency
+        ? 'Home Loan EMI Calculator (India)'
+        : 'Mortgage Calculator'
       : type === 'loan'
         ? 'Loan EMI Calculator'
         : type === 'compound'
-          ? 'Compound Interest Calculator'
+          ? isIndiaCurrency
+            ? 'SIP Calculator (India)'
+            : 'Compound Interest Calculator'
           : type === 'retirement'
             ? 'Retirement Calculator'
             : 'Net Worth Calculator';
 
   const description =
     type === 'mortgage'
-      ? 'Estimate monthly mortgage payments and visualize loan balance reduction over time.'
+      ? isIndiaCurrency
+        ? 'Estimate EMI, total interest, and affordability for common India home-loan ranges (₹5L to ₹5Cr).'
+        : 'Estimate monthly mortgage payments and visualize loan balance reduction over time.'
       : type === 'loan'
         ? 'Calculate your monthly EMI with principal, rate, and tenure inputs.'
         : type === 'compound'
-          ? 'Forecast investment growth with compounding and monthly contributions.'
+          ? isIndiaCurrency
+            ? 'Forecast SIP growth with monthly ₹ contributions and return assumptions.'
+            : 'Forecast investment growth with compounding and monthly contributions.'
           : type === 'retirement'
             ? 'Project retirement corpus using expected return and annual timeline.'
             : 'Calculate net worth by subtracting liabilities from assets.';

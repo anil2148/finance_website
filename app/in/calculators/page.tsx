@@ -13,8 +13,8 @@ export default function IndiaCalculatorsHubPage() {
         <p className="mt-2 text-sm">Who this is for: people who want clear outputs in INR with Indian number formatting (1,00,000).</p>
       </header>
       <div className="grid gap-3 md:grid-cols-2">
-        <Link href="/in/calculators/emi-calculator" className="rounded-xl border p-4">Home loan EMI calculator</Link>
-        <Link href="/in/calculators/sip-calculator" className="rounded-xl border p-4">SIP corpus calculator</Link>
+        <Link href="/in/calculators/emi-calculator" className="rounded-xl border p-4">Home Loan EMI Calculator (India)</Link>
+        <Link href="/in/calculators/sip-calculator" className="rounded-xl border p-4">SIP Calculator (India)</Link>
         <Link href="/in/home-loan-interest-rates-india" className="rounded-xl border p-4">Compare lender rates</Link>
         <Link href="/in/fixed-deposit-vs-sip-india" className="rounded-xl border p-4">FD vs SIP comparison</Link>
       </div>

@@ -16,13 +16,22 @@ export default function IndiaEmiCalculatorPage() {
     <section className="space-y-6">
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">FinanceSphere India calculator</p>
-        <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">Home loan EMI calculator for India</h1>
+        <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">Home Loan EMI Calculator (India)</h1>
         <p className="mt-3 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
           Use this before you finalise a loan amount. Many buyers can handle EMI on paper, but monthly budget pressure appears after possession costs, maintenance, school fees, and rate resets. Stress-test now, not later.
         </p>
       </header>
 
       <EmiCalculator type="mortgage" />
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What this means for you</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
+          <li><strong>Affordability guidance:</strong> For most households, keep EMI stress-tested and comfortable at today&apos;s rate plus +1.0%.</li>
+          <li><strong>Risk warning:</strong> A loan that fits at booking can fail later if maintenance, school fees, and floating resets are ignored.</li>
+          <li><strong>Next step:</strong> Compare lenders, then rerun this with your final sanctioned amount before signing.</li>
+        </ul>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How to use this calculator like a real home buyer</h2>

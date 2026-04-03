@@ -58,28 +58,7 @@ const indiaLinks: NavLink[] = [
   { label: 'Investing', href: '/in/investing' },
   { label: 'Loans', href: '/in/loans' },
   { label: 'Real Estate', href: '/in/real-estate' },
-  {
-    label: 'Compare',
-    children: [
-      { label: 'Best Savings Accounts India', href: '/in/best-savings-accounts-india' },
-      { label: 'Best Credit Cards India', href: '/in/best-credit-cards-india' },
-      { label: 'Best Investment Apps India', href: '/in/best-investment-apps-india' },
-      { label: 'Best Fixed Deposits India', href: '/in/best-fixed-deposits-india' },
-      { label: 'Personal Loan Comparison India', href: '/in/personal-loan-comparison-india' }
-    ]
-  },
-  {
-    label: 'Tools',
-    children: [
-      { label: 'India Calculator Hub', href: '/in/calculators' },
-      { label: 'India EMI Calculator', href: '/in/calculators/emi-calculator' },
-      { label: 'India SIP Calculator', href: '/in/calculators/sip-calculator' }
-    ]
-  },
-  { label: 'Learn', href: '/in/blog' },
-  { label: 'Help', href: '/help' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' }
+  { label: 'Calculators', href: '/in/calculators' }
 ];
 
 function isActive(pathname: string, href: string) {
@@ -157,7 +136,7 @@ export function Navbar() {
 
             {isIndiaContext ? (
               <span className="rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-800 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-200">
-                India mode locked (INR)
+                Currency: INR (locked for India)
               </span>
             ) : (
               <>
