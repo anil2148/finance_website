@@ -43,7 +43,7 @@ const globalLinks: NavLink[] = [
       { label: 'Net Worth Calculator', href: '/calculators/net-worth-calculator' },
       { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
       { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
-      { label: 'Loan EMI Calculator', href: '/calculators/loan-calculator' }
+      { label: 'Loan Calculator', href: '/calculators/loan-calculator' }
     ]
   },
   { label: 'Blog', href: '/blog' },
