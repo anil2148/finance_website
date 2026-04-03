@@ -10,7 +10,7 @@ export default function BestSavingsAccountsUSAPage() {
   return (
     <SeoComparisonPage
       pageTitle="Best Savings Accounts USA"
-      intro="Use this framework to evaluate savings account options by APY stability, transfer reliability, and day-to-day liquidity tradeoffs."
+      intro="If your emergency fund is sitting in a standard savings account at 0.5% APY, you are leaving roughly $100–$150/year on the table per $25K saved. But APY is not the only factor—a savings account that earns 0.3% more but takes 4 days to transfer can fail you at the worst moment."
       category="savings_account"
       slug="best-savings-accounts-usa"
       pathname="/best-savings-accounts-usa"

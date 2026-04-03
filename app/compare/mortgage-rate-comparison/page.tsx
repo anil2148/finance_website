@@ -12,7 +12,7 @@ export default function MortgageRateComparisonPage() {
   return (
     <SeoComparisonPage
       pageTitle="Mortgage Rate Comparison"
-      intro="Use this framework to compare mortgage lender channels by all-in cost, execution reliability, and fit for your borrower profile."
+      intro="On a $400,000 mortgage, a lender with a 6.25% rate and $9,500 in fees can cost more than a 6.40% quote with $2,500 in fees—depending on how long you stay in the home. Compare total borrowing cost, not just the rate you are quoted on day one."
       category="mortgage_lender"
       slug="mortgage-rate-comparison"
       pathname="/compare/mortgage-rate-comparison"

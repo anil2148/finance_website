@@ -41,7 +41,7 @@ export default function ToolsPage() {
       <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-[1.25fr_1fr] md:items-center">
         <div>
           <h1 className="text-3xl font-bold">Finance tools for planning, not guesswork</h1>
-          <p className="text-slate-600">Each tool is designed to answer a concrete question—how long payoff will take, how much to save monthly, or whether your current plan supports future goals.</p>
+          <p className="text-slate-600">Each tool answers a concrete question. Run your base case first, then stress-test it with a lower income month or one surprise expense—before you commit to anything.</p>
         </div>
         <div className="relative h-44 overflow-hidden rounded-2xl sm:h-52">
           <Image
@@ -60,14 +60,42 @@ export default function ToolsPage() {
             <h2 className="text-lg font-semibold">{tool.name}</h2>
             <p className="text-sm text-slate-600">{tool.value}</p>
             <Link href={tool.href} className="mt-2 inline-block text-sm font-semibold text-blue-700 hover:text-blue-800">
-              Open tool →
+              Test this scenario →
             </Link>
           </Card>
         ))}
       </div>
 
+      <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
+        <h2 className="text-lg font-semibold text-slate-900">What goes wrong</h2>
+        <p className="mt-2 text-sm text-slate-700">Running a calculator once with ideal assumptions, then making a decision. The number looks good in a normal month. One expense spike later, the plan collapses.</p>
+        <p className="mt-2 text-sm font-medium text-slate-800 italic">If this only works in a perfect month, it is not realistic.</p>
+        <p className="mt-3 text-sm text-slate-700">Fix: run each tool twice — once at your target and once at your worst recent month. If only one scenario passes, dial back until both hold.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h2 className="text-lg font-semibold text-slate-900">Best for / Not ideal for</h2>
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
+          <div>
+            <p className="text-sm font-semibold text-blue-700">Best for</p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700">
+              <li>Comparing two concrete strategies before moving money</li>
+              <li>Households with stable income and a fixed monthly surplus</li>
+              <li>Anyone facing a major financial decision in the next 30–90 days</li>
+            </ul>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-slate-500">Not ideal for</p>
+            <ul className="mt-2 list-disc space-y-1 pl-4 text-sm text-slate-700">
+              <li>Same-day decisions without verifying live lender terms</li>
+              <li>Replacing a conversation with a financial professional for complex situations</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-        <h2 className="text-xl font-semibold text-slate-900">Plan → Compare → Decide workflow</h2>
+        <h2 className="text-xl font-semibold text-slate-900">Run the numbers before you compare</h2>
         <p className="mt-1 text-sm text-slate-600">These tools are educational planning aids. Use the matching comparison and guide pages to validate your next move.</p>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           <Link href="/comparison" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Compare options before clicking through</Link>

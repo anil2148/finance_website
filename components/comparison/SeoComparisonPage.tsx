@@ -225,6 +225,71 @@ const userTypeRecommendations: Record<FinancialCategory, Array<{ userType: strin
 };
 
 
+const whatGoesWrongByCategory: Record<FinancialCategory, { scenario: string; failurePoint: string; consequence: string }> = {
+  credit_card: {
+    scenario: 'You sign up for a premium rewards card to earn travel points on $3,000/month in spending. The welcome bonus requires $4,000 spend in 3 months.',
+    failurePoint: 'You overspend to hit the threshold. A $600 balance carries into the next month at 27% APR.',
+    consequence: 'Interest charges in the first month alone erase several months of reward value. The card that looked free ended up costing money.'
+  },
+  savings_account: {
+    scenario: 'You move your $18,000 emergency fund to a high-yield account at 5.10% APY to capture better interest—a reasonable move.',
+    failurePoint: 'Six weeks later, your water heater fails. The new account takes 3–5 business days to transfer out. Your checking account cannot cover the repair.',
+    consequence: 'The extra $50/year in interest is irrelevant. A 72-hour transfer delay during a real emergency turned a small win into a cash crisis.'
+  },
+  investment_app: {
+    scenario: 'You start investing $300/month with a robo-advisor. The market drops 18% over three months.',
+    failurePoint: 'Anxiety triggers a pause. Contributions stop for 5 months while you "wait to see where things settle."',
+    consequence: 'You miss buying at lower prices and reduce total contributions. The platform was not the problem—the behavior gap was. Automating contributions without a market-drop rule means the plan only works when it does not feel scary.'
+  },
+  mortgage_lender: {
+    scenario: 'A lender quotes you 6.35% with $3,200 in origination fees—the lowest rate you have seen. You commit quickly to lock it in.',
+    failurePoint: 'Two weeks from closing, the underwriter flags a documentation issue. The lender is slow to respond. Your rate lock expires and you pay to extend it.',
+    consequence: 'The lowest-rate lender created the highest stress and added unexpected cost. Execution reliability is not visible on a rate quote sheet—but it matters as much as the rate.'
+  },
+  personal_loan: {
+    scenario: 'You consolidate $14,000 in credit card debt into a 48-month personal loan at 9.5% APR. Monthly payment drops by $230.',
+    failurePoint: 'The credit cards are now zeroed out. Within 7 months, spending habits rebuild $6,000 in new balances.',
+    consequence: 'Total debt increased. The consolidation improved the rate but not the behavior. Debt consolidation without a spending-control mechanism often accelerates the problem it was supposed to solve.'
+  }
+};
+
+const microRealityLineByCategory: Record<FinancialCategory, string> = {
+  credit_card: 'Rewards are only profitable if you would have spent the money anyway.',
+  savings_account: 'An account that earns 0.3% more APY but takes 4 days to transfer is not a better emergency fund.',
+  investment_app: 'Consistency beats optimization. A simpler plan you stick to outperforms a complex one you abandon.',
+  mortgage_lender: 'The rate you see on day one and the rate you close at are not always the same number.',
+  personal_loan: 'Lower payments are not safer if they extend the timeline and hide the total cost.'
+};
+
+const decisionBranchingByCategory: Record<FinancialCategory, Array<{ condition: string; action: string }>> = {
+  credit_card: [
+    { condition: 'If you carry a balance more than 2 months per year', action: 'Choose a low-APR card—interest cost will outpace rewards at any APR above 15%' },
+    { condition: 'If you pay in full consistently and spend over $1,500/month', action: 'A no-fee cashback or category rewards card likely pays for itself' },
+    { condition: 'If you are rebuilding credit', action: 'Start with a secured card or credit-builder product before applying for rewards cards' }
+  ],
+  savings_account: [
+    { condition: 'If this is your emergency fund', action: 'Transfer speed and fee rules matter as much as APY—test the transfer workflow before relying on it' },
+    { condition: 'If this is medium-term savings (1–3 years)', action: 'A CD ladder or slightly lower-rate account with better withdrawal terms may be the right trade-off' },
+    { condition: 'If you want to switch for a higher APY', action: 'Verify that the new rate is not a promotional teaser before moving money and updating bill-pay links' }
+  ],
+  investment_app: [
+    { condition: 'If you are just starting and want to build a habit', action: 'Use a robo-advisor or automated index fund platform—reduce friction, not maximize features' },
+    { condition: 'If you already have a written allocation plan', action: 'A low-cost self-directed brokerage with broad fund access fits better' },
+    { condition: 'If you frequently react to market news', action: 'Choose a platform that makes impulse trades harder, not easier' }
+  ],
+  mortgage_lender: [
+    { condition: 'If your closing timeline is inflexible (under 45 days)', action: 'Prioritize lender execution reliability over headline rate—a delayed close costs more than a minor rate difference' },
+    { condition: 'If you are self-employed or have complex income', action: 'Work with a lender experienced in non-standard files before comparing rates' },
+    { condition: 'If you have flexibility on closing date', action: 'Get Loan Estimates from at least 3 lenders and compare APR + total fee stack, not note rate only' }
+  ],
+  personal_loan: [
+    { condition: 'If your debt APR is above 20%', action: 'Prioritize payoff or consolidation—interest is compounding faster than most investments can beat' },
+    { condition: 'If your APR is below 8%', action: 'Weigh whether prepaying early is worth more than investing the same dollars' },
+    { condition: 'If your income is variable month to month', action: 'Choose a longer term for payment safety, then prepay in strong months' }
+  ]
+};
+
+
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
   const relatedCalculators = matchingCalculatorLinksByFinancialCategory[category] ?? defaultMatchingCalculatorLinks;
   const fallbackPath = slug.startsWith('/') ? slug : `/${slug}`;
@@ -339,6 +404,25 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Examples are illustrative decision models, not live market quotes.</p>
       </section>
 
+      <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5 dark:border-amber-900/40 dark:bg-amber-950/20">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What goes wrong</h2>
+        <p className="mt-1 text-xs font-medium italic text-slate-500 dark:text-slate-400">&ldquo;{microRealityLineByCategory[category]}&rdquo;</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Scenario</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrongByCategory[category].scenario}</p>
+          </article>
+          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Failure point</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrongByCategory[category].failurePoint}</p>
+          </article>
+          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Consequence</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrongByCategory[category].consequence}</p>
+          </article>
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Scenario-based recommendation table</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Which option is best for YOU? Match your profile first, then validate pricing and eligibility.</p>
@@ -408,6 +492,21 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           <li>Terms, rates, and eligibility can change quickly; always verify with the provider.</li>
           <li>This page is educational and not personalized financial advice.</li>
         </ul>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision branching: match your situation first</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Your starting point changes the right answer. Find your scenario before comparing specific options.</p>
+        <div className="mt-3 space-y-2 text-sm">
+          {decisionBranchingByCategory[category].map((branch) => (
+            <div key={branch.condition} className="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+              <span className="font-semibold text-blue-700 dark:text-blue-300">If: </span>
+              <span className="text-slate-700 dark:text-slate-300">{branch.condition}</span>
+              <span className="mx-2 text-slate-400">→</span>
+              <span className="text-slate-800 dark:text-slate-200">{branch.action}</span>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">

@@ -10,7 +10,7 @@ export default function BestCreditCards2026Page() {
   return (
     <SeoComparisonPage
       pageTitle="Best Credit Cards 2026"
-      intro="Use this framework to compare credit card options by annual value, APR downside risk, and approval fit before you apply."
+      intro="Before applying: compare cards by your real monthly spend categories, what happens if you carry a balance for even one month, and whether you will actually use the advertised perks. A card that looks lucrative on paper can cost money in practice."
       category="credit_card"
       slug="best-credit-cards-2026"
       pathname="/best-credit-cards-2026"
