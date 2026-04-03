@@ -29,14 +29,19 @@ export default function PersonalLoanComparisonIndiaPage() {
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best for YOU if…</h2>
+        <h2 className="text-xl font-semibold">Best choice based on your situation</h2>
         <ul className="mt-3 list-disc pl-5 space-y-2">
-          <li>₹3,00,000 urgent need and conservative profile: established banks usually dominate due to lower fee volatility.</li>
-          <li>₹7,00,000 consolidation and moderate profile: choose the lowest 24-month total payout, not lowest EMI.</li>
-          <li>₹10,00,000 planned expense and aggressive prepayment ability: choose lender with zero/low foreclosure friction.</li>
+          <li><strong>₹3,00,000 urgent need + conservative profile:</strong> large banks usually win on fee predictability.</li>
+          <li><strong>₹7,00,000 debt consolidation:</strong> choose the smallest 24-month total payout, not the smallest EMI.</li>
+          <li><strong>₹10,00,000 planned expense:</strong> pick lenders with clear foreclosure terms if you can prepay early.</li>
+          <li><strong>₹45,000 monthly EMI capacity:</strong> keep a backup plan for +1% rate or fee shock before signing.</li>
         </ul>
-        <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
-        <p className="mt-2">You take the longest tenure just to reduce EMI visibility. Interest drag can exceed the value created by the borrowing.</p>
+        <h3 className="mt-4 text-lg font-semibold">When this advice fails</h3>
+        <ul className="mt-2 list-disc pl-5 space-y-2">
+          <li>You choose the longest tenure only to make EMI look smaller.</li>
+          <li>You ignore processing, insurance, and foreclosure costs while comparing offers.</li>
+          <li>Your spending stays unchanged after debt consolidation, recreating the same problem.</li>
+        </ul>
       </section>
 
       <section className="rounded-2xl border bg-white p-6 text-sm">

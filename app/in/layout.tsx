@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { IndiaDecisionEngineGlobal } from '@/components/india/IndiaDecisionEngineGlobal';
-import { IndiaPageEssentials } from '@/components/india/IndiaPageEssentials';
 
 export const metadata: Metadata = {
   alternates: {
@@ -31,8 +29,6 @@ export default function IndiaLayout({ children }: { children: React.ReactNode })
         }}
       />
       {children}
-      <IndiaPageEssentials />
-      <IndiaDecisionEngineGlobal />
     </>
   );
 }

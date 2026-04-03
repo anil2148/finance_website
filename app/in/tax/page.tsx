@@ -45,6 +45,22 @@ export default function IndiaTaxHubPage() {
           <Link key={item.href} href={item.href} className="rounded-xl border border-slate-200 bg-white p-4 font-medium text-blue-700 hover:underline dark:border-slate-700 dark:bg-slate-900 dark:text-blue-300">{item.label}</Link>
         ))}
       </div>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Best choice based on your situation</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
+          <li><strong>Salary around ₹8–12 lakh:</strong> start with new regime check first, then use only deductions you can automate monthly.</li>
+          <li><strong>Salary around ₹15–20 lakh:</strong> compare old vs new only after adding EPF, HRA, 80C, and 80D with documented amounts.</li>
+          <li><strong>Salary above ₹25 lakh:</strong> use regime selection and investment planning as separate decisions to avoid forced lock-ins.</li>
+        </ul>
+
+        <h3 className="mt-4 text-lg font-semibold text-slate-900 dark:text-slate-100">When this advice fails</h3>
+        <ul className="mt-2 list-disc space-y-2 pl-5 text-slate-700 dark:text-slate-300">
+          <li>You estimate deductions but do not have proof-ready documents by filing time.</li>
+          <li>Your monthly cashflow is tight and tax-saving contributions stop mid-year.</li>
+          <li>Job switch or bonus structure changes, but you continue with last year&apos;s plan.</li>
+        </ul>
+      </section>
       <IndiaAuthorityNote />
     </section>
   );
