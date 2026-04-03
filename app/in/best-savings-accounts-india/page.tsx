@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
-import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+import { IndiaArticleRenderer } from '@/components/india/IndiaArticleRenderer';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Best Savings Accounts India (2026): Rates, Fees, and Fit',
@@ -9,61 +8,57 @@ export const metadata: Metadata = createPageMetadata({
   pathname: '/in/best-savings-accounts-india'
 });
 
+const sections = [
+  {
+    type: 'table' as const,
+    title: 'Savings account comparison snapshot',
+    table: {
+      headers: ['Bank', 'Interest p.a.', 'Min balance', 'Fee signal', 'Best for'],
+      rows: [
+        { Bank: 'Kotak 811', 'Interest p.a.': 'Up to 7.00%', 'Min balance': '₹0', 'Fee signal': 'Debit-card and service charges vary', 'Best for': 'Digital-first users' },
+        { Bank: 'IDFC FIRST Savings', 'Interest p.a.': 'Up to 7.25%', 'Min balance': '₹10,000 in some variants', 'Fee signal': 'Check non-maintenance rules', 'Best for': 'Higher-balance users' },
+        { Bank: 'HDFC Regular Savings', 'Interest p.a.': '~3.00–3.50%', 'Min balance': 'City-based', 'Fee signal': 'Higher convenience, lower rate', 'Best for': 'Branch-reliant families' }
+      ]
+    }
+  },
+  {
+    type: 'decision-panel' as const,
+    title: 'Pick account type by balance behavior',
+    tone: 'blue' as const,
+    points: [
+      { label: 'Emergency reserve ₹3–6 lakh', text: 'Zero-minimum accounts reduce penalty risk and protect liquidity.' },
+      { label: 'Operating float ₹50,000–₹2,00,000', text: 'Higher-rate variants only work if minimum-balance rules are realistic.' },
+      { label: 'Variable income households', text: 'Predictable charges often beat higher headline rates.' }
+    ]
+  },
+  {
+    type: 'text' as const,
+    title: 'Fee leakage matters more than headline rate',
+    content:
+      'The highest rate does not dominate when usable balance is small and charges are frequent. Re-check promotional slabs and effective yield every quarter.'
+  },
+  {
+    type: 'cta-block' as const,
+    title: 'Continue with linked money decisions',
+    links: [
+      { label: 'Banking hub', href: '/in/banking' },
+      { label: 'Fixed deposits comparison', href: '/in/best-fixed-deposits-india' },
+      { label: 'Credit cards comparison', href: '/in/best-credit-cards-india' },
+      { label: 'FD vs SIP decision page', href: '/in/fixed-deposit-vs-sip-india' },
+      { label: 'Personal loan comparison', href: '/in/personal-loan-comparison-india' },
+      { label: 'SIP calculator', href: '/in/calculators/sip-calculator' },
+      { label: 'EMI calculator', href: '/in/calculators/emi-calculator' }
+    ]
+  }
+];
+
 export default function BestSavingsIndiaPage() {
   return (
-    <article className="space-y-6">
-      <header className="rounded-2xl border bg-white p-6">
-        <h1 className="text-3xl font-semibold">Best savings accounts in India (2026): choose the account that protects cashflow first</h1>
-        <p className="mt-2 text-sm">For salary-account users and families who need fast access to emergency money without minimum-balance penalties.</p>
-      </header>
-      <IndiaAuthorityNote />
-
-      <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
-        <table className="w-full min-w-[760px] text-sm">
-          <thead><tr className="border-b"><th className="px-3 py-2 text-left">Bank</th><th className="px-3 py-2 text-left">Interest p.a.</th><th className="px-3 py-2 text-left">Min balance</th><th className="px-3 py-2 text-left">Fee signal</th><th className="px-3 py-2 text-left">Best for</th></tr></thead>
-          <tbody>
-            <tr className="border-b"><td className="px-3 py-2">Kotak 811</td><td className="px-3 py-2">Up to 7.00%</td><td className="px-3 py-2">₹0</td><td className="px-3 py-2">Debit-card and service charges vary</td><td className="px-3 py-2">Digital-first users</td></tr>
-            <tr className="border-b"><td className="px-3 py-2">IDFC FIRST Savings</td><td className="px-3 py-2">Up to 7.25%</td><td className="px-3 py-2">₹10,000 in some variants</td><td className="px-3 py-2">Check non-maintenance rules</td><td className="px-3 py-2">Higher-balance users</td></tr>
-            <tr><td className="px-3 py-2">HDFC Regular Savings</td><td className="px-3 py-2">~3.00–3.50%</td><td className="px-3 py-2">City-based</td><td className="px-3 py-2">Higher convenience, lower rate</td><td className="px-3 py-2">Branch-reliant families</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Pick account type by balance behavior</h2>
-        <ul className="mt-3 list-disc pl-5 space-y-2">
-          <li><strong>Emergency reserve of ₹3–6 lakh:</strong> use zero-minimum accounts where penalty risk is near zero.</li>
-          <li><strong>Monthly operating float of ₹50,000–₹2,00,000:</strong> pick higher-rate variants only when minimum-balance rules are realistic.</li>
-          <li><strong>Freelance or variable income:</strong> prefer accounts with predictable charges even if headline interest is lower.</li>
-          <li><strong>₹1,20,000 monthly take-home household:</strong> keep 2 months&apos; expenses in instant-access savings before shifting surplus to FD/SIP.</li>
-        </ul>
-        <h3 className="mt-4 text-lg font-semibold">Where this breaks in real life</h3>
-        <ul className="mt-2 list-disc pl-5 space-y-2">
-          <li>If promotional slabs drop after onboarding and you do not re-check effective yield.</li>
-          <li>If your balance repeatedly falls below minimum thresholds due to uneven monthly spending.</li>
-          <li>If frequent cash movement triggers service fees that offset the interest gap.</li>
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Fee leakage matters more than headline rate for most households</h2>
-        <p className="mt-2">The highest savings rate does not dominate when the usable balance is small and fee leakage is large.</p>
-        <h3 className="mt-4 text-lg font-semibold">Failure signals to watch each quarter</h3>
-        <ul className="mt-2 list-disc pl-5 space-y-2">
-          <li>High-rate strategy fails when promotional slabs are temporary.</li>
-          <li>Convenience-first strategy fails if you ignore idle-cash opportunity cost for years.</li>
-          <li>Branch-first choice fails when digital transfer limits create friction during emergencies.</li>
-        </ul>
-        <div className="mt-3 india-link-cluster">
-          <Link href="/in/banking" className="content-link">India banking hub decision path</Link>
-          <Link href="/in/best-fixed-deposits-india" className="content-link">compare fixed deposits in India</Link>
-          <Link href="/in/best-credit-cards-india" className="content-link">match card strategy to savings behavior</Link>
-          <Link href="/in/fixed-deposit-vs-sip-india" className="content-link">decide FD vs SIP after emergency fund</Link>
-          <Link href="/in/personal-loan-comparison-india" className="content-link">reduce debt-cost leakage before investing</Link>
-          <Link href="/in/calculators/sip-calculator" className="content-link">estimate SIP growth from surplus cash</Link>
-          <Link href="/in/calculators/emi-calculator" className="content-link">check EMI safety before locking surplus</Link>
-        </div>
-      </section>
-    </article>
+    <IndiaArticleRenderer
+      title="Best savings accounts in India (2026): choose the account that protects cashflow first"
+      description="For salary-account users and families who need fast access to emergency money without minimum-balance penalties."
+      subtitle="India banking decision guide"
+      sections={sections}
+    />
   );
 }
