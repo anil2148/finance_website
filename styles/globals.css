@@ -187,9 +187,47 @@ body {
     @apply min-w-full;
   }
 
+
+  .article-prose :where(.article-p) {
+    @apply leading-8;
+  }
+
+  .article-prose :where(.article-list) {
+    @apply space-y-2.5;
+  }
+
+  .article-prose :where(.article-callout) {
+    @apply my-1;
+  }
+
+  .article-prose :where(.faq-block) {
+    @apply space-y-4;
+  }
+
+  .article-prose :where(.faq-question) {
+    @apply scroll-mt-28 rounded-xl border border-blue-200 bg-blue-50/60 px-4 py-3 text-lg font-semibold text-blue-900 dark:border-blue-700/60 dark:bg-blue-900/20 dark:text-blue-100;
+  }
+
+  .article-prose :where(.reference-list) {
+    @apply grid gap-2;
+  }
+
+  .article-prose :where(.reference-item) {
+    @apply rounded-lg border border-slate-200 bg-slate-50/70 px-3 py-2 text-sm leading-6 dark:border-slate-700 dark:bg-slate-800/40;
+  }
+
+  .article-prose :where(.reference-item a) {
+    @apply content-link;
+  }
+
 }
 
 
 @layer components {
-  .comparison-table {@apply min-w-full text-sm;}
+  .comparison-table {@apply min-w-full border-collapse text-sm;}
+  .comparison-table thead tr {@apply border-b border-slate-300 bg-slate-50/90 dark:border-slate-700 dark:bg-slate-800/60;}
+  .comparison-table th {@apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-200;}
+  .comparison-table td {@apply px-4 py-3 align-top text-slate-700 dark:text-slate-200;}
+  .comparison-table tbody tr {@apply border-b border-slate-200/80 dark:border-slate-700/80;}
+  .comparison-table tbody tr:nth-child(even) {@apply bg-slate-50/60 dark:bg-slate-800/30;}
 }

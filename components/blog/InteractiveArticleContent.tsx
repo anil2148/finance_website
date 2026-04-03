@@ -111,8 +111,6 @@ function parseTable(lines: string[]): TableData {
   return { headers, rows };
 }
 
-
-
 function parseLinkCluster(paragraph: string) {
   const linkMatches = [...paragraph.matchAll(/\[([^\]]+)\]\(([^\)]+)\)/g)];
   if (linkMatches.length < 2) return null;
@@ -126,15 +124,18 @@ function parseLinkCluster(paragraph: string) {
 
   return linkMatches.map((match) => ({ label: match[1], href: match[2] }));
 }
+
 export function InteractiveArticleContent({ content }: { content: string }) {
   const sections = useMemo(() => parseSections(content), [content]);
 
   return (
-    <div className="space-y-10">
+    <div className="article-prose space-y-10">
       {sections.map((section) => {
         const paragraphBuffer: string[] = [];
         const elements: JSX.Element[] = [];
         let pendingAnchorId: string | null = null;
+        const isReferencesSection = /references?/i.test(section.title);
+        const isFaqSection = /^faq$/i.test(section.title.trim());
 
         const flushParagraph = () => {
           if (!paragraphBuffer.length) return;
@@ -162,7 +163,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
               );
             } else {
               elements.push(
-                <p key={`${section.id}-p-${elements.length}`} className="text-[1.02rem] leading-8 text-neutral-700 dark:text-neutral-200">
+                <p key={`${section.id}-p-${elements.length}`} className="article-p text-[1.02rem] text-neutral-700 dark:text-neutral-200">
                   {renderInline(paragraph)}
                 </p>
               );
@@ -201,7 +202,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
                 <p
                   key={`${section.id}-html-p-${i}`}
                   id={paragraphId}
-                  className="rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3 text-[1.02rem] leading-8 text-neutral-700 dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-neutral-200"
+                  className="article-p rounded-xl border border-blue-100 bg-blue-50/60 px-4 py-3 text-[1.02rem] text-neutral-700 dark:border-blue-900/60 dark:bg-blue-900/20 dark:text-neutral-200"
                 >
                   {renderInline(paragraphText.trim())}
                 </p>
@@ -240,7 +241,11 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             flushParagraph();
             const headingProps = pendingAnchorId ? { id: pendingAnchorId } : {};
             elements.push(
-              <h3 key={`${section.id}-h-${i}`} {...headingProps} className="scroll-mt-28 text-xl font-semibold text-neutral-900 dark:text-neutral-100">
+              <h3
+                key={`${section.id}-h-${i}`}
+                {...headingProps}
+                className={isFaqSection ? 'faq-question' : 'scroll-mt-28 text-xl font-semibold text-neutral-900 dark:text-neutral-100'}
+              >
                 {line.replace(/^###\s+/, '').trim()}
               </h3>
             );
@@ -274,17 +279,16 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             elements.push(
               <div
                 key={`${section.id}-callout-${i}`}
-                className="rounded-xl border-l-4 border-blue-500 bg-blue-50 px-4 py-3 dark:bg-blue-900/20"
+                className="article-callout rounded-xl border-l-4 border-blue-500 bg-blue-50 px-4 py-3 dark:bg-blue-900/20"
               >
                 <p className="text-sm font-semibold text-blue-900 dark:text-blue-100">{variant}</p>
-                <p className="mt-1 text-base leading-7 text-blue-900 dark:text-blue-100">{renderInline(message)}</p>
+                <p className="article-p mt-1 text-base text-blue-900 dark:text-blue-100">{renderInline(message)}</p>
               </div>
             );
 
             i = cursor;
             continue;
           }
-
 
           if (line.startsWith('>')) {
             flushParagraph();
@@ -322,28 +326,20 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             const table = parseTable(tableLines);
             const wrapperProps = pendingAnchorId ? { id: pendingAnchorId } : {};
             elements.push(
-              <div
-                key={`${section.id}-table-${i}`}
-                {...wrapperProps}
-                className="table-shell my-6"
-              >
-                <table className="min-w-full text-sm text-neutral-900 dark:text-neutral-100">
+              <div key={`${section.id}-table-${i}`} {...wrapperProps} className="table-shell my-6 overflow-x-auto">
+                <table className="comparison-table min-w-[640px] text-sm text-neutral-900 dark:text-neutral-100">
                   <thead>
-                    <tr className="bg-neutral-50 dark:bg-neutral-800">
+                    <tr>
                       {table.headers.map((header, headerIndex) => (
-                        <th key={`${section.id}-th-${headerIndex}`} className="px-4 py-3 text-left text-sm font-semibold text-neutral-900 dark:text-neutral-100">
-                          {renderInline(header)}
-                        </th>
+                        <th key={`${section.id}-th-${headerIndex}`}>{renderInline(header)}</th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
+                  <tbody>
                     {table.rows.map((row, rowIndex) => (
-                      <tr key={`${section.id}-tr-${rowIndex}`} className="odd:bg-white even:bg-neutral-50/70 dark:odd:bg-neutral-900 dark:even:bg-neutral-800/40">
+                      <tr key={`${section.id}-tr-${rowIndex}`}>
                         {row.map((cell, cellIndex) => (
-                          <td key={`${section.id}-td-${rowIndex}-${cellIndex}`} className="px-4 py-3 align-top text-neutral-700 dark:text-neutral-300">
-                            {renderInline(cell)}
-                          </td>
+                          <td key={`${section.id}-td-${rowIndex}-${cellIndex}`}>{renderInline(cell)}</td>
                         ))}
                       </tr>
                     ))}
@@ -368,9 +364,14 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             }
 
             elements.push(
-              <ul key={`${section.id}-ul-${i}`} className="list-disc space-y-2.5 pl-6 text-base leading-7 text-neutral-700 dark:text-neutral-300">
-                {listItems.map((item) => (
-                  <li key={`${section.id}-li-${item}`}>{renderInline(item)}</li>
+              <ul
+                key={`${section.id}-ul-${i}`}
+                className={isReferencesSection ? 'reference-list' : 'article-list list-disc pl-6 text-base text-neutral-700 dark:text-neutral-300'}
+              >
+                {listItems.map((item, itemIndex) => (
+                  <li key={`${section.id}-li-${itemIndex}`} className={isReferencesSection ? 'reference-item' : undefined}>
+                    {renderInline(item)}
+                  </li>
                 ))}
               </ul>
             );
@@ -390,9 +391,14 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             }
 
             elements.push(
-              <ol key={`${section.id}-ol-${i}`} className="list-decimal space-y-2.5 pl-6 text-base leading-7 text-neutral-700 dark:text-neutral-300">
-                {listItems.map((item) => (
-                  <li key={`${section.id}-oi-${item}`}>{renderInline(item)}</li>
+              <ol
+                key={`${section.id}-ol-${i}`}
+                className={isReferencesSection ? 'reference-list' : 'article-list list-decimal pl-6 text-base text-neutral-700 dark:text-neutral-300'}
+              >
+                {listItems.map((item, itemIndex) => (
+                  <li key={`${section.id}-oi-${itemIndex}`} className={isReferencesSection ? 'reference-item' : undefined}>
+                    {renderInline(item)}
+                  </li>
                 ))}
               </ol>
             );
@@ -413,7 +419,7 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             className="scroll-mt-24 space-y-6 rounded-xl border border-neutral-200 bg-white p-5 sm:p-6 dark:border-neutral-700 dark:bg-neutral-900"
           >
             <h2 className="text-2xl font-semibold leading-tight text-neutral-900 dark:text-neutral-100">{section.title}</h2>
-            <div className="space-y-5 [&_a]:font-medium">{elements}</div>
+            <div className={isFaqSection ? 'faq-block space-y-4' : 'space-y-5 [&_a]:font-medium'}>{elements}</div>
           </section>
         );
       })}
