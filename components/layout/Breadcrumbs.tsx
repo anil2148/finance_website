@@ -28,6 +28,8 @@ const toLabel = (segment: string) =>
 export function Breadcrumbs() {
   const pathname = usePathname();
   const segments = pathname.split('/').filter(Boolean);
+  const isIndiaPath = segments[0] === 'in';
+  const visibleSegments = isIndiaPath ? segments.slice(1) : segments;
 
   if (segments.length === 0) return null;
 
@@ -40,16 +42,17 @@ export function Breadcrumbs() {
         {isIndiaPath && (
           <li className="breadcrumb-item">
             <span aria-hidden="true" className="breadcrumb-separator">/</span>
-            {segments.length === 1 ? (
+            {visibleSegments.length === 0 ? (
               <span aria-current="page" className="breadcrumb-current">India</span>
             ) : (
               <Link href="/in" className="breadcrumb-link">India</Link>
             )}
           </li>
         )}
-        {segments.map((segment, index) => {
-          const href = `/${segments.slice(0, index + 1).join('/')}`;
-          const isLast = index === segments.length - 1;
+        {visibleSegments.map((segment, index) => {
+          const prefix = isIndiaPath ? '/in' : '';
+          const href = `${prefix}/${visibleSegments.slice(0, index + 1).join('/')}`;
+          const isLast = index === visibleSegments.length - 1;
           const label = toLabel(segment);
 
           return (
