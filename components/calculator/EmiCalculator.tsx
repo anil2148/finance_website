@@ -28,12 +28,18 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 }
 
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
-  const [principal, setPrincipal] = useState(type === 'mortgage' ? 350000 : 10000);
   const { currency, formatCurrency } = usePreferences();
   const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
-  const [rate, setRate] = useState(type === 'mortgage' ? 6.8 : 10);
-  const [years, setYears] = useState(type === 'mortgage' ? 30 : 5);
+  const [principal, setPrincipal] = useState(
+    type === 'mortgage' ? (isIndiaCurrency ? 5000000 : 350000) : 10000
+  );
+  const [rate, setRate] = useState(
+    type === 'mortgage' ? (isIndiaCurrency ? 8 : 6.8) : 10
+  );
+  const [years, setYears] = useState(
+    type === 'mortgage' ? (isIndiaCurrency ? 20 : 30) : 5
+  );
   const [contribution, setContribution] = useState(type === 'retirement' ? 800 : 500);
   const [assets, setAssets] = useState(100000);
   const [liabilities, setLiabilities] = useState(25000);
@@ -81,7 +87,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const title =
     type === 'mortgage'
-      ? 'Home Loan EMI Calculator (India)'
+      ? isIndiaCurrency ? 'Home Loan EMI Calculator (India)' : 'Home Loan EMI Calculator'
       : type === 'loan'
         ? 'Loan EMI Calculator'
         : type === 'compound'
