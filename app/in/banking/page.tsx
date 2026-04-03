@@ -12,22 +12,22 @@ export const metadata: Metadata = createPageMetadata({
 
 const scenarioRows = [
   {
-    salary: '₹35k–₹60k/month',
+    salary: '₹8L–₹12L annual salary',
     mistake: 'Keeping only one account and losing control of bill, spend, and emergency buckets.',
     framework: 'Create separate salary, bills, and reserve buckets with automation on salary day.',
-    startingPlan: 'Start with 70/20/10 flow: essentials / goals / cushion with weekly checkpoint.'
+    startingPlan: 'Start with 70/20/10 flow: essentials / goals / cushion. Emergency fund target: 3 months expenses in liquid savings.'
   },
   {
-    salary: '₹60k–₹1.2L/month',
-    mistake: 'Chasing high rates while paying hidden penalties and missing liquidity windows.',
-    framework: 'Prioritize reliability and fee transparency before yield optimization.',
-    startingPlan: 'Audit quarterly charges, disable optional paid add-ons, and cap low-balance risk.'
+    salary: '₹12L–₹18L annual salary',
+    mistake: 'Chasing high FD rates while paying hidden card penalties and missing liquidity windows.',
+    framework: 'Prioritize fee transparency and liquidity before yield optimization.',
+    startingPlan: 'Audit quarterly charges, disable optional paid add-ons, and keep 4–5 month emergency reserve accessible.'
   },
   {
-    salary: '₹1.2L+/month',
-    mistake: 'Over-fragmenting across products without a clear operating system.',
-    framework: 'Use one operating account, one reserve account, and deliberate investment pipelines.',
-    startingPlan: 'Document transfer rules and monthly exception handling for bad-month cashflow.'
+    salary: '₹18L–₹25L+ annual salary',
+    mistake: 'Over-fragmenting across multiple products without a clear operating system.',
+    framework: 'Use one operating account, one reserve account, and deliberate SIP/investment pipelines.',
+    startingPlan: 'Document transfer rules, build 6-month reserve, and handle bad-month exceptions without breaking investment cadence.'
   }
 ];
 
@@ -129,6 +129,27 @@ export default function BankingPage() {
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
+        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Emergency fund: do this before anything else</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Build 3–6 months of core expenses in a liquid savings account before chasing FD rates or equity returns. For a household spending ₹50,000/month, that means ₹1.5L–₹3L parked and accessible — not in a 2-year FD you cannot break without penalty.</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+            <li>Self-employed or variable income? Target 6 months minimum.</li>
+            <li>Single income household? Target 6–9 months before investing extra surplus.</li>
+            <li>Until the reserve is funded, new investments can wait.</li>
+          </ul>
+        </article>
+        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">Credit card traps to avoid</h3>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Reward points rarely justify carrying a balance. At 36–42% annual interest on rollovers, a ₹20,000 unpaid balance costs ₹600–₹700/month in interest — far more than points ever return.</p>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
+            <li>Pay full statement balance monthly, not minimum due.</li>
+            <li>Do not use credit cards as a bridge loan for salary-day shortfalls.</li>
+            <li>Annual fee cards only make sense when benefits exceed fee by 2× or more.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-2">
         <article className="rounded-2xl border border-emerald-200 bg-emerald-50/60 p-5 dark:border-emerald-500/30 dark:bg-emerald-500/10">
           <h3 className="text-lg font-semibold text-emerald-900 dark:text-emerald-100">Good fit</h3>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-emerald-900/90 dark:text-emerald-100/90">
@@ -172,6 +193,28 @@ export default function BankingPage() {
             ))}
           </ul>
         </article>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently asked questions</h2>
+        <dl className="mt-4 space-y-4 text-sm">
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">How should Indian households structure everyday banking?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Many households do best with separate salary, bills, and emergency buckets so monthly cashflow remains stable and spending leakage is easier to detect. Automate transfers on salary day to remove manual decisions.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">What is a common banking mistake in India?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Optimizing for headline interest rates before checking fee terms, penalties, and liquidity needs for bad-month scenarios. A 0.5% higher rate can disappear quickly if quarterly maintenance or penalty charges apply.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">When should I add more banking products?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Add new products only after your base banking workflow is stable, automated, and reviewed periodically for hidden charges and friction. Fragmented accounts without clear rules create confusion during high-expense months.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">How much emergency fund should I keep in a bank savings account?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">A common target is 3–6 months of core household expenses in a liquid, accessible account — not locked in FDs. If your income is variable or you are self-employed, 6 months is a safer floor.</dd>
+          </div>
+        </dl>
       </section>
 
       <IndiaAuthorityNote />
