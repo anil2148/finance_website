@@ -416,7 +416,7 @@ export default function IndiaRealEstateHubPage() {
             </ul>
           </div>
           <div className="rounded-xl border border-red-200 bg-white p-4 dark:border-red-500/30 dark:bg-slate-900">
-            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹12L salary → buys early, &lt;5 year stay planned</p>
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">₹12L salary → buys early, {'<'}5 year stay planned</p>
             <ul className="mt-2 space-y-1 text-sm text-slate-700 dark:text-slate-300">
               <li><span className="font-medium text-red-700 dark:text-red-400">Setup:</span> Buys believing relocation will not happen.</li>
               <li><span className="font-medium text-red-700 dark:text-red-400">Failure:</span> Job change or life event forces relocation in year 3–4.</li>
