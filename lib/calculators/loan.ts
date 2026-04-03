@@ -10,7 +10,7 @@ export const calculateLoan = (inputs: BaseCalculatorInputs): CalculatorResult =>
   return {
     title: 'Loan Repayment',
     summary: [
-      { label: 'Monthly EMI', value: payment, currency: true, helpText: 'Equal monthly installment required to repay the loan.' },
+      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Fixed monthly payment required to repay the loan.' },
       { label: 'Total Interest', value: totalInterest, currency: true, helpText: 'Cumulative interest paid by end of term.' },
       { label: 'Debt-Free Date', value: inputs.years, suffix: ' yrs', helpText: 'Estimated timeline to fully repay the loan.' }
     ],

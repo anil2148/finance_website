@@ -160,6 +160,28 @@ export default function IndiaLoansHubPage() {
         </article>
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently asked questions</h2>
+        <dl className="mt-4 space-y-4 text-sm">
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">What EMI is usually safe for Indian households?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Many households target total EMI at 25–35% of take-home income, but the right number depends on job stability, income variability, and how much emergency reserve remains after down payment.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">Is bank eligibility the same as affordability?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">No. Eligibility is the maximum the lender may sanction based on income multiples. Affordability is what your monthly budget can survive in bad months — after accounting for rate resets, medical spend, or income gaps.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">What should I check before signing a loan offer?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Review floating-rate reset rules, processing and insurance charges, foreclosure terms, and whether EMI stays manageable after a rate shock. Request the full sanction letter terms before signing, not just the rate headline.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">Should I prepay my home loan or invest the surplus?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">If your loan rate is above 9%, prepayment often beats investment returns net of tax. Below that threshold, compare post-tax return on investments against post-tax cost of the loan. Keep emergency reserves intact either way — never prepay at the cost of liquidity.</dd>
+          </div>
+        </dl>
+      </section>
+
       <IndiaAuthorityNote />
     </section>
   );

@@ -161,6 +161,28 @@ export default function IndiaRealEstateHubPage() {
         </article>
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently asked questions</h2>
+        <dl className="mt-4 space-y-4 text-sm">
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">If EMI equals rent, should I buy?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Not automatically. Include maintenance (₹3,000–₹8,000/month for most apartments), interiors (₹5–15L one-time), taxes, commute changes, and the liquidity impact of down payment before deciding. The true monthly cost of ownership is often 30–50% above EMI alone.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">How much emergency reserve should remain after down payment?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Keep at least 6 months of core household expenses after booking and moving costs. Many buyers exhaust savings on down payment and interiors, leaving no buffer for rate resets or income gaps in the first year.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">What is the most expensive home-buying mistake?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Treating lender eligibility as affordability and skipping stress tests for rate and expense shocks. A ₹60L loan at 8.5% needs ₹52,000 EMI — if rates move to 9.5%, the EMI rises to ₹56,000. Many households cannot absorb that delta without cutting SIP or emergency savings.</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-slate-900 dark:text-slate-100">When does renting clearly beat buying in India?</dt>
+            <dd className="mt-1 text-slate-700 dark:text-slate-300">Renting is usually better when you plan to stay less than 4–5 years, your job or city plans are uncertain, or the total buying cost (EMI + maintenance + stamp duty + interiors) exceeds rent by more than 30% with no realistic appreciation buffer.</dd>
+          </div>
+        </dl>
+      </section>
+
       <IndiaAuthorityNote />
     </section>
   );
