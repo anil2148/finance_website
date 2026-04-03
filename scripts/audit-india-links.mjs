@@ -12,7 +12,7 @@ const requiredRegressionPages = [
   'app/in/blog/ppf-vs-elss/page.tsx'
 ];
 
-const allowedLinkTokens = ['content-link', 'content-link-chip', 'utility-link', 'link-card', 'underline', 'prose-a:'];
+const allowedLinkTokens = ['content-link', 'content-link-chip', 'utility-link', 'link-card', 'underline', 'prose-a:', 'btn-primary', 'comparison-cta'];
 
 function walk(dir) {
   if (!fs.existsSync(dir)) return [];
@@ -51,11 +51,14 @@ for (const file of allFiles) {
 
     const isStyled = allowedLinkTokens.some((token) => classValue.includes(token));
     const hasBodyToneOnly = classValue.includes('text-slate') && !classValue.includes('hover:underline') && !classValue.includes('content-link');
-    const intentionallyButtonLike =
-      classValue.includes('btn-primary') || classValue.includes('comparison-cta') || classValue.includes('rounded-') || classValue.includes('bg-');
+    const intentionallyButtonLike = classValue.includes('rounded-') || classValue.includes('bg-');
 
     if (hasBodyToneOnly && !isStyled && !intentionallyButtonLike) {
       failures.push(`[weak-link-style] ${rel} :: ${tag[0]}`);
+    }
+
+    if (!classValue && !source.includes('india-link-cluster') && !source.includes('editorial-content')) {
+      failures.push(`[unstyled-link-without-container] ${rel} :: ${tag[0]}`);
     }
   }
 
@@ -64,6 +67,7 @@ for (const file of allFiles) {
   if (compactAdjacentLinks && !hasSpacingGroup) {
     failures.push(`[adjacent-links-without-spacing] ${rel}`);
   }
+
 }
 
 const cssFile = path.join(root, 'styles', 'globals.css');
@@ -71,7 +75,7 @@ if (!fs.existsSync(cssFile)) {
   failures.push('[missing-file] styles/globals.css');
 } else {
   const css = fs.readFileSync(cssFile, 'utf8');
-  const requiredTokens = ['.india-content', '.content-link', '.content-link-chip', '.link-card'];
+  const requiredTokens = ['.editorial-content', '.content-link', '.content-link-chip', '.link-card'];
   for (const token of requiredTokens) {
     if (!css.includes(token)) failures.push(`[missing-token] styles/globals.css :: ${token}`);
   }
