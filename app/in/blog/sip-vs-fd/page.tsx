@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaArticleRenderer } from '@/components/india/IndiaArticleRenderer';
 
+const title = 'SIP vs FD in India: Which one should you choose by goal timeline?';
+const description =
+  'India SIP vs FD guide with monthly investment scenarios, timeline-based decision logic, and practical downside checks.';
+
 export const metadata: Metadata = createPageMetadata({
   title,
   description,

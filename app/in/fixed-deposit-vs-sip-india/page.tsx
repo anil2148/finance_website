@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
-import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+import { IndiaArticleRenderer } from '@/components/india/IndiaArticleRenderer';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Fixed Deposit vs SIP India (2026): Returns, Risk, and Goal Fit',
@@ -9,55 +8,58 @@ export const metadata: Metadata = createPageMetadata({
   pathname: '/in/fixed-deposit-vs-sip-india'
 });
 
+const sections = [
+  {
+    type: 'table' as const,
+    title: '10-year projection snapshot',
+    table: {
+      headers: ['Monthly invest', 'FD @ 7.0% (10y)', 'SIP @ 12.0% (10y)', 'Decision note'],
+      rows: [
+        { 'Monthly invest': '₹5,000', 'FD @ 7.0% (10y)': '~₹8,60,000', 'SIP @ 12.0% (10y)': '~₹11,60,000', 'Decision note': 'SIP only if 5+ year volatility is acceptable.' },
+        { 'Monthly invest': '₹10,000', 'FD @ 7.0% (10y)': '~₹17,20,000', 'SIP @ 12.0% (10y)': '~₹23,20,000', 'Decision note': 'Hybrid split works well for uncertain goals.' },
+        { 'Monthly invest': '₹25,000', 'FD @ 7.0% (10y)': '~₹43,00,000', 'SIP @ 12.0% (10y)': '~₹58,00,000', 'Decision note': 'Goal bucket segregation is mandatory.' },
+        { 'Monthly invest': '₹50,000', 'FD @ 7.0% (10y)': '~₹86,00,000', 'SIP @ 12.0% (10y)': '~₹1,16,00,000', 'Decision note': 'Use rebalancing and risk-cap rules.' }
+      ]
+    }
+  },
+  {
+    type: 'decision-panel' as const,
+    title: 'Choose allocation by goal window',
+    tone: 'blue' as const,
+    points: [
+      { label: '0–3 year goals', text: 'Keep most money in FD or high-liquidity buckets to avoid forced exits.' },
+      { label: '5+ year goals', text: 'SIP can take larger allocation if you keep one year withdrawals in stable assets.' },
+      { label: 'Variable income', text: 'Build FD ladder first, then increase SIP after 2–3 stable quarters.' }
+    ]
+  },
+  {
+    type: 'text' as const,
+    title: 'Failure checkpoints',
+    content:
+      'SIP-heavy plans fail when equity money is needed during drawdowns; FD-only plans fail when post-tax returns trail inflation. Hybrid plans fail when never rebalanced after salary or timeline changes.'
+  },
+  {
+    type: 'cta-block' as const,
+    title: 'Continue with linked money decisions',
+    links: [
+      { label: 'Investing hub', href: '/in/investing' },
+      { label: 'Banking hub', href: '/in/banking' },
+      { label: 'Fixed deposits comparison', href: '/in/best-fixed-deposits-india' },
+      { label: 'Investment apps comparison', href: '/in/best-investment-apps-india' },
+      { label: 'SIP vs FD strategy blog', href: '/in/blog/sip-vs-fd' },
+      { label: 'SIP calculator', href: '/in/calculators/sip-calculator' },
+      { label: 'EMI calculator', href: '/in/calculators/emi-calculator' }
+    ]
+  }
+];
+
 export default function FdVsSipIndiaMoneyPage() {
   return (
-    <article className="space-y-6">
-      <header className="rounded-2xl border bg-white p-6">
-        <h1 className="text-3xl font-semibold">Fixed Deposit vs SIP in India: choose by timeline first, return second</h1>
-        <p className="mt-2 text-sm">Who this is for: savers deciding where monthly surplus belongs across 3, 5, and 10-year goals.</p>
-      </header>
-
-      <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
-        <table className="w-full min-w-[760px] text-sm">
-          <thead><tr className="border-b"><th className="px-3 py-2 text-left">Monthly invest</th><th className="px-3 py-2 text-left">FD @ 7.0% (10y)</th><th className="px-3 py-2 text-left">SIP @ 12.0% (10y)</th><th className="px-3 py-2 text-left">Decision note</th></tr></thead>
-          <tbody>
-            <tr className="border-b"><td className="px-3 py-2">₹5,000</td><td className="px-3 py-2">~₹8,60,000</td><td className="px-3 py-2">~₹11,60,000</td><td className="px-3 py-2">SIP only if 5+ year volatility is acceptable.</td></tr>
-            <tr className="border-b"><td className="px-3 py-2">₹10,000</td><td className="px-3 py-2">~₹17,20,000</td><td className="px-3 py-2">~₹23,20,000</td><td className="px-3 py-2">Hybrid split works well for uncertain goals.</td></tr>
-            <tr className="border-b"><td className="px-3 py-2">₹25,000</td><td className="px-3 py-2">~₹43,00,000</td><td className="px-3 py-2">~₹58,00,000</td><td className="px-3 py-2">Goal bucket segregation is mandatory.</td></tr>
-            <tr><td className="px-3 py-2">₹50,000</td><td className="px-3 py-2">~₹86,00,000</td><td className="px-3 py-2">~₹1,16,00,000</td><td className="px-3 py-2">Use rebalancing and risk-cap rules.</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Choose allocation by goal window, not headline return</h2>
-        <ul className="mt-3 list-disc pl-5 space-y-2">
-          <li><strong>0–3 year goal (fees, car, wedding):</strong> keep most money in FD or high-liquidity buckets to avoid market-timing exits.</li>
-          <li><strong>5+ year goal:</strong> SIP can take larger allocation, but keep one year of expected withdrawals in stable assets.</li>
-          <li><strong>Variable monthly income:</strong> build FD ladder first; increase SIP only after cashflow stabilizes for 2–3 quarters.</li>
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Failure checkpoints before you finalize split</h2>
-        <ul className="mt-2 list-disc pl-5 space-y-2">
-          <li>SIP-heavy plan fails when equity money is needed in a 12–24 month drawdown.</li>
-          <li>FD-only plan fails if post-tax return trails inflation for several years.</li>
-          <li>Hybrid plan fails when you never rebalance after salary or goal-timeline changes.</li>
-        </ul>
-        <p className="mt-3">“FD is safe” and “SIP is always better” are both incomplete. The winner changes by timeline certainty and withdrawal risk.</p>
-        <p className="mt-2"><strong>Practical insight:</strong> many households do better with a rule-based split like ₹12,000 SIP + ₹8,000 FD than with all-in switches every market cycle.</p>
-        <div className="mt-3 india-link-cluster">
-          <Link href="/in/investing" className="content-link">India investing hub for allocation rules</Link>
-          <Link href="/in/banking" className="content-link">India banking hub for liquidity setup</Link>
-          <Link href="/in/best-fixed-deposits-india" className="content-link">compare fixed deposits in India</Link>
-          <Link href="/in/best-investment-apps-india" className="content-link">compare investment apps for SIP execution</Link>
-          <Link href="/in/blog/sip-vs-fd" className="content-link">read SIP vs FD strategy guide</Link>
-          <Link href="/in/calculators/sip-calculator" className="content-link">run SIP return scenarios in ₹</Link>
-          <Link href="/in/calculators/emi-calculator" className="content-link">protect EMI commitments before taking risk</Link>
-        </div>
-      </section>
-      <IndiaAuthorityNote />
-    </article>
+    <IndiaArticleRenderer
+      title="Fixed Deposit vs SIP in India: choose by timeline first, return second"
+      description="Who this is for: savers deciding where monthly surplus belongs across 3, 5, and 10-year goals."
+      subtitle="India investing decision guide"
+      sections={sections}
+    />
   );
 }

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
-import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+import { IndiaArticleRenderer } from '@/components/india/IndiaArticleRenderer';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Home Loan Interest Rates India (2026): Compare Lenders and EMI Impact',
@@ -9,57 +8,57 @@ export const metadata: Metadata = createPageMetadata({
   pathname: '/in/home-loan-interest-rates-india'
 });
 
+const sections = [
+  {
+    type: 'table' as const,
+    title: 'Home-loan comparison snapshot',
+    table: {
+      headers: ['Lender', 'Starting rate p.a.', 'Processing fee', 'EMI on ₹50,00,000 / 20y'],
+      rows: [
+        { Lender: 'SBI', 'Starting rate p.a.': '~8.40%', 'Processing fee': 'Up to 0.35%', 'EMI on ₹50,00,000 / 20y': '~₹43,200' },
+        { Lender: 'HDFC', 'Starting rate p.a.': '~8.50%', 'Processing fee': '0.50% range', 'EMI on ₹50,00,000 / 20y': '~₹43,500' },
+        { Lender: 'ICICI', 'Starting rate p.a.': '~8.75%', 'Processing fee': '0.50% range', 'EMI on ₹50,00,000 / 20y': '~₹44,250' }
+      ]
+    }
+  },
+  {
+    type: 'decision-panel' as const,
+    title: 'Pick by 3-year all-in cost',
+    tone: 'blue' as const,
+    points: [
+      { label: '₹25 lakh conservative borrower', text: 'Choose cleaner reset terms and low foreclosure friction.' },
+      { label: '₹50 lakh moderate borrower', text: 'Compare 3-year fee + insurance + reset cost, not teaser rate.' },
+      { label: '₹75 lakh+ with prepayment plan', text: 'Favor lenders allowing frequent part-prepayment without penalty.' }
+    ]
+  },
+  {
+    type: 'text' as const,
+    title: 'Counterintuitive insight',
+    content:
+      'For many borrowers, one extra EMI each year can save more guaranteed money than short-term return chasing. This fails if emergency reserves drop below six months of expenses.'
+  },
+  {
+    type: 'cta-block' as const,
+    title: 'Continue with linked money decisions',
+    links: [
+      { label: 'Loans hub', href: '/in/loans' },
+      { label: 'Real-estate hub', href: '/in/real-estate' },
+      { label: 'Rent vs buy framework', href: '/in/rent-vs-buy-india' },
+      { label: 'Home affordability guide', href: '/in/home-affordability-india' },
+      { label: 'Personal loan comparison', href: '/in/personal-loan-comparison-india' },
+      { label: 'EMI calculator', href: '/in/calculators/emi-calculator' },
+      { label: 'SIP calculator', href: '/in/calculators/sip-calculator' }
+    ]
+  }
+];
+
 export default function HomeLoanRatesIndiaPage() {
   return (
-    <article className="space-y-6">
-      <header className="rounded-2xl border bg-white p-6">
-        <h1 className="text-3xl font-semibold">Home loan interest rates in India: optimize 3-year total cost, not teaser rate</h1>
-        <p className="mt-2 text-sm">Who this is for: buyers comparing floating-rate offers, fee stack, and prepayment flexibility.</p>
-      </header>
-
-      <section className="rounded-2xl border bg-white p-6 overflow-x-auto">
-        <table className="w-full min-w-[760px] text-sm">
-          <thead><tr className="border-b"><th className="px-3 py-2 text-left">Lender</th><th className="px-3 py-2 text-left">Starting rate p.a.</th><th className="px-3 py-2 text-left">Processing fee</th><th className="px-3 py-2 text-left">EMI on ₹50,00,000 / 20y</th></tr></thead>
-          <tbody>
-            <tr className="border-b"><td className="px-3 py-2">SBI</td><td className="px-3 py-2">~8.40%</td><td className="px-3 py-2">Up to 0.35%</td><td className="px-3 py-2">~₹43,200</td></tr>
-            <tr className="border-b"><td className="px-3 py-2">HDFC</td><td className="px-3 py-2">~8.50%</td><td className="px-3 py-2">0.50% range</td><td className="px-3 py-2">~₹43,500</td></tr>
-            <tr><td className="px-3 py-2">ICICI</td><td className="px-3 py-2">~8.75%</td><td className="px-3 py-2">0.50% range</td><td className="px-3 py-2">~₹44,250</td></tr>
-          </tbody>
-        </table>
-      </section>
-
-      <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Best for YOU if…</h2>
-        <ul className="mt-3 list-disc pl-5 space-y-2">
-          <li>Loan size near ₹25 lakh and conservative profile: take the lender with cleaner reset terms and low foreclosure friction.</li>
-          <li>₹50 lakh loan with moderate risk: choose the lowest 3-year all-in cost after fee + insurance + reset assumptions.</li>
-          <li>₹75 lakh+ loan and aggressive prepayment plan: choose products that allow frequent part-prepayment without penalty.</li>
-        </ul>
-        <h3 className="mt-4 text-lg font-semibold">Worst choice if…</h3>
-        <p className="mt-2">You pick the lowest headline rate but ignore reset cadence, mandatory cross-sell, and service quality. A cheap start can become expensive by year two.</p>
-      </section>
-
-      <section className="rounded-2xl border bg-white p-6 text-sm">
-        <h2 className="text-xl font-semibold">Counterintuitive insight</h2>
-        <p className="mt-2">For many borrowers, adding one extra EMI each year saves more guaranteed money than investing the same amount in uncertain short-term returns.</p>
-        <h3 className="mt-4 text-lg font-semibold">When this advice FAILS</h3>
-        <ul className="mt-2 list-disc pl-5 space-y-2">
-          <li>Prepayment-first strategy fails when emergency reserve falls below 6 months.</li>
-          <li>Rate-comparison strategy fails if property legal risk or builder delay is not priced in.</li>
-          <li>Fixed-EMI assumptions fail during RBI policy-cycle shocks and floating-rate resets.</li>
-        </ul>
-
-        <div className="mt-3 india-link-cluster">
-          <Link href="/in/loans" className="content-link">India loans hub for debt strategy</Link>
-          <Link href="/in/real-estate" className="content-link">India real-estate decision hub</Link>
-          <Link href="/in/rent-vs-buy-india" className="content-link">rent vs buy decision framework in India</Link>
-          <Link href="/in/home-affordability-india" className="content-link">test home affordability before approval</Link>
-          <Link href="/in/personal-loan-comparison-india" className="content-link">compare personal loans for short-tenure needs</Link>
-          <Link href="/in/calculators/emi-calculator" className="content-link">run EMI stress tests at +0.5% and +1.0%</Link>
-          <Link href="/in/calculators/sip-calculator" className="content-link">compare prepayment vs SIP opportunity cost</Link>
-        </div>
-      </section>
-      <IndiaAuthorityNote />
-    </article>
+    <IndiaArticleRenderer
+      title="Home loan interest rates in India: optimize 3-year total cost, not teaser rate"
+      description="Who this is for: buyers comparing floating-rate offers, fee stack, and prepayment flexibility."
+      subtitle="India loans decision guide"
+      sections={sections}
+    />
   );
 }
