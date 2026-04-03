@@ -260,13 +260,24 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         </div>
       </section>
 
+      <section className="rounded-xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
+        <h2 className="text-xl font-semibold text-blue-900 dark:text-blue-100">Timeline stress test (5y / 10y / 20y)</h2>
+        <div className="mt-3 grid gap-3 text-sm md:grid-cols-3">
+          <article className="rounded-lg border border-blue-200/70 bg-white/80 p-3 dark:border-blue-500/40 dark:bg-blue-900/30"><h3 className="font-semibold">5 years</h3><p className="mt-1">Short horizon: prioritize downside protection and liquidity over upside maximization.</p></article>
+          <article className="rounded-lg border border-blue-200/70 bg-white/80 p-3 dark:border-blue-500/40 dark:bg-blue-900/30"><h3 className="font-semibold">10 years</h3><p className="mt-1">Balanced horizon: run base and stress cases before committing.</p></article>
+          <article className="rounded-lg border border-blue-200/70 bg-white/80 p-3 dark:border-blue-500/40 dark:bg-blue-900/30"><h3 className="font-semibold">20 years</h3><p className="mt-1">Long horizon: cost drag, consistency, and behavior usually dominate outcomes.</p></article>
+        </div>
+        <p className="mt-3 text-sm text-blue-900 dark:text-blue-100">What happens if you choose wrong: one misaligned decision can create years of delay, avoidable interest, or lower long-term compounding.</p>
+      </section>
+
+
       <section className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800/50">
         <h2 className="font-semibold text-neutral-900 dark:text-neutral-100">Table of contents</h2>
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-neutral-600 dark:text-neutral-400">
           {toc.map((item) => (
             <li key={item}>
               <a
-                className="text-blue-600 hover:underline dark:text-blue-400"
+                className="content-link"
                 href={`#${item.toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-')}`}
               >
                 {item}
@@ -297,7 +308,11 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         </div>
       </section>
 
-      <NewsletterForm source="blog" leadMagnet="7-day-money-reset-checklist" className="max-w-2xl border-2 border-blue-100" />
+      <section className="rounded-2xl border border-blue-200 bg-white p-5 dark:border-blue-500/40 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Get the decision checklist</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Use this form to receive structured weekly decision playbooks tied to calculators and scenario analysis.</p>
+        <NewsletterForm source="blog" leadMagnet="7-day-money-reset-checklist" className="mt-4 max-w-2xl border-2 border-blue-100" />
+      </section>
 
       {calculatorSupportLinks.length > 0 && (
         <section className="rounded-xl bg-blue-600 p-5 text-white">
@@ -379,12 +394,12 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       )}
 
       <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Practical next step path</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Move from reading to action: run numbers, compare options, then finalize a checklist.</p>
-        <div className="mt-3 grid gap-2 text-sm md:grid-cols-3">
-          <Link href={calculatorSupportLinks[0]?.href ?? '/calculators'} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Use this calculator next</Link>
-          <Link href={comparisonLinks[0]?.href ?? '/comparison'} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Compare before you choose</Link>
-          <Link href={`/learn/${cluster}`} className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-medium hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-900">Read the cluster playbook</Link>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Next decision path</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Follow one cluster to completion: deeper page, related scenario, then tool.</p>
+        <div className="decision-path-grid mt-3 text-sm">
+          <article className="decision-path-card"><h3 className="font-semibold">Investing cluster</h3><div className="mt-2 inline-link-row"><Link href={`/learn/${cluster}`} className="content-link-chip">Deeper page</Link><Link href={continueLearningLinks[0]?.href ?? '/blog'} className="content-link-chip">Related scenario</Link><Link href={calculatorSupportLinks[0]?.href ?? '/calculators'} className="content-link-chip">Tool / calculator</Link></div></article>
+          <article className="decision-path-card"><h3 className="font-semibold">Tax cluster</h3><div className="mt-2 inline-link-row"><Link href="/learn/tax" className="content-link-chip">Deeper page</Link><Link href="/blog/2026-federal-tax-brackets-marginal-rate-decisions" className="content-link-chip">Related scenario</Link><Link href="/calculators/retirement-calculator" className="content-link-chip">Tool / calculator</Link></div></article>
+          <article className="decision-path-card"><h3 className="font-semibold">Savings cluster</h3><div className="mt-2 inline-link-row"><Link href="/learn/budgeting" className="content-link-chip">Deeper page</Link><Link href="/blog/zero-based-budgeting-simple-system" className="content-link-chip">Related scenario</Link><Link href="/savings-goal-calculator" className="content-link-chip">Tool / calculator</Link></div></article>
         </div>
       </section>
     </article>

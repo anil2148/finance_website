@@ -111,6 +111,21 @@ function parseTable(lines: string[]): TableData {
   return { headers, rows };
 }
 
+
+
+function parseLinkCluster(paragraph: string) {
+  const linkMatches = [...paragraph.matchAll(/\[([^\]]+)\]\(([^\)]+)\)/g)];
+  if (linkMatches.length < 2) return null;
+
+  const residue = paragraph
+    .replace(/\[([^\]]+)\]\(([^\)]+)\)/g, '')
+    .replace(/[|,•·–—>:\s]/g, '')
+    .trim();
+
+  if (residue.length > 0) return null;
+
+  return linkMatches.map((match) => ({ label: match[1], href: match[2] }));
+}
 export function InteractiveArticleContent({ content }: { content: string }) {
   const sections = useMemo(() => parseSections(content), [content]);
 
@@ -125,11 +140,33 @@ export function InteractiveArticleContent({ content }: { content: string }) {
           if (!paragraphBuffer.length) return;
           const paragraph = paragraphBuffer.join(' ').trim();
           if (paragraph) {
-            elements.push(
-              <p key={`${section.id}-p-${elements.length}`} className="text-[1.02rem] leading-8 text-neutral-700 dark:text-neutral-200">
-                {renderInline(paragraph)}
-              </p>
-            );
+            const cluster = parseLinkCluster(paragraph);
+            if (cluster) {
+              elements.push(
+                <div key={`${section.id}-cluster-${elements.length}`} className="inline-link-row" role="list" aria-label="Related decision links">
+                  {cluster.map((item) => {
+                    const isExternal = /^https?:\/\//.test(item.href);
+                    return (
+                      <a
+                        key={`${section.id}-cluster-link-${item.href}`}
+                        className="content-link-chip"
+                        href={item.href}
+                        target={isExternal ? '_blank' : undefined}
+                        rel={isExternal ? 'noreferrer' : undefined}
+                      >
+                        {item.label}
+                      </a>
+                    );
+                  })}
+                </div>
+              );
+            } else {
+              elements.push(
+                <p key={`${section.id}-p-${elements.length}`} className="text-[1.02rem] leading-8 text-neutral-700 dark:text-neutral-200">
+                  {renderInline(paragraph)}
+                </p>
+              );
+            }
           }
           paragraphBuffer.length = 0;
         };
@@ -320,13 +357,13 @@ export function InteractiveArticleContent({ content }: { content: string }) {
             continue;
           }
 
-          if (line.startsWith('- ')) {
+          if (line.startsWith('- ') || line.startsWith('* ')) {
             flushParagraph();
             const listItems: string[] = [];
             let cursor = i;
 
-            while (cursor < section.lines.length && section.lines[cursor].trim().startsWith('- ')) {
-              listItems.push(section.lines[cursor].trim().replace(/^-\s+/, ''));
+            while (cursor < section.lines.length && /^[-*]\s+/.test(section.lines[cursor].trim())) {
+              listItems.push(section.lines[cursor].trim().replace(/^[-*]\s+/, ''));
               cursor += 1;
             }
 
