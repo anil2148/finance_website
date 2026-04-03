@@ -82,9 +82,22 @@ export function Navbar() {
   const links = isIndiaContext ? indiaLinks : globalLinks;
   const currentRegionLabel = isIndiaContext ? 'India' : 'United States';
   const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
-  const switchRegion = (nextRegion: 'India' | 'US') => {
+  const switchRegion = async (nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);
-    setPreferredRegionCookie(nextRegion === 'India' ? 'in' : 'us');
+    const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
+
+    setPreferredRegionCookie(regionCookieValue);
+
+    try {
+      await fetch('/api/region', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ region: regionCookieValue })
+      });
+    } catch {
+      // Fall back to client-side cookie write above.
+    }
+
     setCountry(nextRegion);
     if (nextPath !== pathname) router.push(nextPath);
   };
