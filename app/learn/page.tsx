@@ -6,32 +6,37 @@ const hubCards = [
   {
     href: '/learn/investing',
     title: 'Investing Hub',
-    description: 'Build a long-term investing plan with account, fee, and platform decisions mapped step by step.',
-    audience: 'Best for readers choosing account type, contribution cadence, and app workflow.'
+    description: 'Build a long-term portfolio with practical account selection, contribution cadence, and fee comparisons mapped step by step.',
+    audience: 'Best for readers choosing account type, contribution schedule, and app workflow.',
+    cta: 'Start investing plan →'
   },
   {
     href: '/learn/credit-cards',
     title: 'Credit Cards Hub',
-    description: 'Compare rewards, annual fees, and utilization strategies before choosing or changing cards.',
-    audience: 'Best for households that want rewards without carrying expensive revolving debt.'
+    description: 'Evaluate rewards, annual fees, and utilization strategies before choosing or changing cards. Includes real net-value math.',
+    audience: 'Best for households that want rewards without carrying expensive revolving debt.',
+    cta: 'Evaluate card options →'
   },
   {
     href: '/learn/loans',
     title: 'Loans Hub',
-    description: 'Understand APR trade-offs, payment stress tests, and payoff acceleration options.',
-    audience: 'Best for borrowers applying in the next 30–120 days.'
+    description: 'Understand total APR cost, payment stress tests, and payoff acceleration strategies before signing anything.',
+    audience: 'Best for borrowers applying in the next 30–120 days.',
+    cta: 'Check borrowing cost →'
   },
   {
     href: '/learn/budgeting',
     title: 'Budgeting Hub',
-    description: 'Create a spending system you can sustain with practical guardrails and automation.',
-    audience: 'Best for cash-flow resets, irregular income planning, and fixed-cost triage.'
+    description: 'Build a spending system that survives a bad month — with real guardrails, automation triggers, and irregular-income adjustments.',
+    audience: 'Best for cash-flow resets, irregular income planning, and trimming fixed costs.',
+    cta: 'Build a stable budget →'
   },
   {
     href: '/learn/passive-income',
     title: 'Passive Income Hub',
-    description: 'Explore savings yield, dividends, and repeatable systems for long-term cash flow.',
-    audience: 'Best for readers separating stable cash reserves from market-risk income goals.'
+    description: 'Explore savings yield, dividends, and repeatable systems for supplemental cash flow—tracked net of taxes and fees.',
+    audience: 'Best for readers separating stable cash reserves from market-risk income goals.',
+    cta: 'Explore income options →'
   }
 ];
 
@@ -61,11 +66,11 @@ export default function LearnIndexPage() {
     <section className="space-y-6">
       <header className="rounded-2xl border border-slate-200 bg-white p-6">
         <p className="text-sm font-semibold uppercase tracking-wide text-blue-700">FinanceSphere Learn</p>
-        <h1 className="mt-1 text-3xl font-bold text-slate-900">Choose a learning hub for your next decision</h1>
+        <h1 className="mt-1 text-3xl font-bold text-slate-900">Choose a hub for the decision you are facing right now</h1>
         <p className="mt-2 max-w-3xl text-slate-600">
-          These hubs are built for decision support, not passive reading. Each one maps a clear path: what to do first, what to avoid, which calculator to run,
-          and where to compare options before committing.
+          Each hub is built for one decision type. Not general reading — specific guidance on what to do first, what commonly fails, which calculator to run, and where to compare options before you commit.
         </p>
+        <p className="mt-2 text-sm font-medium italic text-slate-500">Lower payments are not safer if they hide long-term cost.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {decisionPath.map((item) => (
             <article key={item.step} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
@@ -73,6 +78,16 @@ export default function LearnIndexPage() {
               <p className="mt-1 text-sm text-slate-700">{item.text}</p>
             </article>
           ))}
+        </div>
+
+        <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-4">
+          <h2 className="text-sm font-semibold text-slate-800">Decision branching: where to start</h2>
+          <div className="mt-2 space-y-1 text-sm text-slate-700">
+            <p>→ If you have high-interest debt (&gt;15% APR): start with the <Link href="/learn/loans" className="font-semibold text-blue-700 hover:underline">Loans Hub</Link> before investing</p>
+            <p>→ If your emergency fund is under 3 months: start with <Link href="/learn/budgeting" className="font-semibold text-blue-700 hover:underline">Budgeting Hub</Link> to stabilize first</p>
+            <p>→ If you are building long-term wealth with stable income: go directly to <Link href="/learn/investing" className="font-semibold text-blue-700 hover:underline">Investing Hub</Link></p>
+            <p>→ If you want cash flow from savings or dividends: explore <Link href="/learn/passive-income" className="font-semibold text-blue-700 hover:underline">Passive Income Hub</Link></p>
+          </div>
         </div>
       </header>
 
@@ -83,7 +98,7 @@ export default function LearnIndexPage() {
             <p className="mt-2 text-sm text-slate-600">{hub.description}</p>
             <p className="mt-2 text-xs text-slate-500">{hub.audience}</p>
             <Link href={hub.href} className="mt-4 inline-flex font-semibold text-blue-700 hover:underline">
-              Open hub →
+              {hub.cta}
             </Link>
           </article>
         ))}

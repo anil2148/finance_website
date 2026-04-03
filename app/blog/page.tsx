@@ -93,7 +93,8 @@ export default function BlogPage() {
       <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-[1.25fr_1fr] md:items-center dark:border-slate-700 dark:bg-slate-900">
         <div>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">FinanceSphere Blog</h1>
-          <p className="text-slate-600 dark:text-slate-300">Read practical finance guides that help you understand tradeoffs, compare options, and use real numbers to plan your next step.</p>
+          <p className="text-slate-600 dark:text-slate-300">Financial guides built around tradeoffs, not generic advice. Every article shows what typically goes wrong before explaining what to do instead.</p>
+          <p className="mt-2 text-sm font-medium italic text-slate-500 dark:text-slate-400">If it only works in a perfect month, it is not realistic.</p>
           <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Every article is reviewed for clarity, responsible framing, and real-world usability before publication.</p>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
             <Link href="/editorial-policy" className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1 font-medium text-slate-700 hover:border-blue-200 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">Editorial standards</Link>
@@ -116,13 +117,13 @@ export default function BlogPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-xl font-semibold">Start here: high-impact guides</h2>
-        <p className="mt-1 text-sm text-slate-600">Pick one guide, then continue into the linked calculator so you can apply what you read immediately.</p>
+        <p className="mt-1 text-sm text-slate-600">Each guide is paired with a calculator so you can apply what you read before closing the tab.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {startHereGuides.map((guide) => (
             <article key={guide.href} className="rounded-xl border border-slate-200 p-4">
               <Link href={guide.href} className="text-base font-semibold text-slate-900 hover:text-blue-700 hover:underline">{guide.title}</Link>
               <p className="mt-2 text-sm text-slate-600">{guide.angle}</p>
-              <p className="mt-2 text-xs uppercase tracking-wide text-slate-500">Recommended next step</p>
+              <p className="mt-2 text-xs uppercase tracking-wide text-slate-500">Test it immediately</p>
               <Link href={guide.next} className="text-sm font-medium text-blue-700 hover:underline">Open matching calculator →</Link>
             </article>
           ))}
@@ -131,7 +132,7 @@ export default function BlogPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-xl font-semibold">Curated by decision type</h2>
-        <p className="mt-1 text-sm text-slate-600">We prioritize a smaller set of stronger guides and route each cluster into the right tools, hubs, and comparisons.</p>
+        <p className="mt-1 text-sm text-slate-600">Fewer, stronger guides routed to the right tools and comparisons. Check the failure scenario before using the strategy.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {curatedCollections.map((collection) => (
             <article key={collection.title} className="rounded-xl border border-slate-200 p-4">
@@ -144,6 +145,25 @@ export default function BlogPage() {
               </div>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
+        <h2 className="text-lg font-semibold text-slate-900">What goes wrong with financial reading</h2>
+        <p className="mt-2 text-sm text-slate-700">Reading a guide and feeling ready—without running the numbers. A strategy that sounds logical can still fail under your specific income, debt load, or risk profile.</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
+          <div className="rounded-xl border border-amber-200 bg-white p-3">
+            <p className="font-semibold text-amber-700">Mistake</p>
+            <p className="mt-1 text-slate-700">Applying advice from a 90th-percentile income example to a median-income situation</p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-white p-3">
+            <p className="font-semibold text-amber-700">Failure point</p>
+            <p className="mt-1 text-slate-700">The math works—but only if the $500/month surplus exists. Most budgets do not have that margin.</p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-white p-3">
+            <p className="font-semibold text-amber-700">Fix</p>
+            <p className="mt-1 text-slate-700">Run the calculator with your actual numbers after reading. Every guide links to one.</p>
+          </div>
         </div>
       </section>
 

@@ -92,13 +92,21 @@ const trustStory = [
   },
   {
     title: 'Why this site exists',
-    text: 'Most finance content is generic. We built FinanceSphere to turn every decision into concrete dollars, timelines, and trade-offs.'
+    text: 'Most tools show best-case scenarios. FinanceSphere is designed to surface what breaks first, so you can plan around it—not discover it after committing.'
   },
   {
     title: 'What makes it different',
-    text: 'We quantify every financial decision with scenarios you can pressure-test before you commit.'
+    text: 'Every decision comes with a stress scenario. Run the numbers in a good month and a bad month before you commit to anything.'
   }
 ];
+
+const whatGoesWrong = {
+  title: 'Where plans break',
+  scenario: 'You increase investing from $500 to $650 after a raise. One car repair forces a three-month pause in contributions.',
+  failure: 'Consistency breaks. The gap does more long-term damage than a smaller, stable plan would have.',
+  rule: 'Set your contribution ceiling using your worst recent month—not your best.',
+  microReality: 'A plan that fails once is not a plan.'
+};
 
 const crawlPriorityLinks = [
   { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
@@ -187,17 +195,17 @@ export function HomepageLayout() {
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
-              See exactly how much you save, invest, or lose — before you decide.
+              See exactly how much you save, invest, or lose — then check if it survives a bad month.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">
-                Start with your situation
+                Run the numbers first
               </Link>
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/comparison">
-                Compare options
+                Compare before committing
               </Link>
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/tools">
-                Explore tools
+                See where this breaks
               </Link>
             </div>
             <p className="text-xs text-blue-200">Last homepage review: March 26, 2026 • Educational content only; verify final terms with providers before action.</p>
@@ -213,8 +221,8 @@ export function HomepageLayout() {
                 className="object-cover"
               />
             </div>
-            <h2 className="text-xl font-semibold">Decision engine workflow</h2>
-            <p className="text-sm text-cyan-100">In under 10 minutes: quantify your scenario, compare trade-offs, and choose the next step with a downside plan.</p>
+            <h2 className="text-xl font-semibold">Test before you commit</h2>
+            <p className="text-sm text-cyan-100">Run your scenario in a good month and a bad month. If only one works, rethink the plan before you move money.</p>
           </div>
         </div>
       </Card>
@@ -225,7 +233,7 @@ export function HomepageLayout() {
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Calculator → Compare → Learn</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Run numbers → Stress test → Decide</p>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{goal.title}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{goal.description}</p>
               <div className="mt-3 space-y-1 text-sm">
@@ -248,6 +256,25 @@ export function HomepageLayout() {
               <Link href={segment.next.href} className="mt-2 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">{segment.next.label}</Link>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5 dark:border-amber-900/40 dark:bg-amber-950/20">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{whatGoesWrong.title}</h2>
+        <p className="mt-1 text-xs font-medium italic text-slate-500 dark:text-slate-400">&ldquo;{whatGoesWrong.microReality}&rdquo;</p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Scenario</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrong.scenario}</p>
+          </article>
+          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Failure point</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrong.failure}</p>
+          </article>
+          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">What to do instead</h3>
+            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrong.rule}</p>
+          </article>
         </div>
       </section>
 

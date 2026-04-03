@@ -13,7 +13,7 @@ export default function HighYieldSavingsAccountsPage() {
   return (
     <SeoComparisonPage
       pageTitle="High Yield Savings Accounts"
-      intro="Use this framework to evaluate high-yield savings options by durable APY behavior, transfer reliability, and account-rule complexity."
+      intro="A 4.60% APY vs 4.20% APY on a $25,000 emergency fund is roughly $100/year after rough tax adjustment. That difference matters—but it is less important than whether the account can transfer money out reliably when you actually need it."
       category="savings_account"
       slug="high-yield-savings-accounts"
       pathname="/high-yield-savings-accounts"

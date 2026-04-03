@@ -25,10 +25,10 @@ export default function BestInvestmentAppsPage() {
       <section className="rounded-2xl border border-blue-100 bg-blue-50/40 p-5">
         <h3 className="text-lg font-semibold text-slate-900">How to choose the best investment app for you</h3>
         <p className="mt-2 text-sm text-slate-700">
-          If you feel stuck comparing features, focus on decision fit instead of hype. The best app is the one you will keep funding consistently, with fees and tools that match your real investing style.
+          Stop comparing features and start matching the platform to your actual behavior. The best app is the one you fund consistently—with fees and automation that reduce friction rather than add noise.
         </p>
-        <p className="mt-2 text-sm text-slate-700">
-          Decision framing: prioritize account type support, total annual cost, automation quality, and whether the interface helps you stay long-term. Fancy features matter less than repeatable behavior.
+        <p className="mt-2 text-sm font-medium italic text-slate-700">
+          A simpler plan you stick to for 20 years beats a sophisticated one you abandon after a bad quarter.
         </p>
         <ol className="mt-3 list-decimal space-y-1 pl-5 text-sm text-slate-700">
           <li>Choose your primary use case (retirement, taxable investing, or both).</li>
@@ -41,7 +41,7 @@ export default function BestInvestmentAppsPage() {
 
       <SeoComparisonPage
         pageTitle="Best Investment Apps"
-        intro="Use this framework to compare investing app models by fee drag, account support, automation quality, and long-term behavior fit."
+        intro="Investing $600/month for 25 years at 8% gross return can produce a gap of over $90,000 between a 0.2% and a 1.0% annual all-in fee profile. Start with cost, then evaluate which features you will actually use."
         category="investment_app"
         slug="best-investment-apps"
         pathname="/best-investment-apps"
