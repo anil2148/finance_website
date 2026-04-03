@@ -159,7 +159,7 @@ export default function IndiaBankingHubPage() {
           <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Calculator pathways</h3>
           <ul className="mt-3 space-y-2 text-sm">
             {pathwayLinks.calculators.map((item) => (
-              <li key={item.href}><Link href={item.href} className="content-link">{item.label}</Link></li>
+              <li key={item.href}><Link href={item.href} className="font-medium text-blue-700 hover:underline dark:text-blue-300">{item.label}</Link></li>
             ))}
           </ul>
         </article>
@@ -167,7 +167,7 @@ export default function IndiaBankingHubPage() {
           <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Comparison pathways</h3>
           <ul className="mt-3 space-y-2 text-sm">
             {pathwayLinks.comparisons.map((item) => (
-              <li key={item.href}><Link href={item.href} className="content-link">{item.label}</Link></li>
+              <li key={item.href}><Link href={item.href} className="font-medium text-blue-700 hover:underline dark:text-blue-300">{item.label}</Link></li>
             ))}
           </ul>
         </article>
@@ -175,7 +175,7 @@ export default function IndiaBankingHubPage() {
           <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Related deep guides</h3>
           <ul className="mt-3 space-y-2 text-sm">
             {pathwayLinks.deepGuides.map((item) => (
-              <li key={item.href}><Link href={item.href} className="content-link">{item.label}</Link></li>
+              <li key={item.href}><Link href={item.href} className="font-medium text-blue-700 hover:underline dark:text-blue-300">{item.label}</Link></li>
             ))}
           </ul>
         </article>

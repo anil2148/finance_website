@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { CalculatorInput } from './CalculatorInput';
 import { ChartComponent } from './ChartComponent';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
@@ -28,12 +29,23 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 }
 
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
-  const [principal, setPrincipal] = useState(type === 'mortgage' ? 350000 : 10000);
+  const pathname = usePathname();
+  const isIndiaPage = pathname?.startsWith('/in') ?? false;
   const { currency, formatCurrency } = usePreferences();
-  const isIndiaCurrency = currency === 'INR';
-  const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
-  const [rate, setRate] = useState(type === 'mortgage' ? 6.8 : 10);
-  const [years, setYears] = useState(type === 'mortgage' ? 30 : 5);
+  const isIndiaCurrency = isIndiaPage || currency === 'INR';
+  const currencySymbol = getCurrencySymbol(isIndiaCurrency ? 'INR' : currency, getLocaleForCurrency(isIndiaCurrency ? 'INR' : currency));
+  const [principal, setPrincipal] = useState(() => {
+    if (type === 'mortgage') return isIndiaCurrency ? 5000000 : 350000;
+    return 10000;
+  });
+  const [rate, setRate] = useState(() => {
+    if (type === 'mortgage') return isIndiaCurrency ? 8.0 : 6.8;
+    return 10;
+  });
+  const [years, setYears] = useState(() => {
+    if (type === 'mortgage') return isIndiaCurrency ? 20 : 30;
+    return 5;
+  });
   const [contribution, setContribution] = useState(type === 'retirement' ? 800 : 500);
   const [assets, setAssets] = useState(100000);
   const [liabilities, setLiabilities] = useState(25000);
@@ -81,7 +93,9 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const title =
     type === 'mortgage'
-      ? 'Home Loan EMI Calculator (India)'
+      ? isIndiaCurrency
+        ? 'Home Loan EMI Calculator (India)'
+        : 'Mortgage Calculator (USA)'
       : type === 'loan'
         ? 'Loan EMI Calculator'
         : type === 'compound'
