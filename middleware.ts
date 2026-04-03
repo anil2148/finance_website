@@ -4,15 +4,52 @@ import {
   detectRegionFromCountry,
   isBotUserAgent,
   parsePreferredRegion,
-  PREFERRED_REGION_COOKIE
+  PREFERRED_REGION_COOKIE,
+  type PreferredRegion
 } from '@/lib/region-preference';
 
 const PRIMARY_HOST = 'www.financesphere.io';
 const LEGACY_HOSTS = new Set(['financesphere.io', 'www.financesphere.io']);
 
-function redirectToIndiaHomepage(request: NextRequest) {
+type HomepageRoutingDecision =
+  | { action: 'next' }
+  | { action: 'redirect'; region: PreferredRegion };
+
+type HomepageRoutingInput = {
+  pathname: string;
+  preferredRegion: PreferredRegion | null;
+  userAgent: string | null;
+  countryCode: string | null;
+};
+
+export function getHomepageRoutingDecision({ pathname, preferredRegion, userAgent, countryCode }: HomepageRoutingInput): HomepageRoutingDecision {
+  if (pathname !== '/') {
+    return { action: 'next' };
+  }
+
+  if (preferredRegion === 'in') {
+    return { action: 'redirect', region: 'in' };
+  }
+
+  if (preferredRegion === 'us') {
+    return { action: 'next' };
+  }
+
+  if (isBotUserAgent(userAgent)) {
+    return { action: 'next' };
+  }
+
+  const detectedRegion = detectRegionFromCountry(countryCode);
+  if (detectedRegion === 'in') {
+    return { action: 'redirect', region: 'in' };
+  }
+
+  return { action: 'next' };
+}
+
+function redirectToRegionHomepage(request: NextRequest, region: PreferredRegion) {
   const url = request.nextUrl.clone();
-  url.pathname = '/in';
+  url.pathname = region === 'in' ? '/in' : '/';
   return NextResponse.redirect(url, 307);
 }
 
@@ -26,29 +63,15 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 308);
   }
 
-  if (nextUrl.pathname !== '/') {
-    return NextResponse.next();
-  }
+  const decision = getHomepageRoutingDecision({
+    pathname: nextUrl.pathname,
+    preferredRegion: parsePreferredRegion(request.cookies.get(PREFERRED_REGION_COOKIE)?.value),
+    userAgent: headers.get('user-agent'),
+    countryCode: headers.get('x-vercel-ip-country') ?? headers.get('cf-ipcountry')
+  });
 
-  const preferredRegion = parsePreferredRegion(request.cookies.get(PREFERRED_REGION_COOKIE)?.value);
-
-  if (preferredRegion === 'in') {
-    return redirectToIndiaHomepage(request);
-  }
-
-  if (preferredRegion === 'us') {
-    return NextResponse.next();
-  }
-
-  if (isBotUserAgent(headers.get('user-agent'))) {
-    return NextResponse.next();
-  }
-
-  const countryCode = headers.get('x-vercel-ip-country') ?? null;
-  const detectedRegion = detectRegionFromCountry(countryCode);
-
-  if (detectedRegion === 'in') {
-    return redirectToIndiaHomepage(request);
+  if (decision.action === 'redirect') {
+    return redirectToRegionHomepage(request, decision.region);
   }
 
   return NextResponse.next();
