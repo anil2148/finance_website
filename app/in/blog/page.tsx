@@ -8,6 +8,27 @@ const description = 'Explore India-first personal finance guides on SIP, FD, PPF
 
 const guides = [
   {
+    title: 'Capital Gains Tax in India: LTCG vs STCG for equity investing',
+    slug: 'capital-gains-tax-india',
+    description: 'Understand holding-period rules, tax bands, and sale-order planning before rebalancing.',
+    category: 'tax' as const,
+    publishedAt: '2026-04-03'
+  },
+  {
+    title: 'GST impact on personal finance: where costs quietly compound',
+    slug: 'gst-impact-on-finance',
+    description: 'See where GST influences EMI-adjacent costs, insurance, and recurring expenses.',
+    category: 'tax' as const,
+    publishedAt: '2026-04-03'
+  },
+  {
+    title: 'SIP for beginners: from first ₹5,000 to long-horizon consistency',
+    slug: 'sip-for-beginners',
+    description: 'Build a realistic SIP start plan, step-up rhythm, and behavior guardrails for market volatility.',
+    category: 'investing' as const,
+    publishedAt: '2026-04-03'
+  },
+  {
     title: 'SIP vs FD in India: Which fits your 3, 5, and 10-year goals?',
     slug: 'sip-vs-fd',
     description: 'Compare certainty vs growth, liquidity, and tax treatment using practical ₹ scenarios.',
@@ -57,11 +78,32 @@ const guides = [
     publishedAt: '2026-03-21'
   },
   {
+    title: 'High-yield savings accounts in India: rate chasing without fee traps',
+    slug: 'high-yield-savings-india',
+    description: 'Compare headline rates, minimum balance rules, and effective yield after penalties.',
+    category: 'savings' as const,
+    publishedAt: '2026-03-20'
+  },
+  {
     title: 'ETF vs Mutual Funds in India: cost, execution, and behavior fit',
     slug: 'etf-vs-mutual-funds',
     description: 'Compare cost structure, trading behavior, and SIP suitability for long-term investors.',
     category: 'investing' as const,
     publishedAt: '2026-03-19'
+  },
+  {
+    title: 'NPS in India: tax benefits, lock-in, and retirement role',
+    slug: 'nps-vs-401k-equivalent',
+    description: 'Use NPS as a retirement sleeve with clear expectations on liquidity and withdrawal rules.',
+    category: 'investing' as const,
+    publishedAt: '2026-03-18'
+  },
+  {
+    title: 'Personal loan vs credit card debt: which to close first',
+    slug: 'personal-loan-vs-cc',
+    description: 'Use interest-cost and cashflow sequencing to reduce total debt burden faster.',
+    category: 'loans' as const,
+    publishedAt: '2026-03-17'
   }
 ];
 
