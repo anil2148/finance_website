@@ -5,6 +5,7 @@ export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs));
 
 export function getLocaleForCurrency(currency: string) {
   if (currency === 'INR') return 'en-IN';
+  if (currency === 'USD') return 'en-US';
   return undefined;
 }
 

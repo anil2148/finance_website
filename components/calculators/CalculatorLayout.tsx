@@ -181,6 +181,14 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const contributionBoost = contributionBase + 100;
   const contributionLabel = primaryMetric?.currency ? formatCurrency(contributionBase) : `${contributionBase.toFixed(0)}`;
   const boostedContributionLabel = primaryMetric?.currency ? formatCurrency(contributionBoost) : `${contributionBoost.toFixed(0)}`;
+
+  const formattedBreakdown = result.breakdown.map((row) => {
+    if (!row.value.startsWith('$')) return row;
+    const numericValue = Number(row.value.replace(/[^0-9.-]/g, ''));
+    if (!Number.isFinite(numericValue)) return row;
+
+    return { ...row, value: formatCurrency(numericValue) };
+  });
   const rateBase = inputs.interestRate ?? 0;
   const improvedRate = Math.max(rateBase - 1, 0);
   const downsideScenario = baselineValue * 1.15;
@@ -261,7 +269,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             <h2 className="mb-3 text-lg font-semibold text-slate-900 dark:text-slate-100">Breakdown Table</h2>
             <table className="w-full text-sm">
               <tbody>
-                {result.breakdown.map((row) => (
+                {formattedBreakdown.map((row) => (
                   <tr key={row.label} className="border-t border-slate-100 dark:border-slate-800">
                     <td className="py-2 font-medium text-slate-700 dark:text-slate-200">{row.label}</td>
                     <td className="py-2 text-right text-slate-900 dark:text-white">{row.value}</td>

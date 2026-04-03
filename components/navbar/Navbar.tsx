@@ -3,9 +3,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
+import { getCountryForPath, SUPPORTED_APP_CURRENCIES, SUPPORTED_COUNTRIES } from '@/lib/preferences';
 
 type NavLink = {
   label: string;
@@ -81,9 +82,6 @@ const indiaLinks: NavLink[] = [
   { label: 'Contact', href: '/contact' }
 ];
 
-const countries = ['US', 'India', 'UK', 'Canada'] as const;
-const currencies = ['USD', 'EUR', 'GBP', 'INR', 'CAD', 'AUD'] as const;
-
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
@@ -95,10 +93,15 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const { currency, country, darkMode, setCountry, setCurrency, toggleDarkMode } = usePreferences();
+
+  useEffect(() => {
+    const pathCountry = getCountryForPath(pathname);
+    if (pathCountry !== country) setCountry(pathCountry);
+  }, [country, pathname, setCountry]);
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
   const links = isIndiaContext ? indiaLinks : globalLinks;
 
-  function getCountryLandingPath(targetCountry: (typeof countries)[number]) {
+  function getCountryLandingPath(targetCountry: (typeof SUPPORTED_COUNTRIES)[number]) {
     if (targetCountry === 'India') return '/in';
     if (!isIndiaContext) return pathname;
     if (pathname === '/in') return '/';
@@ -168,18 +171,18 @@ export function Navbar() {
               className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
               value={country}
               onChange={(event) => {
-                const nextCountry = event.target.value as (typeof countries)[number];
+                const nextCountry = event.target.value as (typeof SUPPORTED_COUNTRIES)[number];
                 setCountry(nextCountry);
                 const nextPath = getCountryLandingPath(nextCountry);
                 if (nextPath !== pathname) router.push(nextPath);
               }}
             >
-              {countries.map((item) => (
+              {SUPPORTED_COUNTRIES.map((item) => (
                 <option key={item}>{item}</option>
               ))}
             </select>
-            <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof currencies)[number])}>
-              {currencies.map((item) => (
+            <select className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100" value={currency} onChange={(event) => setCurrency(event.target.value as (typeof SUPPORTED_APP_CURRENCIES)[number])}>
+              {SUPPORTED_APP_CURRENCIES.map((item) => (
                 <option key={item}>{item}</option>
               ))}
             </select>
