@@ -35,14 +35,14 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
   const currentCategory = normalizeCategory(params.category);
   const posts = getPosts().filter((post) => normalizeCategory(post.category) === currentCategory);
   const categoryLabel = formatCategoryLabel(params.category);
+  const categoryScenario = `A household earning $74K reads ${categoryLabel} advice built around a $1,000 monthly surplus.`;
 
   return (
     <section className="space-y-5">
       <header className="rounded-2xl border border-slate-200 bg-white p-5">
         <h1 className="text-2xl font-bold">Category: {categoryLabel}</h1>
-        <p className="mt-2 text-slate-600">
-          Explore guides in this category, then continue with the matching tool to pressure-test your decision using your own numbers.
-        </p>
+        <p className="mt-2 text-slate-600">Explore guides in this category, then test them under your actual constraints before acting.</p>
+        <p className="mt-2 text-sm italic text-slate-500">A plan that fails once is not a plan.</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
           {defaultCategoryJourney.map((item) => (
             <Link key={item.href} href={item.href} className="rounded-full border px-3 py-1 hover:border-blue-200 hover:bg-blue-50">{item.label}</Link>
@@ -71,6 +71,19 @@ export default function BlogCategoryPage({ params }: { params: { category: strin
               <li>Run one calculator with your actual numbers.</li>
               <li>Compare at least two providers before committing.</li>
             </ol>
+          </section>
+
+          <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
+            <h2 className="text-lg font-semibold text-slate-900">Where this breaks</h2>
+            <div className="mt-2 space-y-2 text-sm text-slate-700">
+              <p><span className="font-semibold">Scenario:</span> {categoryScenario}</p>
+              <p><span className="font-semibold">Failure:</span> They copy the tactic exactly, hit one unexpected cost, and stop after two weeks.</p>
+              <p><span className="font-semibold">Consequence:</span> They label the strategy “bad,” even though the issue was mismatch between advice and cash-flow reality.</p>
+            </div>
+            <div className="mt-3 space-y-1 text-sm">
+              <p><span className="font-semibold text-blue-700">If your monthly surplus is under $250</span> → start with expense-floor changes before aggressive targets.</p>
+              <p><span className="font-semibold text-blue-700">If your monthly surplus is over $600</span> → test faster acceleration, then keep only what survives a bad-month run.</p>
+            </div>
           </section>
         </>
       ) : (
