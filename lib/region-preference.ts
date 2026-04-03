@@ -26,5 +26,6 @@ export function isBotUserAgent(userAgent?: string | null): boolean {
 
 export function setPreferredRegionCookie(region: PreferredRegion) {
   if (typeof document === 'undefined') return;
-  document.cookie = `${PREFERRED_REGION_COOKIE}=${region}; Path=/; Max-Age=${ONE_YEAR_IN_SECONDS}; SameSite=Lax`;
+  const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
+  document.cookie = `${PREFERRED_REGION_COOKIE}=${region}; Path=/; Max-Age=${ONE_YEAR_IN_SECONDS}; SameSite=Lax${secureFlag}`;
 }
