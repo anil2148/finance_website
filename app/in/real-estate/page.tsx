@@ -23,7 +23,7 @@ const scenarios = [
     decision: 'Larger down payment vs keeping liquidity',
     whatBreaks: 'Putting ₹25L+ down on a ₹60L property leaves ₹2–₹3L in savings. No buffer for interiors (₹8–₹12L), moving costs, rate reset, or a medical emergency in year one.',
     whatLooksSafe: '₹15L down payment, ₹8L emergency reserve intact, ₹5L interiors budget set aside. EMI at ₹43,400 on ₹48L loan (9%) = 35% of take-home. Stress EMI at +1% = ₹47,200 (38%) — survivable.',
-    action: 'Keep minimum 6 months expenses post-booking before maximising down payment. Budget separately for stamp duty, registration, and interiors before booking.'
+    action: 'Keep minimum 6 months expenses post-booking before maximizing down payment. Budget separately for stamp duty, registration, and interiors before booking.'
   },
   {
     profile: '₹25L salary, upgrade buyer',
