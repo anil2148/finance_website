@@ -49,6 +49,7 @@ export const metadata: Metadata = {
     type: 'website',
     url: absoluteUrl('/'),
     siteName: 'FinanceSphere',
+    locale: 'en_US',
     images: [
       {
         url: absoluteUrl('/og-image.png')

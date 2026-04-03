@@ -1,10 +1,11 @@
 'use client';
 
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { fetcher } from '@/lib/api/fetcher';
 import type { ExchangeRateResponse, SupportedCurrency } from '@/lib/api/currency';
 import { getLocaleForCurrency } from '@/lib/utils';
-import { AppCountry, AppCurrency, getDefaultCurrencyForCountry, normalizeCountry, normalizeCurrency } from '@/lib/preferences';
+import { AppCountry, AppCurrency, getCountryForPath, getDefaultCurrencyForCountry, normalizeCountry, normalizeCurrency } from '@/lib/preferences';
 
 type PreferenceContextValue = {
   currency: AppCurrency;
@@ -30,20 +31,30 @@ const DEFAULT_RATES: Record<SupportedCurrency, number> = {
 };
 
 export function PreferenceProvider({ children }: { children: React.ReactNode }) {
-  const [country, setCountryState] = useState<AppCountry>('US');
-  const [currency, setCurrencyState] = useState<AppCurrency>(getDefaultCurrencyForCountry('US'));
+  const pathname = usePathname();
+  const inferredCountry = getCountryForPath(pathname);
+  const [country, setCountryState] = useState<AppCountry>(inferredCountry);
+  const [currency, setCurrencyState] = useState<AppCurrency>(getDefaultCurrencyForCountry(inferredCountry));
   const [darkMode, setDarkMode] = useState(false);
   const [rates, setRates] = useState<Record<SupportedCurrency, number>>(DEFAULT_RATES);
   const [isRatesLoading, setIsRatesLoading] = useState(true);
 
-  const setCountry = (nextCountry: AppCountry) => {
+  const setCountry = useCallback((nextCountry: AppCountry) => {
     setCountryState(nextCountry);
     setCurrencyState(getDefaultCurrencyForCountry(nextCountry));
-  };
+  }, []);
 
-  const setCurrency = (nextCurrency: AppCurrency) => {
-    setCurrencyState(nextCurrency);
-  };
+  const setCurrency = useCallback((nextCurrency: AppCurrency) => {
+    setCurrencyState(normalizeCurrency(nextCurrency, country));
+  }, [country]);
+
+  useEffect(() => {
+    setCountryState(inferredCountry);
+    setCurrencyState((current) => {
+      const currentIsDefault = current === getDefaultCurrencyForCountry(country);
+      return currentIsDefault ? getDefaultCurrencyForCountry(inferredCountry) : current;
+    });
+  }, [country, inferredCountry]);
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -51,7 +62,8 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
 
     try {
       const parsed = JSON.parse(raw) as { currency?: string; country?: string; darkMode?: boolean };
-      const nextCountry = normalizeCountry(parsed.country);
+      const persistedCountry = normalizeCountry(parsed.country);
+      const nextCountry = inferredCountry || persistedCountry;
       const nextCurrency = normalizeCurrency(parsed.currency, nextCountry);
 
       setCountryState(nextCountry);
@@ -61,7 +73,7 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
     } catch {
       // Ignore malformed storage values.
     }
-  }, []);
+  }, [inferredCountry]);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ currency, country, darkMode }));
@@ -95,7 +107,7 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
     return () => {
       cancelled = true;
     };
-  }, [currency]);
+  }, []);
 
   const value = useMemo<PreferenceContextValue>(
     () => ({
@@ -116,7 +128,7 @@ export function PreferenceProvider({ children }: { children: React.ReactNode }) 
         }).format(source);
       }
     }),
-    [country, currency, darkMode, isRatesLoading]
+    [country, currency, darkMode, isRatesLoading, setCountry, setCurrency]
   );
 
   return <PreferenceContext.Provider value={value}>{children}</PreferenceContext.Provider>;
