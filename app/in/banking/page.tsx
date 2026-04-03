@@ -1,91 +1,6 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { createPageMetadata } from '@/lib/seo';
-import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+import React from 'react';
 
-export const metadata: Metadata = createPageMetadata({
-  title: 'India Banking Hub 2026: Savings, FDs, Fee Leakage, and Monthly Liquidity Decisions',
-  description:
-    'Build a resilient India banking setup: emergency runway first, then savings accounts, FD ladders, and card usage with practical ₹ scenarios.',
-  pathname: '/in/banking'
-});
-
-const pathwayLinks = {
-  calculators: [
-    { href: '/in/calculators/sip-calculator', label: 'Run SIP capacity calculator (₹5k / ₹10k / ₹20k)' },
-    { href: '/in/calculators/emi-calculator', label: 'Stress-test EMI before fixed commitments' }
-  ],
-  comparisons: [
-    { href: '/in/best-savings-accounts-india', label: 'Compare savings accounts in India' },
-    { href: '/in/best-fixed-deposits-india', label: 'Compare fixed deposits by tenure' },
-    { href: '/in/fixed-deposit-vs-sip-india', label: 'Decide FD vs SIP by timeline' }
-  ],
-  deepGuides: [
-    { href: '/in/blog/emergency-fund-india', label: 'Emergency fund sizing guide' },
-    { href: '/in/blog/high-yield-savings-india', label: 'Rate chasing without fee traps' },
-    { href: '/in/loans', label: 'Loans hub for EMI-linked banking decisions' }
-  ]
-};
-
-const scenarioRows = [
-  {
-    salary: '₹8L (≈ ₹55k/month in-hand)',
-    mistake: 'Keeping everything in one account and paying avoidable penalty fees.',
-    framework: 'Split money into salary account + emergency bucket + bill buffer.',
-    startingPlan: '₹15k emergency refill, ₹5k SIP, ₹3k goal-based recurring transfer.'
-  },
-  {
-    salary: '₹12L (≈ ₹78k/month in-hand)',
-    mistake: 'Locking too much in long-tenure FD with no monthly liquidity plan.',
-    framework: 'Build 4–6 month reserve, then ladder FDs in smaller chunks.',
-    startingPlan: '₹25k reserve top-up, ₹10k SIP, ₹10k short-tenure FD ladder.'
-  },
-  {
-    salary: '₹18L (≈ ₹1.15L/month in-hand)',
-    mistake: 'Optimizing card rewards while rolling balances at high interest.',
-    framework: 'Protect cashflow first, then optimize rewards and yield.',
-    startingPlan: 'No revolver debt, ₹20k SIP, 6-month reserve and fee audit.'
-  },
-  {
-    salary: '₹25L+ (≈ ₹1.5L+/month in-hand)',
-    mistake: 'Chasing small yield differences while liquidity is fragile.',
-    framework: 'Create liquidity tiers and automate transfers by goal horizon.',
-    startingPlan: '6+ month reserve, ₹20k+ SIP, FD buckets for 12–24 month goals.'
-  }
-];
-
-export default function IndiaBankingHubPage() {
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'Should I pick the highest savings account interest rate?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Only after checking minimum balance rules, fee penalties, and how often your account balance drops during the month.'
-        }
-      },
-      {
-        '@type': 'Question',
-        name: 'When should I use FD instead of SIP?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Use FD for goals within 3 years or money you cannot afford to fluctuate. Use SIP for long-term goals where volatility is acceptable.'
-        }
-      },
-      {
-        '@type': 'Question',
-        name: 'What is the biggest banking leak for Indian households?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Recurring fees and card interest leaks that feel small monthly but become large annual drag on investable surplus.'
-        }
-      }
-    ]
-  };
-
+const BankingPage = () => {
   return (
     <section className="space-y-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
@@ -184,4 +99,6 @@ export default function IndiaBankingHubPage() {
       <IndiaAuthorityNote />
     </section>
   );
-}
+};
+
+export default BankingPage;

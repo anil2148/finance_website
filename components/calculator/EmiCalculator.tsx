@@ -1,14 +1,13 @@
-'use client';
+import React from 'react';
 
-import { useMemo, useState } from 'react';
-import { CalculatorInput } from './CalculatorInput';
-import { ChartComponent } from './ChartComponent';
-import { usePreferences } from '@/components/providers/PreferenceProvider';
-import { getCurrencySymbol, getLocaleForCurrency } from '@/lib/utils';
+const EmiCalculator = ({ isIndiaCurrency }) => {
+    const principal = isIndiaCurrency ? 5000000 : 350000;
+    const rate = isIndiaCurrency ? 8 : 6.8;
+    const years = isIndiaCurrency ? 20 : 30;
 
-type CalculatorType = 'loan' | 'mortgage' | 'compound' | 'retirement' | 'networth';
+    // Other calculator logic
 
-type GrowthPoint = { year: number; value: number };
+    const title = isIndiaCurrency ? 'Home Loan EMI Calculator (India)' : 'Home Loan EMI Calculator';
 
 function buildLoanProjection(principal: number, monthlyPayment: number, annualRate: number, years: number): GrowthPoint[] {
   const monthlyRate = annualRate / 12 / 100;
@@ -132,30 +131,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
           <h2 className="text-lg font-semibold">{title}</h2>
           <p className="text-sm text-slate-600">{description}</p>
         </div>
+    );
+};
 
-        {type !== 'networth' && <CalculatorInput label={principalLabel} value={principal} onChange={setPrincipal} />}
-        {type !== 'networth' && <CalculatorInput label={rateLabel} value={rate} onChange={setRate} />}
-        {type !== 'networth' && <CalculatorInput label={yearsLabel} value={years} onChange={setYears} />}
-        {(type === 'compound' || type === 'retirement') && (
-          <CalculatorInput label={contributionLabel} value={contribution} onChange={setContribution} />
-        )}
-
-        {type === 'networth' && (
-          <>
-            <CalculatorInput label={`Total Assets (${currencySymbol})`} value={assets} onChange={setAssets} />
-            <CalculatorInput label={`Total Liabilities (${currencySymbol})`} value={liabilities} onChange={setLiabilities} />
-          </>
-        )}
-
-        <p className="rounded-md bg-slate-100 px-3 py-2 text-lg font-semibold">
-          Result: <span className="text-brand">{formatCurrency(result.value)}</span>
-          {(type === 'loan' || type === 'mortgage') && <span className="text-sm font-normal text-slate-600"> / month</span>}
-        </p>
-      </div>
-
-      <div className="card">
-        <ChartComponent data={result.chartData} xKey="year" yKey="value" />
-      </div>
-    </div>
-  );
-}
+export default EmiCalculator;
