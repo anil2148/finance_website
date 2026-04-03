@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { createPageMetadata } from '@/lib/seo';
+import { breadcrumbSchema, createPageMetadata, webpageSchema } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 
@@ -13,8 +13,28 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default function PpfVsElssIndiaPage() {
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      webpageSchema({
+        pathname: '/in/blog/ppf-vs-elss',
+        name: 'PPF vs ELSS: India Tax-Saving Decision Guide for 2026',
+        description:
+          'Compare PPF and ELSS using lock-in reality, family cashflow needs, and practical ₹ allocation examples for Section 80C planning.'
+      }),
+      breadcrumbSchema([
+        { name: 'Home', item: '/' },
+        { name: 'India', item: '/in' },
+        { name: 'Blog', item: '/in/blog' },
+        { name: 'PPF vs ELSS', item: '/in/blog/ppf-vs-elss' }
+      ])
+    ]
+  };
+
   return (
-    <article className="article-prose space-y-6">
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <article className="article-prose space-y-6">
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">India tax-saving guide</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">PPF vs ELSS: lock-in, liquidity, and growth trade-offs</h1>
@@ -97,7 +117,8 @@ export default function PpfVsElssIndiaPage() {
           <li className="reference-item"><Link href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer" className="content-link">Income Tax Department (India)</Link></li>
         </ul>
       </section>
-      <IndiaAuthorityNote />
-    </article>
+        <IndiaAuthorityNote />
+      </article>
+    </>
   );
 }

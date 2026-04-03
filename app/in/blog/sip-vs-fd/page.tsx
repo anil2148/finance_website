@@ -3,9 +3,8 @@ import { createPageMetadata } from '@/lib/seo';
 import { IndiaArticleRenderer } from '@/components/india/IndiaArticleRenderer';
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'SIP vs FD in India: A Scenario-Based Decision Guide (2026)',
-  description:
-    'Compare SIP and FD in India with ₹5,000/₹10,000/₹25,000 examples, volatility reality, and practical decision rules based on timeline and cashflow.',
+  title,
+  description,
   pathname: '/in/blog/sip-vs-fd',
   type: 'article'
 });
