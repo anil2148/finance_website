@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import redirectMap from '@/content/audit/blog-redirect-map.json';
 import { getCategories, getPosts, getTags, normalizeTag } from '@/lib/markdown';
 import { isIndexableRoute } from '@/lib/seo-locale-routes';
 import { shouldIncludeInSitemap, type RouteMeta } from '@/lib/seo/sitemap-filter';
@@ -13,9 +14,31 @@ export type SitemapEntry = {
   lastModified: Date;
 };
 
+export type SitemapRegion = 'us' | 'in';
+
 const APP_DIR = path.join(process.cwd(), 'app');
 const BLOG_DIR = path.join(process.cwd(), 'content/blog');
 const BUILD_TIMESTAMP = new Date();
+
+const LEGACY_REDIRECT_ROUTES = new Set<string>([
+  '/compare/best-credit-cards-2026',
+  '/compare/best-investment-apps',
+  '/compare/best-savings-accounts-usa',
+  '/compare/high-yield-savings-accounts',
+  '/best-credit-cards',
+  '/best-savings-accounts',
+  '/mortgage-rate-comparison',
+  '/mortgage-calculator',
+  '/loan-emi-calculator',
+  '/compound-interest-calculator',
+  '/retirement-calculator',
+  '/fire-retirement-calculator',
+  '/net-worth-calculator',
+  '/investment-growth-calculator',
+  '/savings-goal-calculator',
+  '/debt-payoff-calculator',
+  ...redirectMap.map((entry) => entry.source)
+]);
 
 function walkAppPages(dir: string): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -47,7 +70,17 @@ function filePathToRoute(pageFilePath: string): string {
   return `/${segments.join('/')}`.replace(/\/+$/, '');
 }
 
+function isLegacyRedirectRoute(pathname: string): boolean {
+  return LEGACY_REDIRECT_ROUTES.has(pathname);
+}
+
+function isRegionMatch(pathname: string, region: SitemapRegion): boolean {
+  if (region === 'in') return pathname === '/in' || pathname.startsWith('/in/');
+  return pathname !== '/in' && !pathname.startsWith('/in/');
+}
+
 function isSitemapEligible(pathname: string, meta?: RouteMeta): boolean {
+  if (isLegacyRedirectRoute(pathname)) return false;
   if (!isIndexableRoute(pathname)) return false;
   return shouldIncludeInSitemap(pathname, meta);
 }
@@ -148,4 +181,8 @@ export function getAllIndexableRoutes(): SitemapEntry[] {
   }
 
   return [...deduped.values()].sort((a, b) => a.pathname.localeCompare(b.pathname));
+}
+
+export function getSitemapRoutesByRegion(region: SitemapRegion): SitemapEntry[] {
+  return getAllIndexableRoutes().filter((entry) => isRegionMatch(entry.pathname, region));
 }
