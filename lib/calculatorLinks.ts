@@ -42,6 +42,10 @@ export const matchingCalculatorLinksByBlogCategory: Record<string, Array<{ label
   'credit-cards': [
     { label: 'Credit Card Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' },
     { label: 'Debt Avalanche Calculator', href: '/calculators/debt-avalanche-calculator' }
+  ],
+  tax: [
+    { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
+    { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' }
   ]
 };
 
