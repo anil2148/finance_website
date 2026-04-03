@@ -140,7 +140,7 @@ export default function BlogPage() {
           </div>
           <div className="rounded-xl border border-blue-200 bg-white p-3">
             <p className="font-semibold text-blue-700">Mid-career, $80K–$110K, rent increase of $300+</p>
-            <p className="mt-1 text-slate-700">When fixed costs jump, the right question is not &quot;where to cut&quot; but &quot;which existing plan survives this.&quot; Start with the budgeting or loan guides before adjusting investments.</p>
+            <p className="mt-1 text-slate-700">When fixed costs jump, the right question is not "where to cut" but "which existing plan survives this." Start with the budgeting or loan guides before adjusting investments.</p>
           </div>
           <div className="rounded-xl border border-blue-200 bg-white p-3">
             <p className="font-semibold text-blue-700">Approaching a major decision (home, child, job change)</p>
