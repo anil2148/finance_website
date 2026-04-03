@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo } from 'react';
+import Fuse from 'fuse.js';
+import { useMemo, useState } from 'react';
 
 export type IndiaBlogGuide = {
   title: string;
@@ -28,16 +29,32 @@ const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
 };
 
 export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
+  const [query, setQuery] = useState('');
+
+  const filteredGuides = useMemo(() => {
+    if (!query.trim()) {
+      return guides;
+    }
+
+    const fuse = new Fuse(guides, {
+      keys: ['title', 'description', 'category'],
+      threshold: 0.35,
+      ignoreLocation: true
+    });
+
+    return fuse.search(query).map((result) => result.item);
+  }, [guides, query]);
+
   const groupedGuides = useMemo(() => {
     const groups = new Map<string, IndiaBlogGuide[]>();
-    guides.forEach((guide) => {
+    filteredGuides.forEach((guide) => {
       if (!groups.has(guide.category)) {
         groups.set(guide.category, []);
       }
       groups.get(guide.category)!.push(guide);
     });
     return groups;
-  }, [guides]);
+  }, [filteredGuides]);
 
   const groupedPathways = useMemo(() => {
     const groups = new Map<string, typeof pathways>();
@@ -60,6 +77,19 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
           what to keep stable, what to grow, and how to avoid costly surprises.
         </p>
       </header>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Find the right India guide fast</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Search by topic, goal, or product (SIP, home loan EMI, PPF, ELSS, emergency fund).</p>
+        <input
+          className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-950"
+          placeholder="Search India guides by SIP, PPF, ELSS, loans, tax, savings..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          aria-label="Search India blog guides"
+        />
+        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Showing {filteredGuides.length} guide{filteredGuides.length === 1 ? '' : 's'}.</p>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Start with your immediate blocker</h2>
@@ -117,6 +147,12 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
           </section>
         );
       })}
+
+      {filteredGuides.length === 0 ? (
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+          No matching guides yet. Try searching for a broader term like <span className="font-semibold">tax</span>, <span className="font-semibold">SIP</span>, or <span className="font-semibold">loan</span>.
+        </section>
+      ) : null}
 
       <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900 dark:bg-blue-950">
         <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">📍 Why India guides matter</h3>
