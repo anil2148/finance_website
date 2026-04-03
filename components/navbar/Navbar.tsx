@@ -81,28 +81,19 @@ export function Navbar() {
   const links = isIndiaContext ? indiaLinks : globalLinks;
   const currentRegionLabel = isIndiaContext ? 'India' : 'United States';
   const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
-  const switchRegion = async (nextRegion: 'India' | 'US') => {
+  const switchRegion = (nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);
     const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
 
     setPreferredRegionCookie(regionCookieValue);
 
-    try {
-      await fetch('/api/region', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ region: regionCookieValue })
-      });
-    } catch {
-      // Fall back to client-side cookie write above.
-    }
-
     setCountry(nextRegion);
 
     if (nextPath !== pathname) {
-      // Use a hard navigation so the next request always carries the freshly-written
-      // cookie and avoids stale client-side routing caches during rapid switches.
-      window.location.assign(nextPath);
+      // Route through the API endpoint so the response sets the cookie server-side
+      // before redirecting to the destination page.
+      const redirectUrl = `/api/region?region=${regionCookieValue}&next=${encodeURIComponent(nextPath)}`;
+      window.location.assign(redirectUrl);
     }
   };
 
