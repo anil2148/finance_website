@@ -29,6 +29,23 @@ function extractLocs(xml) {
   return [...xml.matchAll(XML_LINK_REGEX)].map((match) => match[1].trim());
 }
 
+function isIndiaUrl(url) {
+  const pathname = new URL(url).pathname;
+  return pathname === '/in' || pathname.startsWith('/in/');
+}
+
+function assertRegionChildUrl(childUrl, pageUrl) {
+  const india = isIndiaUrl(pageUrl);
+
+  if (childUrl.endsWith('/sitemap-us.xml') && india) {
+    fail(`India URL leaked into US sitemap: ${pageUrl}`);
+  }
+
+  if (childUrl.endsWith('/sitemap-in.xml') && !india) {
+    fail(`Non-India URL leaked into India sitemap: ${pageUrl}`);
+  }
+}
+
 async function fetchStrict(url) {
   const response = await fetch(url, { redirect: 'manual' });
 
@@ -101,6 +118,7 @@ async function run() {
   }
 
   const pageUrls = [];
+  const perSitemapCounts = new Map();
 
   for (const childUrl of childSitemapUrls) {
     ensureAbsoluteHttps(childUrl);
@@ -117,7 +135,10 @@ async function run() {
       fail(`Child sitemap has no URLs: ${childUrl}`);
     }
 
+    perSitemapCounts.set(childUrl, childPageUrls.length);
+
     for (const pageUrl of childPageUrls) {
+      assertRegionChildUrl(childUrl, pageUrl);
       if (pageUrls.includes(pageUrl)) {
         fail(`Duplicate page URL found across child sitemaps: ${pageUrl}`);
       }
@@ -133,6 +154,10 @@ async function run() {
   console.log(`✅ Sitemap validation passed for ${ROOT_SITEMAP_URL}`);
   console.log(`✅ Child sitemaps checked: ${childSitemapUrls.length}`);
   console.log(`✅ Page URLs checked: ${pageUrls.length}`);
+
+  for (const [sitemapUrl, count] of perSitemapCounts.entries()) {
+    console.log(`✅ ${sitemapUrl} URL count: ${count}`);
+  }
 }
 
 run().catch((error) => {
