@@ -37,6 +37,25 @@ const supportLinks = [
   { href: '/contact', label: 'Contact Support' }
 ];
 
+const indiaPathwayGroups = [
+  {
+    title: 'India guides',
+    links: [
+      { href: '/in/blog/sip-vs-fd', label: 'SIP vs FD Guide' },
+      { href: '/in/blog/ppf-vs-elss', label: 'PPF vs ELSS Guide' },
+      { href: '/in/blog', label: 'India Decision Hub' }
+    ]
+  },
+  {
+    title: 'India calculators',
+    links: [
+      { href: '/in/calculators/emi-calculator', label: 'EMI Planning' },
+      { href: '/in/calculators/sip-calculator', label: 'SIP Planning' },
+      { href: '/in', label: 'India Start Page' }
+    ]
+  }
+];
+
 export function Footer() {
   const pathname = usePathname();
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
@@ -89,13 +108,30 @@ export function Footer() {
 
         <section>
           <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Popular pathways</p>
-          <ul className="space-y-1 text-sm">
-            {contextualDiscoveryLinks.map((link) => (
-              <li key={link.href}>
-                <AppLink variant="utility" className="font-medium" href={link.href}>{link.label}</AppLink>
-              </li>
-            ))}
-          </ul>
+          {isIndiaContext ? (
+            <div className="grid gap-3 text-sm sm:grid-cols-2" aria-label="India footer pathways">
+              {indiaPathwayGroups.map((group) => (
+                <section key={group.title} className="rounded-lg border border-slate-200 p-3 dark:border-slate-700">
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-500">{group.title}</h3>
+                  <ul className="mt-2 space-y-1">
+                    {group.links.map((link) => (
+                      <li key={link.href}>
+                        <AppLink variant="utility" className="font-medium" href={link.href}>{link.label}</AppLink>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          ) : (
+            <ul className="space-y-1 text-sm">
+              {contextualDiscoveryLinks.map((link) => (
+                <li key={link.href}>
+                  <AppLink variant="utility" className="font-medium" href={link.href}>{link.label}</AppLink>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
 
         <section>

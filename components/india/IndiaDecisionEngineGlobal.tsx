@@ -21,6 +21,12 @@ const comparisonLinks = [
   { href: '/in/personal-loan-comparison-india', label: 'compare personal loans in India' }
 ];
 
+const continuationGroups = [
+  { title: 'Core hubs', links: clusterLinks },
+  { title: 'Calculators', links: calculatorLinks },
+  { title: 'Comparisons', links: comparisonLinks }
+];
+
 export function IndiaDecisionEngineGlobal() {
   return (
     <section className="mt-8 space-y-6 rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
@@ -96,17 +102,18 @@ export function IndiaDecisionEngineGlobal() {
 
       <section>
         <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Continue your India decision path</h3>
-        <div className="mt-3 india-link-cluster text-sm">
-          {clusterLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="content-link-chip">{link.label}</Link>
-          ))}
-        </div>
-        <div className="mt-4 flex flex-wrap gap-2 text-sm">
-          {calculatorLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="content-link-chip">{link.label}</Link>
-          ))}
-          {comparisonLinks.map((link) => (
-            <Link key={link.href} href={link.href} className="content-link-chip">{link.label}</Link>
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          {continuationGroups.map((group) => (
+            <section key={group.title} className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/50" aria-label={group.title}>
+              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{group.title}</h4>
+              <ul className="mt-2 space-y-2 text-sm">
+                {group.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="content-link-chip w-full justify-start">{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
           ))}
         </div>
       </section>

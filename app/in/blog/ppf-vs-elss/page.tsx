@@ -92,9 +92,9 @@ export default function PpfVsElssIndiaPage() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">References</h2>
-        <ul className="mt-2 list-disc space-y-1 pl-5 text-slate-700 dark:text-slate-300">
-          <li><Link href="https://www.rbi.org.in/" target="_blank" rel="noreferrer" className="content-link">Reserve Bank of India (RBI)</Link></li>
-          <li><Link href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer" className="content-link">Income Tax Department (India)</Link></li>
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          <li><Link href="https://www.rbi.org.in/" target="_blank" rel="noreferrer" className="link-card rounded-lg p-3 text-sm no-underline">Reserve Bank of India (RBI)</Link></li>
+          <li><Link href="https://www.incometax.gov.in/" target="_blank" rel="noreferrer" className="link-card rounded-lg p-3 text-sm no-underline">Income Tax Department (India)</Link></li>
         </ul>
       </section>
       <IndiaAuthorityNote />
