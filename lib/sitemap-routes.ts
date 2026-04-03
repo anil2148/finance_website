@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { getCategories, getPosts, getTags, normalizeTag } from '@/lib/markdown';
 import { isIndexableRoute } from '@/lib/seo-locale-routes';
+import { shouldIncludeInSitemap, type RouteMeta } from '@/lib/seo/sitemap-filter';
 
 import { generateStaticParams as generateLearnStaticParams } from '@/app/learn/[cluster]/page';
 import { generateStaticParams as generateCreditCardRegionParams } from '@/app/compare/credit-cards-for/[region]/page';
@@ -14,6 +15,7 @@ export type SitemapEntry = {
 
 const APP_DIR = path.join(process.cwd(), 'app');
 const BLOG_DIR = path.join(process.cwd(), 'content/blog');
+const BUILD_TIMESTAMP = new Date();
 
 function walkAppPages(dir: string): string[] {
   const entries = fs.readdirSync(dir, { withFileTypes: true });
@@ -45,56 +47,83 @@ function filePathToRoute(pageFilePath: string): string {
   return `/${segments.join('/')}`.replace(/\/+$/, '');
 }
 
-function getStaticIndexableRoutes(): SitemapEntry[] {
-  const now = new Date();
-  return walkAppPages(APP_DIR)
-    .map((pagePath) => filePathToRoute(pagePath) || '/')
-    .filter((route) => isIndexableRoute(route))
-    .map((pathname) => ({ pathname, lastModified: now }));
+function isSitemapEligible(pathname: string, meta?: RouteMeta): boolean {
+  if (!isIndexableRoute(pathname)) return false;
+  return shouldIncludeInSitemap(pathname, meta);
 }
 
-function getLastModifiedForBlogSlug(slug: string, fallbackDate: string): Date {
+function getStaticIndexableRoutes(): SitemapEntry[] {
+  return walkAppPages(APP_DIR)
+    .map((pagePath) => filePathToRoute(pagePath) || '/')
+    .filter((route) => isSitemapEligible(route))
+    .map((pathname) => ({ pathname, lastModified: BUILD_TIMESTAMP }));
+}
+
+function getLastModifiedForBlogSlug(slug: string, fallbackDate?: string): Date {
   const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
 
   if (fs.existsSync(filePath)) {
     return fs.statSync(filePath).mtime;
   }
 
-  return new Date(fallbackDate);
+  if (fallbackDate) return new Date(fallbackDate);
+  return BUILD_TIMESTAMP;
 }
 
 function getDynamicIndexableRoutes(): SitemapEntry[] {
   const posts = getPosts();
 
-  const blogPostEntries = posts.map((post) => ({
-    pathname: `/blog/${post.slug}`,
-    lastModified: getLastModifiedForBlogSlug(post.slug, post.updatedAt ?? post.date)
-  }));
+  const blogPostEntries = posts
+    .map((post) => ({
+      pathname: `/blog/${post.slug}`,
+      lastModified: getLastModifiedForBlogSlug(post.slug, post.updatedAt ?? post.date),
+      meta: {
+        status: 'published' as const,
+        canonical: `/blog/${post.slug}`
+      }
+    }))
+    .filter((entry) => isSitemapEligible(entry.pathname, entry.meta));
 
-  const blogCategoryEntries = getCategories().map((category) => ({
-    pathname: `/blog/category/${category}`,
-    lastModified: new Date()
-  }));
+  const blogCategoryEntries = getCategories()
+    .map((category) => ({
+      pathname: `/blog/category/${category}`,
+      lastModified: BUILD_TIMESTAMP,
+      meta: {
+        seoQuality: 'weak' as const
+      }
+    }))
+    .filter((entry) => isSitemapEligible(entry.pathname, entry.meta));
 
-  const blogTagEntries = getTags().map((tag) => ({
-    pathname: `/blog/tag/${encodeURIComponent(normalizeTag(tag))}`,
-    lastModified: new Date()
-  }));
+  const blogTagEntries = getTags()
+    .map((tag) => ({
+      pathname: `/blog/tag/${encodeURIComponent(normalizeTag(tag))}`,
+      lastModified: BUILD_TIMESTAMP
+    }))
+    .filter((entry) => isSitemapEligible(entry.pathname));
 
-  const learnEntries = generateLearnStaticParams().map(({ cluster }) => ({
-    pathname: `/learn/${cluster}`,
-    lastModified: new Date('2026-03-18')
-  }));
+  const learnEntries = generateLearnStaticParams()
+    .map(({ cluster }) => ({
+      pathname: `/learn/${cluster}`,
+      lastModified: BUILD_TIMESTAMP,
+      meta: {
+        seoQuality: 'weak' as const
+      }
+    }))
+    .filter((entry) => isSitemapEligible(entry.pathname, entry.meta));
 
-  const regionEntries = generateCreditCardRegionParams().map(({ region }) => ({
-    pathname: `/compare/credit-cards-for/${region}`,
-    lastModified: new Date('2026-03-18')
-  }));
+  const regionEntries = generateCreditCardRegionParams()
+    .map(({ region }) => ({
+      pathname: `/compare/credit-cards-for/${region}`,
+      lastModified: BUILD_TIMESTAMP
+    }))
+    .filter((entry) => isSitemapEligible(entry.pathname));
 
-  const audienceEntries = generateInvestmentAudienceParams().map(({ audience }) => ({
-    pathname: `/compare/best-investment-apps/${audience}`,
-    lastModified: new Date('2026-03-18')
-  }));
+  const audienceEntries = generateInvestmentAudienceParams()
+    .map(({ audience }) => ({
+      pathname: `/compare/best-investment-apps/${audience}`,
+      lastModified: BUILD_TIMESTAMP
+    }))
+    .filter((entry) => isSitemapEligible(entry.pathname));
 
   return [
     ...blogPostEntries,
@@ -103,14 +132,20 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
     ...learnEntries,
     ...regionEntries,
     ...audienceEntries
-  ].filter((entry) => isIndexableRoute(entry.pathname));
+  ].map(({ pathname, lastModified }) => ({ pathname, lastModified }));
 }
 
 export function getAllIndexableRoutes(): SitemapEntry[] {
   const allEntries = [...getStaticIndexableRoutes(), ...getDynamicIndexableRoutes()];
   const deduped = new Map<string, SitemapEntry>();
 
-  for (const entry of allEntries) deduped.set(entry.pathname, entry);
+  for (const entry of allEntries) {
+    const existing = deduped.get(entry.pathname);
+
+    if (!existing || existing.lastModified < entry.lastModified) {
+      deduped.set(entry.pathname, entry);
+    }
+  }
 
   return [...deduped.values()].sort((a, b) => a.pathname.localeCompare(b.pathname));
 }
