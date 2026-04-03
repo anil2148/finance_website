@@ -4,15 +4,15 @@ import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'India Tax Hub 2026: Tax Slabs, Old vs New Regime, 80C Deductions (FY 2025-26)',
-  description: 'Start here tax decision engine for India with regime choice, deduction planning, and salary-based examples.',
+  title: 'India Tax Hub 2026: Old vs New Regime, 80C Strategy, and Salary-Band Tax Planning',
+  description: 'India tax decision hub with old-vs-new regime checks, 80C/80D planning, and monthly cashflow-safe execution examples.',
   pathname: '/in/tax'
 });
 
 const links = [
   { href: '/in/tax-slabs-2026-india', label: 'Tax Slabs 2026 India' },
   { href: '/in/old-vs-new-tax-regime', label: 'Old vs New Tax Regime Decision' },
-  { href: '/in/80c-deductions-guide', label: '80C Deductions Guide' },
+  { href: '/in/80c-deductions', label: '80C Deductions Guide' },
   { href: '/in/tax-saving-strategies', label: 'Tax Saving Strategies by Salary Band' },
   { href: '/in/sip-strategy-india', label: 'Post-tax SIP Strategy India' },
   { href: '/in/best-investment-apps-india', label: 'Comparison: Best Investment Apps India' },
@@ -45,6 +45,15 @@ export default function IndiaTaxHubPage() {
           <Link key={item.href} href={item.href} className="link-card">{item.label}</Link>
         ))}
       </div>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">India tax journey: calculator to execution</h2>
+        <p className="mt-2 text-slate-700 dark:text-slate-300">
+          Start with <Link href="/in/old-vs-new-tax-regime" className="content-link">old vs new regime</Link>, then build monthly 80C through{' '}
+          <Link href="/in/80c-deductions" className="content-link">80C planning</Link>, and finally separate tax-saving from wealth-building with{' '}
+          <Link href="/in/calculators/sip-calculator" className="content-link">SIP sizing</Link>.
+        </p>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Regime trigger map by salary band</h2>
