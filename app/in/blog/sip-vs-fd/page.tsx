@@ -28,78 +28,89 @@ const sections = [
   },
   {
     type: 'table' as const,
-    title: 'Timeline decision depth (5y, 10y, 20y)',
+    title: 'Goal timeline decision: which product fits which horizon?',
     table: {
-      headers: ['Horizon', '₹10,000/month SIP @11%', '₹10,000/month FD @6.8%', 'Break-even interpretation'],
+      headers: ['Horizon', '₹10,000/month SIP @11%', '₹10,000/month FD @6.8%', 'What drives the decision'],
       rows: [
         {
-          Horizon: '5 years',
+          Horizon: '5 years or less',
           '₹10,000/month SIP @11%': '~₹8.3 lakh',
           '₹10,000/month FD @6.8%': '~₹7.1 lakh',
-          'Break-even interpretation': 'Gap is modest; volatility risk may dominate comfort.'
+          'What drives the decision': 'A 20–25% drawdown in year 3–4 can delay a fixed goal by 1–2 years. Certainty usually wins here.'
         },
         {
-          Horizon: '10 years',
+          Horizon: '7–10 years',
           '₹10,000/month SIP @11%': '~₹20.6 lakh',
           '₹10,000/month FD @6.8%': '~₹16.8 lakh',
-          'Break-even interpretation': 'Gap becomes meaningful for long goals.'
+          'What drives the decision': 'The gap is meaningful. Behavioral discipline — staying invested in down years — becomes the key variable.'
         },
         {
-          Horizon: '20 years',
+          Horizon: '15–20 years',
           '₹10,000/month SIP @11%': '~₹75.9 lakh',
           '₹10,000/month FD @6.8%': '~₹50.0 lakh',
-          'Break-even interpretation': 'Long compounding strongly favors SIP if you stay invested.'
+          'What drives the decision': 'Long compounding strongly favors SIP. The question is whether you stay invested through 2–3 full market cycles.'
         }
       ]
     },
     content:
-      'Break-even mindset: if your goal is under ~3 years, certainty usually matters more than return spread. Beyond ~7 years, consistency and behavioral discipline become the main driver.'
+      'Rule of thumb: if you would panic-exit the SIP during a 30% market correction, the FD is the safer real-world choice for that bucket of money — even if the theoretical SIP return is higher.'
   },
   {
     type: 'decision-panel' as const,
-    title: 'What happens if you choose wrong',
+    title: 'The real costs of choosing wrong',
     tone: 'amber' as const,
     points: [
-      { label: 'Choosing SIP for near-term goal', text: 'A 20% market drawdown in year 2 can delay a fixed down-payment goal by 12–24 months.' },
-      { label: 'Choosing FD for very long-term goal', text: 'Lower growth can reduce retirement corpus by double-digit lakhs over 15–20 years.' },
-      { label: 'Choosing either without emergency fund', text: 'You may break investments early, losing return compounding and confidence together.' }
+      { label: 'SIP for a 2-year down payment goal', text: 'A 20–25% market drawdown can push a fixed purchase timeline back by 12–24 months. Down payment money should not carry market risk.' },
+      { label: 'FD for a 20-year retirement goal', text: 'At 6.8% vs 11% over 20 years on ₹10,000/month, the FD path produces roughly ₹25 lakh less. That is not a rounding error.' },
+      { label: 'Either, without emergency money first', text: 'If your SIP or FD gets broken early because of a cashflow emergency, you lose return compounding and often confidence. Rebuild the buffer first.' }
+    ]
+  },
+  {
+    type: 'decision-panel' as const,
+    title: 'Blended strategy: the approach most households actually need',
+    tone: 'emerald' as const,
+    points: [
+      { label: 'Emergency bucket (3–6 months expenses)', text: 'FD or liquid fund only. This money should not be in market instruments. Keep it boring and accessible.' },
+      { label: 'Near-term goals (under 3 years)', text: 'FD, recurring deposit, or debt fund. Do not expose fixed-timeline money to equity volatility.' },
+      { label: 'Long-term wealth (7+ years)', text: 'SIP into diversified equity mutual funds. Start small, build consistency, step up annually. Do not panic-exit during corrections.' },
+      { label: 'Part FD, part SIP for 4–6 year goals', text: 'Split the monthly amount: keep 40–50% in FD for downside protection, put the rest in a balanced advantage or hybrid fund. Reduces regret in either scenario.' }
     ]
   },
   {
     type: 'cta-block' as const,
-    title: 'Before home buying, separate down-payment money from wealth-building money',
+    title: 'If you are saving for a home purchase in 2–4 years',
     content:
-      'If you are targeting a home purchase in 2–4 years, keep down-payment funds in safety-first buckets. Then pressure-test EMI at current rate, +0.5%, and +1% so your monthly budget stays realistic.',
+      'Keep the down payment in safety-first buckets. Then run EMI scenarios at today\'s rate, +0.5%, and +1.0% to make sure the monthly budget still works if rates rise. Many families locked a home loan they could comfortably afford on paper — and found it tight once school fees, maintenance, and a rate reset arrived together.',
     links: [
-      { label: 'Run the India EMI calculator', href: '/in/calculators/emi-calculator' },
-      { label: 'Check home affordability path', href: '/in/home-affordability-india' }
+      { label: 'Run the India EMI stress test', href: '/in/calculators/emi-calculator' },
+      { label: 'Check home affordability before booking', href: '/in/home-affordability-india' }
     ]
   }
 ];
 
 const nextDecisions = [
   {
-    title: 'Investing cluster',
-    description: 'Choose SIP allocation and automation rules.',
+    title: 'For long-term wealth building',
+    description: 'If your SIP horizon is 10+ years, learn how to set up automation, step up contributions, and stay invested through volatility without panic-exiting.',
     links: [
       { label: 'India investing hub', href: '/in/investing' },
-      { label: 'SIP calculator', href: '/in/calculators/sip-calculator' }
+      { label: 'SIP calculator — project your corpus', href: '/in/calculators/sip-calculator' }
     ]
   },
   {
-    title: 'Savings cluster',
-    description: 'Use safety buckets for near-term goals.',
+    title: 'For near-term goals and safety',
+    description: 'If your goal is under 3 years, use FD or liquid instruments. Compare rates and understand the real yield after penalties and premature closure charges.',
     links: [
-      { label: 'Banking hub', href: '/in/banking' },
-      { label: 'FD comparison page', href: '/in/best-fixed-deposits-india' }
+      { label: 'India banking hub', href: '/in/banking' },
+      { label: 'Best fixed deposits in India', href: '/in/best-fixed-deposits-india' }
     ]
   },
   {
-    title: 'Tax cluster',
-    description: 'Don’t mix tax panic with allocation decisions.',
+    title: 'For tax-saving decisions',
+    description: 'Keep tax decisions separate from SIP/FD allocation. Tax pressure in March should not drive your long-term investing structure.',
     links: [
-      { label: 'India tax hub', href: '/in/tax' },
-      { label: 'PPF vs ELSS scenario', href: '/in/blog/ppf-vs-elss' }
+      { label: 'India tax planning hub', href: '/in/tax' },
+      { label: 'PPF vs ELSS: which fits your tax plan?', href: '/in/blog/ppf-vs-elss' }
     ]
   }
 ];
@@ -112,9 +123,9 @@ const references = [
 export default function SipVsFdIndiaPage() {
   return (
     <IndiaArticleRenderer
-      title="SIP vs FD in India: which one should you choose?"
+      title="SIP vs FD in India: which fits your goal and timeline?"
       subtitle="India investing decision guide"
-      description="Most families are not choosing between “safe” and “smart” investing. They are balancing school fees, emergency reserves, and long-term wealth in the same monthly budget. That is why SIP vs FD should be decided by goal timeline, not by headlines."
+      description="Most Indian families are not choosing between 'safe' and 'smart' investing. They are balancing school fees, home down-payment timelines, emergency reserves, and long-term wealth goals in the same monthly salary. SIP vs FD cannot be answered without knowing your goal timeline, your comfort with market drops, and whether your emergency money is already protected separately."
       sections={sections}
       nextDecisions={nextDecisions}
       references={references}

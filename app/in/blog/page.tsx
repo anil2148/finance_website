@@ -108,11 +108,12 @@ const guides = [
 ];
 
 const pathways = [
-  { label: 'Run EMI stress test (+0.5%, +1.0%)', href: '/in/calculators/emi-calculator', group: 'Loan pressure check' },
-  { label: 'Model SIP at ₹5,000 / ₹10,000 / ₹25,000', href: '/in/calculators/sip-calculator', group: 'Investing setup' },
-  { label: 'Choose SIP vs FD by timeline', href: '/in/blog/sip-vs-fd', group: 'Allocation decision' },
-  { label: 'Build 80C allocation plan', href: '/in/blog/ppf-vs-elss', group: 'Tax optimization' },
-  { label: 'Set emergency fund target in months', href: '/in/blog/emergency-fund-india', group: 'Safety net setup' }
+  { label: 'Is my SIP amount right for my income?', href: '/in/calculators/sip-calculator', group: 'Investing setup' },
+  { label: 'SIP vs FD: which fits my goal timeline?', href: '/in/blog/sip-vs-fd', group: 'Investing setup' },
+  { label: 'Can I afford this EMI if rates rise 1%?', href: '/in/calculators/emi-calculator', group: 'Home loan check' },
+  { label: 'Build a smart 80C allocation plan', href: '/in/blog/ppf-vs-elss', group: 'Tax planning' },
+  { label: 'Old vs new tax regime: which is better for me?', href: '/in/blog/old-vs-new-tax-regime', group: 'Tax planning' },
+  { label: 'How large should my emergency fund be?', href: '/in/blog/emergency-fund-india', group: 'Safety net first' }
 ];
 
 export const metadata: Metadata = createPageMetadata({
