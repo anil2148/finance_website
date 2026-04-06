@@ -191,8 +191,6 @@ export function IndiaArticleRenderer({
           </ul>
         </section>
       ) : null}
-
-      {showAuthorityNote ? <IndiaAuthorityNote /> : null}
     </article>
   );
 }

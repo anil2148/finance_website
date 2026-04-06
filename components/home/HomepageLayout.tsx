@@ -91,8 +91,8 @@ const trustStory = [
     text: 'Most finance content explains what things are. This site is designed to help you decide what to do — with actual numbers, not general advice. If you leave without a clearer next step, something did not work.'
   },
   {
-    title: 'Why failure scenarios matter more than projections',
-    text: 'A plan that works in your best month is not a plan — it is a hope. FinanceSphere surfaces the failure points so you find them before you commit to a 30-year mortgage or a 5-year investment strategy.'
+    title: 'The real risk is behavior, not return',
+    text: 'People stop investing after market drops. They overspend to hit a bonus threshold. They take the 15-year mortgage on paper and discover the payment is too tight in month 14. FinanceSphere surfaces these failure points before you commit, not after.'
   },
   {
     title: 'Editorial independence',
@@ -102,9 +102,20 @@ const trustStory = [
 
 const whatGoesWrong = {
   title: 'Where plans break first',
-  scenario: 'A household sets up a $650/month investment after a raise. Three months later, a $1,400 car repair forces a pause.',
-  failure: 'The pause becomes permanent. Five months of contributions are missed. The behavior gap here costs more compounded wealth than the extra $150/month would ever have added.',
-  rule: 'Set your contribution ceiling from your worst income month in the past year — not your best. If the plan survives that month, it will survive most things.',
+  scenarios: [
+    {
+      label: 'The income-growth trap',
+      scenario: 'A household sets up a $650/month investment after a raise. Three months later, a $1,400 car repair forces a pause.',
+      failure: 'The pause becomes permanent. Five months of contributions are missed. The behavior gap here costs more compounded wealth than the extra $150/month would ever have added.',
+      rule: 'Set your contribution ceiling from your worst income month in the past year — not your best. If the plan survives that month, it will survive most things.'
+    },
+    {
+      label: 'The premium card math trap',
+      scenario: 'A household applies for a $395/year premium card to earn travel rewards. The welcome bonus requires $4,000 in spend within 90 days.',
+      failure: 'Spending increases by $400/month to hit the threshold. A balance carries one month at 27% APR. Interest in month one erases multiple months of reward value.',
+      rule: 'Rewards are only profitable if you would have spent the money anyway. If hitting the threshold requires new spending, the card costs money — not earns it.'
+    }
+  ],
   microReality: 'Most people choose an ambitious number. Choose the sustainable one instead.'
 };
 
@@ -195,7 +206,7 @@ export function HomepageLayout() {
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
-              See exactly how much you save, invest, or lose — then check if it survives a bad month.
+              Most financial content explains what things are. This site helps you decide what to do — with actual numbers, stress tests, and what happens when things do not go according to plan.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">
@@ -262,19 +273,23 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5 dark:border-amber-900/40 dark:bg-amber-950/20">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{whatGoesWrong.title}</h2>
         <p className="mt-1 text-xs font-medium italic text-slate-500 dark:text-slate-400">&ldquo;{whatGoesWrong.microReality}&rdquo;</p>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Scenario</h3>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrong.scenario}</p>
-          </article>
-          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Failure point</h3>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrong.failure}</p>
-          </article>
-          <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
-            <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">What to do instead</h3>
-            <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{whatGoesWrong.rule}</p>
-          </article>
+        <div className="mt-4 space-y-4">
+          {whatGoesWrong.scenarios.map((s) => (
+            <div key={s.label} className="grid gap-3 md:grid-cols-3">
+              <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Scenario — {s.label}</h3>
+                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{s.scenario}</p>
+              </article>
+              <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">Failure point</h3>
+                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{s.failure}</p>
+              </article>
+              <article className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+                <h3 className="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">What to do instead</h3>
+                <p className="mt-1 text-sm text-slate-700 dark:text-slate-300">{s.rule}</p>
+              </article>
+            </div>
+          ))}
         </div>
       </section>
 

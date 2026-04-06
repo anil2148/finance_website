@@ -15,51 +15,10 @@ export const metadata: Metadata = createPageMetadata({
 
 const sections = [
   {
-    type: 'table' as const,
-    title: 'Monthly investment outcomes: ₹5,000 vs ₹10,000 vs ₹25,000 over 10 years',
-    table: {
-      headers: ['Monthly amount', 'If SIP averages 11%', 'If FD averages 6.8%', 'Gap after 10 years'],
-      rows: [
-        { 'Monthly amount': '₹5,000', 'If SIP averages 11%': '~₹10.3 lakh', 'If FD averages 6.8%': '~₹8.4 lakh', 'Gap after 10 years': '~₹1.9 lakh more via SIP — assuming you stay invested through 1–2 bad years' },
-        { 'Monthly amount': '₹10,000', 'If SIP averages 11%': '~₹20.6 lakh', 'If FD averages 6.8%': '~₹16.8 lakh', 'Gap after 10 years': '~₹3.8 lakh more via SIP — narrowed significantly if you pause SIP during market corrections' },
-        { 'Monthly amount': '₹25,000', 'If SIP averages 11%': '~₹51.4 lakh', 'If FD averages 6.8%': '~₹42.0 lakh', 'Gap after 10 years': '~₹9.4 lakh more via SIP — but this requires 120 months of uninterrupted discipline' }
-      ]
-    }
-  },
-  {
-    type: 'table' as const,
-    title: 'Goal timeline: which instrument fits which horizon?',
-    table: {
-      headers: ['Horizon', '₹10,000/month SIP @11%', '₹10,000/month FD @6.8%', 'What actually drives the decision'],
-      rows: [
-        {
-          Horizon: 'Under 3 years',
-          '₹10,000/month SIP @11%': '~₹4.2 lakh',
-          '₹10,000/month FD @6.8%': '~₹3.9 lakh',
-          'What actually drives the decision': 'Almost no gap in outcome — but a 20% drawdown in year 2 can push a fixed goal back by 12+ months. Use FD here.'
-        },
-        {
-          Horizon: '5 years or less',
-          '₹10,000/month SIP @11%': '~₹8.3 lakh',
-          '₹10,000/month FD @6.8%': '~₹7.1 lakh',
-          'What actually drives the decision': 'A 20–25% drawdown in year 3–4 can delay a fixed goal by 1–2 years. Certainty usually wins when the goal is specific.'
-        },
-        {
-          Horizon: '7–10 years',
-          '₹10,000/month SIP @11%': '~₹20.6 lakh',
-          '₹10,000/month FD @6.8%': '~₹16.8 lakh',
-          'What actually drives the decision': 'The gap is meaningful. Behavioral discipline — staying invested in down years — becomes the key variable, not the instrument itself.'
-        },
-        {
-          Horizon: '15–20 years',
-          '₹10,000/month SIP @11%': '~₹75.9 lakh',
-          '₹10,000/month FD @6.8%': '~₹50.0 lakh',
-          'What actually drives the decision': 'Long compounding strongly favors SIP. The question is whether you stay invested through 2–3 full market cycles over 15–20 years.'
-        }
-      ]
-    },
+    type: 'text' as const,
+    title: 'The question most guides answer wrong',
     content:
-      'Rule of thumb: if you would panic-exit the SIP during a 30% market correction, the FD is the safer real-world choice for that bucket of money — even if the theoretical SIP return is higher. A plan abandoned at the worst moment costs more than a lower-return plan you keep running.'
+      'Most SIP vs FD guides start by showing you a table of returns. This one starts differently. The real question is not which instrument produces a higher number on paper — it is which one you will actually stick to when your salary is delayed, your EMI has just gone up, or a family emergency arrives. A ₹5,000 SIP you sustain for 10 years beats a ₹15,000 SIP you stop after 18 months. Most people choose the ambitious number because it looks better on a projection chart, and then abandon it the first time real life applies pressure. Choose the number that survives your worst recent month — not your best.'
   },
   {
     type: 'decision-path' as const,
@@ -111,10 +70,57 @@ const sections = [
     ]
   },
   {
-    type: 'text' as const,
-    title: 'The salary pressure reality most finance guides ignore',
+    type: 'table' as const,
+    title: 'The numbers: ₹5,000 vs ₹10,000 vs ₹25,000/month over 10 years',
+    table: {
+      headers: ['Monthly amount', 'If SIP averages 11%', 'If FD averages 6.8%', 'Gap after 10 years'],
+      rows: [
+        { 'Monthly amount': '₹5,000', 'If SIP averages 11%': '~₹10.3 lakh', 'If FD averages 6.8%': '~₹8.4 lakh', 'Gap after 10 years': '~₹1.9 lakh more via SIP — assuming you stay invested through 1–2 bad years' },
+        { 'Monthly amount': '₹10,000', 'If SIP averages 11%': '~₹20.6 lakh', 'If FD averages 6.8%': '~₹16.8 lakh', 'Gap after 10 years': '~₹3.8 lakh more via SIP — narrowed significantly if you pause SIP during market corrections' },
+        { 'Monthly amount': '₹25,000', 'If SIP averages 11%': '~₹51.4 lakh', 'If FD averages 6.8%': '~₹42.0 lakh', 'Gap after 10 years': '~₹9.4 lakh more via SIP — but this requires 120 months of uninterrupted discipline' }
+      ]
+    }
+  },
+  {
+    type: 'table' as const,
+    title: 'Goal timeline: which instrument fits which horizon?',
+    table: {
+      headers: ['Horizon', '₹10,000/month SIP @11%', '₹10,000/month FD @6.8%', 'What actually drives the decision'],
+      rows: [
+        {
+          Horizon: 'Under 3 years',
+          '₹10,000/month SIP @11%': '~₹4.2 lakh',
+          '₹10,000/month FD @6.8%': '~₹3.9 lakh',
+          'What actually drives the decision': 'Almost no gap in outcome — but a 20% drawdown in year 2 can push a fixed goal back by 12+ months. Use FD here.'
+        },
+        {
+          Horizon: '5 years or less',
+          '₹10,000/month SIP @11%': '~₹8.3 lakh',
+          '₹10,000/month FD @6.8%': '~₹7.1 lakh',
+          'What actually drives the decision': 'A 20–25% drawdown in year 3–4 can delay a fixed goal by 1–2 years. Certainty usually wins when the goal is specific.'
+        },
+        {
+          Horizon: '7–10 years',
+          '₹10,000/month SIP @11%': '~₹20.6 lakh',
+          '₹10,000/month FD @6.8%': '~₹16.8 lakh',
+          'What actually drives the decision': 'The gap is meaningful. Behavioral discipline — staying invested in down years — becomes the key variable, not the instrument itself.'
+        },
+        {
+          Horizon: '15–20 years',
+          '₹10,000/month SIP @11%': '~₹75.9 lakh',
+          '₹10,000/month FD @6.8%': '~₹50.0 lakh',
+          'What actually drives the decision': 'Long compounding strongly favors SIP. The question is whether you stay invested through 2–3 full market cycles over 15–20 years.'
+        }
+      ]
+    },
     content:
-      'Most SIP vs FD comparisons are written for people with stable salaries, no EMIs, and no family obligations. That is a small percentage of Indian households. If your salary comes with variable components — bonus, commission, or irregular payments — your monthly cashflow looks very different from a projection spreadsheet. The right strategy is the one that works in your worst month, not your best. A ₹5,000 SIP you sustain for 10 years beats a ₹15,000 SIP you stop after 18 months. Most people choose the ambitious number and abandon it. Choose the realistic number first.'
+      'Rule of thumb: if you would panic-exit the SIP during a 30% market correction, the FD is the safer real-world choice for that bucket of money — even if the theoretical SIP return is higher. A plan abandoned at the worst moment costs more than a lower-return plan you keep running.'
+  },
+  {
+    type: 'text' as const,
+    title: 'Why variable income changes everything',
+    content:
+      'Most SIP vs FD comparisons are written for people with stable salaries, no EMIs, and no family obligations. That is a small percentage of Indian households. If your salary comes with variable components — bonus, commission, or irregular payments — your monthly cashflow looks very different from a projection spreadsheet. The right strategy is the one that works in your worst month, not your best. People stop investing after losses or income shocks — that is where plans actually fail, not in the math. Size your SIP around a month when things were genuinely tight, not a month when everything aligned.'
   },
   {
     type: 'decision-panel' as const,
