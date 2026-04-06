@@ -48,7 +48,7 @@ export default function AboutPage() {
       <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-2xl font-semibold text-slate-900">Who runs FinanceSphere</h2>
         <p className="text-slate-700">
-          FinanceSphere was founded by <strong>Anil Chowdhary</strong> and is maintained by a small editorial and product team.
+          FinanceSphere was founded by <strong>Smita Chowdhary</strong> and is maintained by a small editorial and product team.
           We are a publishing and software team focused on educational decision support, not a personalized advisory service.
         </p>
         <p className="text-slate-700">
