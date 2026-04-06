@@ -87,25 +87,25 @@ const trustSignals = [
 
 const trustStory = [
   {
-    title: 'Who this is for',
-    text: 'Anyone making a high-stakes money call right now — whether that is choosing a loan term, deciding how much to invest monthly, or stress-testing a mortgage before signing.'
+    title: 'Built for decisions, not just information',
+    text: 'Most finance content explains what things are. This site is designed to help you decide what to do — with actual numbers, not general advice. If you leave without a clearer next step, something did not work.'
   },
   {
-    title: 'Why stress-testing matters',
-    text: 'Most calculators show best-case outcomes. FinanceSphere is designed to surface where plans fail first — so you find that out now, not after committing to a 30-year obligation.'
+    title: 'Why failure scenarios matter more than projections',
+    text: 'A plan that works in your best month is not a plan — it is a hope. FinanceSphere surfaces the failure points so you find them before you commit to a 30-year mortgage or a 5-year investment strategy.'
   },
   {
-    title: 'What makes it different',
-    text: 'Every major decision path includes a failure scenario. Run the numbers in a normal month and a difficult month. If only one version works, the plan needs to change.'
+    title: 'Editorial independence',
+    text: 'Comparison pages are built around real trade-offs: total cost, downside risk, fees, and who each option actually fits. Product ranking is not influenced by affiliate volume or commission rate.'
   }
 ];
 
 const whatGoesWrong = {
-  title: 'Where plans break',
-  scenario: 'After a raise, you increase investing from $500 to $650/month. One unexpected car repair forces a three-month pause.',
-  failure: 'Consistency breaks. Three missed months at this stage can cost more compounded wealth than the extra $150/month was ever going to gain.',
-  rule: 'Use your worst recent income month — not your best — to set your sustainable contribution ceiling.',
-  microReality: 'A plan you abandon in month three was never really a plan.'
+  title: 'Where plans break first',
+  scenario: 'A household sets up a $650/month investment after a raise. Three months later, a $1,400 car repair forces a pause.',
+  failure: 'The pause becomes permanent. Five months of contributions are missed. The behavior gap here costs more compounded wealth than the extra $150/month would ever have added.',
+  rule: 'Set your contribution ceiling from your worst income month in the past year — not your best. If the plan survives that month, it will survive most things.',
+  microReality: 'Most people choose an ambitious number. Choose the sustainable one instead.'
 };
 
 const crawlPriorityLinks = [
@@ -144,24 +144,24 @@ const homepageFaqs = [
 
 const userSegments = [
   {
-    title: 'Stable income — just starting',
-    note: 'Start conservative. Lock in a contribution you can hit every month for 6 months straight before raising it.',
-    next: { href: '/calculators/budget-planner', label: 'Run budget planner first' }
+    title: 'Stable income, just starting out',
+    note: 'Start with a number you can hit every month for 6 months straight — not what feels ambitious. Raising it later is easy. Recovering from quitting early is not.',
+    next: { href: '/calculators/savings-goal-calculator', label: 'Model a realistic target' }
   },
   {
-    title: 'Variable income',
-    note: 'Base every plan on your lowest income month in the past year. If it works there, it will survive almost anything.',
+    title: 'Variable or commission-based income',
+    note: 'Every plan here should be built around your lowest recent income month — not your average. If it survives that month, it survives most things. If it does not, the plan is not ready yet.',
     next: { href: '/calculators/savings-goal-calculator', label: 'Model emergency runway' }
   },
   {
-    title: 'Debt payoff vs investing',
-    note: 'The answer depends on your interest rate and risk tolerance, not a general rule. Run the math for your actual balances.',
+    title: 'Carrying high-interest debt right now',
+    note: 'If your debt carries more than 15% APR, paying it down almost always wins over investing the same dollar. Run the actual numbers — the break-even math is often surprising.',
     next: { href: '/calculators/debt-payoff-calculator', label: 'Test debt payoff scenarios' }
   },
   {
-    title: 'Buying a home soon',
-    note: 'Stress-test the mortgage payment before you tour homes. It changes what budget feels comfortable — not just what qualifies.',
-    next: { href: '/calculators/mortgage-calculator', label: 'Stress-test mortgage payment' }
+    title: 'Buying a home in the next 12 months',
+    note: 'Run the payment at the quoted rate and at +1%. If the +1% scenario is uncomfortable, the purchase price is likely too high for your real cashflow — not just for bank qualification.',
+    next: { href: '/calculators/mortgage-calculator', label: 'Stress-test at worst-case rate' }
   }
 ];
 

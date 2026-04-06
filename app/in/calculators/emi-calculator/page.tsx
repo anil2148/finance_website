@@ -18,12 +18,35 @@ export default function IndiaEmiCalculatorPage() {
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">FinanceSphere India calculator</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">Home Loan EMI Calculator (India)</h1>
         <p className="mt-3 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
-          Use this before you finalise a loan amount — not after. Most buyers clear bank eligibility and feel confident at booking. The pressure shows up later: when maintenance bills arrive, school fees increase, the rate resets upward, and one income source is temporarily interrupted. Run the numbers now with realistic assumptions.
+          Use this before you finalise a loan amount — not after. Most buyers clear bank eligibility and feel confident at booking. The pressure shows up later: when maintenance bills arrive, school fees increase, the rate resets upward, and one income source is temporarily interrupted. Run the numbers now with realistic assumptions, including a rate that is 0.5–1% higher than what you were quoted.
         </p>
       </header>
       <IndiaAuthorityNote />
 
       <EmiCalculator type="mortgage" />
+
+      <section className="rounded-2xl border border-rose-100 bg-rose-50/60 p-6 dark:border-rose-900/40 dark:bg-rose-950/20">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When EMI plans break: real scenarios most buyers ignore</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">The EMI looks fine at the time of booking. These are the situations where it stops looking fine — usually within 18–36 months.</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <article className="rounded-xl border border-rose-200 bg-white p-4 dark:border-rose-800/40 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-rose-700 dark:text-rose-400">Rate reset + school fee increase in the same year</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Floating rate loans reset every 12 months. A 0.75% increase on ₹60 lakh adds ₹2,800–₹3,200/month to your EMI. If your child&apos;s school fees also increase ₹3,000–₹5,000 the same year, your monthly cashflow just lost ₹6,000+ with no warning. Many households never stress-test these two events occurring together.</p>
+          </article>
+          <article className="rounded-xl border border-rose-200 bg-white p-4 dark:border-rose-800/40 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-rose-700 dark:text-rose-400">Job loss or income gap — even temporarily</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">A 2–3 month career transition is common. But most households take a home loan with exactly enough to cover EMI from both salaries. When one income pauses — layoff, health, maternity, career change — the EMI does not pause with it. The question is not whether you can afford it today. It is whether you can afford it during your worst two months of the last three years.</p>
+          </article>
+          <article className="rounded-xl border border-rose-200 bg-white p-4 dark:border-rose-800/40 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-rose-700 dark:text-rose-400">Possession delay — paying EMI and rent simultaneously</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Builder possession delays of 12–24 months are common in metro projects. If you took disbursement and the property is not ready, you pay the bank EMI while still paying rent. This dual payment period — often 6–18 months — is one of the most financially stressful situations for buyers who did not plan for it. Budget for it before you sign.</p>
+          </article>
+          <article className="rounded-xl border border-rose-200 bg-white p-4 dark:border-rose-800/40 dark:bg-slate-900">
+            <h3 className="text-sm font-semibold text-rose-700 dark:text-rose-400">Emergency reserves depleted by down payment</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Down payment, registration, stamp duty, brokerage, and moving costs together often take ₹10–₹20 lakh out of savings. Many buyers exhaust their emergency fund at the same time they take on the highest fixed obligation of their life. A single large repair or medical bill in year one — with no buffer — sends them to a personal loan at 12–18% interest on top of the home loan.</p>
+          </article>
+        </div>
+      </section>
 
       <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-6 dark:border-amber-900/40 dark:bg-amber-950/20">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">The costs most buyers forget to include</h2>
@@ -33,7 +56,7 @@ export default function IndiaEmiCalculatorPage() {
           <li><strong>Rent overlap during possession transition:</strong> If possession delays by 3–6 months (common), you pay EMI and rent simultaneously.</li>
           <li><strong>Rate reset risk:</strong> Floating rate loans typically reset every 12 months. A 0.5% increase on ₹60 lakh adds roughly ₹2,000–₹2,500/month to EMI.</li>
           <li><strong>School fees and childcare:</strong> Timing a home loan with school fee increases or a second child is common — and compresses disposable income at the same time.</li>
-          <li><strong>Emergency reserve depletion:</strong> Down payment often exhausts savings. One large repair in the first year can push a household into credit card debt.</li>
+          <li><strong>Emergency reserve depletion:</strong> Down payment often exhausts savings. One large repair in the first year can push a household into credit card debt at 36–42% effective interest.</li>
         </ul>
       </section>
 
@@ -75,7 +98,7 @@ export default function IndiaEmiCalculatorPage() {
           At 8.75%, the EMI is roughly ₹27,500. That looks fine. Add ₹5,000 for maintenance and ₹4,000 for vehicle loan EMI — total fixed obligations reach ₹36,500, which is 43% of in-hand income. Now test at 9.25%: EMI rises to ~₹30,000, and total fixed obligations hit ₹39,000 — 46% of in-hand. If school fees rise ₹3,000 the same year, the household has no buffer.
         </p>
         <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
-          In this case, reducing loan size to ₹52–₹55 lakh and increasing down payment improves long-run stability far more than finding a slightly lower rate.
+          In this case, reducing loan size to ₹52–₹55 lakh and increasing down payment improves long-run stability far more than finding a slightly lower rate. A higher EMI looks fine on paper but breaks under real-life expenses arriving simultaneously.
         </p>
         <div className="mt-4 flex flex-wrap gap-4 text-sm">
           <Link href="/in/home-loan-interest-rates-india" className="content-link">Compare live home-loan rate ranges in India</Link>
