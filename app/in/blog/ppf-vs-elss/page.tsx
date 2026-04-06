@@ -12,6 +12,32 @@ export const metadata: Metadata = createPageMetadata({
 
 const sections = [
   {
+    type: 'decision-path' as const,
+    title: 'Who should choose what — decide before reading further',
+    points: [
+      {
+        label: 'If your horizon is under 5 years',
+        text: 'Do not use ELSS for this bucket. Market timing risk near your goal date is real. Use PPF or FD for near-term tax-saving amounts, and keep ELSS only for goals 7+ years away.'
+      },
+      {
+        label: 'If your income is unstable (freelancer, business, commission)',
+        text: 'PPF is safer. ELSS requires staying invested through bad income months without stopping SIPs. Stopping and restarting ELSS midway loses consistency and return-averaging benefits.'
+      },
+      {
+        label: 'If you are 45+ and less than 10 years from retirement',
+        text: 'Gradually shift ELSS allocation to PPF or debt instruments. You have less time to recover from a major market correction before you need the money.'
+      },
+      {
+        label: 'If you are 30–40 with a stable salary and 15+ year horizon',
+        text: 'ELSS as your primary 80C vehicle likely makes sense. The growth differential over 15+ years is significant, and you have time to ride out volatility cycles.'
+      },
+      {
+        label: 'If family obligations limit your flexibility (EMI + school fees + parents)',
+        text: 'Split your 80C: use PPF for 40–50% as your safe anchor, and ELSS for the rest. Do not put all 80C into ELSS if stopping it during a bad quarter would feel stressful.'
+      }
+    ]
+  },
+  {
     type: 'table' as const,
     title: 'PPF vs ELSS at a glance',
     table: {
@@ -42,32 +68,6 @@ const sections = [
     },
     content:
       'The numbers favor ELSS for long horizons. But the 11% ELSS return is an average — actual returns vary widely year to year. The real question is not which performs better on paper. It is whether you will stay invested through a 25–30% drawdown without exiting. Most people say yes before the drawdown, and no during it.'
-  },
-  {
-    type: 'decision-path' as const,
-    title: 'If you are X — here is what you should do',
-    points: [
-      {
-        label: 'If your horizon is under 5 years',
-        text: 'Do not use ELSS for this bucket. Market timing risk near your goal date is real. Use PPF or FD for near-term tax-saving amounts, and keep ELSS only for goals 7+ years away.'
-      },
-      {
-        label: 'If your income is unstable (freelancer, business, commission)',
-        text: 'PPF is safer. ELSS requires staying invested through bad income months without stopping SIPs. Stopping and restarting ELSS midway loses consistency and return-averaging benefits.'
-      },
-      {
-        label: 'If you are 45+ and less than 10 years from retirement',
-        text: 'Gradually shift ELSS allocation to PPF or debt instruments. You have less time to recover from a major market correction before you need the money.'
-      },
-      {
-        label: 'If you are 30–40 with a stable salary and 15+ year horizon',
-        text: 'ELSS as your primary 80C vehicle likely makes sense. The growth differential over 15+ years is significant, and you have time to ride out volatility cycles.'
-      },
-      {
-        label: 'If family obligations limit your flexibility (EMI + school fees + parents)',
-        text: 'Split your 80C: use PPF for 40–50% as your safe anchor, and ELSS for the rest. Do not put all 80C into ELSS if stopping it during a bad quarter would feel stressful.'
-      }
-    ]
   },
   {
     type: 'decision-panel' as const,
@@ -212,9 +212,9 @@ export default function PpfVsElssIndiaPage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <IndiaArticleRenderer
-        title="PPF vs ELSS: who should choose what, and where each breaks"
+        title="PPF vs ELSS: who should choose what — and where each breaks under real pressure"
         subtitle="India tax-saving guide · FY 2025–26"
-        description="Every January, the 80C pressure starts. Salary slips show the tax deduction looming, and most people try to finish it fast — sometimes with the wrong instrument for their situation. PPF and ELSS both reduce your taxable income by up to ₹1.5 lakh, but they serve completely different financial purposes. Picking the wrong one — or splitting mechanically without thinking about your timeline — is one of the most common tax-planning mistakes among salaried Indians."
+        description="Every January, the 80C pressure arrives. Most salaried Indians try to finish it fast — sometimes with the wrong instrument for their actual situation. The honest answer to PPF vs ELSS is not about which one produces higher returns on paper. It is about your age, your income stability, and whether you will genuinely stay invested when the market falls 25% and a large unexpected expense arrives in the same month."
         sections={sections}
         nextDecisions={nextDecisions}
         references={references}

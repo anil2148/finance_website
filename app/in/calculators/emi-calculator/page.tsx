@@ -93,6 +93,28 @@ export default function IndiaEmiCalculatorPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">If you are in this situation — here is what to do</h2>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <article className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">If your in-hand salary is below ₹70,000/month</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Keep EMI below ₹22,000/month including all fixed obligations (roughly 31% of income). At this income level, a rate reset of 0.5% or a ₹3,000 school fee increase can push you into credit card debt at 36–42% interest. Consider a lower property price before negotiating rate.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">If one of two incomes is at risk (maternity, career change, layoff)</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Run the EMI scenario on single income alone. If the household cannot cover EMI + essentials on one salary for 2–3 months, the loan amount is too high for your actual risk profile — regardless of what the bank approved.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">If the property has a possession risk (under-construction project)</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Budget for 12–18 months of dual payment (EMI + rent) before you sign. Possession delays of this length are common in metro projects. If dual payment pushes total housing cost above 50% of in-hand income, reconsider the project or the timeline.</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-700 dark:bg-slate-800/40">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">If you have no emergency reserve after the down payment</h3>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Do not proceed until you retain at least 3 months of EMI + living expenses in liquid savings. Buyers who exhaust reserves at closing are one major expense away from a personal loan at 12–18% stacked on top of the home loan. Delay the purchase by one quarter if needed to rebuild the buffer.</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Real example: ₹85,000 in-hand household with ₹60 lakh loan</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
           At 8.75%, the EMI is roughly ₹27,500. That looks fine. Add ₹5,000 for maintenance and ₹4,000 for vehicle loan EMI — total fixed obligations reach ₹36,500, which is 43% of in-hand income. Now test at 9.25%: EMI rises to ~₹30,000, and total fixed obligations hit ₹39,000 — 46% of in-hand. If school fees rise ₹3,000 the same year, the household has no buffer.
