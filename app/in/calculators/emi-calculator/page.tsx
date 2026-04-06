@@ -31,7 +31,7 @@ export default function IndiaEmiCalculatorPage() {
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <article className="rounded-xl border border-rose-200 bg-white p-4 dark:border-rose-800/40 dark:bg-slate-900">
             <h3 className="text-sm font-semibold text-rose-700 dark:text-rose-400">Rate reset + school fee increase in the same year</h3>
-            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Floating rate loans reset every 12 months. A 0.75% increase on ₹60 lakh adds ₹2,800–₹3,200/month to your EMI. If your child&apos;s school fees also increase ₹3,000–₹5,000 the same year, your monthly cashflow just lost ₹6,000+ with no warning. Many households never stress-test these two events occurring together.</p>
+            <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Floating rate loans reset every 12 months. A 0.75% increase on ₹60 lakh adds ₹2,800–₹3,200/month to your EMI. If school fees for your child also increase ₹3,000–₹5,000 the same year, your monthly cashflow just lost ₹6,000+ with no warning. Many households never stress-test these two events occurring together.</p>
           </article>
           <article className="rounded-xl border border-rose-200 bg-white p-4 dark:border-rose-800/40 dark:bg-slate-900">
             <h3 className="text-sm font-semibold text-rose-700 dark:text-rose-400">Job loss or income gap — even temporarily</h3>
