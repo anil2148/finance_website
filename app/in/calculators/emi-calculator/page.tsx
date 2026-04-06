@@ -18,7 +18,7 @@ export default function IndiaEmiCalculatorPage() {
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">FinanceSphere India calculator</p>
         <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">Home Loan EMI Calculator (India)</h1>
         <p className="mt-3 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
-          Use this before you finalise a loan amount — not after. Most buyers clear bank eligibility and feel confident at booking. The pressure shows up later: when maintenance bills arrive, school fees increase, the rate resets upward, and both salaries are not available in the same month. Run the numbers now with realistic assumptions.
+          Use this before you finalise a loan amount — not after. Most buyers clear bank eligibility and feel confident at booking. The pressure shows up later: when maintenance bills arrive, school fees increase, the rate resets upward, and one income source is temporarily interrupted. Run the numbers now with realistic assumptions.
         </p>
       </header>
       <IndiaAuthorityNote />
