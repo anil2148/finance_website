@@ -249,7 +249,7 @@ export default function RegimePage() {
         <ul className="mt-3 list-disc space-y-1 pl-5 text-sm text-amber-900/90 dark:text-amber-100/90">
           <li>Total potential deductions: ₹1.2L (HRA) + ₹65K (EPF) + ₹85K (additional 80C to fill limit) + ₹18K (80D) = ₹3.68L</li>
           <li>Break-even at ₹15L salary: ~₹4.1L</li>
-          <li><strong>Verdict:</strong> Priya's deductions (₹3.68L) fall short of the break-even (₹4.1L) by ~₹42,000. New regime saves her ~₹9,000 in this example.</li>
+          <li><strong>Verdict:</strong> Priya&apos;s deductions (₹3.68L) fall short of the break-even (₹4.1L) by ~₹42,000. New regime saves her ~₹9,000 in this example.</li>
           <li>If she tops up 80C by ₹85,000 more via NPS or ELSS to reach ₹4.1L deductions, old regime becomes marginally equal. Not worth it unless NPS fits her goals.</li>
         </ul>
       </section>
