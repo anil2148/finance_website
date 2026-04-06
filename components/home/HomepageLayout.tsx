@@ -80,7 +80,7 @@ const tools = [
 ];
 
 const trustSignals = [
-  { label: 'Educational, not personalized advice', href: '/financial-disclaimer' },
+  { label: 'Educational content — not personalized advice', href: '/financial-disclaimer' },
   { label: 'Affiliate transparency and editorial independence', href: '/affiliate-disclosure' },
   { label: 'How FinanceSphere evaluates products', href: '/editorial-policy' }
 ];
@@ -88,24 +88,24 @@ const trustSignals = [
 const trustStory = [
   {
     title: 'Who this is for',
-    text: 'People making high-impact money choices right now: debt payoff, mortgage terms, savings allocation, and investing contributions.'
+    text: 'Anyone making a high-stakes money call right now — whether that is choosing a loan term, deciding how much to invest monthly, or stress-testing a mortgage before signing.'
   },
   {
-    title: 'Why this site exists',
-    text: 'Most tools show best-case scenarios. FinanceSphere is designed to surface what breaks first, so you can plan around it—not discover it after committing.'
+    title: 'Why stress-testing matters',
+    text: 'Most calculators show best-case outcomes. FinanceSphere is designed to surface where plans fail first — so you find that out now, not after committing to a 30-year obligation.'
   },
   {
     title: 'What makes it different',
-    text: 'Every decision comes with a stress scenario. Run the numbers in a good month and a bad month before you commit to anything.'
+    text: 'Every major decision path includes a failure scenario. Run the numbers in a normal month and a difficult month. If only one version works, the plan needs to change.'
   }
 ];
 
 const whatGoesWrong = {
   title: 'Where plans break',
-  scenario: 'You increase investing from $500 to $650 after a raise. One car repair forces a three-month pause in contributions.',
-  failure: 'Consistency breaks. The gap does more long-term damage than a smaller, stable plan would have.',
-  rule: 'Set your contribution ceiling using your worst recent month—not your best.',
-  microReality: 'A plan that fails once is not a plan.'
+  scenario: 'After a raise, you increase investing from $500 to $650/month. One unexpected car repair forces a three-month pause.',
+  failure: 'Consistency breaks. Three missed months at this stage can cost more compounded wealth than the extra $150/month was ever going to gain.',
+  rule: 'Use your worst recent income month — not your best — to set your sustainable contribution ceiling.',
+  microReality: 'A plan you abandon in month three was never really a plan.'
 };
 
 const crawlPriorityLinks = [
@@ -121,21 +121,21 @@ const homepageFaqs = [
   {
     question: 'Where should I start if I need quick financial clarity?',
     answer:
-      'Pick one decision you need to make this month, run the matching calculator first, and then read the linked comparison page before applying or moving money.',
+      'Pick one decision you need to make this month and run the matching calculator first. The numbers will tell you which comparison page to read next — before you apply, switch, or move money.',
     href: '/calculators',
     label: 'Browse all calculators'
   },
   {
     question: 'How are product recommendations evaluated?',
     answer:
-      'Comparison pages prioritize transparent trade-offs: total cost, rates, fees, flexibility, and who each option is likely to fit based on practical usage patterns.',
+      'Comparison pages prioritize transparent trade-offs: total cost, downside risk, fees, flexibility, and who each option actually fits. We do not rank by commission rate or affiliate volume.',
     href: '/editorial-policy',
     label: 'Read editorial policy'
   },
   {
     question: 'Is FinanceSphere financial advice?',
     answer:
-      'No. The site is educational. Use it to build your own decision framework, then verify current terms directly with providers before you commit.',
+      'No. Every page here is educational. Use it to build a decision framework — then verify current rates, terms, and eligibility directly with providers before you commit.',
     href: '/financial-disclaimer',
     label: 'Read full disclaimer'
   }
@@ -144,23 +144,23 @@ const homepageFaqs = [
 
 const userSegments = [
   {
-    title: 'Beginner with stable income',
-    note: 'Start with a conservative baseline, then raise contributions only after 3 stable months.',
+    title: 'Stable income — just starting',
+    note: 'Start conservative. Lock in a contribution you can hit every month for 6 months straight before raising it.',
     next: { href: '/calculators/budget-planner', label: 'Run budget planner first' }
   },
   {
-    title: 'Variable income household',
-    note: 'Use your lowest income month as baseline. If the plan fails there, it is too aggressive.',
+    title: 'Variable income',
+    note: 'Base every plan on your lowest income month in the past year. If it works there, it will survive almost anything.',
     next: { href: '/calculators/savings-goal-calculator', label: 'Model emergency runway' }
   },
   {
-    title: 'Debt payoff vs investing split',
-    note: 'Compare interest drag vs expected return, then prioritize the decision with lower failure risk.',
+    title: 'Debt payoff vs investing',
+    note: 'The answer depends on your interest rate and risk tolerance, not a general rule. Run the math for your actual balances.',
     next: { href: '/calculators/debt-payoff-calculator', label: 'Test debt payoff scenarios' }
   },
   {
-    title: 'Homeowner or future buyer',
-    note: 'Stress-test mortgage affordability before comparing lenders or listing budgets.',
+    title: 'Buying a home soon',
+    note: 'Stress-test the mortgage payment before you tour homes. It changes what budget feels comfortable — not just what qualifies.',
     next: { href: '/calculators/mortgage-calculator', label: 'Stress-test mortgage payment' }
   }
 ];
@@ -229,7 +229,7 @@ export function HomepageLayout() {
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">What to do first</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal, run the numbers, then choose your best next step.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick a goal, run the numbers, then choose your next step — not the other way around.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -246,8 +246,8 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="segment-plans">
-        <h2 id="segment-plans" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Pick a pathway that matches your reality</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Better decisions come from matching strategy to income stability, debt pressure, and housing risk.</p>
+        <h2 id="segment-plans" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Find the path that matches your situation</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Income stability, existing debt, and how close you are to a major purchase all change what the right move is — before any product comparison.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           {userSegments.map((segment) => (
             <article key={segment.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -279,7 +279,7 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="real-number-examples">
-        <h2 id="real-number-examples" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Money impact snapshot</h2>
+        <h2 id="real-number-examples" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Small decisions, large long-run impact</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {momentumExamples.map((example) => (
             <article key={example.label} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -293,7 +293,7 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Trust and purpose</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">About FinanceSphere</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {trustStory.map((item) => (
             <article key={item.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -314,7 +314,7 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="priority-pages-heading">
-        <h2 id="priority-pages-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Popular comparison and learning pages</h2>
+        <h2 id="priority-pages-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Comparisons and guides worth reading first</h2>
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           {crawlPriorityLinks.map((item) => (
             <Link key={item.href} href={item.href} className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:text-slate-200 dark:hover:border-blue-400 dark:hover:text-blue-300">
@@ -353,7 +353,7 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="homepage-faq-heading">
-        <h2 id="homepage-faq-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Quick answers before you start</h2>
+        <h2 id="homepage-faq-heading" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Common questions before you start</h2>
         <div className="mt-4 grid gap-3 md:grid-cols-3">
           {homepageFaqs.map((faq) => (
             <article key={faq.question} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">

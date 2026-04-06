@@ -84,50 +84,15 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
     <section className="article-prose space-y-8">
       <header className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">FinanceSphere India Blog</p>
-        <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">India money guides built for real household decisions</h1>
+        <h1 className="mt-2 text-3xl font-semibold text-slate-900 dark:text-slate-100">India money guides for real household decisions</h1>
         <p className="mt-3 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
-          Use these guides with India calculators to choose trade-offs before committing money. The focus here is practical monthly execution:
-          what to keep stable, what to grow, and how to avoid costly surprises.
+          These guides are built around the decisions Indian families actually face: how much SIP is enough, whether FD still makes sense for medium-term goals, how to pick a tax regime without guessing, and whether the EMI you can afford today will still feel comfortable in three years. Use them alongside the calculators — not instead of them.
         </p>
       </header>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Find the right India guide fast</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Search by topic, goal, or product (SIP, home loan EMI, PPF, ELSS, emergency fund).</p>
-        <input
-          className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-950"
-          placeholder="Search India guides by SIP, PPF, ELSS, loans, tax, savings..."
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          aria-label="Search India blog guides"
-        />
-        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Showing {filteredGuides.length} guide{filteredGuides.length === 1 ? '' : 's'}.</p>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Coverage map: what this hub already covers</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(CATEGORY_LABELS).map(([category, meta]) => (
-            <article key={category} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{meta.emoji} {meta.label}</p>
-              <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{categoryCounts[category] || 0} published guides</p>
-            </article>
-          ))}
-        </div>
-        <h3 className="mt-5 text-base font-semibold text-slate-900 dark:text-slate-100">Recently updated</h3>
-        <ul className="mt-2 space-y-2 text-sm">
-          {latestGuides.map((guide) => (
-            <li key={guide.slug}>
-              <Link href={`/in/blog/${guide.slug}`} className="content-link">
-                {guide.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Start with your immediate blocker</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Start here based on your situation</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Not sure where to begin? Match your most urgent decision to the right guide.</p>
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {Array.from(groupedPathways.entries()).map(([group, items]) => (
             <div key={group}>
@@ -146,6 +111,41 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
         </div>
       </section>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Search India guides</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Search by topic, goal, or product — SIP, home loan EMI, PPF, ELSS, tax regime, emergency fund.</p>
+        <input
+          className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-950"
+          placeholder="Search guides by topic: SIP, PPF, ELSS, loans, tax, savings..."
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          aria-label="Search India blog guides"
+        />
+        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Showing {filteredGuides.length} guide{filteredGuides.length === 1 ? '' : 's'}.</p>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What this hub covers</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {Object.entries(CATEGORY_LABELS).map(([category, meta]) => (
+            <article key={category} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{meta.emoji} {meta.label}</p>
+              <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{categoryCounts[category] || 0} guides published</p>
+            </article>
+          ))}
+        </div>
+        <h3 className="mt-5 text-base font-semibold text-slate-900 dark:text-slate-100">Recently added</h3>
+        <ul className="mt-2 space-y-2 text-sm">
+          {latestGuides.map((guide) => (
+            <li key={guide.slug}>
+              <Link href={`/in/blog/${guide.slug}`} className="content-link">
+                {guide.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       {Array.from(groupedGuides.entries()).map(([category, categoryGuides]) => {
         const { label, emoji } = CATEGORY_LABELS[category] || { label: category, emoji: '📖' };
         return (
@@ -154,7 +154,10 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
               <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">
                 {emoji} {label}
               </h2>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Practical guides for Indian financial decisions</p>
+              {category === 'investing' && <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">How to build wealth through SIPs, when FD is the better choice, and how to stay invested through market corrections.</p>}
+              {category === 'loans' && <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">EMI affordability, rate reset risk, and how to avoid home loan decisions that look fine at signing but squeeze the budget in year 3.</p>}
+              {category === 'tax' && <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Tax regime comparison, 80C strategy without the March rush, and capital gains planning before you rebalance.</p>}
+              {category === 'savings' && <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Emergency fund targets, FD ladder strategy, and how to avoid rate-chasing that reduces real yield after penalties.</p>}
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               {categoryGuides.map((guide) => (
@@ -190,10 +193,9 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
       ) : null}
 
       <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900 dark:bg-blue-950">
-        <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">📍 Why India guides matter</h3>
+        <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">📍 Why these guides are India-specific</h3>
         <p className="mt-2 text-sm text-blue-800 dark:text-blue-200">
-          Financial tools and decisions in India follow specific rules: SIP vs FD, PPF vs ELSS, Section 80C strategies, and EMI affordability
-          under GST + inflation. These guides translate global finance concepts into practical ₹-based scenarios for Indian households.
+          Financial decisions in India follow specific rules that global tools do not account for: SIP taxation under LTCG, Section 80C deduction limits and eligibility, PPF lock-in structures, floating rate EMI resets, and the GST layer on insurance and financial services. These guides translate the real numbers into practical decisions for Indian salary ranges and household expense patterns.
         </p>
       </section>
     </section>
