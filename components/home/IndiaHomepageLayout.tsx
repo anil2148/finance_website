@@ -85,6 +85,12 @@ const trustStory = [
   }
 ];
 
+const indiaMistake = {
+  mistake: 'Deciding on tax regime, SIP level, or EMI size in January–February under deadline pressure instead of planning from April.',
+  whyItBackfires: 'March pressure leads to lump-sum investments at whatever market price happens to be, over-allocation to 80C without checking monthly cashflow impact, and EMI commitments that look affordable until school fees and rate resets arrive.',
+  betterAlternative: 'Lock decisions in April. Automate contributions monthly. Stress-test EMI at +1% before booking. The earlier you start the process, the less you pay for the delay.'
+};
+
 const moneyImpactExamples = [
   {
     label: 'Step up SIP from ₹10,000 to ₹12,000/month',
@@ -229,21 +235,42 @@ export function IndiaHomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">About FinanceSphere India</h2>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How this India hub works</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          India financial decisions are specific: SIP vs FD timelines, old vs new tax regime deduction thresholds, EMI-to-income ratios, 80C automation from April. Generic financial tools do not account for these. This hub keeps every decision grounded in real ₹ salary bands and India-specific rules.
+        </p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
-            <article key={item.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.title}</h3>
-              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.text}</p>
-            </article>
+            <div key={item.title}>
+              <p className="font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">{item.text}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900" aria-label="Trust and transparency links for India">
+      <section className="rounded-2xl border border-amber-100 bg-amber-50/50 p-5 dark:border-amber-900/40 dark:bg-amber-950/10">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">The most common India financial planning mistake</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
+          <div className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <p className="font-semibold text-amber-700 dark:text-amber-400">Common pattern</p>
+            <p className="mt-1 text-slate-700 dark:text-slate-300">{indiaMistake.mistake}</p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <p className="font-semibold text-amber-700 dark:text-amber-400">Why it costs more</p>
+            <p className="mt-1 text-slate-700 dark:text-slate-300">{indiaMistake.whyItBackfires}</p>
+          </div>
+          <div className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-800/40 dark:bg-slate-900">
+            <p className="font-semibold text-emerald-700 dark:text-emerald-400">What to do instead</p>
+            <p className="mt-1 text-slate-700 dark:text-slate-300">{indiaMistake.betterAlternative}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-label="Trust and transparency links for India">
         {trustSignals.map((signal) => (
-          <Link key={signal.label} href={signal.href} className="flex items-start gap-2 rounded-xl border border-slate-100 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
-            <ShieldCheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-blue-300" aria-hidden="true" />
+          <Link key={signal.label} href={signal.href} className="flex items-center gap-2 rounded-xl border border-slate-100 px-3 py-2 text-sm transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
+            <ShieldCheckIcon className="h-4 w-4 shrink-0 text-blue-700 dark:text-blue-300" aria-hidden="true" />
             <span className="font-medium text-slate-700 dark:text-slate-200">{signal.label}</span>
           </Link>
         ))}

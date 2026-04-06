@@ -100,6 +100,13 @@ const trustStory = [
   }
 ];
 
+const homepageMistake = {
+  label: 'Common first move',
+  mistake: 'Comparing products before running the numbers for your own situation.',
+  why: 'The best credit card, savings account, or mortgage offer on a comparison site may be wrong for your income stability, debt profile, or timeline — even if the rate looks right.',
+  fix: 'Run a calculator first. The number tells you which comparison page to read next — and which options to skip entirely.'
+};
+
 const whatGoesWrong = {
   title: 'Where plans break first',
   scenarios: [
@@ -308,21 +315,42 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">About FinanceSphere</h2>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          Most finance content tells you what things are. This site is built to help you decide what to do — with real numbers, stress tests, and the failure points that most plans hit before success. If you leave without a clearer next step, something did not work.
+        </p>
+        <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
-            <article key={item.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{item.title}</h3>
-              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.text}</p>
-            </article>
+            <div key={item.title}>
+              <p className="font-semibold text-slate-900 dark:text-slate-100">{item.title}</p>
+              <p className="mt-1 text-slate-600 dark:text-slate-300">{item.text}</p>
+            </div>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 md:grid-cols-3 dark:border-slate-700 dark:bg-slate-900" aria-label="Trust and transparency links">
+      <section className="rounded-2xl border border-rose-100 bg-rose-50/40 p-5 dark:border-rose-900/40 dark:bg-rose-950/10">
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Before you compare products: one common mistake</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
+          <div className="rounded-xl border border-rose-200 bg-white p-3 dark:border-rose-800/40 dark:bg-slate-900">
+            <p className="font-semibold text-rose-700 dark:text-rose-400">Common move</p>
+            <p className="mt-1 text-slate-700 dark:text-slate-300">{homepageMistake.mistake}</p>
+          </div>
+          <div className="rounded-xl border border-rose-200 bg-white p-3 dark:border-rose-800/40 dark:bg-slate-900">
+            <p className="font-semibold text-rose-700 dark:text-rose-400">Why it backfires</p>
+            <p className="mt-1 text-slate-700 dark:text-slate-300">{homepageMistake.why}</p>
+          </div>
+          <div className="rounded-xl border border-rose-200 bg-white p-3 dark:border-rose-800/40 dark:bg-slate-900">
+            <p className="font-semibold text-emerald-700 dark:text-emerald-400">Better approach</p>
+            <p className="mt-1 text-slate-700 dark:text-slate-300">{homepageMistake.fix}</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-label="Trust and transparency links">
         {trustSignals.map((signal) => (
-          <Link key={signal.label} href={signal.href} className="flex items-start gap-2 rounded-xl border border-slate-100 px-3 py-3 text-sm transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
-            <ShieldCheckIcon className="mt-0.5 h-4 w-4 shrink-0 text-blue-700 dark:text-blue-300" aria-hidden="true" />
+          <Link key={signal.label} href={signal.href} className="flex items-center gap-2 rounded-xl border border-slate-100 px-3 py-2 text-sm transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-slate-700 dark:hover:border-blue-400/40 dark:hover:bg-blue-500/10">
+            <ShieldCheckIcon className="h-4 w-4 shrink-0 text-blue-700 dark:text-blue-300" aria-hidden="true" />
             <span className="font-medium text-slate-700 dark:text-slate-200">{signal.label}</span>
           </Link>
         ))}
