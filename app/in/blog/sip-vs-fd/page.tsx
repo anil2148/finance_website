@@ -123,6 +123,28 @@ const sections = [
       'Most SIP vs FD comparisons are written for people with stable salaries, no EMIs, and no family obligations. That is a small percentage of Indian households. If your salary comes with variable components — bonus, commission, or irregular payments — your monthly cashflow looks very different from a projection spreadsheet. The right strategy is the one that works in your worst month, not your best. People stop investing after losses or income shocks — that is where plans actually fail, not in the math. Size your SIP around a month when things were genuinely tight, not a month when everything aligned.'
   },
   {
+    type: 'mistake' as const,
+    title: 'The most common SIP vs FD mistake',
+    mistake:
+      'Using SIP for a fixed-timeline goal (home down payment in 2–3 years, education fees, wedding) because the projected return looks better than FD.',
+    whyItBackfires:
+      'A 20–25% market drawdown 6–12 months before your goal date means you either delay the goal or sell at a loss. Unlike FD, equity SIP has no guaranteed floor. The return advantage of SIP is real over 10+ years but meaningless — or actively harmful — when the goal date is fixed and near.',
+    betterAlternative:
+      'Keep fixed-timeline money in FD, recurring deposits, or debt funds regardless of what the projected SIP return chart shows. Use SIP only for goals where the timeline is flexible enough to absorb a 2-year market recovery period. Near-term certainty is worth the 2–4% yield difference.'
+  },
+  {
+    type: 'contradiction' as const,
+    title: 'SIP wins long-term. Many investors do not capture that win.',
+    mathWinner:
+      'Over 10 years at ₹10,000/month, a SIP at 11% builds roughly ₹20.6 lakh versus ₹16.8 lakh in FD at 6.8% — about ₹3.8 lakh more. Over 20 years the gap is much larger. The math clearly favors SIP for long horizons.',
+    realLifeChoice:
+      'Many investors who started SIPs in 2019–2020 paused during the March 2020 crash. Many paused again in 2022. Each pause compressed the actual return achieved versus the theoretical return. The average equity investor\'s return often significantly underperforms the fund\'s own published returns because of behaviorally-timed entry and exit.',
+    reason:
+      "SIP's compounding advantage depends on uninterrupted investment through market cycles. Most people maintain discipline during flat or rising markets and break it during corrections — which is exactly when staying invested matters most. The gap between theoretical SIP return and actual investor return is sometimes called the 'behavior gap.'",
+    resolution:
+      'If you would pause a SIP during a 25% market fall, the FD is the right real-world choice for that money — even if the projection chart says otherwise. Choose SIP only for the money you can genuinely commit to not touching for 7+ years, including during your next period of financial stress.'
+  },
+  {
     type: 'decision-panel' as const,
     title: 'Blended allocation: what most households actually need',
     tone: 'emerald' as const,

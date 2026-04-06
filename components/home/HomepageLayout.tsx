@@ -7,6 +7,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import AuthorBox from '@/components/common/AuthorBox';
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 
 const popularCalculators = [
   {
@@ -328,6 +329,10 @@ export function HomepageLayout() {
           ))}
         </div>
       </section>
+
+      <HumanJudgmentCallout>
+        Most people choose a plan that only works in their best month. The plan that actually builds wealth is the one that survives your worst recent month — and keeps running when optimism fades.
+      </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-rose-100 bg-rose-50/40 p-5 dark:border-rose-900/40 dark:bg-rose-950/10">
         <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Before you compare products: one common mistake</h2>
