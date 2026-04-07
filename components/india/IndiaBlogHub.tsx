@@ -30,6 +30,7 @@ const CATEGORY_LABELS: Record<string, { label: string; emoji: string }> = {
 
 export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
   const [query, setQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const latestGuides = useMemo(
     () => [...guides].sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()).slice(0, 4),
@@ -45,18 +46,24 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
   }, [guides]);
 
   const filteredGuides = useMemo(() => {
-    if (!query.trim()) {
-      return guides;
+    let result = guides;
+
+    if (activeCategory) {
+      result = result.filter((guide) => guide.category === activeCategory);
     }
 
-    const fuse = new Fuse(guides, {
+    if (!query.trim()) {
+      return result;
+    }
+
+    const fuse = new Fuse(result, {
       keys: ['title', 'description', 'category'],
       threshold: 0.35,
       ignoreLocation: true
     });
 
     return fuse.search(query).map((result) => result.item);
-  }, [guides, query]);
+  }, [guides, query, activeCategory]);
 
   const groupedGuides = useMemo(() => {
     const groups = new Map<string, IndiaBlogGuide[]>();
@@ -114,6 +121,24 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Search India guides</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Search by topic, goal, or product — SIP, home loan EMI, PPF, ELSS, tax regime, emergency fund.</p>
+        <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+          <button
+            onClick={() => setActiveCategory(null)}
+            className={`rounded-full border px-4 py-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 ${activeCategory === null ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'}`}
+          >
+            All
+          </button>
+          {Object.entries(CATEGORY_LABELS).map(([category, meta]) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(activeCategory === category ? null : category)}
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 ${activeCategory === category ? 'border-blue-600 bg-blue-600 text-white' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700'}`}
+              aria-pressed={activeCategory === category}
+            >
+              {meta.emoji} {meta.label}
+            </button>
+          ))}
+        </div>
         <input
           className="mt-4 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-slate-700 dark:bg-slate-950"
           placeholder="Search guides by topic: SIP, PPF, ELSS, loans, tax, savings..."
