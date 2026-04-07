@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
+import { CommonMistakeModule } from '@/components/common/CommonMistakeModule';
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Credit Card Decision Framework | FinanceSphere',
@@ -61,6 +63,9 @@ export default function CreditCardsPage() {
           This page is for people choosing a card in the next 30–90 days. Use it to avoid the expensive mistake of comparing only rewards while ignoring
           APR risk, fee triggers, and approval fit.
         </p>
+        <p className="max-w-3xl text-sm font-medium text-slate-800">
+          The right credit card is not the one with the highest rewards rate — it is the one that still works in your worst spending month without carrying interest.
+        </p>
         <div className="flex flex-wrap gap-2 text-sm">
           <Link href="/best-credit-cards-2026" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Open full comparison framework</Link>
           <Link href="/calculators/credit-card-payoff-calculator" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Run payoff calculator</Link>
@@ -120,6 +125,17 @@ export default function CreditCardsPage() {
           ))}
         </div>
       </section>
+
+      <HumanJudgmentCallout>
+        Most people stop evaluating credit cards once the welcome bonus catches their eye. That is where the expensive decisions begin.
+      </HumanJudgmentCallout>
+
+      <CommonMistakeModule
+        heading="The most common credit card mistake"
+        mistake="Choosing a card based on the rewards rate or welcome bonus while underestimating APR exposure from even one carried balance month."
+        whyItBackfires="At 24–29% APR, carrying a $2,000 balance for 6 months costs roughly $140–$175 in interest — enough to erase an entire year of rewards from a mid-tier card. The bonus that attracted you becomes the reason the card ends up costing money."
+        betterAlternative="Run the payoff calculator first. If there is any realistic chance you will carry a balance, prioritize low APR and no annual fee over reward rate. Rewards only create real value when you pay the full statement balance every month without exception."
+      />
     </section>
   );
 }

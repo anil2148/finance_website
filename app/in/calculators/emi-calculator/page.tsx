@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { EmiCalculator } from '@/components/calculator/EmiCalculator';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 
 export const metadata: Metadata = createPageMetadata({
   title: 'India Home Loan EMI Calculator (₹) | FinanceSphere India',
@@ -20,13 +21,20 @@ export default function IndiaEmiCalculatorPage() {
         <p className="mt-3 max-w-3xl text-sm text-slate-600 dark:text-slate-300">
           Use this before you finalise a loan amount — not after. Most buyers clear bank eligibility and feel confident at booking. The pressure shows up later: when maintenance bills arrive, school fees increase, the rate resets upward, and one income source is temporarily interrupted. Run the numbers now with realistic assumptions, including a rate that is 0.5–1% higher than what you were quoted.
         </p>
+        <p className="mt-2 max-w-3xl text-sm font-medium text-slate-800 dark:text-slate-200">
+          The bank approves what you can borrow — only you can decide what you can safely repay for 20 years.
+        </p>
       </header>
       <IndiaAuthorityNote />
 
       <EmiCalculator type="mortgage" />
 
+      <HumanJudgmentCallout>
+        Most people stop stressing about affordability the moment the bank approves the loan. That is exactly when the real stress test should begin.
+      </HumanJudgmentCallout>
+
       <section className="rounded-2xl border border-rose-100 bg-rose-50/60 p-6 dark:border-rose-900/40 dark:bg-rose-950/20">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When EMI plans break: real scenarios most buyers ignore</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">When EMI plans break: the scenarios most buyers never run</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">The EMI looks fine at the time of booking. These are the situations where it stops looking fine — usually within 18–36 months.</p>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <article className="rounded-xl border border-rose-200 bg-white p-4 dark:border-rose-800/40 dark:bg-slate-900">
