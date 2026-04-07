@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import AuthorBox from '@/components/common/AuthorBox';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
+import { AUTHOR_PROFILES, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 
 const popularCalculators = [
   {
@@ -207,6 +208,7 @@ const momentumExamples = [
 ];
 
 export function HomepageLayout() {
+  const author = AUTHOR_PROFILES[PRIMARY_AUTHOR_ID];
   return (
     <section className="space-y-10" aria-label="FinanceSphere homepage">
       <Card className="relative overflow-hidden border-none bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 text-white shadow-[0_30px_80px_-40px_rgba(37,99,235,0.9)]">
@@ -414,6 +416,43 @@ export function HomepageLayout() {
               <Link href={faq.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">{faq.label}</Link>
             </article>
           ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="why-trust-us">
+        <h2 id="why-trust-us" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Why trust FinanceSphere?</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Built by {author.name}, {author.description}.</p>
+        <div className="mt-4 grid gap-4 md:grid-cols-3">
+          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Decision-first methodology</p>
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Every article starts from the common mistake, not a product pitch. We explain what goes wrong before explaining what to do.</p>
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Transparent about conflicts</p>
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Affiliate relationships are clearly disclosed. Partners cannot buy rankings, suppress risk notes, or remove limitations from any page.</p>
+          </div>
+          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Calculator-backed content</p>
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Every guide links to a calculator so you can apply the advice to your specific numbers before closing the tab.</p>
+          </div>
+        </div>
+        {author.expertise && author.expertise.length > 0 ? (
+          <div className="mt-4 border-t border-slate-100 pt-4 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Topics covered</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {author.expertise.map((area) => (
+                <span key={area} className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-600 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                  {area}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        <div className="mt-4 flex flex-wrap gap-2 text-xs">
+          <Link href="/about" className="font-medium text-blue-600 hover:underline dark:text-blue-400">About Smita &amp; FinanceSphere</Link>
+          <Link href="/editorial-policy" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Editorial policy</Link>
+          <Link href="/how-we-make-money" className="font-medium text-blue-600 hover:underline dark:text-blue-400">How we make money</Link>
+          <Link href="/financial-disclaimer" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Financial disclaimer</Link>
         </div>
       </section>
 
