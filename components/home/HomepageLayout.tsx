@@ -29,6 +29,7 @@ const popularCalculators = [
 
 const goalCards = [
   {
+    tag: 'Calculate → then stress-test',
     title: 'Pay off debt faster',
     description: 'Estimate payoff dates and interest savings, then compare balance transfer cards or consolidation loans that fit your profile.',
     primaryLabel: 'Start with the Debt Payoff Calculator',
@@ -37,6 +38,7 @@ const goalCards = [
     secondaryHref: '/loans'
   },
   {
+    tag: 'Model it before you commit',
     title: 'Compare investing apps',
     description: 'Model how much you can invest each month, then review platforms by fees, account types, and beginner-friendly tools.',
     primaryLabel: 'Run an investment growth projection',
@@ -45,6 +47,7 @@ const goalCards = [
     secondaryHref: '/best-investment-apps'
   },
   {
+    tag: 'Numbers first, then lenders',
     title: 'Estimate mortgage costs',
     description: 'Test home prices, down payments, and rates to see affordable monthly payments before speaking with lenders.',
     primaryLabel: 'Use the Mortgage Calculator',
@@ -53,6 +56,7 @@ const goalCards = [
     secondaryHref: '/compare/mortgage-rate-comparison'
   },
   {
+    tag: 'Project it, then decide',
     title: 'Plan for retirement',
     description: 'Estimate how much you may need, where you are today, and account types that can help close the gap.',
     primaryLabel: 'Check your retirement trajectory',
@@ -109,7 +113,7 @@ const homepageMistake = {
 };
 
 const whatGoesWrong = {
-  title: 'Where plans break first',
+  title: 'The part most plans skip',
   scenarios: [
     {
       label: 'The income-growth trap',
@@ -124,7 +128,7 @@ const whatGoesWrong = {
       rule: 'Rewards are only profitable if you would have spent the money anyway. If hitting the threshold requires new spending, the card costs money — not earns it.'
     }
   ],
-  microReality: 'Most people choose an ambitious number. Choose the sustainable one instead.'
+  microReality: 'An ambitious plan that only works in your best month is not a real plan.'
 };
 
 const crawlPriorityLinks = [
@@ -252,7 +256,7 @@ export function HomepageLayout() {
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Run numbers → Stress test → Decide</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">{goal.tag}</p>
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{goal.title}</h3>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{goal.description}</p>
               <div className="mt-3 space-y-1 text-sm">

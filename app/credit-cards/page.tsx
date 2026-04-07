@@ -131,11 +131,15 @@ export default function CreditCardsPage() {
       </HumanJudgmentCallout>
 
       <CommonMistakeModule
-        heading="The most common credit card mistake"
+        heading="Where this can backfire: the APR trap"
         mistake="Choosing a card based on the rewards rate or welcome bonus while underestimating APR exposure from even one carried balance month."
         whyItBackfires="At 24–29% APR, carrying a $2,000 balance for 6 months costs roughly $140–$175 in interest — enough to erase an entire year of rewards from a mid-tier card. The bonus that attracted you becomes the reason the card ends up costing money."
         betterAlternative="Run the payoff calculator first. If there is any realistic chance you will carry a balance, prioritize low APR and no annual fee over reward rate. Rewards only create real value when you pay the full statement balance every month without exception."
       />
+
+      <p className="rounded-xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm font-medium text-slate-700">
+        The card that performs best in your budget spreadsheet is not always the one that survives your most expensive month. Stress-test that month before you apply.
+      </p>
     </section>
   );
 }

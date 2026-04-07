@@ -130,6 +130,9 @@ export default function IndiaEmiCalculatorPage() {
         <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
           In this case, reducing loan size to ₹52–₹55 lakh and increasing down payment improves long-run stability far more than finding a slightly lower rate. A higher EMI looks fine on paper but breaks under real-life expenses arriving simultaneously.
         </p>
+        <p className="mt-3 text-sm font-medium text-slate-800 dark:text-slate-200">
+          Bank approval tells you the maximum you can borrow. Only you can decide the maximum you can safely repay across 240 months of real life — including the difficult ones.
+        </p>
         <div className="mt-4 flex flex-wrap gap-4 text-sm">
           <Link href="/in/home-loan-interest-rates-india" className="content-link">Compare live home-loan rate ranges in India</Link>
           <Link href="/in/home-affordability-india" className="content-link">Check home affordability before booking</Link>
