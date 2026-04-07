@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
+
+export const metadata: Metadata = createPageMetadata({
   description: 'India tax decision hub with old-vs-new regime checks, 80C/80D planning, and monthly cashflow-safe execution examples.',
   pathname: '/in/tax'
 });
