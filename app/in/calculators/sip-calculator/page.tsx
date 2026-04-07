@@ -25,7 +25,7 @@ export default function IndiaSipCalculatorPage() {
       <EmiCalculator type="compound" />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What this means for you</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How to interpret the result</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
           <li><strong>Affordability guidance:</strong> Pick a SIP amount you can continue through weak markets and high-expense months.</li>
           <li><strong>Risk warning:</strong> Short horizons and frequent SIP pauses can break expected compounding outcomes.</li>
@@ -34,7 +34,7 @@ export default function IndiaSipCalculatorPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Use realistic SIP checkpoints</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Checkpoints before locking a monthly amount</h2>
         <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-slate-700 dark:text-slate-300">
           <li>Run the same goal at ₹5,000, ₹10,000, and ₹25,000 monthly to find a contribution you can sustain in bad months.</li>
           <li>Test 10-year and 15-year horizons separately; short horizons can feel emotionally difficult during drawdowns.</li>
@@ -44,7 +44,7 @@ export default function IndiaSipCalculatorPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Use with these India decisions</h2>
+        <h2 className="text-base font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Decisions to pair with this calculator</h2>
         <div className="mt-3 flex flex-wrap gap-4 text-sm">
           <Link href="/in/blog/sip-vs-fd" className="content-link">SIP vs FD comparison</Link>
           <Link href="/in/blog/ppf-vs-elss" className="content-link">PPF vs ELSS comparison</Link>
