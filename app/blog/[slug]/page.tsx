@@ -14,6 +14,7 @@ import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByBlogCategory, 
 import { redirectForSlug } from '@/lib/blogCleanup';
 import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
+import { AdUnit } from '@/components/ui/AdUnit';
 
 export const dynamic = 'force-dynamic';
 
@@ -343,6 +344,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
 
       <InteractiveArticleContent content={post.content} />
 
+      <AdUnit slot="5678901234" format="auto" className="my-2" />
+
       <section className="rounded-xl border border-amber-200 bg-amber-50 p-5 dark:border-amber-500/50 dark:bg-amber-950/30">
         <h2 className="text-xl font-semibold text-amber-900 dark:text-amber-100">Before you act on this guide</h2>
         <p className="mt-2 text-sm leading-6 text-amber-900 dark:text-amber-100">
@@ -446,6 +449,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
           )}
         </section>
       )}
+
+      <AdUnit slot="6789012345" format="auto" className="my-2" />
 
       <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Where to go next</h2>

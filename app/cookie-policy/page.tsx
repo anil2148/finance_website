@@ -24,8 +24,17 @@ export default function CookiePolicyPage() {
       <ul>
         <li><strong>Essential cookies:</strong> required for security, navigation, and baseline site functionality.</li>
         <li><strong>Analytics cookies:</strong> used to measure traffic and improve user experience.</li>
+        <li><strong>Advertising cookies:</strong> used by Google AdSense and other advertising partners to serve relevant ads and measure ad performance. This includes the DoubleClick DART cookie, which enables Google to serve ads based on your visits to this and other websites.</li>
         <li><strong>Affiliate tracking cookies:</strong> used by affiliate networks to attribute referrals from FinanceSphere.</li>
       </ul>
+
+      <h2>Advertising and Opt-Out</h2>
+      <p>
+        FinanceSphere works with Google AdSense to display advertising. You may opt out of personalized advertising by visiting{' '}
+        <a href="https://adssettings.google.com" rel="noopener noreferrer" target="_blank">Google Ads Settings</a> or the{' '}
+        <a href="https://optout.networkadvertising.org" rel="noopener noreferrer" target="_blank">Network Advertising Initiative opt-out page</a>.
+        You can also control advertising cookies through your browser settings or our consent banner.
+      </p>
 
       <h2>How to Disable Cookies</h2>
       <ul>

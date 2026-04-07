@@ -37,9 +37,28 @@ export default function PrivacyPolicyPage() {
         <li><strong>Affiliate tracking cookies:</strong> used to credit FinanceSphere when users engage with partner links.</li>
       </ul>
       <p>You can disable cookies through browser settings and reject non-essential cookies in our consent banner. Blocking some cookies may impact specific features.</p>
+      <h2>Third-Party Advertising (Google AdSense)</h2>
+      <p>
+        FinanceSphere uses Google AdSense to display advertisements. Google, as a third-party vendor, uses cookies to serve ads on our site. Google's use of
+        advertising cookies enables it and its partners to serve ads based on your visits to this site and/or other sites on the internet.
+      </p>
+      <p>
+        Google may use the DoubleClick DART cookie to serve relevant ads to users based on their visit to FinanceSphere and other sites on the internet. Users
+        may opt out of the use of the DART cookie by visiting the{' '}
+        <a href="https://adssettings.google.com" rel="noopener noreferrer" target="_blank">Google Ads Settings page</a>.
+        Alternatively, you can opt out of third-party vendor use of cookies by visiting the{' '}
+        <a href="https://optout.networkadvertising.org" rel="noopener noreferrer" target="_blank">Network Advertising Initiative opt-out page</a>.
+      </p>
+      <p>
+        For more information on how Google collects and uses data, please review{' '}
+        <a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">Google's Privacy Policy</a> and{' '}
+        <a href="https://policies.google.com/technologies/ads" rel="noopener noreferrer" target="_blank">Google's Advertising Policies</a>.
+      </p>
+
       <h2>Third-Party Sharing</h2>
       <ul>
         <li>Analytics providers to report anonymized usage trends.</li>
+        <li>Advertising partners (including Google AdSense) to serve relevant display advertisements.</li>
         <li>Affiliate networks and partner platforms for referral attribution.</li>
         <li>Email service providers for newsletter delivery and confirmation flows.</li>
         <li>Legal authorities when required by law, subpoena, or valid legal process.</li>
