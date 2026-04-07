@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
+
+export const metadata: Metadata = createPageMetadata({
+  title: 'India Real Estate Hub 2026: Evaluate Rent vs Buy, Down Payment Liquidity, and EMI Resilience Before Booking',
   description:
     'Use this India real-estate hub to evaluate rent-vs-buy, down payment vs liquidity, and EMI resilience before booking.',
   pathname: '/in/real-estate'
