@@ -5,6 +5,7 @@ import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByFinancialCateg
 import { breadcrumbSchema, webpageSchema } from '@/lib/seo';
 import AuthorBox from '@/components/common/AuthorBox';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
+import { RealLifeContradictionModule } from '@/components/common/RealLifeContradictionModule';
 
 type SeoComparisonPageProps = {
   pageTitle: string;
@@ -331,6 +332,44 @@ const decisionBranchingByCategory: Record<FinancialCategory, Array<{ condition: 
   ]
 };
 
+const contradictionByCategory: Record<FinancialCategory, { title: string; mathWinner: string; realLifeChoice: string; reason: string; resolution: string }> = {
+  credit_card: {
+    title: 'Premium rewards cards look better on paper than they perform in practice',
+    mathWinner: 'A premium travel card with a $395 annual fee can produce $600–$900 in net value per year for a household that spends $4,000/month across the right categories, redeems every travel credit, and never carries a balance.',
+    realLifeChoice: 'Most premium cardholders do not fully redeem travel credits, exceed the spending threshold with purchases they would not otherwise make, or carry a balance at least once in year one. Net annual value is often closer to $100–$200 — sometimes negative.',
+    reason: 'The math assumes full redemption of every credit at maximum value, consistent full-payment behavior, and spending patterns that stay within bonus categories. Real life rarely holds all three constant for more than one year. Life events — an income dip, a move, a change in travel frequency — quietly erode the reward math without triggering a card switch.',
+    resolution: 'A no-fee 1.5–2% cashback card produces lower theoretical value but more predictable, year-over-year positive returns with zero behavioral requirements. Run your actual annual spend pattern through both options before applying, not the spend pattern you plan to have.'
+  },
+  savings_account: {
+    title: 'A higher APY is objectively better — until liquidity is actually needed',
+    mathWinner: 'On a $20,000 emergency fund, a 4.75% APY account earns roughly $950 per year while a 4.35% account earns $870. The higher-rate account is $80 ahead annually — a clear win on paper.',
+    realLifeChoice: 'Many households moved emergency funds to higher-yield accounts and experienced a three-to-five day transfer delay when an actual emergency arrived. One missed bill payment, late fee, or credit-card charge during a delay can exceed the entire annual APY advantage.',
+    reason: 'Savings account comparisons are usually built around return math, not access math. Emergency money is only useful if it can be accessed when the emergency happens — not in three business days. Transfer speed is not prominently disclosed in most APY comparisons, and most people never test the outbound transfer workflow before relying on it.',
+    resolution: 'For any account holding money you might need within 48 hours, test one outbound transfer before fully funding the account. Transfer speed matters as much as yield for true emergency reserves. For medium-term savings with no liquidity urgency, optimize freely for APY.'
+  },
+  investment_app: {
+    title: 'Lower fee drag compounds to a large advantage — but only for people who stay invested',
+    mathWinner: 'A 0.80% annual fee difference on $100,000 over 20 years at 7% gross return can compound to a $30,000+ gap in final portfolio value. Fees are one of the highest-leverage variables in long-run investing. The math is unambiguous.',
+    realLifeChoice: 'Many investors who switched to lower-fee platforms found that the self-directed environment made it easier to trade on news, check account balances during market drops, and make reactive allocation changes. The behavior gap — the difference between the market return and the actual investor return — often exceeds the fee advantage.',
+    reason: 'Fee comparisons measure a known, constant cost. Behavior costs are invisible and variable, but often larger. An automated, slightly higher-fee platform that prevents impulsive decisions during market corrections can produce better real-world outcomes than a low-fee platform that makes reactive trading frictionless.',
+    resolution: 'Match platform to behavior, not just cost. If you have a track record of staying invested during market drops, optimize for fees. If you have not been tested yet, weight the automation and friction features before the expense ratio.'
+  },
+  mortgage_lender: {
+    title: 'The lowest rate on paper rarely stays the lowest rate at closing',
+    mathWinner: 'On a $400,000 mortgage, a 6.25% rate saves approximately $60/month compared to 6.40% — roughly $21,600 over 30 years. Chasing the best rate is mathematically justified if execution quality is equal.',
+    realLifeChoice: 'Many buyers who selected a lender primarily for rate experienced rate-lock expirations, documentation delays, and last-minute underwriting surprises that either cost money to resolve or pushed closing past deadline. Some faced contract renegotiation or lost the property entirely. The rate on the Loan Estimate sheet assumes a clean, timely file.',
+    reason: 'Rate is visible and comparable on day one. Execution reliability is only visible at closing — which is when it matters most. A lender with strong operations processes can close a complex file in 21 days. A lender with weak operations can take 45 days on a simple file and create cascading costs. No disclosure document shows you which you are working with until the process is underway.',
+    resolution: 'For buyers with tight closing timelines or complex files, prioritize lender track record on execution alongside rate. Ask directly: what is your average time from application to clear-to-close for a file type similar to mine? Their answer matters as much as the rate sheet.'
+  },
+  personal_loan: {
+    title: 'Debt consolidation improves the math but often not the outcome',
+    mathWinner: 'Consolidating $15,000 at 22% APR into a 48-month loan at 10% APR reduces monthly interest cost by roughly $90 and cuts total interest paid by approximately $2,800. The numbers clearly favor consolidation for most high-APR balances.',
+    realLifeChoice: 'Many borrowers who consolidated credit card debt saw balances rebuild on the newly zeroed-out cards within 12–18 months. Total debt — loan balance plus new card balances — often exceeded the original amount by month 24. The consolidation improved the interest rate but not the spending behavior that created the balance.',
+    reason: 'A consolidation loan removes the financial pressure (high minimum payments, growing balances) without removing the behaviors that produced the debt. Empty credit lines and a lower fixed payment can feel like financial recovery even when nothing structural has changed. Without a specific spending-control mechanism in place at the time of consolidation, the prior pattern usually reasserts itself.',
+    resolution: 'Consolidation works when it is paired with a written spending cap and a specific plan for the cards being zeroed out — whether that is closing them, locking them, or defining a no-balance rule. Treat the loan as a second chance, not a solution. It is only a solution if behavior changes alongside the rate.'
+  }
+};
+
 
 export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathname }: SeoComparisonPageProps) {
   const relatedCalculators = matchingCalculatorLinksByFinancialCategory[category] ?? defaultMatchingCalculatorLinks;
@@ -568,6 +607,14 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
       </section>
 
       <HumanJudgmentCallout>{humanJudgmentByCategory[category]}</HumanJudgmentCallout>
+
+      <RealLifeContradictionModule
+        title={contradictionByCategory[category].title}
+        mathWinner={contradictionByCategory[category].mathWinner}
+        realLifeChoice={contradictionByCategory[category].realLifeChoice}
+        reason={contradictionByCategory[category].reason}
+        resolution={contradictionByCategory[category].resolution}
+      />
 
       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently Asked Questions</h2>
