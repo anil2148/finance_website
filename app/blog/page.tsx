@@ -5,6 +5,7 @@ import { BlogSearch } from '@/components/ui/BlogSearch';
 import { getCategories, getPosts, getTags } from '@/lib/markdown';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { createPageMetadata } from '@/lib/seo';
+import { AdUnit } from '@/components/ui/AdUnit';
 
 export const revalidate = 3600;
 
@@ -199,6 +200,8 @@ export default function BlogPage() {
       </div>
 
       <BlogSearch posts={posts} />
+
+      <AdUnit slot="7890123456" format="auto" className="my-2" />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-xl font-semibold">All recent articles</h2>
