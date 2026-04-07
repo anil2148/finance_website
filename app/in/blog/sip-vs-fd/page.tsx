@@ -48,7 +48,7 @@ const sections = [
   },
   {
     type: 'decision-panel' as const,
-    title: 'Where these strategies fail — real India scenarios',
+    title: 'When these strategies stop working — real India scenarios',
     tone: 'amber' as const,
     points: [
       {
@@ -176,7 +176,7 @@ const sections = [
     type: 'cta-block' as const,
     title: 'If you are saving for a home purchase in the next 2–4 years',
     content:
-      "Keep the down payment in safety-first buckets. Then run EMI scenarios at today's rate, +0.5%, and +1.0% to make sure the monthly budget still works if rates rise. Many families locked a home loan they could comfortably afford on paper — and found it tight once school fees, maintenance, and a rate reset arrived together.",
+      "Keep the down payment in safety-first buckets. Then run EMI scenarios at today's rate, +0.5%, and +1.0% to confirm the monthly budget still holds if rates rise. The risk to watch: many families locked a home loan that looked comfortable on paper and found it tight once school fees, maintenance costs, and a floating-rate reset arrived in the same year — with no buffer left after the down payment.",
     links: [
       { label: 'Run the India EMI stress test', href: '/in/calculators/emi-calculator' },
       { label: 'Check home affordability before booking', href: '/in/home-affordability-india' }

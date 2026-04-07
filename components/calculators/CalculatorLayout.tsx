@@ -26,7 +26,7 @@ const ProjectionChart = dynamic(() => import('@/components/calculators/Projectio
 const guideMessageBySlug: Record<string, { title: string; body: string }> = {
   'mortgage-calculator': {
     title: 'Mortgage planning walkthrough',
-    body: 'Set loan amount, APR, and term, then compare monthly payment and total interest to keep housing costs within your budget.'
+    body: 'Set loan amount, APR, and term, then compare monthly payment and total interest. Also run the scenario at +0.75% — a payment that looks fine today can tighten quickly when a rate reset and a school fee increase arrive in the same year.'
   },
   'loan-calculator': {
     title: 'Loan monthly payment walkthrough',
