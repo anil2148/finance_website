@@ -1,6 +1,5 @@
 import '@/styles/globals.css';
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Navbar } from '@/components/navbar/Navbar';
@@ -87,12 +86,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-        <Script
-          async
-          crossOrigin="anonymous"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9445870262181780"
-          strategy="afterInteractive"
-        />
       </head>
       <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <CookieConsentBanner gaMeasurementId={gaMeasurementId} gtmId={gtmId} />
@@ -107,21 +100,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
         </PreferenceProvider>
 
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}
-          strategy="afterInteractive"
-        />
         <Analytics />
         <SpeedInsights />
-
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${gaMeasurementId}');
-          `}
-        </Script>
       </body>
     </html>
   );

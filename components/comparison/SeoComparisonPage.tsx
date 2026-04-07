@@ -6,6 +6,8 @@ import { breadcrumbSchema, webpageSchema } from '@/lib/seo';
 import AuthorBox from '@/components/common/AuthorBox';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 import { RealLifeContradictionModule } from '@/components/common/RealLifeContradictionModule';
+import { AdUnit } from '@/components/ui/AdUnit';
+import { AD_SLOTS } from '@/lib/adSlots';
 
 type SeoComparisonPageProps = {
   pageTitle: string;
@@ -667,6 +669,8 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(pageSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbsSchema) }} />
+
+      <AdUnit slot={AD_SLOTS.COMPARE} format="auto" className="my-2" />
     </section>
   );
 }

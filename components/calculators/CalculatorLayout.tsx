@@ -17,6 +17,8 @@ import { getCurrencySymbol, getLocaleForCurrency, resolveCurrencyPrefix } from '
 import { absoluteUrl } from '@/lib/seo';
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 import { getCalculatorInsight } from '@/lib/calculators/insights';
+import { AdUnit } from '@/components/ui/AdUnit';
+import { AD_SLOTS } from '@/lib/adSlots';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -385,6 +387,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           ))}
         </ul>
       </section>
+
+      <AdUnit slot={AD_SLOTS.CALCULATOR} format="auto" className="my-2" />
 
     </section>
   );
