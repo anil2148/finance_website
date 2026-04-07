@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
       <p>You can disable cookies through browser settings and reject non-essential cookies in our consent banner. Blocking some cookies may impact specific features.</p>
       <h2>Third-Party Advertising (Google AdSense)</h2>
       <p>
-        FinanceSphere uses Google AdSense to display advertisements. Google, as a third-party vendor, uses cookies to serve ads on our site. Google's use of
+        FinanceSphere uses Google AdSense to display advertisements. Google, as a third-party vendor, uses cookies to serve ads on our site. Google&apos;s use of
         advertising cookies enables it and its partners to serve ads based on your visits to this site and/or other sites on the internet.
       </p>
       <p>
@@ -51,8 +51,8 @@ export default function PrivacyPolicyPage() {
       </p>
       <p>
         For more information on how Google collects and uses data, please review{' '}
-        <a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">Google's Privacy Policy</a> and{' '}
-        <a href="https://policies.google.com/technologies/ads" rel="noopener noreferrer" target="_blank">Google's Advertising Policies</a>.
+        <a href="https://policies.google.com/privacy" rel="noopener noreferrer" target="_blank">Google&apos;s Privacy Policy</a> and{' '}
+        <a href="https://policies.google.com/technologies/ads" rel="noopener noreferrer" target="_blank">Google&apos;s Advertising Policies</a>.
       </p>
 
       <h2>Third-Party Sharing</h2>
