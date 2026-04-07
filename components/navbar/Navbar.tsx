@@ -154,10 +154,10 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
-      <nav className="mx-auto max-w-7xl px-4 py-3" role="navigation" aria-label="Primary">
+      <nav className="mx-auto max-w-7xl px-4 py-2" role="navigation" aria-label="Primary">
         <div className="flex items-center justify-between gap-3">
           <Link href={isIndiaContext ? '/in' : '/'} className="inline-flex items-center" aria-label="FinanceSphere home">
-            <Image src="/images/financesphere-logo.svg" alt="FinanceSphere logo" width={190} height={40} loading="lazy" priority={false} className="h-10 w-auto" />
+            <Image src="/images/financesphere-logo.svg" alt="FinanceSphere logo" width={220} height={48} loading="lazy" priority={false} className="h-12 w-auto" />
           </Link>
 
             <button
