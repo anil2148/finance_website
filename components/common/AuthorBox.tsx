@@ -9,7 +9,13 @@ export default function AuthorBox({ className = 'mt-8' }: { className?: string }
       <div className="flex flex-wrap items-start gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{author.name}</h2>
+            {author.profileUrl ? (
+              <Link href={author.profileUrl} className="text-lg font-semibold text-slate-900 hover:text-blue-700 hover:underline dark:text-white dark:hover:text-blue-400">
+                {author.name}
+              </Link>
+            ) : (
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">{author.name}</h2>
+            )}
             <span className="text-sm text-slate-500 dark:text-slate-400">— {author.role}</span>
           </div>
 
@@ -51,7 +57,7 @@ export default function AuthorBox({ className = 'mt-8' }: { className?: string }
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3 border-t border-slate-200 pt-3 text-xs dark:border-slate-700">
-        <Link href="/about" className="font-medium text-blue-600 hover:underline dark:text-blue-400">About Smita &amp; FinanceSphere</Link>
+        <Link href={author.profileUrl ?? '/about'} className="font-medium text-blue-600 hover:underline dark:text-blue-400">About {author.name.split(' ')[0]} &amp; FinanceSphere</Link>
         <Link href="/editorial-policy" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Editorial Policy</Link>
         <Link href="/how-we-make-money" className="font-medium text-blue-600 hover:underline dark:text-blue-400">How we make money</Link>
         <Link href="/contact" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Contact</Link>

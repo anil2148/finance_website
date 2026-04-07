@@ -14,6 +14,8 @@ export type AuthorProfile = {
   expertise?: string[];
   /** How the author approaches financial content creation */
   methodology?: string;
+  /** Canonical on-site author profile URL */
+  profileUrl?: string;
 };
 
 export const PRIMARY_AUTHOR_ID = 'anil_chowdhary';
@@ -34,7 +36,8 @@ export const AUTHOR_PROFILES: Record<string, AuthorProfile> = {
       'Every recommendation must survive a bad-month scenario: lower income, higher expenses, and tighter liquidity. A plan that only works when everything goes right is not a real plan.',
     methodology:
       'Each article starts from the question "what does someone actually get wrong here?" rather than from a product pitch. Content is built around specific financial thresholds, real failure modes, and a documented next step — not generic advice that sounds useful but does not change behavior.',
-    bio: 'Smita built FinanceSphere after recognizing how frequently people make high-cost financial decisions — mortgages, credit cards, debt payoff plans — with incomplete information and no way to stress-test their assumptions. She combines product engineering discipline with personal finance research to build tools and guides that give readers a concrete, defensible next step rather than a generic explanation. Her content process starts with the common mistake, works backward to the root cause, and ends with a calculator-backed framework readers can apply the same day.'
+    bio: 'Smita built FinanceSphere after recognizing how frequently people make high-cost financial decisions — mortgages, credit cards, debt payoff plans — with incomplete information and no way to stress-test their assumptions. She combines product engineering discipline with personal finance research to build tools and guides that give readers a concrete, defensible next step rather than a generic explanation. Her content process starts with the common mistake, works backward to the root cause, and ends with a calculator-backed framework readers can apply the same day.',
+    profileUrl: '/about'
   },
   [EDITORIAL_REVIEWER_ID]: {
     id: EDITORIAL_REVIEWER_ID,

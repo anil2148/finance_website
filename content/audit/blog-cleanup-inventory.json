@@ -12008,5 +12008,65 @@
     "action": "DELETE_REMOVE",
     "destination": "",
     "reason": "Thin templated post with repetitive structure and no unique insight."
+  },
+  {
+    "slug": "seo-credit-card-apr-2026-cost-to-carry-balance",
+    "title": "Credit Card APR in 2026: What Carrying a Balance Really Costs",
+    "file": "content/blog/seo-credit-card-apr-2026-cost-to-carry-balance.mdx",
+    "category": "credit-cards",
+    "word_count": 250,
+    "action": "MERGE",
+    "destination": "/blog/credit-card-apr-what-it-actually-costs",
+    "reason": "Near-duplicate of canonical credit-card-apr article; shorter version with seo- prefix slug."
+  },
+  {
+    "slug": "seo-credit-card-apr-2026-what-your-rate-costs",
+    "title": "Credit card APR in 2026: what your rate actually costs and when to act",
+    "file": "content/blog/seo-credit-card-apr-2026-what-your-rate-costs.mdx",
+    "category": "credit-cards",
+    "word_count": 700,
+    "action": "MERGE",
+    "destination": "/blog/credit-card-apr-what-it-actually-costs",
+    "reason": "Superseded by newer canonical credit-card-apr-what-it-actually-costs (2026-04-01); seo- prefix slug."
+  },
+  {
+    "slug": "seo-401k-contribution-rate-guide-2026",
+    "title": "401(k) contribution rate guide for 2026: choose a sustainable target",
+    "file": "content/blog/seo-401k-contribution-rate-guide-2026.mdx",
+    "category": "retirement",
+    "word_count": 380,
+    "action": "MERGE",
+    "destination": "/blog/401k-contribution-rate-sustainable-target-2026",
+    "reason": "Duplicate of 401k-contribution-rate-sustainable-target-2026 with seo- prefix slug."
+  },
+  {
+    "slug": "seo-zero-based-budget-monthly-system",
+    "title": "Zero-based budget: assign every dollar before the month begins",
+    "file": "content/blog/seo-zero-based-budget-monthly-system.mdx",
+    "category": "budgeting",
+    "word_count": 498,
+    "action": "MERGE",
+    "destination": "/blog/zero-based-budget-assign-every-dollar-job",
+    "reason": "Near-duplicate of zero-based-budget-assign-every-dollar-job with seo- prefix slug."
+  },
+  {
+    "slug": "zero-based-budgeting-simple-system",
+    "title": "Zero-Based Budgeting: A Simple System You Can Run in 20 Minutes",
+    "file": "content/blog/zero-based-budgeting-simple-system.mdx",
+    "category": "budgeting",
+    "word_count": 359,
+    "action": "MERGE",
+    "destination": "/blog/zero-based-budget-assign-every-dollar-job",
+    "reason": "Shorter duplicate of zero-based-budget-assign-every-dollar-job canonical article."
+  },
+  {
+    "slug": "seo-cd-ladder-strategy-2026",
+    "title": "CD ladder strategy: lock in rates without locking up all your cash",
+    "file": "content/blog/seo-cd-ladder-strategy-2026.mdx",
+    "category": "savings-accounts",
+    "word_count": 350,
+    "action": "REDIRECT",
+    "destination": "/blog/cd-ladder-strategy-2026",
+    "reason": "Legacy seo- prefix slug; canonical slug renamed to cd-ladder-strategy-2026."
   }
 ]
