@@ -18,32 +18,48 @@ type NavLink = {
 const globalLinks: NavLink[] = [
   { label: 'Home', href: '/' },
   {
-    label: 'Learn',
+    label: 'Credit Cards',
     children: [
-      { label: 'Investing Hub', href: '/learn/investing' },
-      { label: 'Credit Cards Hub', href: '/learn/credit-cards' },
-      { label: 'Loans Hub', href: '/learn/loans' },
-      { label: 'Budgeting Hub', href: '/learn/budgeting' },
-      { label: 'Passive Income Hub', href: '/learn/passive-income' }
+      { label: 'Credit Cards Hub', href: '/credit-cards' },
+      { label: 'Best Credit Cards 2026', href: '/best-credit-cards-2026' },
+      { label: 'Cards for Everyday Spending', href: '/best-credit-cards-everyday-spending' },
+      { label: 'Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' }
     ]
   },
   {
-    label: 'Compare',
+    label: 'Investing',
     children: [
-      { label: 'Credit Cards', href: '/best-credit-cards-2026' },
-      { label: 'Savings Accounts', href: '/best-savings-accounts-usa' },
-      { label: 'Investment Apps', href: '/best-investment-apps' },
-      { label: 'Mortgage Rates', href: '/compare/mortgage-rate-comparison' },
-      { label: 'Personal Loans', href: '/loans' }
+      { label: 'Investing Hub', href: '/learn/investing' },
+      { label: 'Best Investment Apps', href: '/best-investment-apps' },
+      { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
+      { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' }
+    ]
+  },
+  {
+    label: 'Loans & Debt',
+    children: [
+      { label: 'Loans Hub', href: '/loans' },
+      { label: 'Mortgage Rate Comparison', href: '/compare/mortgage-rate-comparison' },
+      { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
+      { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' }
+    ]
+  },
+  {
+    label: 'Savings & Budgeting',
+    children: [
+      { label: 'Savings Hub', href: '/savings' },
+      { label: 'Best Savings Accounts', href: '/best-savings-accounts-usa' },
+      { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
+      { label: 'Budget Planner', href: '/calculators/budget-planner' }
     ]
   },
   {
     label: 'Tools',
     children: [
+      { label: 'All Calculators', href: '/calculators' },
       { label: 'Net Worth Calculator', href: '/calculators/net-worth-calculator' },
-      { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
-      { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' },
-      { label: 'Loan Calculator', href: '/calculators/loan-calculator' }
+      { label: 'FIRE Calculator', href: '/calculators/fire-calculator' },
+      { label: 'All Tools', href: '/tools' }
     ]
   },
   { label: 'Blog', href: '/blog' },

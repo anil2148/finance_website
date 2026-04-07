@@ -5,19 +5,21 @@ import { AppLink } from '@/components/ui/AppLink';
 
 const primaryLinks = [
   { href: '/', label: 'Home' },
-  { href: '/calculators', label: 'Calculators' },
-  { href: '/comparison', label: 'Comparisons' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/tools', label: 'Tools' }
+  { href: '/credit-cards', label: 'Credit Cards' },
+  { href: '/learn/investing', label: 'Investing' },
+  { href: '/loans', label: 'Loans & Debt' },
+  { href: '/savings', label: 'Savings & Budgeting' },
+  { href: '/tools', label: 'Tools' },
+  { href: '/blog', label: 'Blog / Guides' }
 ];
 
 const discoveryLinks = [
-  { href: '/learn/credit-cards', label: 'Credit Cards Hub' },
-  { href: '/learn/loans', label: 'Loans Hub' },
-  { href: '/best-credit-cards-2026', label: 'Credit Card Framework' },
-  { href: '/best-investment-apps', label: 'Investment App Framework' },
-  { href: '/best-savings-accounts-usa', label: 'Savings Account Framework' },
-  { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Framework' }
+  { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
+  { href: '/best-investment-apps', label: 'Best Investment Apps' },
+  { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' },
+  { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' },
+  { href: '/calculators/debt-payoff-calculator', label: 'Debt Payoff Calculator' },
+  { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' }
 ];
 
 const legalLinks = [
@@ -43,10 +45,12 @@ export function Footer() {
   const contextualPrimaryLinks = isIndiaContext
     ? [
         { href: '/in', label: 'India Home' },
-        { href: '/in/calculators/emi-calculator', label: 'India EMI Calculator' },
-        { href: '/in/calculators/sip-calculator', label: 'India SIP Calculator' },
-        { href: '/in/blog', label: 'India Blog' },
-        { href: '/in/calculators', label: 'Tools' }
+        { href: '/in/best-credit-cards-india', label: 'Credit Cards' },
+        { href: '/in/investing', label: 'Investing' },
+        { href: '/in/loans', label: 'Loans & Debt' },
+        { href: '/in/banking', label: 'Savings & Banking' },
+        { href: '/in/calculators', label: 'Tools' },
+        { href: '/in/blog', label: 'Blog / Guides' }
       ]
     : primaryLinks;
 
