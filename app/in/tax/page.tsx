@@ -5,6 +5,7 @@ import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 
 export const metadata: Metadata = createPageMetadata({
+  title: 'India Tax Hub (FY 2025–26): Old vs New Regime, 80C/80D Planning, and Monthly Execution',
   description: 'India tax decision hub with old-vs-new regime checks, 80C/80D planning, and monthly cashflow-safe execution examples.',
   pathname: '/in/tax'
 });
