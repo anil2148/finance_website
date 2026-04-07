@@ -60,6 +60,59 @@ export default function AboutPage() {
         </p>
       </section>
 
+      <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
+        <h2 className="text-2xl font-semibold text-slate-900">About the Author</h2>
+        <p className="text-slate-700">
+          <strong>Smita Chowdhary</strong> is the founder of FinanceSphere and a personal finance enthusiast dedicated to helping individuals make smarter financial decisions using simple tools and data-driven insights.
+        </p>
+        <p className="text-slate-700">
+          With a strong interest in areas like credit cards, savings strategies, investing, and debt management, Smita focuses on breaking down complex financial concepts into easy-to-understand guidance that anyone can apply in real life.
+        </p>
+        <p className="text-slate-700">
+          At FinanceSphere, his goal is to combine <strong>interactive calculators, practical comparisons, and educational content</strong> to help users:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-slate-700">
+          <li>Understand their financial situation</li>
+          <li>Evaluate different options</li>
+          <li>Make confident money decisions</li>
+        </ul>
+
+        <h3 className="text-xl font-semibold text-slate-900">Experience &amp; Approach</h3>
+        <p className="text-slate-700">
+          Smita has spent years researching financial products, tools, and strategies across the U.S. market. His approach is based on:
+        </p>
+        <ul className="list-disc space-y-2 pl-6 text-slate-700">
+          <li>Practical, real-world scenarios</li>
+          <li>Transparent comparisons</li>
+          <li>User-first recommendations (not sales-driven)</li>
+        </ul>
+        <p className="text-slate-700">
+          Every piece of content is designed to answer one simple question:
+          <br />
+          <span aria-label="decision question">👉 <em>“What is the best financial decision for this situation?”</em></span>
+        </p>
+
+        <h3 className="text-xl font-semibold text-slate-900">Editorial Standards</h3>
+        <p className="text-slate-700">Content published on FinanceSphere follows a strict quality process:</p>
+        <ul className="list-disc space-y-2 pl-6 text-slate-700">
+          <li>Thorough research and verification</li>
+          <li>Clear and unbiased explanations</li>
+          <li>Regular updates to reflect the latest financial information</li>
+        </ul>
+
+        <h3 className="text-xl font-semibold text-slate-900">Disclaimer</h3>
+        <p className="text-slate-700">
+          The information provided by Smita Chowdhary on FinanceSphere is for <strong>educational purposes only</strong> and should not be considered financial, investment, or legal advice. Always consult with a qualified financial professional before making financial decisions.
+        </p>
+
+        <h3 className="text-xl font-semibold text-slate-900">Contact</h3>
+        <p className="text-slate-700">
+          For feedback, questions, or collaboration:
+          <br />
+          📧 <a className="font-semibold text-blue-700 hover:underline" href="mailto:support@financesphere.io">support@financesphere.io</a>
+        </p>
+      </section>
+
       <section className="space-y-4">
         <h2 className="text-2xl font-semibold text-slate-900">How we build useful pages</h2>
         <div className="grid gap-3 md:grid-cols-2">
