@@ -57,7 +57,7 @@ export default function AuthorBox({ className = 'mt-8' }: { className?: string }
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3 border-t border-slate-200 pt-3 text-xs dark:border-slate-700">
-        <Link href={author.profileUrl ?? '/about'} className="font-medium text-blue-600 hover:underline dark:text-blue-400">About {author.name.split(' ')[0]} &amp; FinanceSphere</Link>
+        <Link href={author.profileUrl ?? '/about'} className="font-medium text-blue-600 hover:underline dark:text-blue-400">About {author.name?.split(' ')[0] ?? 'Author'} &amp; FinanceSphere</Link>
         <Link href="/editorial-policy" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Editorial Policy</Link>
         <Link href="/how-we-make-money" className="font-medium text-blue-600 hover:underline dark:text-blue-400">How we make money</Link>
         <Link href="/contact" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Contact</Link>
