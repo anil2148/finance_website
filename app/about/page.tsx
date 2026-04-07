@@ -123,7 +123,7 @@ export default function AboutPage() {
           With a strong interest in areas like credit cards, savings strategies, investing, and debt management, Smita focuses on breaking down complex financial concepts into easy-to-understand guidance that anyone can apply in real life.
         </p>
         <p className="text-slate-700">
-          At FinanceSphere, his goal is to combine <strong>interactive calculators, practical comparisons, and educational content</strong> to help users:
+          At FinanceSphere, her goal is to combine <strong>interactive calculators, practical comparisons, and educational content</strong> to help users:
         </p>
         <ul className="list-disc space-y-2 pl-6 text-slate-700">
           <li>Understand their financial situation</li>
@@ -133,7 +133,7 @@ export default function AboutPage() {
 
         <h3 className="text-xl font-semibold text-slate-900">Experience &amp; Approach</h3>
         <p className="text-slate-700">
-          Smita has spent years researching financial products, tools, and strategies across the U.S. market. His approach is based on:
+          Smita has spent years researching financial products, tools, and strategies across the U.S. market. Her approach is based on:
         </p>
         <ul className="list-disc space-y-2 pl-6 text-slate-700">
           <li>Practical, real-world scenarios</li>

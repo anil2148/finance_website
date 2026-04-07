@@ -33,7 +33,13 @@ export function ArticleTrustPanel({ authorId, reviewedById, updatedAt }: { autho
       <div className="mt-3 space-y-3">
         <div>
           <p>
-            <span className="font-semibold">Written by:</span> {author?.name} — {author?.role}
+            <span className="font-semibold">Written by:</span>{' '}
+            {author?.profileUrl ? (
+              <AppLink href={author.profileUrl} variant="utility">{author?.name}</AppLink>
+            ) : (
+              author?.name
+            )}{' '}
+            — {author?.role}
           </p>
           {author?.description ? <p className="text-xs text-slate-600">{author.description}</p> : null}
           {author?.experience ? <p className="text-xs text-slate-600">{author.experience}</p> : null}
