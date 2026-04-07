@@ -16,6 +16,7 @@ import { BaseCalculatorInputs } from '@/lib/calculators/types';
 import { getCurrencySymbol, getLocaleForCurrency, resolveCurrencyPrefix } from '@/lib/utils';
 import { absoluteUrl } from '@/lib/seo';
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
+import { getCalculatorInsight } from '@/lib/calculators/insights';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -177,20 +178,14 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   };
   const primaryMetric = result.summary[0];
   const baselineValue = primaryMetric?.value ?? 0;
-  const contributionBase = inputs.monthlyContribution ?? 0;
-  const contributionBoost = contributionBase + 100;
-  const contributionLabel = primaryMetric?.currency ? formatCurrency(contributionBase) : `${contributionBase.toFixed(0)}`;
-  const boostedContributionLabel = primaryMetric?.currency ? formatCurrency(contributionBoost) : `${contributionBoost.toFixed(0)}`;
 
   const formattedBreakdown = result.breakdown.map((row) => {
     if (!row.currency || typeof row.amount !== 'number') return row;
     return { ...row, value: formatCurrency(row.amount) };
   });
-  const rateBase = inputs.interestRate ?? 0;
-  const improvedRate = Math.max(rateBase - 1, 0);
-  const downsideScenario = baselineValue * 1.15;
-  const improvedCase = baselineValue * 0.9;
-  const stretchCase = baselineValue * 0.8;
+
+  // Per-calculator specific insight layer
+  const insight = getCalculatorInsight(slug, inputs, primaryMetric?.label ?? 'result');
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
@@ -276,31 +271,22 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             </table>
           </div>
 
-          <section className="grid gap-4 md:grid-cols-2">
-            <article className="rounded-2xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-500/40 dark:bg-blue-950/30">
-              <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100">Instant insight</h2>
-              <p className="mt-2 text-sm text-blue-900 dark:text-blue-100">
-                Based on your inputs, your projected {primaryMetric?.label?.toLowerCase() ?? 'financial impact'} is{' '}
-                <strong>{primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}</strong>.
-              </p>
-            </article>
-            <article className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-500/40 dark:bg-indigo-950/30">
-              <h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Scenario simulation</h2>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-indigo-900 dark:text-indigo-100">
-                <li>
-                  If you move monthly contributions from {contributionLabel} to {boostedContributionLabel}, this headline outcome often improves toward{' '}
-                  {primaryMetric?.currency ? formatCurrency(improvedCase) : `${improvedCase.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
+          {/* Per-calculator specific insight layer */}
+          <section className="space-y-4 rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
+            <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100">What this result means</h2>
+            <p className="text-sm leading-6 text-blue-900 dark:text-blue-200">{insight.whatItMeans}</p>
+          </section>
+
+          <section className="space-y-3 rounded-2xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-500/40 dark:bg-indigo-950/30">
+            <h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Real-world impact</h2>
+            <ul className="space-y-2 text-sm text-indigo-900 dark:text-indigo-200">
+              {insight.realWorldImpact.map((point) => (
+                <li key={point} className="flex gap-2">
+                  <span className="mt-0.5 shrink-0 text-indigo-500">▸</span>
+                  <span>{point}</span>
                 </li>
-                <li>
-                  A 1-point rate shift (from {rateBase.toFixed(1)}% to {improvedRate.toFixed(1)}%) can move results toward{' '}
-                  {primaryMetric?.currency ? formatCurrency(stretchCase) : `${stretchCase.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
-                </li>
-                <li>
-                  Stress-test the bad month too: if costs rise or contributions pause, outcomes can deteriorate toward{' '}
-                  {primaryMetric?.currency ? formatCurrency(downsideScenario) : `${downsideScenario.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
-                </li>
-              </ul>
-            </article>
+              ))}
+            </ul>
           </section>
         </div>
       </div>
@@ -333,46 +319,52 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         </div>
       </div>
 
+      {/* Recommendations panel */}
       <DecisionSupportPanel
-        title="How to interpret your result"
-        tone="blue"
-        intro="This calculator is a decision aid. Use ranges and scenarios to avoid overconfidence in one projection."
-        points={[
-          { label: 'Quick answer', text: `Your top metric is ${result.summary[0]?.label ?? 'the headline result'}. Start there, then review timeline and total-cost outputs.` },
-          { label: 'When this matters', text: 'This is most helpful before you apply, refinance, or lock in a financial commitment.' },
-          { label: 'Best option if...', text: 'Choose the path that remains manageable if income drops temporarily or costs rise.' }
-        ]}
+        title="Recommendations based on your result"
+        tone="emerald"
+        intro="Apply these guidelines to the specific numbers above before taking action."
+        checklist={insight.recommendations}
         links={[
           { href: pathway.guide.href, label: pathway.guide.label },
           { href: pathway.compare.href, label: pathway.compare.label }
         ]}
       />
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision guidance</h2>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
-          Choose the option that remains affordable in a bad month, not just the one that looks best in a perfect-case projection. If the stress-case number is uncomfortable, lower risk first.
-        </p>
-        <div className="mt-3 flex flex-wrap gap-2 text-sm">
-          <Link href={pathway.guide.href} className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-semibold text-slate-900 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
-            Optimize your plan
-          </Link>
-          <Link href={pathway.compare.href} className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-semibold text-slate-900 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
-            Compare better options
-          </Link>
-        </div>
-      </section>
-
+      {/* Risks and common mistakes */}
       <DecisionSupportPanel
-        title="Common mistakes to avoid"
+        title="Risks and common mistakes"
         tone="amber"
-        checklist={pathway.mistakes}
+        intro="These are the most frequent errors for this type of calculation. Review each before acting on your result."
+        checklist={insight.topRisks}
         links={[
           { href: '/editorial-policy', label: 'How FinanceSphere evaluates options' },
           { href: '/financial-disclaimer', label: 'Educational-use disclaimer' },
           { href: '/how-we-make-money', label: 'Affiliate transparency' }
         ]}
       />
+
+      {/* Next steps */}
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Next steps</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">Take these actions now while the numbers are in front of you.</p>
+        <ol className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-300">
+          {insight.nextSteps.map((step, i) => (
+            <li key={step} className="flex gap-3">
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-700 text-xs font-bold text-white dark:bg-blue-500">{i + 1}</span>
+              <span>{step}</span>
+            </li>
+          ))}
+        </ol>
+        <div className="mt-4 flex flex-wrap gap-2 text-sm">
+          <Link href={pathway.guide.href} className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-semibold text-slate-900 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
+            {pathway.guide.label}
+          </Link>
+          <Link href={pathway.compare.href} className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-semibold text-slate-900 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
+            {pathway.compare.label}
+          </Link>
+        </div>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-slate-50 p-6 dark:border-slate-700 dark:bg-slate-900/50">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How we calculate</h2>
