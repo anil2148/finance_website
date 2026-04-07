@@ -75,6 +75,50 @@ const moneyImpactByCategory: Record<string, { hook: string; scenario: string; de
   }
 };
 
+// Category-specific failure insight replaces the generic timeline stress test
+const failureInsightByCategory: Record<string, { title: string; scenario: string; rule: string }> = {
+  'credit-cards': {
+    title: 'Where credit card strategies break',
+    scenario: 'A household earns $400 in annual rewards but carries a balance for two months at 26% APR. Those two months of interest cost roughly $215 — wiping out nearly half the year\'s reward value.',
+    rule: 'A strategy that only works if you never carry a balance is not a strategy. It is a bet on perfect behavior every month.'
+  },
+  mortgages: {
+    title: 'Where mortgage plans break',
+    scenario: 'A buyer chooses the 15-year term because the interest savings are real. Eighteen months later, a $12,000 HVAC replacement and a one-month income gap at the same time creates structural payment stress.',
+    rule: 'The mortgage that works on paper is not always the one that works across 180 months of real life. Test the payment against a genuinely bad month before signing.'
+  },
+  investing: {
+    title: 'Where investing plans break',
+    scenario: 'A household starts at $650/month after a salary increase. When a $1,400 car repair hits three months later, contributions stop. The pause becomes a habit. The behavior gap costs more than any fee optimization would have saved.',
+    rule: 'Set contributions from your worst recent month — not your best. A smaller amount that runs for 10 years beats an ambitious one you pause twice a year.'
+  },
+  tax: {
+    title: 'Where tax strategies break',
+    scenario: 'A household makes a Roth conversion in a year that turns out not to be a low-income year — because a bonus hits at year-end. The conversion pushes them into a higher bracket and the anticipated tax savings reverse.',
+    rule: 'Tax decisions are made with incomplete information. Model the scenario at year-end, not in January. Bracket edges are the most expensive place to guess wrong.'
+  },
+  loans: {
+    title: 'Where loan plans break',
+    scenario: 'A borrower consolidates $18,000 of debt into a 60-month personal loan for a lower payment. Without a no-new-spending rule, two of the original card balances rebuild within 18 months. Total debt is now higher than before consolidation.',
+    rule: 'Debt consolidation is a structural tool, not a cure. It only works if spending behavior changes at the same time. Same income, same habits, lower payment — the gap usually refills.'
+  },
+  'savings-accounts': {
+    title: 'Where savings strategies break',
+    scenario: 'A household chases a 5.10% HYSA with a 10-day external transfer window. A true emergency arrives on a Friday — the transfer does not clear until the following week. They cover the gap with a credit card at 26% APR.',
+    rule: 'Emergency cash is only as useful as its transfer speed. A slightly lower APY with same-day access can be worth more than the best rate in a slow account.'
+  },
+  budgeting: {
+    title: 'Where budgeting plans break',
+    scenario: 'A household builds a tight 50/30/20 budget in a good month. Three months later, a $900 car repair and a medical co-pay arrive in the same week. The "savings" category funds the gap and the system collapses.',
+    rule: 'A budget is not stress-tested until it has survived one real emergency without requiring new debt. Run the scenario before assuming the plan is working.'
+  },
+  'retirement-planning': {
+    title: 'Where retirement plans break',
+    scenario: 'A household targets 15% contribution but relies on end-of-year bonuses to hit the number. In the year a bonus does not come, contributions are 8% for the year. Over a decade, these gaps quietly compress the final number.',
+    rule: 'Retirement plans that depend on discretionary decisions in good months often underperform projections. Automate on base salary; treat any bonus as optional extra, not required core.'
+  }
+};
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
@@ -251,24 +295,34 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       />
 
       <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5 dark:border-emerald-500/40 dark:bg-emerald-950/30">
-        <h2 className="text-xl font-semibold text-emerald-900 dark:text-emerald-100">Financial decision engine</h2>
+        <h2 className="text-xl font-semibold text-emerald-900 dark:text-emerald-100">What this means in practice</h2>
         <div className="mt-3 grid gap-3 text-sm md:grid-cols-2">
-          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Hook (money impact)</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.hook}</p></article>
-          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Scenario</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.scenario}</p></article>
-          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Tool + Decision</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.decision}</p></article>
-          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Action</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.action}</p></article>
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">The numbers</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.hook}</p></article>
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">In practice</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.scenario}</p></article>
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">How to decide</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.decision}</p></article>
+          <article><h3 className="font-semibold text-emerald-900 dark:text-emerald-100">Your next step</h3><p className="mt-1 text-emerald-900 dark:text-emerald-100">{moneyImpact.action}</p></article>
         </div>
       </section>
 
-      <section className="rounded-xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
-        <h2 className="text-xl font-semibold text-blue-900 dark:text-blue-100">Timeline stress test (5y / 10y / 20y)</h2>
-        <div className="mt-3 grid gap-3 text-sm md:grid-cols-3">
-          <article className="rounded-lg border border-blue-200/70 bg-white/80 p-3 dark:border-blue-500/40 dark:bg-blue-900/30"><h3 className="font-semibold">5 years</h3><p className="mt-1">Short horizon: prioritize downside protection and liquidity over upside maximization.</p></article>
-          <article className="rounded-lg border border-blue-200/70 bg-white/80 p-3 dark:border-blue-500/40 dark:bg-blue-900/30"><h3 className="font-semibold">10 years</h3><p className="mt-1">Balanced horizon: run base and stress cases before committing.</p></article>
-          <article className="rounded-lg border border-blue-200/70 bg-white/80 p-3 dark:border-blue-500/40 dark:bg-blue-900/30"><h3 className="font-semibold">20 years</h3><p className="mt-1">Long horizon: cost drag, consistency, and behavior usually dominate outcomes.</p></article>
-        </div>
-        <p className="mt-3 text-sm text-blue-900 dark:text-blue-100">What happens if you choose wrong: one misaligned decision can create years of delay, avoidable interest, or lower long-term compounding.</p>
-      </section>
+      {(() => {
+        const insight = failureInsightByCategory[post.category];
+        if (!insight) return null;
+        return (
+          <section className="rounded-xl border border-amber-200 bg-amber-50/70 p-5 dark:border-amber-500/40 dark:bg-amber-950/20">
+            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{insight.title}</h2>
+            <div className="mt-3 grid gap-3 text-sm md:grid-cols-2">
+              <article className="rounded-lg border border-amber-200/70 bg-white/90 p-3 dark:border-amber-500/40 dark:bg-slate-900">
+                <h3 className="font-semibold text-amber-800 dark:text-amber-300">Real-life scenario</h3>
+                <p className="mt-1 text-slate-700 dark:text-slate-300">{insight.scenario}</p>
+              </article>
+              <article className="rounded-lg border border-amber-200/70 bg-white/90 p-3 dark:border-amber-500/40 dark:bg-slate-900">
+                <h3 className="font-semibold text-amber-800 dark:text-amber-300">The rule that holds</h3>
+                <p className="mt-1 text-slate-700 dark:text-slate-300">{insight.rule}</p>
+              </article>
+            </div>
+          </section>
+        );
+      })()}
 
 
       <section className="rounded-lg border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-800/50">
@@ -394,12 +448,34 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       )}
 
       <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Next decision path</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Follow one cluster to completion: deeper page, related scenario, then tool.</p>
-        <div className="decision-path-grid mt-3 text-sm">
-          <article className="decision-path-card"><h3 className="font-semibold">Investing cluster</h3><ul className="mt-2 space-y-2"><li><Link href={`/learn/${cluster}`} className="content-link-chip w-full justify-start">Deeper page</Link></li><li><Link href={continueLearningLinks[0]?.href ?? '/blog'} className="content-link-chip w-full justify-start">Related scenario</Link></li><li><Link href={calculatorSupportLinks[0]?.href ?? '/calculators'} className="content-link-chip w-full justify-start">Tool / calculator</Link></li></ul></article>
-          <article className="decision-path-card"><h3 className="font-semibold">Tax cluster</h3><ul className="mt-2 space-y-2"><li><Link href="/learn/tax" className="content-link-chip w-full justify-start">Deeper page</Link></li><li><Link href="/blog/2026-federal-tax-brackets-marginal-rate-decisions" className="content-link-chip w-full justify-start">Related scenario</Link></li><li><Link href="/calculators/retirement-calculator" className="content-link-chip w-full justify-start">Tool / calculator</Link></li></ul></article>
-          <article className="decision-path-card"><h3 className="font-semibold">Savings cluster</h3><ul className="mt-2 space-y-2"><li><Link href="/learn/budgeting" className="content-link-chip w-full justify-start">Deeper page</Link></li><li><Link href="/blog/zero-based-budgeting-simple-system" className="content-link-chip w-full justify-start">Related scenario</Link></li><li><Link href="/savings-goal-calculator" className="content-link-chip w-full justify-start">Tool / calculator</Link></li></ul></article>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Where to go next</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Complete one decision loop: read the guide, run the numbers, then compare options before committing.</p>
+        <div className="mt-3 grid gap-3 text-sm md:grid-cols-3">
+          <article className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">Go deeper</h3>
+            <ul className="mt-2 space-y-2">
+              <li><Link href={`/learn/${cluster}`} className="content-link-chip w-full justify-start">{post.category.replace(/-/g, ' ')} hub</Link></li>
+              {continueLearningLinks[0] ? <li><Link href={continueLearningLinks[0].href} className="content-link-chip w-full justify-start">{continueLearningLinks[0].label}</Link></li> : null}
+            </ul>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">Run the numbers</h3>
+            <ul className="mt-2 space-y-2">
+              {calculatorSupportLinks.slice(0, 2).map((item) => (
+                <li key={item.href}><Link href={item.href} className="content-link-chip w-full justify-start">{item.label}</Link></li>
+              ))}
+              {calculatorSupportLinks.length === 0 ? <li><Link href="/calculators" className="content-link-chip w-full justify-start">Browse all calculators</Link></li> : null}
+            </ul>
+          </article>
+          <article className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
+            <h3 className="font-semibold text-slate-900 dark:text-slate-100">Compare options</h3>
+            <ul className="mt-2 space-y-2">
+              {comparisonLinks.slice(0, 2).map((item) => (
+                <li key={item.href}><Link href={item.href} className="content-link-chip w-full justify-start">{item.label}</Link></li>
+              ))}
+              {comparisonLinks.length === 0 ? <li><Link href="/comparison" className="content-link-chip w-full justify-start">Comparison frameworks</Link></li> : null}
+            </ul>
+          </article>
         </div>
       </section>
     </article>
