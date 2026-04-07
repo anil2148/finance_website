@@ -18,7 +18,7 @@ export default function HowWeMakeMoneyPage() {
       <h2>Primary revenue sources</h2>
       <ul>
         <li><strong>Affiliate commissions:</strong> We may earn when readers use qualifying partner links.</li>
-        <li><strong>Display advertising:</strong> Ads may appear on pages to support site operations.</li>
+        <li><strong>Display advertising (Google AdSense):</strong> We use Google AdSense to serve display ads on pages. AdSense may use cookies and browsing data to show relevant ads. You can manage ad personalisation preferences via <a href="https://adssettings.google.com" rel="noopener noreferrer">Google Ad Settings</a>.</li>
         <li><strong>Sponsored placements:</strong> Used selectively and clearly labeled when present.</li>
       </ul>
 

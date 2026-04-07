@@ -18,6 +18,9 @@ declare global {
 export function AdUnit({ slot, format = 'auto', responsive = true, className }: AdUnitProps) {
   const pushed = useRef(false);
 
+  // Do not render if no slot ID is configured — avoids "No fill" impressions.
+  if (!slot) return null;
+
   useEffect(() => {
     if (pushed.current) return;
     try {

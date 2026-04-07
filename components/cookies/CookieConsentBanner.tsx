@@ -3,12 +3,14 @@
 import { useEffect, useMemo, useState } from 'react';
 
 const CONSENT_KEY = 'fs_cookie_consent';
+const ADSENSE_CLIENT = 'ca-pub-9445870262181780';
 type ConsentState = 'accepted' | 'rejected' | null;
 
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown>>;
     gtag?: (...args: unknown[]) => void;
+    adsbygoogle?: unknown[];
     __fsTrackingEnabled?: boolean;
   }
 }
@@ -40,6 +42,17 @@ function injectGtm(gtmId: string) {
   document.head.appendChild(script);
 }
 
+function injectAdSense() {
+  if (document.getElementById('adsense-loader')) return;
+
+  const script = document.createElement('script');
+  script.id = 'adsense-loader';
+  script.async = true;
+  script.crossOrigin = 'anonymous';
+  script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}`;
+  document.head.appendChild(script);
+}
+
 export function CookieConsentBanner({ gaMeasurementId, gtmId }: { gaMeasurementId?: string; gtmId?: string }) {
   const [consent, setConsent] = useState<ConsentState>(null);
   const [showNotice, setShowNotice] = useState(false);
@@ -56,6 +69,7 @@ export function CookieConsentBanner({ gaMeasurementId, gtmId }: { gaMeasurementI
     if (trackingEnabled) {
       if (gaMeasurementId) injectGoogleAnalytics(gaMeasurementId);
       if (gtmId) injectGtm(gtmId);
+      injectAdSense();
     }
 
     const onAffiliateClick = (event: MouseEvent) => {
@@ -94,7 +108,7 @@ export function CookieConsentBanner({ gaMeasurementId, gtmId }: { gaMeasurementI
             <div className="max-w-3xl text-sm text-slate-700 dark:text-slate-200">
               <p className="font-semibold text-slate-900 dark:text-white">Cookie consent</p>
               <p>
-                FinanceSphere uses essential cookies for site functionality and optional analytics + affiliate tracking cookies to improve content and fund the site.
+                FinanceSphere uses essential cookies for site functionality and optional analytics, advertising (Google AdSense), and affiliate tracking cookies to improve content and fund the site.
                 You can accept or reject non-essential cookies now, and update your choice later from the Cookie Policy page.
               </p>
             </div>

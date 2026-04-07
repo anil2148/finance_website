@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import { AdUnit } from '@/components/ui/AdUnit';
+import { AD_SLOTS } from '@/lib/adSlots';
 
 export const metadata: Metadata = {
   alternates: {
@@ -28,7 +30,10 @@ export default function IndiaLayout({ children }: { children: React.ReactNode })
           })
         }}
       />
-      <div className="india-content editorial-content">{children}</div>
+      <div className="india-content editorial-content">
+        {children}
+        <AdUnit slot={AD_SLOTS.INDIA} format="auto" className="my-4" />
+      </div>
     </>
   );
 }
