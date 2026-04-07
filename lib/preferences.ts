@@ -95,6 +95,21 @@ export function getCountryForPath(pathname: string): AppCountry {
   return 'US';
 }
 
+/**
+ * Returns the correct path for a base route given the current country context.
+ * US stays on the base path; India routes are prefixed with /in when an
+ * equivalent exists, otherwise the base path is returned unchanged.
+ *
+ * Examples:
+ *   getCountryAwarePath('/blog', 'India')  → '/in/blog'
+ *   getCountryAwarePath('/blog', 'US')     → '/blog'
+ *   getCountryAwarePath('/about', 'India') → '/about'
+ */
+export function getCountryAwarePath(basePath: string, country: AppCountry): string {
+  if (country !== 'India') return basePath;
+  return INDIA_ROUTE_EQUIVALENTS[basePath] ?? basePath;
+}
+
 export function getCountrySwitchPath(pathname: string, targetCountry: AppCountry): string {
   const cleanPath = pathname.replace(/\/+$/, '') || '/';
 

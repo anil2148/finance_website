@@ -54,12 +54,38 @@ const globalLinks: NavLink[] = [
 
 const indiaLinks: NavLink[] = [
   { label: 'Home', href: '/in' },
-  { label: 'Tax', href: '/in/tax' },
-  { label: 'Banking', href: '/in/banking' },
-  { label: 'Investing', href: '/in/investing' },
-  { label: 'Loans', href: '/in/loans' },
-  { label: 'Real Estate', href: '/in/real-estate' },
-  { label: 'Calculators', href: '/in/calculators' }
+  {
+    label: 'Learn',
+    children: [
+      { label: 'Tax Hub', href: '/in/tax' },
+      { label: 'Banking Hub', href: '/in/banking' },
+      { label: 'Investing Hub', href: '/in/investing' },
+      { label: 'Loans Hub', href: '/in/loans' },
+      { label: 'Real Estate Hub', href: '/in/real-estate' }
+    ]
+  },
+  {
+    label: 'Compare',
+    children: [
+      { label: 'Best Credit Cards', href: '/in/best-credit-cards-india' },
+      { label: 'Best Savings Accounts', href: '/in/best-savings-accounts-india' },
+      { label: 'Best Investment Apps', href: '/in/best-investment-apps-india' },
+      { label: 'Home Loan Rates', href: '/in/home-loan-interest-rates-india' },
+      { label: 'Fixed Deposits', href: '/in/best-fixed-deposits-india' }
+    ]
+  },
+  {
+    label: 'Tools',
+    children: [
+      { label: 'EMI Calculator', href: '/in/calculators/emi-calculator' },
+      { label: 'SIP Calculator', href: '/in/calculators/sip-calculator' },
+      { label: 'All Calculators', href: '/in/calculators' }
+    ]
+  },
+  { label: 'Blog', href: '/in/blog' },
+  { label: 'Help', href: '/help' },
+  { label: 'About', href: '/about' },
+  { label: 'Contact', href: '/contact' }
 ];
 
 function isActive(pathname: string, href: string) {
