@@ -149,28 +149,6 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
         <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">Showing {filteredGuides.length} guide{filteredGuides.length === 1 ? '' : 's'}.</p>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What this hub covers</h2>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(CATEGORY_LABELS).map(([category, meta]) => (
-            <article key={category} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{meta.emoji} {meta.label}</p>
-              <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{categoryCounts[category] || 0} guides published</p>
-            </article>
-          ))}
-        </div>
-        <h3 className="mt-5 text-base font-semibold text-slate-900 dark:text-slate-100">Recently added</h3>
-        <ul className="mt-2 space-y-2 text-sm">
-          {latestGuides.map((guide) => (
-            <li key={guide.slug}>
-              <Link href={`/in/blog/${guide.slug}`} className="content-link">
-                {guide.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-
       {Array.from(groupedGuides.entries()).map(([category, categoryGuides]) => {
         const { label, emoji } = CATEGORY_LABELS[category] || { label: category, emoji: '📖' };
         return (
@@ -216,6 +194,28 @@ export function IndiaBlogHub({ guides, pathways }: IndiaBlogHubProps) {
           No matching guides yet. Try searching for a broader term like <span className="font-semibold">tax</span>, <span className="font-semibold">SIP</span>, or <span className="font-semibold">loan</span>.
         </section>
       ) : null}
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">What this hub covers</h2>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {Object.entries(CATEGORY_LABELS).map(([category, meta]) => (
+            <article key={category} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+              <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{meta.emoji} {meta.label}</p>
+              <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{categoryCounts[category] || 0} guides published</p>
+            </article>
+          ))}
+        </div>
+        <h3 className="mt-5 text-base font-semibold text-slate-900 dark:text-slate-100">Recently added</h3>
+        <ul className="mt-2 space-y-2 text-sm">
+          {latestGuides.map((guide) => (
+            <li key={guide.slug}>
+              <Link href={`/in/blog/${guide.slug}`} className="content-link">
+                {guide.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-900 dark:bg-blue-950">
         <h3 className="text-sm font-semibold text-blue-900 dark:text-blue-100">📍 Why these guides are India-specific</h3>
