@@ -94,6 +94,16 @@ const sections = [
     ]
   },
   {
+    type: 'mistake' as const,
+    title: 'The NPS contribution mistake most salaried investors make',
+    mistake:
+      'Opening an NPS account in March for the 80CCD(1B) ₹50,000 deduction and contributing a lump sum at whatever equity allocation is available — without considering NPS fund selection, allocation percentages, or how the mandatory annuity component fits the retirement plan.',
+    whyItBackfires:
+      'A lump-sum NPS contribution in March is subject to the same market-timing risk as any other equity investment. The auto-choice lifecycle fund reduces equity allocation as you age, but many investors select aggressive allocation manually and then forget to rebalance. Additionally, treating NPS as a pure tax-saving move without retirement planning context means the annuity realization at 60 often surprises investors who expected full corpus flexibility.',
+    betterAlternative:
+      'Contribute monthly to NPS (₹4,200/month for ₹50,000 annual deduction). Choose the asset allocation thoughtfully — for those aged 30–40, moderate allocation (around 50% equity) through active choice is reasonable. Treat NPS explicitly as locked-until-60 retirement money and model the annuity obligation into your retirement income plan before starting.'
+  },
+  {
     type: 'contradiction' as const,
     title: 'NPS has the best additional tax deduction. Not everyone should prioritize it.',
     mathWinner:

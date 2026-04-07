@@ -4,6 +4,7 @@ import type { FinancialCategory } from '@/lib/financialProducts';
 import { defaultMatchingCalculatorLinks, matchingCalculatorLinksByFinancialCategory, resolveCalculatorHref } from '@/lib/calculatorLinks';
 import { breadcrumbSchema, webpageSchema } from '@/lib/seo';
 import AuthorBox from '@/components/common/AuthorBox';
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 
 type SeoComparisonPageProps = {
   pageTitle: string;
@@ -186,6 +187,19 @@ const decisionSignalsByCategory: Record<FinancialCategory, { bestIf: string; avo
     avoidIf: 'Avoid debt consolidation loans if spending controls are not in place yet.',
     whenToWait: 'Wait when income variability is high and emergency runway is still too thin.'
   }
+};
+
+const humanJudgmentByCategory: Record<FinancialCategory, string> = {
+  credit_card:
+    'Most people choose a card because it looks lucrative on the day they apply — not because they stress-tested it against a month when they carried a balance. The math only works if the behavior holds.',
+  savings_account:
+    'A higher APY is not free money. It is a conditional offer. The condition is usually a minimum balance, activity requirement, or account rule you will forget about the first time a large expense arrives.',
+  investment_app:
+    'The biggest risk with most investment apps is not fees or features — it is that the platform makes impulse decisions too easy. A platform that slows you down slightly during a market drop is worth more than one that makes it frictionless.',
+  mortgage_lender:
+    'The best rate on paper means nothing if the lender cannot close your file type reliably within your timeline. Execution risk is the variable most first-time buyers ignore until they are two weeks from closing.',
+  personal_loan:
+    'A consolidation loan that lowers your payment without a spending plan almost always results in the same balances 18 months later — plus the loan payment on top. The math changes. The behavior usually does not, unless the plan addresses it.'
 };
 
 const updateCadenceByCategory: Record<FinancialCategory, string> = {
@@ -552,6 +566,8 @@ export function SeoComparisonPage({ pageTitle, intro, category, faq, slug, pathn
           <p className="mt-1">If two options are close, choose the one that still works in your stress-case month (income down, one surprise expense, and less flexibility).</p>
         </div>
       </section>
+
+      <HumanJudgmentCallout>{humanJudgmentByCategory[category]}</HumanJudgmentCallout>
 
       <div className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently Asked Questions</h2>

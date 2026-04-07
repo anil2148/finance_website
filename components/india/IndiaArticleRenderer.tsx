@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 
 export type IndiaArticleSection = {
-  type: 'table' | 'text' | 'decision-panel' | 'cta-block' | 'decision-path' | 'mistake' | 'contradiction';
+  type: 'table' | 'text' | 'decision-panel' | 'cta-block' | 'decision-path' | 'mistake' | 'contradiction' | 'human-judgment';
   title?: string;
   content?: string;
   tone?: 'blue' | 'amber' | 'slate' | 'emerald';
@@ -189,6 +190,14 @@ export function IndiaArticleRenderer({
                 </div>
               </div>
             </section>
+          );
+        }
+
+        if (section.type === 'human-judgment' && section.content) {
+          return (
+            <HumanJudgmentCallout key={`${section.type}-${section.title ?? idx}`}>
+              {section.content}
+            </HumanJudgmentCallout>
           );
         }
 

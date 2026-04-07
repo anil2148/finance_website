@@ -99,6 +99,28 @@ const sections = [
       'Most people overestimate their risk tolerance when the market is rising and underestimate it when it falls. If you have never stayed invested through a 25% drawdown, you cannot confidently say you will handle it next time. This is not a character flaw — it is how most humans respond to financial loss. Design your allocation around this reality, not around your optimistic version of yourself. A smaller ELSS allocation you actually hold is worth more than a larger one you panic-exit.'
   },
   {
+    type: 'mistake' as const,
+    title: 'The most common PPF vs ELSS mistake',
+    mistake:
+      'Investing the full ₹1.5 lakh 80C in ELSS as a lump sum in February or March because "ELSS gives better long-term returns than PPF."',
+    whyItBackfires:
+      'A lump-sum ELSS in February or March is timed by the tax deadline, not by market conditions. If markets are elevated at year-end (as they often are after a good year), you buy at peak prices. Missing monthly SIP rupee-cost averaging across 12 months can cost a meaningful amount of return over a decade. Additionally, lump-sum investing at market highs followed by a 20–30% correction makes ELSS feel like a bad choice — which leads to stopping the investment entirely.',
+    betterAlternative:
+      'Set up ELSS SIPs from April at ₹12,500/month. This spreads risk across the year, avoids March panic, and builds the habit of consistent investment rather than annual deadline-driven lump sums. PPF can absorb any remaining 80C limit if SIP consistency is uncertain.'
+  },
+  {
+    type: 'contradiction' as const,
+    title: 'ELSS wins over 20 years. Many investors end up with less.',
+    mathWinner:
+      'Over 20 years at illustrative rates, ELSS at 11% builds roughly ₹1.24 crore against PPF at 7.1% building ₹65 lakh — a gap of nearly ₹59 lakh on the same ₹1.5 lakh/year contribution.',
+    realLifeChoice:
+      'Many investors who started ELSS allocations in 2019–2020 exited during the March 2020 correction and did not reinvest. Many more paused ELSS SIPs in 2022 when valuations fell. The paper advantage only materializes if you hold through 2–3 full market cycles without exiting.',
+    reason:
+      "Equity market drawdowns test the investor's conviction more severely than any projection chart can convey. A 25% paper loss on an ELSS fund feels very different from a 25% paper loss on a PPF — because PPF never shows you a loss. The behavioral gap between ELSS's theoretical return and many investors' actual return is often 2–4% per year.",
+    resolution:
+      'Choose ELSS only for the portion of 80C you are genuinely prepared to leave untouched through a 30% correction. PPF is not the inferior choice for investors who know they will exit ELSS at the wrong time. A smaller ELSS allocation that stays invested beats a larger one abandoned during a downturn.'
+  },
+  {
     type: 'decision-panel' as const,
     title: 'A practical 80C split by income and risk profile',
     tone: 'emerald' as const,

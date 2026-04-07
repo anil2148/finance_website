@@ -98,6 +98,18 @@ const sections = [
       'Get the renewal quote 30 days before due date and budget for the GST-inclusive amount. Factor insurance premium increases of 5%–15% per year for health insurance when planning annual finance outflows.'
   },
   {
+    type: 'contradiction' as const,
+    title: 'GST on insurance looks like a small tax. Over a lifetime it is not.',
+    mathWinner:
+      'On a ₹20,000 health insurance premium, 18% GST is ₹3,600/year — less than ₹300/month. Most people consider this negligible relative to the coverage value.',
+    realLifeChoice:
+      'Over 30 years, with premiums rising 8%–10% annually, the cumulative GST paid on health insurance alone often exceeds ₹3–₹4 lakh. This is money that many households absorb without tracking because each annual outflow feels small.',
+    reason:
+      'Insurance is a need, not a choice — so the GST component is unavoidable. But it is not invisible. Many household financial plans that work on paper break on timing because insurance renewal, advance tax, and school fee cycles all fall in the same months. GST adds to this crunch without being obviously planned for.',
+    resolution:
+      'Include the GST component explicitly in your annual financial outflow calendar. The 80D deduction applies to the full premium including GST — so if you are on the old tax regime, some of this cost is indirectly recovered. But the cashflow impact arrives before the deduction benefit, which requires a float.'
+  },
+  {
     type: 'cta-block' as const,
     title: 'Include GST in your annual financial planning',
     content:
