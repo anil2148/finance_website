@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaArticleRenderer } from '@/components/india/IndiaArticleRenderer';
 
-const title = 'SIP vs FD in India: which one fits your goal, timeline, and real-life budget?';
+const title = 'SIP vs FD in India: which one fits your goal, timeline, and actual salary pressure?';
 const description =
-  'India SIP vs FD guide with monthly investment scenarios, timeline-based decision logic, failure scenarios, and salary-pressure reality checks.';
+  'India SIP vs FD guide: timeline-based decision logic, failure scenarios, salary-pressure reality checks, and why the right choice depends on your worst month — not your best.';
 
 export const metadata: Metadata = createPageMetadata({
   title,
@@ -166,6 +166,11 @@ const sections = [
         text: 'Keep 40–50% in FD for downside protection, put the rest in a balanced advantage or hybrid fund. This reduces regret in either market scenario and keeps the goal achievable even if markets are flat.'
       }
     ]
+  },
+  {
+    type: 'human-judgment' as const,
+    content:
+      'A plan that only works in your best month is not a real plan. Build the one that survives your worst.'
   },
   {
     type: 'cta-block' as const,

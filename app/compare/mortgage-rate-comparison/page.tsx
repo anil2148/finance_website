@@ -12,14 +12,14 @@ export default function MortgageRateComparisonPage() {
   return (
     <SeoComparisonPage
       pageTitle="Mortgage Rate Comparison: total cost, timeline risk, and lender fit"
-      intro="On a $400,000 mortgage, a lender quoting 6.25% with $9,500 in fees can cost more over 7 years than a 6.40% quote with $2,500 in fees — depending on how long you stay in the home. Most buyers compare the rate on day one. The smarter comparison is total borrowing cost, execution reliability, and whether the lender can close your file type within your actual timeline."
+      intro="On a $400,000 mortgage, a lender quoting 6.25% with $9,500 in fees can cost more over 7 years than a 6.40% quote with $2,500 in fees — depending on how long you stay in the home. Most buyers compare the rate on day one. The smarter comparison is total borrowing cost, execution reliability, and whether the lender can close your file type within your actual timeline. A lower rate is only a win if the lender can actually deliver it on the day you need to close."
       category="mortgage_lender"
       slug="mortgage-rate-comparison"
       pathname="/compare/mortgage-rate-comparison"
       faq={[
         {
           question: 'What usually moves mortgage APR the most?',
-          answer: 'Credit profile (score and depth), loan-to-value ratio, property type (primary vs investment), lock timing, and lender fee structure all affect APR. A borrower with 780 credit and 25% down at a well-capitalized lender will see meaningfully different pricing than the same loan with 680 credit and 10% down — even from the same lender. The rate sheet you see advertised typically assumes a strong credit profile at median LTV.'
+          answer: 'Credit profile (score and depth), loan-to-value ratio, property type (primary vs investment), lock timing, and lender fee structure all affect APR. A borrower with 780 credit and 25% down at a well-capitalized lender will see meaningfully different pricing than the same loan with 680 credit and 10% down — even from the same lender. The rate sheet you see advertised typically assumes a strong credit profile at median LTV. Most borrowers see rates 0.25–0.75% higher than headline-advertised rates once their actual profile is priced in.'
         },
         {
           question: 'How should I choose between a 15-year and 30-year term?',
