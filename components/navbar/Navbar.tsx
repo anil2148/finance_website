@@ -71,31 +71,44 @@ const globalLinks: NavLink[] = [
 const indiaLinks: NavLink[] = [
   { label: 'Home', href: '/in' },
   {
-    label: 'Learn',
+    label: 'Credit Cards',
     children: [
-      { label: 'Tax Hub', href: '/in/tax' },
-      { label: 'Banking Hub', href: '/in/banking' },
-      { label: 'Investing Hub', href: '/in/investing' },
-      { label: 'Loans Hub', href: '/in/loans' },
-      { label: 'Real Estate Hub', href: '/in/real-estate' }
+      { label: 'Credit Cards Hub', href: '/in/best-credit-cards-india' },
+      { label: 'Best Credit Cards India', href: '/in/best-credit-cards-india' }
     ]
   },
   {
-    label: 'Compare',
+    label: 'Investing',
     children: [
-      { label: 'Best Credit Cards', href: '/in/best-credit-cards-india' },
-      { label: 'Best Savings Accounts', href: '/in/best-savings-accounts-india' },
+      { label: 'Investing Hub', href: '/in/investing' },
       { label: 'Best Investment Apps', href: '/in/best-investment-apps-india' },
+      { label: 'SIP Calculator', href: '/in/calculators/sip-calculator' }
+    ]
+  },
+  {
+    label: 'Loans & Debt',
+    children: [
+      { label: 'Loans Hub', href: '/in/loans' },
       { label: 'Home Loan Rates', href: '/in/home-loan-interest-rates-india' },
+      { label: 'EMI Calculator', href: '/in/calculators/emi-calculator' }
+    ]
+  },
+  {
+    label: 'Savings & Banking',
+    children: [
+      { label: 'Banking Hub', href: '/in/banking' },
+      { label: 'Best Savings Accounts', href: '/in/best-savings-accounts-india' },
       { label: 'Fixed Deposits', href: '/in/best-fixed-deposits-india' }
     ]
   },
   {
     label: 'Tools',
     children: [
+      { label: 'All Calculators', href: '/in/calculators' },
       { label: 'EMI Calculator', href: '/in/calculators/emi-calculator' },
       { label: 'SIP Calculator', href: '/in/calculators/sip-calculator' },
-      { label: 'All Calculators', href: '/in/calculators' }
+      { label: 'Tax Hub', href: '/in/tax' },
+      { label: 'Real Estate Hub', href: '/in/real-estate' }
     ]
   },
   { label: 'Blog', href: '/in/blog' },
