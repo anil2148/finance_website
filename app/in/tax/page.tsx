@@ -2,9 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
-
-export const metadata: Metadata = createPageMetadata({
-  title: 'India Tax Hub 2026: Old vs New Regime, 80C Strategy, and Salary-Band Tax Planning',
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
   description: 'India tax decision hub with old-vs-new regime checks, 80C/80D planning, and monthly cashflow-safe execution examples.',
   pathname: '/in/tax'
 });
@@ -79,6 +77,10 @@ export default function IndiaTaxHubPage() {
       </header>
 
       <IndiaAuthorityNote />
+
+      <HumanJudgmentCallout>
+        Most tax-saving mistakes in India are not about choosing the wrong product. They are about timing: deciding in February instead of April, and letting deadline pressure override monthly cashflow math. A plan that works in March panic is rarely the plan that works all year.
+      </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision framework (India tax)</h2>

@@ -2,9 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { createPageMetadata } from '@/lib/seo';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
-
-export const metadata: Metadata = createPageMetadata({
-  title: 'India Real Estate Hub 2026: Rent vs Buy, Affordability, and Home Loan Readiness',
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
   description:
     'Use this India real-estate hub to evaluate rent-vs-buy, down payment vs liquidity, and EMI resilience before booking.',
   pathname: '/in/real-estate'
@@ -95,6 +93,10 @@ export default function IndiaRealEstateHubPage() {
       </header>
 
       <IndiaAuthorityNote />
+
+      <HumanJudgmentCallout>
+        Bank eligibility and real affordability are different numbers. Eligibility is what the lender will sanction based on income ratios. Affordability is what your household can pay every month — including maintenance, school fees, a rate reset, and one month where income is not what it usually is.
+      </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision framework before booking</h2>

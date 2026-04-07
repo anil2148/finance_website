@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { absoluteUrl, createPageMetadata } from '@/lib/seo';
+import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 
 const tools = [
   { name: 'Net worth tracker', value: 'Track how assets and liabilities change over time so you can measure real wealth progress.', href: '/calculators/net-worth-calculator' },
@@ -73,6 +74,10 @@ export default function ToolsPage() {
         <p className="mt-3 text-sm text-slate-700">Fix: run each tool twice — once at your target and once at your worst recent month. If only one scenario passes, dial back until both hold.</p>
         <p className="mt-2 text-sm text-slate-700">Example: if income drops from $6,200 to $4,900 for one month and your plan fails instantly, the target is too tight.</p>
       </section>
+
+      <HumanJudgmentCallout>
+        The most common planning mistake is using a calculator to confirm a plan you already decided on — not to test it. Run the number that feels uncomfortable, not just the one that looks good.
+      </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h2 className="text-lg font-semibold text-slate-900">Decision branching before opening a tool</h2>
