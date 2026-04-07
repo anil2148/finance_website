@@ -86,7 +86,7 @@ export default function IndiaTaxHubPage() {
       </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision framework (India tax)</h2>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Decision framework (India tax)</h2>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-slate-700 dark:text-slate-300">
           <li><strong>Pick your regime first:</strong> compare old vs new by April, not February. One wrong pick costs ₹20,000–₹60,000 unnecessarily.</li>
           <li><strong>Map monthly contribution:</strong> divide your annual 80C target (₹1.5L) by 12. If ₹12,500/month feels tight, the plan is fragile.</li>
@@ -183,7 +183,7 @@ export default function IndiaTaxHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently asked questions</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Common questions about India tax planning</h2>
         <dl className="mt-4 space-y-4 text-sm">
           <div>
             <dt className="font-semibold text-slate-900 dark:text-slate-100">Where should I start if I am confused about tax planning?</dt>

@@ -135,7 +135,7 @@ export default function BankingPage() {
       <IndiaAuthorityNote />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Who this is for</h2>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Who this is for</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">This hub is built around three household types with different banking failure modes:</p>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -494,7 +494,7 @@ export default function BankingPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently asked questions</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Banking questions worth answering first</h2>
         <dl className="mt-4 space-y-4 text-sm">
           <div>
             <dt className="font-semibold text-slate-900 dark:text-slate-100">How should Indian households structure everyday banking?</dt>

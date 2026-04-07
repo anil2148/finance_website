@@ -102,7 +102,7 @@ export default function IndiaRealEstateHubPage() {
       </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 text-sm dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Decision framework before booking</h2>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Decision framework before booking</h2>
         <ol className="mt-3 list-decimal space-y-2 pl-5 text-slate-700 dark:text-slate-300">
           <li>Check <strong>stay horizon</strong>: buying is usually safer when 5+ year location stability is likely.</li>
           <li>Calculate <strong>total housing cost</strong>: EMI + maintenance + interiors + commute + taxes.</li>

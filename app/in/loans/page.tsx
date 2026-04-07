@@ -96,7 +96,7 @@ export default function IndiaLoansHubPage() {
       <IndiaAuthorityNote />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Affordability vs eligibility: the gap that causes most loan regret</h2>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Affordability vs eligibility: the gap that causes most loan regret</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Banks sanction based on income multiples and credit scores. They do not model your school fees, your dependent parents, or what happens if one income pauses for two months. That is your job.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <div className="rounded-xl border border-blue-200 bg-blue-50/40 p-4 dark:border-blue-500/30 dark:bg-blue-500/10">
@@ -403,7 +403,7 @@ export default function IndiaLoansHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently asked questions</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Common questions about borrowing in India</h2>
         <dl className="mt-4 space-y-4 text-sm">
           <div>
             <dt className="font-semibold text-slate-900 dark:text-slate-100">What EMI is usually safe for Indian households?</dt>

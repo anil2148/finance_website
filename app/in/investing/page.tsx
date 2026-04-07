@@ -138,7 +138,7 @@ export default function IndiaInvestingHubPage() {
       <IndiaAuthorityNote />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Salary-band SIP scenarios: allocation, corpus projections, and failure modes</h2>
+        <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Salary-band SIP scenarios: allocation, corpus projections, and failure modes</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           {scenarios.map((scenario) => (
             <article key={scenario.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -148,19 +148,6 @@ export default function IndiaInvestingHubPage() {
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><span className="font-medium text-emerald-700 dark:text-emerald-300">Before starting:</span> {scenario.beforeStarting}</p>
               <p className="mt-2 text-sm text-slate-700 dark:text-slate-300"><span className="font-medium">Suggested allocation:</span> {scenario.allocation}</p>
               <p className="mt-2 text-sm text-rose-700 dark:text-rose-300"><span className="font-medium">Failure mode:</span> {scenario.warning}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Five investing principles that determine long-term results</h2>
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          {investingPrinciples.map((item) => (
-            <article key={item.principle} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.principle}</h3>
-              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.detail}</p>
-              <p className="mt-2 text-xs font-semibold text-blue-700 dark:text-blue-300">{item.threshold}</p>
             </article>
           ))}
         </div>
@@ -181,6 +168,19 @@ export default function IndiaInvestingHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Five investing principles that determine long-term results</h2>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          {investingPrinciples.map((item) => (
+            <article key={item.principle} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{item.principle}</h3>
+              <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">{item.detail}</p>
+              <p className="mt-2 text-xs font-semibold text-blue-700 dark:text-blue-300">{item.threshold}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">India investing journey: calculator to execution</h2>
         <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">
           Use <Link href="/in/calculators/sip-calculator" className="content-link">SIP calculator</Link> to size your SIP → choose <Link href="/in/fixed-deposit-vs-sip-india" className="content-link">FD vs SIP allocation</Link> by goal timeline → finalize tax-aware split with <Link href="/in/blog/ppf-vs-elss" className="content-link">PPF vs ELSS</Link> → compare platforms on <Link href="/in/best-investment-apps-india" className="content-link">investment apps comparison</Link>.
@@ -191,7 +191,7 @@ export default function IndiaInvestingHubPage() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently asked questions</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Questions before you start investing</h2>
         <dl className="mt-4 space-y-4 text-sm">
           <div>
             <dt className="font-semibold text-slate-900 dark:text-slate-100">How much SIP should I start with in India?</dt>
