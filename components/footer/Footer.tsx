@@ -72,7 +72,9 @@ export function Footer() {
           <p className="text-base font-semibold text-slate-900 dark:text-slate-100">FinanceSphere</p>
           <p>Educational planning tools and frameworks for better financial decisions.</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            We may earn compensation from partners, but pages are built to prioritize user fit, clarity, and downside-risk awareness over conversion pressure.
+            FinanceSphere uses affiliate links to monetize content. When you click on certain links and complete a purchase or sign-up, we may receive
+            a commission from the partner company. These partnerships do not affect our editorial independence — all opinions are based on research,
+            experience, and analysis.
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
             <AppLink href="/editorial-policy" variant="chip" className="text-xs">Editorial policy</AppLink>

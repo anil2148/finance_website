@@ -233,7 +233,7 @@ export function HomepageLayout() {
                 See where this breaks
               </Link>
             </div>
-            <p className="text-xs text-blue-200">Last homepage review: March 26, 2026 • Educational content only; verify final terms with providers before action.</p>
+            <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
             <div className="relative h-56 overflow-hidden rounded-lg border border-white/20">
@@ -251,6 +251,14 @@ export function HomepageLayout() {
           </div>
         </div>
       </Card>
+
+      <aside className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400" aria-label="Affiliate disclosure notice">
+        <strong className="text-slate-800 dark:text-slate-200">Affiliate &amp; Advertising Disclosure:</strong>{' '}
+        FinanceSphere uses affiliate links to monetize content. When you click on certain links and complete a purchase or sign-up, we may receive a
+        commission from the partner company. These partnerships do not affect our editorial independence — all opinions are based on research,
+        experience, and analysis.{' '}
+        <Link href="/affiliate-disclosure" className="font-medium text-blue-700 hover:underline dark:text-blue-400">Full disclosure →</Link>
+      </aside>
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">What to do first</h2>
@@ -421,7 +429,18 @@ export function HomepageLayout() {
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="why-trust-us">
         <h2 id="why-trust-us" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Why trust FinanceSphere?</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Built by {author.name}, {author.description}.</p>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          Built by <strong className="text-slate-800 dark:text-slate-200">{author.name}</strong>
+          {author.yearsOfExperience ? <span>, {author.yearsOfExperience}+ years in consumer finance systems and personal finance research</span> : null}
+          {author.credentials && author.credentials.length > 0 ? (
+            <span className="ml-1">
+              ({author.credentials.join(', ')})
+            </span>
+          ) : null}.
+        </p>
+        {author.methodology ? (
+          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 italic">&ldquo;{author.methodology}&rdquo;</p>
+        ) : null}
         <div className="mt-4 grid gap-4 md:grid-cols-3">
           <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Decision-first methodology</p>
@@ -429,7 +448,7 @@ export function HomepageLayout() {
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Transparent about conflicts</p>
-            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Affiliate relationships are clearly disclosed. Partners cannot buy rankings, suppress risk notes, or remove limitations from any page.</p>
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Affiliate relationships are clearly disclosed. Partners cannot buy rankings, suppress risk notes, or remove limitations from any page. <Link href="/affiliate-disclosure" className="font-medium text-blue-600 hover:underline dark:text-blue-400">See full disclosure</Link>.</p>
           </div>
           <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Calculator-backed content</p>
@@ -451,6 +470,7 @@ export function HomepageLayout() {
         <div className="mt-4 flex flex-wrap gap-2 text-xs">
           <Link href="/about" className="font-medium text-blue-600 hover:underline dark:text-blue-400">About Smita &amp; FinanceSphere</Link>
           <Link href="/editorial-policy" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Editorial policy</Link>
+          <Link href="/affiliate-disclosure" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Affiliate disclosure</Link>
           <Link href="/how-we-make-money" className="font-medium text-blue-600 hover:underline dark:text-blue-400">How we make money</Link>
           <Link href="/financial-disclaimer" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Financial disclaimer</Link>
         </div>

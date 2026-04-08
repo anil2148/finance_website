@@ -259,6 +259,28 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section className="space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-6">
+        <h2 className="text-2xl font-semibold text-slate-900">Affiliate &amp; Advertising Disclosure</h2>
+        <p className="text-slate-700">
+          FinanceSphere uses affiliate links to monetize content. When you click on certain links and complete a purchase or sign-up, we may receive a
+          commission from the partner company. This commission does not increase the price you pay.
+        </p>
+        <p className="text-slate-700">
+          These partnerships do not affect our editorial independence. All opinions expressed on FinanceSphere are based on research, experience, and
+          analysis. We aim to provide accurate, up-to-date, and helpful information; however, we recommend users verify details independently before
+          making financial decisions.
+        </p>
+        <p className="text-slate-700">
+          Affiliate relationships help support the operation and maintenance of this website. FinanceSphere also displays third-party advertisements
+          through Google AdSense; advertising revenue does not influence editorial decisions or product rankings.
+        </p>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/affiliate-disclosure">Full affiliate disclosure</Link>
+          <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/how-we-make-money">How we make money</Link>
+          <Link className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700" href="/editorial-policy">Editorial policy</Link>
+        </div>
+      </section>
+
       <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-2xl font-semibold text-slate-900">Start here</h2>
         <p className="text-slate-700">If you are making a decision soon, start with one calculator run, then one comparison framework, then one guide that matches your scenario.</p>
