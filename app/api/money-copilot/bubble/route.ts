@@ -15,7 +15,7 @@ function getSuggestionsForPage(ctx: PageContext): string[] {
     return ['Should I pay off debt or invest?', 'Which debt should I tackle first?', 'Is this loan risky?'];
   }
   if (p.includes('savings') || p.includes('saving') || p.includes('hysa')) {
-    return ['Am I saving enough?', 'HYSA vs investing — which is better now?', 'How long to reach my savings goal?'];
+    return ['Am I saving enough?', 'HYSA vs investing — which is better?', 'How long to reach my savings goal?'];
   }
   if (p.includes('retirement') || p.includes('401k') || p.includes('roth') || p.includes('ira')) {
     return ['Roth vs Traditional 401(k) — which wins?', 'Am I on track to retire?', 'Should I max my 401(k) or IRA first?'];
@@ -91,6 +91,9 @@ function parseBubbleResponse(raw: string): BubbleResponse | null {
       typeof parsed.confidence === 'string' &&
       typeof parsed.disclaimer === 'string'
     ) {
+      const confidenceRaw = (parsed.confidence as string).toUpperCase();
+      const confidence: 'LOW' | 'MEDIUM' | 'HIGH' =
+        confidenceRaw === 'HIGH' || confidenceRaw === 'MEDIUM' ? confidenceRaw : 'LOW';
       return {
         summary: parsed.summary,
         quickTake: parsed.quickTake,
@@ -99,7 +102,7 @@ function parseBubbleResponse(raw: string): BubbleResponse | null {
         whatMattersMost: parsed.whatMattersMost as string[],
         riskFlags: parsed.riskFlags as string[],
         nextStep: parsed.nextStep,
-        confidence: (parsed.confidence as string).toUpperCase() as 'LOW' | 'MEDIUM' | 'HIGH',
+        confidence,
         disclaimer: parsed.disclaimer
       };
     }
