@@ -97,11 +97,34 @@ export function ResultCard({ response }: ResultCardProps) {
   const risks = response.risks.slice(0, 4);
   const nextStep = response.nextSteps[0] ?? '';
 
+  // Extract key numeric signals from keyMetrics for top display
+  const leftoverMetric = response.keyMetrics.find(
+    (m) => m.label.toLowerCase().includes('surplus') || m.label.toLowerCase().includes('leftover')
+  );
+  const savingsMetric = response.keyMetrics.find(
+    (m) => m.label.toLowerCase().includes('savings') && m.label.toLowerCase().includes('capacity')
+  );
+  const takeHomeMetric = response.keyMetrics.find(
+    (m) => m.label.toLowerCase().includes('take-home') || m.label.toLowerCase().includes('take home')
+  );
+
+  // Derive risk level from scenarios or fall back to confidence-based guess
+  const scenarioRisk = hasScenarios ? response.scenarios[winnerIndex]?.results?.riskLevel : null;
+  const derivedRisk: 'low' | 'medium' | 'high' =
+    scenarioRisk ?? (response.confidenceLevel === 'high' ? 'low' : response.confidenceLevel === 'medium' ? 'medium' : 'high');
+
+  const RISK_PILL: Record<string, string> = {
+    low: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-700/40',
+    medium: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-700/40',
+    high: 'bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-400 dark:border-red-700/40'
+  };
+  const RISK_LABEL: Record<string, string> = { low: 'Low risk', medium: 'Medium risk', high: 'High risk' };
+
   return (
     <div className="space-y-4">
-      {/* TIER 1: Decision Summary */}
+      {/* TIER 1: Decision Summary — numbers first */}
       <Card>
-        <div className="mb-3 flex items-center justify-between gap-2 flex-wrap">
+        <div className="mb-4 flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-2">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700 dark:bg-blue-900/40 dark:text-blue-400">1</span>
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Decision Summary</h2>
@@ -110,6 +133,37 @@ export function ResultCard({ response }: ResultCardProps) {
             {CONFIDENCE_LABELS[response.confidenceLevel]}
           </span>
         </div>
+
+        {/* Numeric signals — shown first */}
+        {(leftoverMetric ?? savingsMetric ?? takeHomeMetric) && (
+          <div className="mb-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {(takeHomeMetric ?? leftoverMetric) && (
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/50">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                  {takeHomeMetric ? 'Monthly take-home' : 'Monthly leftover'}
+                </p>
+                <p className="mt-1 text-lg font-bold tabular-nums text-slate-900 dark:text-slate-100">
+                  {(takeHomeMetric ?? leftoverMetric)!.value}
+                </p>
+              </div>
+            )}
+            {savingsMetric && (
+              <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/50">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Savings capacity</p>
+                <p className="mt-1 text-lg font-bold tabular-nums text-emerald-700 dark:text-emerald-400">
+                  {savingsMetric.value}
+                </p>
+              </div>
+            )}
+            <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800/50">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Risk level</p>
+              <span className={`mt-1 inline-flex rounded-full border px-2 py-0.5 text-xs font-semibold ${RISK_PILL[derivedRisk]}`}>
+                {RISK_LABEL[derivedRisk]}
+              </span>
+            </div>
+          </div>
+        )}
+
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">{response.summary}</p>
         <div className="mt-4 rounded-xl bg-blue-50 p-4 dark:bg-blue-950/30">
           <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400 mb-1">Recommendation</p>

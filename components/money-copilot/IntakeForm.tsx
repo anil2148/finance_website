@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import type { CopilotRequest, DecisionMode } from '@/lib/money-copilot/types';
+import { detectIntent, intentToDecisionMode } from '@/lib/money-copilot/intent';
 
 const CHIP_MODE_MAP: Record<string, DecisionMode> = {
-  'Job change': 'job-offer',
-  'Rent vs Buy': 'home-affordability',
-  'Debt payoff': 'debt-payoff',
-  'Save vs Invest': 'emergency-fund',
-  'Retirement planning': 'roth-vs-traditional'
+  'Job Decision': 'job-offer',
+  'Home Buying': 'home-affordability',
+  'Debt Strategy': 'debt-payoff',
+  'Retirement': 'roth-vs-traditional'
 };
 
 interface IntakeFormProps {
@@ -24,24 +24,16 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
   const [error, setError] = useState('');
 
   const inferMode = (q: string): DecisionMode => {
-    const lower = q.toLowerCase();
-    if (lower.includes('job') || lower.includes('offer') || lower.includes('salary') || lower.includes('compensation')) return 'job-offer';
-    if (lower.includes('rent') || lower.includes('buy') || lower.includes('home') || lower.includes('house') || lower.includes('mortgage')) return 'home-affordability';
-    if (lower.includes('debt') || lower.includes('loan') || lower.includes('payoff') || lower.includes('credit')) return 'debt-payoff';
-    if (lower.includes('retire') || lower.includes('roth') || lower.includes('401k') || lower.includes('ira')) return 'roth-vs-traditional';
-    if (lower.includes('emergency') || lower.includes('fund')) return 'emergency-fund';
-    if (lower.includes('budget') || lower.includes('stress')) return 'budget-stress-test';
-    if (lower.includes('reloc') || lower.includes('mov') || lower.includes('state')) return 'relocation';
-    return 'custom';
+    const intent = detectIntent(q);
+    return (intentToDecisionMode(intent) as DecisionMode) ?? 'custom';
   };
 
   const handleChipClick = (chip: string) => {
     const chipQuestions: Record<string, string> = {
-      'Job change': 'Should I take this new job offer?',
-      'Rent vs Buy': 'Should I rent or buy a home right now?',
-      'Debt payoff': 'Should I pay off my debt or invest?',
-      'Save vs Invest': 'Should I save in a HYSA or invest in the market?',
-      'Retirement planning': 'Am I on track for retirement? Roth vs Traditional?'
+      'Job Decision': 'Should I take this new job offer?',
+      'Home Buying': 'Can I afford a $500k house?',
+      'Debt Strategy': 'Should I pay off debt or invest?',
+      'Retirement': 'Am I on track for retirement? Roth vs Traditional?'
     };
     setQuestion(chipQuestions[chip] ?? chip);
     setSelectedChip(chip);
@@ -71,7 +63,7 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
           value={question}
           onChange={(e) => { setQuestion(e.target.value); setSelectedChip(null); setError(''); }}
           rows={3}
-          placeholder="e.g. I got a job offer in Texas for $120k vs staying in NYC for $145k — which is better financially?"
+          placeholder="e.g. Should I take a $120k job in NJ or $100k in NC?"
           className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
         />
         {error && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{error}</p>}
@@ -102,7 +94,7 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
           value={context}
           onChange={(e) => setContext(e.target.value)}
           rows={3}
-          placeholder="Example: I earn 120k, rent is 2500, have 10k savings, 15k debt"
+          placeholder="I earn 120k, rent 2500, savings 10k, debt 15k"
           className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
         />
         <p className="mt-1.5 text-xs text-slate-400">

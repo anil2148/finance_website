@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { createPageMetadata, absoluteUrl } from '@/lib/seo';
 import { CopilotWorkspace } from '@/components/money-copilot/CopilotWorkspace';
 
@@ -146,7 +147,9 @@ export default function AiMoneyCopilotPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
-      <CopilotWorkspace />
+      <Suspense>
+        <CopilotWorkspace />
+      </Suspense>
 
       {/* How it works */}
       <section className="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900/90 md:p-8">

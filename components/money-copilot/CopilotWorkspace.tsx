@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
 import { MoneyCopilotHero } from '@/components/money-copilot/MoneyCopilotHero';
 import { IntakeForm } from '@/components/money-copilot/IntakeForm';
@@ -60,12 +61,15 @@ function buildTextSummary(request: CopilotRequest, response: CopilotResponse): s
 }
 
 export function CopilotWorkspace() {
+  const searchParams = useSearchParams();
+  const queryParam = searchParams.get('query') ?? '';
+
   const [currentRequest, setCurrentRequest] = useState<CopilotRequest | null>(null);
   const [response, setResponse] = useState<CopilotResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [savedReports, setSavedReports] = useState<CopilotResponse[]>([]);
-  const [selectedPrompt, setSelectedPrompt] = useState('');
+  const [selectedPrompt, setSelectedPrompt] = useState(queryParam);
 
   useEffect(() => {
     setSavedReports(loadSavedReports());

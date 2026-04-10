@@ -11,30 +11,31 @@ const CONFIDENCE_COLOR: Record<string, string> = {
 };
 
 const DEFAULT_SUGGESTIONS = [
-  'Job decision',
-  'Debt vs savings',
-  'Home affordability',
-  'Retirement check'
+  'Job Decision',
+  'Home Buying',
+  'Debt Strategy',
+  'Retirement'
 ];
 
 function getPageSuggestions(path: string): string[] {
   const p = path.toLowerCase();
   if (p.includes('mortgage') || p.includes('home') || p.includes('real-estate')) {
-    return ['Home affordability', 'Rent vs Buy', 'How much house can I afford?'];
+    return ['Home Buying', 'Can I afford a $500k house?', 'Rent vs Buy', 'Debt Strategy'];
   }
   if (p.includes('debt') || p.includes('loan') || p.includes('credit')) {
-    return ['Debt vs savings', 'Which debt first?', 'Is this loan risky?'];
+    return ['Debt Strategy', 'Should I pay off debt or invest?', 'Job Decision', 'Home Buying'];
   }
   if (p.includes('retirement') || p.includes('401k') || p.includes('roth')) {
-    return ['Retirement check', 'Roth vs Traditional?', 'Am I on track?'];
+    return ['Retirement', 'Roth vs Traditional?', 'Job Decision', 'Debt Strategy'];
   }
   if (p.includes('savings') || p.includes('invest')) {
-    return ['Debt vs savings', 'Save vs invest', 'Am I saving enough?'];
+    return ['Debt Strategy', 'Retirement', 'Job Decision', 'Home Buying'];
   }
   return DEFAULT_SUGGESTIONS;
 }
 
-function QuickResultCard({ r }: { r: BubbleResponse }) {
+function QuickResultCard({ r, question }: { r: BubbleResponse; question: string }) {
+  const fullAnalysisUrl = `/ai-money-copilot?query=${encodeURIComponent(question)}`;
   return (
     <div className="space-y-3 text-sm">
       <p className="font-semibold leading-snug text-slate-900 dark:text-slate-100">{r.summary}</p>
@@ -62,6 +63,17 @@ function QuickResultCard({ r }: { r: BubbleResponse }) {
         </span>
         <span className="text-[10px] text-slate-400 dark:text-slate-500">{r.disclaimer}</span>
       </div>
+
+      {/* CTA: upgrade to full analysis */}
+      <a
+        href={fullAnalysisUrl}
+        className="mt-1 flex w-full items-center justify-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-100 dark:border-blue-700/40 dark:bg-blue-950/30 dark:text-blue-400 dark:hover:bg-blue-950/50"
+      >
+        Run full analysis
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
     </div>
   );
 }
@@ -192,7 +204,7 @@ export function CopilotBubble() {
                   </button>
                 </div>
                 <p className="mb-3 text-xs text-slate-500 dark:text-slate-400 italic">&ldquo;{question}&rdquo;</p>
-                <QuickResultCard r={result} />
+                <QuickResultCard r={result} question={question} />
               </div>
             )}
 
@@ -232,11 +244,11 @@ export function CopilotBubble() {
                   {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
                 </div>
 
-                {/* Suggestion chips — max 3 */}
+                {/* Suggestion chips — max 4 */}
                 <div>
                   <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Quick questions</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {suggestions.slice(0, 3).map((s) => (
+                    {suggestions.slice(0, 4).map((s) => (
                       <button
                         key={s}
                         onClick={() => void handleSubmit(s)}
