@@ -33,7 +33,9 @@ function buildCacheKey(mode: string, userMessage: string): string {
 }
 
 /**
- * Insert an entry into the cache, evicting expired or excess entries first.
+ * Insert an entry into the cache using FIFO eviction when the cache is at capacity.
+ * Expired entries are pruned first; if the cache is still full, the oldest inserted
+ * entry is removed (Map preserves insertion order in JavaScript).
  */
 function setCacheEntry(key: string, narrative: AiNarrative): void {
   const now = Date.now();

@@ -225,7 +225,11 @@ function buildFallbackBubbleResponse(req: BubbleRequest, suggestions: string[]):
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json() as Partial<BubbleRequest>;
+    const raw: unknown = await req.json();
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
+    }
+    const body = raw as Partial<BubbleRequest>;
 
     const rawQuestion = sanitizeText(body.question);
     if (!rawQuestion) {
