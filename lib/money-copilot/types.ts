@@ -70,6 +70,8 @@ export interface CopilotRequest {
   question: string;
   inputs: FinancialInputs;
   scenarios: Scenario[];
+  /** 'deep' (default) returns full CopilotResponse; 'quick' returns BubbleResponse */
+  responseMode?: 'deep' | 'quick';
 }
 
 export interface PageContext {
@@ -86,9 +88,7 @@ export interface BubbleRequest {
 export interface BubbleResponse {
   summary: string;
   quickTake: string;
-  suggestions: string[];
-  keyNumbers: string[];
-  whatMattersMost: string[];
+  keyPoints: string[];
   riskFlags: string[];
   nextStep: string;
   confidence: 'LOW' | 'MEDIUM' | 'HIGH';

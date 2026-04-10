@@ -69,16 +69,14 @@ Respond ONLY with valid JSON (no markdown fences) matching this structure:
 {
   "summary": "<1-2 sentence bottom line>",
   "quickTake": "<simple plain-language reasoning, 1-2 sentences>",
-  "suggestions": ["<contextual follow-up suggestion 1>", "<suggestion 2>", "<suggestion 3>"],
-  "keyNumbers": ["<key number or assumption>"],
-  "whatMattersMost": ["<top decision driver>"],
+  "keyPoints": ["<key number or assumption>"],
   "riskFlags": ["<risk or unknown>"],
   "nextStep": "<one clear immediate action>",
   "confidence": "LOW",
   "disclaimer": "Educational decision support only, not financial advice."
 }
 
-If the question is vague or inputs are missing, set confidence to "LOW" and list assumptions explicitly in keyNumbers. Use these default suggestions if context does not suggest better ones: ${JSON.stringify(fallbackSuggestions)}`;
+If the question is vague or inputs are missing, set confidence to "LOW". Default suggestions: ${JSON.stringify(fallbackSuggestions)}`;
 }
 
 function parseBubbleResponse(raw: string): BubbleResponse | null {
@@ -87,14 +85,10 @@ function parseBubbleResponse(raw: string): BubbleResponse | null {
       .replace(/^```(?:json)?/m, '')
       .replace(/```$/m, '')
       .trim();
-    const parsed = JSON.parse(cleaned) as Partial<BubbleResponse>;
+    const parsed = JSON.parse(cleaned) as Record<string, unknown>;
     if (
       typeof parsed.summary === 'string' &&
       typeof parsed.quickTake === 'string' &&
-      Array.isArray(parsed.suggestions) &&
-      Array.isArray(parsed.keyNumbers) &&
-      Array.isArray(parsed.whatMattersMost) &&
-      Array.isArray(parsed.riskFlags) &&
       typeof parsed.nextStep === 'string' &&
       typeof parsed.confidence === 'string' &&
       typeof parsed.disclaimer === 'string'
@@ -105,10 +99,8 @@ function parseBubbleResponse(raw: string): BubbleResponse | null {
       return {
         summary: parsed.summary,
         quickTake: parsed.quickTake,
-        suggestions: parsed.suggestions as string[],
-        keyNumbers: parsed.keyNumbers as string[],
-        whatMattersMost: parsed.whatMattersMost as string[],
-        riskFlags: parsed.riskFlags as string[],
+        keyPoints: Array.isArray(parsed.keyPoints) ? (parsed.keyPoints as string[]) : [],
+        riskFlags: Array.isArray(parsed.riskFlags) ? (parsed.riskFlags as string[]) : [],
         nextStep: parsed.nextStep,
         confidence,
         disclaimer: parsed.disclaimer
@@ -209,13 +201,11 @@ async function callAiForBubble(userMessage: string, systemPrompt: string): Promi
   return null;
 }
 
-function buildFallbackBubbleResponse(req: BubbleRequest, suggestions: string[]): BubbleResponse {
+function buildFallbackBubbleResponse(req: BubbleRequest): BubbleResponse {
   return {
     summary: 'I can help you think through this financial decision.',
-    quickTake: 'Provide more details about your income, expenses, and goals for a tailored analysis.',
-    suggestions,
-    keyNumbers: ['No specific inputs provided — all estimates are assumptions'],
-    whatMattersMost: ['Your income and existing obligations', 'Your risk tolerance', 'Your time horizon'],
+    quickTake: `For "${req.question}" — provide more details for a tailored analysis.`,
+    keyPoints: ['No specific inputs provided — estimates are based on general assumptions'],
     riskFlags: ['Missing data reduces confidence significantly'],
     nextStep: 'Visit the full AI Money Copilot at /ai-money-copilot for a deep-dive analysis.',
     confidence: 'LOW',
@@ -254,7 +244,7 @@ export async function POST(req: NextRequest) {
     const rawResponse = await callAiForBubble(userMessage, systemPrompt);
 
     const parsed = rawResponse ? parseBubbleResponse(rawResponse) : null;
-    const response = parsed ?? buildFallbackBubbleResponse(bubbleReq, fallbackSuggestions);
+    const response = parsed ?? buildFallbackBubbleResponse(bubbleReq);
 
     return NextResponse.json(response);
   } catch (err) {

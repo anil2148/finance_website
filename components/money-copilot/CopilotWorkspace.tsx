@@ -73,7 +73,7 @@ export function CopilotWorkspace() {
 
   const handleSelectPrompt = useCallback((prompt: string) => {
     setSelectedPrompt(prompt);
-    trackEvent({ event: 'prompt_selected', category: 'money_copilot', label: prompt });
+    trackEvent({ event: 'chip_selected', category: 'money_copilot', label: prompt });
     window.scrollTo({ top: document.getElementById('copilot-form')?.offsetTop ?? 0, behavior: 'smooth' });
   }, []);
 
@@ -155,7 +155,7 @@ export function CopilotWorkspace() {
 
   return (
     <div className="space-y-8">
-      <MoneyCopilotHero onSelectPrompt={handleSelectPrompt} />
+      <MoneyCopilotHero onSelectChip={handleSelectPrompt} />
 
       <div id="copilot-form">
         <IntakeForm
