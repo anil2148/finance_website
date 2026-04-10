@@ -41,6 +41,7 @@ const INCLUDED_STATIC = new Set([
   '/loans',
   '/comparison',
   '/calculators',
+  '/ai-money-copilot',
   '/in'
 ]);
 
