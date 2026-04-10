@@ -113,9 +113,10 @@ export function CopilotWorkspace() {
       const data: CopilotResponse = await res.json();
       console.log('[Copilot] Response:', data);
 
-      if (!data || (data as unknown as { error?: boolean }).error) {
+      const errData = data as unknown as { error?: unknown };
+      if (!data || typeof errData.error === 'string' || errData.error === true) {
         console.error('[Copilot] API returned an error response:', data);
-        setError('Something went wrong. Please try again.');
+        setError(typeof errData.error === 'string' ? errData.error : 'Something went wrong. Please try again.');
         return;
       }
 

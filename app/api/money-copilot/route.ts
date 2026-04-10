@@ -151,8 +151,7 @@ export async function POST(req: NextRequest) {
 
     // Deep mode (default): full structured CopilotResponse
     const mode = body.mode ?? getModeFromQuestion(rawQuestion);
-    const intent = mode;
-    console.log('[API] Detected intent:', intent);
+    console.log('[API] Detected intent:', mode);
 
     const request: CopilotRequest = {
       mode,
@@ -186,10 +185,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(response);
   } catch (err) {
     console.error('[API] Error:', err);
+    const details = err instanceof Error ? err.message : String(err);
     return NextResponse.json({
-      error: true,
-      message: 'Failed to generate AI response',
-      details: err instanceof Error ? err.message : String(err)
+      error: `Failed to generate AI response: ${details}`
     }, { status: 500 });
   }
 }
