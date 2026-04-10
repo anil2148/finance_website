@@ -218,7 +218,7 @@ export function MobileMenu({
               variants={itemVariants}
             >
               <Link
-                href={isIndiaContext ? '/ai-money-copilot' : '/ai-money-copilot'}
+                href="/ai-money-copilot"
                 className="btn-primary w-full text-sm"
                 onClick={onClose}
               >
