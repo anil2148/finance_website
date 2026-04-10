@@ -152,7 +152,7 @@ const sections = [
       { label: 'India tax planning hub', href: '/in/tax' },
       { label: 'Compare old vs new tax regime', href: '/in/old-vs-new-tax-regime' },
       { label: 'Run SIP projection scenarios', href: '/in/calculators/sip-calculator' },
-      { label: '80C deductions complete guide', href: '/in/80c-deductions-guide' }
+      { label: '80C deductions complete guide', href: '/in/80c-deductions' }
     ]
   }
 ];
@@ -163,7 +163,7 @@ const nextDecisions = [
     description: 'Once you know your PPF vs ELSS split, check which regime benefits you more, and whether PF, insurance, or home loan principal already covers some 80C automatically.',
     links: [
       { label: 'India tax hub', href: '/in/tax' },
-      { label: '80C deductions guide', href: '/in/80c-deductions-guide' }
+      { label: '80C deductions guide', href: '/in/80c-deductions' }
     ]
   },
   {

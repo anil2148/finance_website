@@ -50,7 +50,7 @@ const pathwayLinks = {
     { href: '/in/80c-deductions', label: '80C deductions: what counts and how to document' },
     { href: '/in/tax-saving-strategies', label: 'Tax saving strategies by salary band' },
     { href: '/in/sip-strategy-india', label: 'Post-tax SIP strategy for long-term wealth' },
-    { href: '/in/tax-slabs-2026-india', label: 'India tax slabs 2026 reference' }
+    { href: '/in/tax-slabs', label: 'India tax slabs 2026 reference' }
   ]
 };
 

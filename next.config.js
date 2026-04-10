@@ -61,6 +61,8 @@ const nextConfig = {
       { source: '/best-credit-cards', destination: '/best-credit-cards-2026', permanent: true },
       { source: '/best-savings-accounts', destination: '/best-savings-accounts-usa', permanent: true },
       { source: '/mortgage-rate-comparison', destination: '/compare/mortgage-rate-comparison', permanent: true },
+      { source: '/in/80c-deductions-guide', destination: '/in/80c-deductions', permanent: true },
+      { source: '/in/tax-slabs-2026-india', destination: '/in/tax-slabs', permanent: true },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
       ...normalizeRedirectMap(blogRedirectMap).map((entry) => ({
         source: entry.source,
