@@ -115,9 +115,12 @@ function decodeUriComponentSafe(value: string) {
 function fullyDecodeUriComponent(value: string): string {
   let decoded = value;
   let prev = '';
-  while (decoded !== prev) {
+  let iterations = 0;
+  const MAX_ITERATIONS = 10;
+  while (decoded !== prev && iterations < MAX_ITERATIONS) {
     prev = decoded;
     decoded = decodeUriComponentSafe(decoded);
+    iterations++;
   }
   return decoded;
 }
