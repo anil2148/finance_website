@@ -24,7 +24,6 @@ const EXCLUDED_EXACT = new Set([
 const INCLUDED_STATIC = new Set([
   '/',
   '/about',
-  '/about-us',
   '/contact',
   '/affiliate-disclosure',
   '/editorial-policy',

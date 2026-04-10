@@ -40,7 +40,6 @@ const breadcrumbLabelMap: Record<string, string> = {
   'ppf-vs-elss': 'PPF vs ELSS',
   'fixed-deposit-vs-sip-india': 'Fixed Deposit vs SIP',
   'old-vs-new-tax-regime': 'Old vs New Tax Regime',
-  'tax-slabs-2026-india': 'Tax Slabs 2026',
   'best-savings-accounts-india': 'Best Savings Accounts',
   'best-fixed-deposits-india': 'Best Fixed Deposits',
   'home-loan-interest-rates-india': 'Home Loan Interest Rates',
