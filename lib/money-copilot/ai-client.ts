@@ -1,6 +1,12 @@
 import type { CopilotRequest, FinancialInputs } from './types';
 import { buildSystemPrompt } from './prompts';
 
+/** Standard work hours per year used for hourly-to-annual conversion. */
+const WORK_HOURS_PER_YEAR = 2080;
+
+/** Maximum tokens to request from the AI provider per response. */
+const AI_MAX_TOKENS = 1024;
+
 export interface AiNarrative {
   summary: string;
   recommendation: string;
@@ -12,7 +18,7 @@ export interface AiNarrative {
 function formatInputsForPrompt(inputs: FinancialInputs): string {
   const lines: string[] = [];
 
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : null);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * WORK_HOURS_PER_YEAR : null);
   if (salary) lines.push(`Annual salary: $${salary.toLocaleString()}`);
   if (inputs.hourlyRate) lines.push(`Hourly rate: $${inputs.hourlyRate}/hr`);
   if (inputs.bonus) lines.push(`Annual bonus: $${inputs.bonus.toLocaleString()}`);
@@ -114,7 +120,7 @@ async function callOpenAi(
         { role: 'user', content: userMessage }
       ],
       temperature: 0.3,
-      max_tokens: 1024
+      max_tokens: AI_MAX_TOKENS
     })
   });
 
@@ -136,7 +142,7 @@ async function callOllama(
   const host = process.env.HIDDEN_AI_OLLAMA_HOST;
   if (!host) return null;
 
-  const model = process.env.HIDDEN_AI_OLLAMA_MODEL ?? 'llama3';
+  const model = process.env.HIDDEN_AI_OLLAMA_MODEL ?? 'llama3:8b';
   const baseUrl = host.replace(/\/$/, '');
 
   const res = await fetch(`${baseUrl}/api/chat`, {
