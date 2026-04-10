@@ -65,7 +65,7 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
     }
     setError('');
     // Use chip-mapped mode when the question came from a chip click; otherwise infer from text
-    const mode = (selectedChip && CHIP_MODE_MAP[selectedChip]) ?? inferMode(question);
+    const mode: DecisionMode = (selectedChip ? CHIP_MODE_MAP[selectedChip] : undefined) ?? inferMode(question);
     onSubmit({ mode, question: question.trim(), inputs, scenarios: [] });
   };
 
