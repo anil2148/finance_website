@@ -1,9 +1,124 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { buildCopilotResponse } from '@/lib/money-copilot/output';
 import { getAiNarrative } from '@/lib/money-copilot/ai-client';
-import { getModeFromQuestion } from '@/lib/money-copilot/prompts';
+import { getModeFromQuestion, FINANCE_SPHERE_COPILOT_PROMPT } from '@/lib/money-copilot/prompts';
 import { sanitizeText } from '@/lib/api/sanitize';
-import type { CopilotRequest } from '@/lib/money-copilot/types';
+import { getGroqClient } from '@/lib/groq/client';
+import type { CopilotRequest, BubbleResponse } from '@/lib/money-copilot/types';
+
+const QUICK_MAX_TOKENS = 512;
+const QUICK_GROQ_MODEL = 'llama3-8b-8192';
+
+function buildQuickSystemPrompt(): string {
+  return `${FINANCE_SPHERE_COPILOT_PROMPT}
+
+You are in QUICK MODE. Return ONLY valid JSON matching the BubbleResponse format. No markdown fences.`;
+}
+
+function buildQuickUserMessage(question: string): string {
+  return `User question: ${question}
+
+Respond ONLY with valid JSON (no markdown fences):
+{
+  "summary": "<1-2 sentence bottom line>",
+  "quickTake": "<plain-language reasoning, 1-2 sentences>",
+  "keyPoints": ["<key number or assumption>"],
+  "riskFlags": ["<risk or unknown>"],
+  "nextStep": "<one clear immediate action>",
+  "confidence": "LOW",
+  "disclaimer": "Educational only, not financial advice."
+}`;
+}
+
+function parseQuickResponse(raw: string): BubbleResponse | null {
+  try {
+    const cleaned = raw.replace(/^```(?:json)?/m, '').replace(/```$/m, '').trim();
+    const parsed = JSON.parse(cleaned) as Record<string, unknown>;
+    if (typeof parsed.summary === 'string' && typeof parsed.quickTake === 'string') {
+      const confidenceRaw = typeof parsed.confidence === 'string' ? parsed.confidence.toUpperCase() : '';
+      const confidence: 'LOW' | 'MEDIUM' | 'HIGH' =
+        confidenceRaw === 'HIGH' || confidenceRaw === 'MEDIUM' ? confidenceRaw : 'LOW';
+      return {
+        summary: parsed.summary,
+        quickTake: parsed.quickTake,
+        keyPoints: Array.isArray(parsed.keyPoints) ? (parsed.keyPoints as string[]) : [],
+        riskFlags: Array.isArray(parsed.riskFlags) ? (parsed.riskFlags as string[]) : [],
+        nextStep: typeof parsed.nextStep === 'string' ? parsed.nextStep : '',
+        confidence,
+        disclaimer: typeof parsed.disclaimer === 'string' ? parsed.disclaimer : 'Educational only, not financial advice.'
+      };
+    }
+  } catch {
+    // fall through
+  }
+  return null;
+}
+
+async function callAiForQuick(question: string): Promise<BubbleResponse | null> {
+  const systemPrompt = buildQuickSystemPrompt();
+  const userMessage = buildQuickUserMessage(question);
+
+  if (process.env.GROQ_API_KEY) {
+    try {
+      const client = getGroqClient();
+      const completion = await client.chat.completions.create({
+        model: QUICK_GROQ_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage }
+        ],
+        temperature: 0.2,
+        max_tokens: QUICK_MAX_TOKENS
+      });
+      const content = completion.choices[0]?.message?.content ?? null;
+      if (content) return parseQuickResponse(content);
+    } catch {
+      // fall through to OpenAI
+    }
+  }
+
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (apiKey) {
+    const baseUrl = (process.env.HIDDEN_AI_OPENAI_BASE_URL ?? 'https://api.openai.com/v1').replace(/\/$/, '');
+    const model = process.env.HIDDEN_AI_OPENAI_MODEL ?? 'gpt-3.5-turbo';
+    try {
+      const res = await fetch(`${baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userMessage }
+          ],
+          temperature: 0.3,
+          max_tokens: QUICK_MAX_TOKENS
+        })
+      });
+      if (res.ok) {
+        const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+        const content = data.choices?.[0]?.message?.content ?? null;
+        if (content) return parseQuickResponse(content);
+      }
+    } catch {
+      // fall through
+    }
+  }
+
+  return null;
+}
+
+function buildFallbackQuickResponse(question: string): BubbleResponse {
+  return {
+    summary: 'Here is a quick take on your financial question.',
+    quickTake: `For "${question}" — provide more details for a tailored analysis.`,
+    keyPoints: ['No specific inputs provided — estimates are based on general assumptions'],
+    riskFlags: ['Missing data reduces confidence significantly'],
+    nextStep: 'Use the full AI Money Copilot at /ai-money-copilot for a deep-dive analysis.',
+    confidence: 'LOW',
+    disclaimer: 'Educational only, not financial advice.'
+  };
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,7 +134,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Question is required.' }, { status: 400 });
     }
 
-    // Infer mode from question when not provided (supports simple { question, context, scenarios } callers)
+    // Quick mode: return a compact BubbleResponse for the floating bubble
+    if (body.responseMode === 'quick') {
+      const result = await callAiForQuick(rawQuestion);
+      return NextResponse.json(result ?? buildFallbackQuickResponse(rawQuestion));
+    }
+
+    // Deep mode (default): full structured CopilotResponse
     const mode = body.mode ?? getModeFromQuestion(rawQuestion);
 
     const request: CopilotRequest = {
