@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FINANCE_SPHERE_COPILOT_PROMPT } from '@/lib/money-copilot/prompts';
+import { getGroqClient } from '@/lib/groq/client';
+import { sanitizeText } from '@/lib/api/sanitize';
 import type { BubbleRequest, BubbleResponse, PageContext } from '@/lib/money-copilot/types';
 
 const AI_MAX_TOKENS = 512;
+
+/** Groq model used for quick bubble responses (optimised for speed). */
+const GROQ_MODEL = 'llama3-8b-8192';
+
+/** Maximum retries for Groq API calls in bubble mode. */
+const MAX_RETRIES = 2;
 
 /** Map URL path prefixes to context-aware suggestions. */
 function getSuggestionsForPage(ctx: PageContext): string[] {
@@ -113,6 +121,33 @@ function parseBubbleResponse(raw: string): BubbleResponse | null {
 }
 
 async function callAiForBubble(userMessage: string, systemPrompt: string): Promise<string | null> {
+  // Groq is the primary provider
+  if (process.env.GROQ_API_KEY) {
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        const client = getGroqClient();
+        const completion = await client.chat.completions.create({
+          model: GROQ_MODEL,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userMessage }
+          ],
+          temperature: 0.2,
+          max_tokens: AI_MAX_TOKENS
+        });
+        const content = completion.choices[0]?.message?.content ?? null;
+        if (content) return content;
+      } catch (err) {
+        lastError = err;
+        if (attempt < MAX_RETRIES) {
+          await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1)));
+        }
+      }
+    }
+    console.error('[money-copilot/bubble] Groq request failed after retries:', lastError);
+  }
+
   const apiKey = process.env.OPENAI_API_KEY;
   const ollamaHost = process.env.HIDDEN_AI_OLLAMA_HOST;
 
@@ -190,20 +225,25 @@ function buildFallbackBubbleResponse(req: BubbleRequest, suggestions: string[]):
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json() as Partial<BubbleRequest>;
+    const raw: unknown = await req.json();
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
+    }
+    const body = raw as Partial<BubbleRequest>;
 
-    if (!body.question || body.question.trim().length === 0) {
+    const rawQuestion = sanitizeText(body.question);
+    if (!rawQuestion) {
       return NextResponse.json({ error: 'Question is required.' }, { status: 400 });
     }
 
     const pageContext: PageContext = {
-      path: body.pageContext?.path ?? '/',
-      title: body.pageContext?.title,
-      keywords: body.pageContext?.keywords ?? []
+      path: typeof body.pageContext?.path === 'string' ? body.pageContext.path : '/',
+      title: typeof body.pageContext?.title === 'string' ? body.pageContext.title : undefined,
+      keywords: Array.isArray(body.pageContext?.keywords) ? body.pageContext.keywords : []
     };
 
     const bubbleReq: BubbleRequest = {
-      question: body.question.trim(),
+      question: rawQuestion,
       pageContext
     };
 

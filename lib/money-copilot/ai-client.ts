@@ -1,11 +1,55 @@
 import type { CopilotRequest, FinancialInputs } from './types';
 import { buildSystemPrompt } from './prompts';
+import { getGroqClient } from '@/lib/groq/client';
+import { createHash } from 'crypto';
 
 /** Standard work hours per year used for hourly-to-annual conversion. */
 const WORK_HOURS_PER_YEAR = 2080;
 
 /** Maximum tokens to request from the AI provider per response. */
 const AI_MAX_TOKENS = 1024;
+
+/** Groq model to use for full copilot mode. */
+const GROQ_MODEL = 'llama3-8b-8192';
+
+/** Maximum number of retries for Groq API calls. */
+const MAX_RETRIES = 2;
+
+/** In-memory response cache bounded to this many entries. */
+const CACHE_MAX_ENTRIES = 200;
+
+/** Cache TTL in milliseconds (5 minutes). */
+const CACHE_TTL_MS = 5 * 60 * 1_000;
+
+/** In-memory response cache (keyed by SHA-256 hash of mode + user message). */
+const responseCache = new Map<string, { narrative: AiNarrative; expiresAt: number }>();
+
+/**
+ * Build a safe cache key using a SHA-256 hash to prevent cache-key injection
+ * from user-controlled content embedded in the message string.
+ */
+function buildCacheKey(mode: string, userMessage: string): string {
+  return createHash('sha256').update(`${mode}\x00${userMessage}`).digest('hex');
+}
+
+/**
+ * Insert an entry into the cache using FIFO eviction when the cache is at capacity.
+ * Expired entries are pruned first; if the cache is still full, the oldest inserted
+ * entry is removed (Map preserves insertion order in JavaScript).
+ */
+function setCacheEntry(key: string, narrative: AiNarrative): void {
+  const now = Date.now();
+  // Evict all expired entries before checking size
+  for (const [k, v] of responseCache) {
+    if (v.expiresAt <= now) responseCache.delete(k);
+  }
+  // If still at max, evict the oldest entry
+  if (responseCache.size >= CACHE_MAX_ENTRIES) {
+    const oldestKey = responseCache.keys().next().value;
+    if (oldestKey !== undefined) responseCache.delete(oldestKey);
+  }
+  responseCache.set(key, { narrative, expiresAt: now + CACHE_TTL_MS });
+}
 
 export interface AiNarrative {
   summary: string;
@@ -170,6 +214,46 @@ async function callOllama(
   return data.message?.content ?? null;
 }
 
+/**
+ * Call Groq chat completion API with automatic retries.
+ * Uses the singleton client from lib/groq/client.ts.
+ */
+async function callGroq(
+  userMessage: string,
+  systemPrompt: string
+): Promise<string | null> {
+  if (!process.env.GROQ_API_KEY) return null;
+
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const client = getGroqClient();
+      const completion = await client.chat.completions.create({
+        model: GROQ_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage }
+        ],
+        temperature: 0.2,
+        max_tokens: AI_MAX_TOKENS
+      });
+      const content = completion.choices[0]?.message?.content ?? null;
+      if (content !== null) {
+        console.log('[ai-client] completed_decision via Groq');
+        return content;
+      }
+    } catch (err) {
+      lastError = err;
+      if (attempt < MAX_RETRIES) {
+        // Brief back-off before retry
+        await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1)));
+      }
+    }
+  }
+  console.error('[ai-client] Groq request failed after retries:', lastError);
+  return null;
+}
+
 export async function getAiNarrative(
   request: CopilotRequest,
   existingMetrics: Array<{ label: string; value: string; note?: string }>
@@ -177,22 +261,40 @@ export async function getAiNarrative(
   const systemPrompt = buildSystemPrompt();
   const userMessage = buildUserMessage(request, existingMetrics);
 
+  // Check in-memory cache first
+  const cacheKey = buildCacheKey(request.mode, userMessage);
+  const cached = responseCache.get(cacheKey);
+  if (cached && cached.expiresAt > Date.now()) {
+    return cached.narrative;
+  }
+
+  console.log('[ai-client] started_decision');
+
   try {
-    // Try OpenAI first (if API key is present)
     let rawResponse: string | null = null;
 
-    if (process.env.OPENAI_API_KEY) {
+    // Groq is the primary AI provider
+    if (process.env.GROQ_API_KEY) {
+      rawResponse = await callGroq(userMessage, systemPrompt);
+    }
+
+    // Fall back to OpenAI if Groq is unavailable or not configured
+    if (rawResponse === null && process.env.OPENAI_API_KEY) {
       rawResponse = await callOpenAi(userMessage, systemPrompt);
     }
 
-    // Fall back to Ollama if OpenAI is unavailable or not configured
+    // Fall back to Ollama as last resort
     if (rawResponse === null && process.env.HIDDEN_AI_OLLAMA_HOST) {
       rawResponse = await callOllama(userMessage, systemPrompt);
     }
 
     if (rawResponse === null) return null;
 
-    return parseAiResponse(rawResponse);
+    const narrative = parseAiResponse(rawResponse);
+    if (narrative) {
+      setCacheEntry(cacheKey, narrative);
+    }
+    return narrative;
   } catch (err) {
     console.error('[ai-client] Unexpected error calling AI provider:', err);
     return null;
