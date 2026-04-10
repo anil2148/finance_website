@@ -2,13 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { buildCopilotResponse } from '@/lib/money-copilot/output';
 import { getAiNarrative } from '@/lib/money-copilot/ai-client';
 import { getModeFromQuestion } from '@/lib/money-copilot/prompts';
+import { sanitizeText } from '@/lib/api/sanitize';
 import type { CopilotRequest } from '@/lib/money-copilot/types';
-
-/** Sanitize string input to prevent prompt injection. */
-function sanitizeText(input: unknown, maxLength = 1000): string {
-  if (typeof input !== 'string') return '';
-  return input.replace(/[<>]/g, '').trim().slice(0, maxLength);
-}
 
 export async function POST(req: NextRequest) {
   try {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FINANCE_SPHERE_COPILOT_PROMPT } from '@/lib/money-copilot/prompts';
 import { getGroqClient } from '@/lib/groq/client';
+import { sanitizeText } from '@/lib/api/sanitize';
 import type { BubbleRequest, BubbleResponse, PageContext } from '@/lib/money-copilot/types';
 
 const AI_MAX_TOKENS = 512;
@@ -226,7 +227,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as Partial<BubbleRequest>;
 
-    const rawQuestion = typeof body.question === 'string' ? body.question.replace(/[<>]/g, '').trim() : '';
+    const rawQuestion = sanitizeText(body.question);
     if (!rawQuestion) {
       return NextResponse.json({ error: 'Question is required.' }, { status: 400 });
     }

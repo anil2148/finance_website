@@ -1,6 +1,7 @@
 import type { CopilotRequest, FinancialInputs } from './types';
 import { buildSystemPrompt } from './prompts';
 import { getGroqClient } from '@/lib/groq/client';
+import { createHash } from 'crypto';
 
 /** Standard work hours per year used for hourly-to-annual conversion. */
 const WORK_HOURS_PER_YEAR = 2080;
@@ -14,11 +15,39 @@ const GROQ_MODEL = 'llama3-8b-8192';
 /** Maximum number of retries for Groq API calls. */
 const MAX_RETRIES = 2;
 
-/** In-memory response cache (keyed by stable user message hash). */
-const responseCache = new Map<string, { narrative: AiNarrative; expiresAt: number }>();
+/** In-memory response cache bounded to this many entries. */
+const CACHE_MAX_ENTRIES = 200;
 
 /** Cache TTL in milliseconds (5 minutes). */
 const CACHE_TTL_MS = 5 * 60 * 1_000;
+
+/** In-memory response cache (keyed by SHA-256 hash of mode + user message). */
+const responseCache = new Map<string, { narrative: AiNarrative; expiresAt: number }>();
+
+/**
+ * Build a safe cache key using a SHA-256 hash to prevent cache-key injection
+ * from user-controlled content embedded in the message string.
+ */
+function buildCacheKey(mode: string, userMessage: string): string {
+  return createHash('sha256').update(`${mode}\x00${userMessage}`).digest('hex');
+}
+
+/**
+ * Insert an entry into the cache, evicting expired or excess entries first.
+ */
+function setCacheEntry(key: string, narrative: AiNarrative): void {
+  const now = Date.now();
+  // Evict all expired entries before checking size
+  for (const [k, v] of responseCache) {
+    if (v.expiresAt <= now) responseCache.delete(k);
+  }
+  // If still at max, evict the oldest entry
+  if (responseCache.size >= CACHE_MAX_ENTRIES) {
+    const oldestKey = responseCache.keys().next().value;
+    if (oldestKey !== undefined) responseCache.delete(oldestKey);
+  }
+  responseCache.set(key, { narrative, expiresAt: now + CACHE_TTL_MS });
+}
 
 export interface AiNarrative {
   summary: string;
@@ -231,7 +260,7 @@ export async function getAiNarrative(
   const userMessage = buildUserMessage(request, existingMetrics);
 
   // Check in-memory cache first
-  const cacheKey = `${request.mode}:${userMessage}`;
+  const cacheKey = buildCacheKey(request.mode, userMessage);
   const cached = responseCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) {
     return cached.narrative;
@@ -261,7 +290,7 @@ export async function getAiNarrative(
 
     const narrative = parseAiResponse(rawResponse);
     if (narrative) {
-      responseCache.set(cacheKey, { narrative, expiresAt: Date.now() + CACHE_TTL_MS });
+      setCacheEntry(cacheKey, narrative);
     }
     return narrative;
   } catch (err) {
