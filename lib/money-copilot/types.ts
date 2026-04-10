@@ -68,6 +68,8 @@ export interface CopilotResponse {
 export interface CopilotRequest {
   mode: DecisionMode;
   question: string;
+  /** Optional freeform financial context extracted from the context textarea */
+  context?: string;
   inputs: FinancialInputs;
   scenarios: Scenario[];
   /** 'deep' (default) returns full CopilotResponse; 'quick' returns BubbleResponse */

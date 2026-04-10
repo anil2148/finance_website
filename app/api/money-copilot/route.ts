@@ -146,6 +146,7 @@ export async function POST(req: NextRequest) {
     const request: CopilotRequest = {
       mode,
       question: rawQuestion,
+      context: typeof body.context === 'string' ? sanitizeText(body.context) || undefined : undefined,
       inputs: body.inputs ?? {},
       scenarios: body.scenarios ?? []
     };

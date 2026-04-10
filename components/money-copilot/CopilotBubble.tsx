@@ -40,20 +40,9 @@ function QuickResultCard({ r }: { r: BubbleResponse }) {
       <p className="font-semibold leading-snug text-slate-900 dark:text-slate-100">{r.summary}</p>
       <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">{r.quickTake}</p>
 
-      {r.keyPoints.length > 0 && (
-        <ul className="space-y-1">
-          {r.keyPoints.map((n, i) => (
-            <li key={i} className="flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-              <span className="mt-0.5 shrink-0 text-blue-400">•</span>
-              {n}
-            </li>
-          ))}
-        </ul>
-      )}
-
       {r.riskFlags.length > 0 && (
         <ul className="space-y-1">
-          {r.riskFlags.map((f, i) => (
+          {r.riskFlags.slice(0, 2).map((f, i) => (
             <li key={i} className="flex items-start gap-1.5 text-xs text-rose-600 dark:text-rose-400">
               <span className="mt-0.5 shrink-0">⚠</span>
               {f}
@@ -243,11 +232,11 @@ export function CopilotBubble() {
                   {error && <p className="mt-1.5 text-xs text-rose-600">{error}</p>}
                 </div>
 
-                {/* Suggestion chips */}
+                {/* Suggestion chips — max 3 */}
                 <div>
                   <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Quick questions</p>
                   <div className="flex flex-wrap gap-1.5">
-                    {suggestions.map((s) => (
+                    {suggestions.slice(0, 3).map((s) => (
                       <button
                         key={s}
                         onClick={() => void handleSubmit(s)}

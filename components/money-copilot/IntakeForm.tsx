@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { CopilotRequest, DecisionMode, FinancialInputs } from '@/lib/money-copilot/types';
+import type { CopilotRequest, DecisionMode } from '@/lib/money-copilot/types';
 
 const CHIP_MODE_MAP: Record<string, DecisionMode> = {
   'Job change': 'job-offer',
@@ -11,10 +11,6 @@ const CHIP_MODE_MAP: Record<string, DecisionMode> = {
   'Retirement planning': 'roth-vs-traditional'
 };
 
-function emptyInputs(): FinancialInputs {
-  return {};
-}
-
 interface IntakeFormProps {
   onSubmit: (request: CopilotRequest) => void;
   isLoading: boolean;
@@ -23,14 +19,9 @@ interface IntakeFormProps {
 
 export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: IntakeFormProps) {
   const [question, setQuestion] = useState(initialQuestion);
+  const [context, setContext] = useState('');
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
-  const [showDetails, setShowDetails] = useState(false);
-  const [inputs, setInputs] = useState<FinancialInputs>(emptyInputs());
   const [error, setError] = useState('');
-
-  const updateInput = (key: keyof FinancialInputs, value: string) => {
-    setInputs((prev) => ({ ...prev, [key]: value === '' ? undefined : parseFloat(value) }));
-  };
 
   const inferMode = (q: string): DecisionMode => {
     const lower = q.toLowerCase();
@@ -64,14 +55,13 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
       return;
     }
     setError('');
-    // Use chip-mapped mode when the question came from a chip click; otherwise infer from text
     const mode: DecisionMode = (selectedChip ? CHIP_MODE_MAP[selectedChip] : undefined) ?? inferMode(question);
-    onSubmit({ mode, question: question.trim(), inputs, scenarios: [] });
+    onSubmit({ mode, question: question.trim(), context: context.trim() || undefined, inputs: {}, scenarios: [] });
   };
 
   return (
     <form id="copilot-form" onSubmit={handleSubmit} className="space-y-4">
-      {/* Main input */}
+      {/* Main question input */}
       <div className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900/90 md:p-6">
         <label htmlFor="copilot-question" className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
           What financial decision are you trying to make?
@@ -101,50 +91,23 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
         </div>
       </div>
 
-      {/* Optional details (collapsible) */}
-      <div className="rounded-3xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900/90">
-        <button
-          type="button"
-          onClick={() => setShowDetails((v) => !v)}
-          className="flex w-full items-center justify-between px-5 py-4 text-sm font-semibold text-slate-700 dark:text-slate-300 md:px-6"
-          aria-expanded={showDetails}
-        >
-          <span>Optional details <span className="ml-1 font-normal text-slate-400">(improves accuracy)</span></span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className={`h-4 w-4 text-slate-400 transition-transform ${showDetails ? 'rotate-180' : ''}`}
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {showDetails && (
-          <div className="border-t border-slate-100 px-5 pb-5 pt-4 dark:border-slate-700 md:px-6">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <NumberInput
-                label="Annual income ($)"
-                placeholder="e.g. 95000"
-                onChange={(v) => updateInput('annualSalary', v)}
-              />
-              <NumberInput
-                label="Monthly expenses ($)"
-                placeholder="e.g. 3500"
-                onChange={(v) => updateInput('monthlyRent', v)}
-              />
-              <NumberInput
-                label="Total monthly debt ($)"
-                placeholder="e.g. 800"
-                onChange={(v) => updateInput('debtPayments', v)}
-              />
-              <NumberInput
-                label="Savings / cash on hand ($)"
-                placeholder="e.g. 20000"
-                onChange={(v) => updateInput('cashOnHand', v)}
-              />
-            </div>
-          </div>
-        )}
+      {/* Optional context textarea */}
+      <div className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900/90 md:p-6">
+        <label htmlFor="copilot-context" className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
+          Add your financial details{' '}
+          <span className="font-normal text-slate-400">(optional)</span>
+        </label>
+        <textarea
+          id="copilot-context"
+          value={context}
+          onChange={(e) => setContext(e.target.value)}
+          rows={3}
+          placeholder="Example: I earn 120k, rent is 2500, have 10k savings, 15k debt"
+          className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
+        />
+        <p className="mt-1.5 text-xs text-slate-400">
+          Write in plain language — AI will extract what it needs automatically.
+        </p>
       </div>
 
       {/* Analyze button */}
@@ -163,30 +126,6 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
         )}
       </button>
     </form>
-  );
-}
-
-function NumberInput({
-  label,
-  placeholder,
-  onChange
-}: {
-  label: string;
-  placeholder?: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div>
-      <label className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-400">{label}</label>
-      <input
-        type="number"
-        min="0"
-        step="any"
-        placeholder={placeholder}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500"
-      />
-    </div>
   );
 }
 
