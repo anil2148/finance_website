@@ -188,7 +188,7 @@ export function CopilotBubble() {
             {messages.length === 0 && (
               <div className="space-y-3">
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Ask me a quick financial decision question — I'll give you a structured take.
+                  Ask me a quick financial decision question — I&apos;ll give you a structured take.
                 </p>
                 <div className="flex flex-col gap-1.5">
                   {suggestions.map((s) => (
