@@ -34,16 +34,16 @@ function getPageSuggestions(path: string): string[] {
   return DEFAULT_SUGGESTIONS;
 }
 
-function QuickResultCard({ r, question }: { r: BubbleResponse; question: string }) {
+function QuickResultCard({ r: result, question }: { r: BubbleResponse; question: string }) {
   const fullAnalysisUrl = `/ai-money-copilot?query=${encodeURIComponent(question)}`;
   return (
     <div className="space-y-3 text-sm">
-      <p className="font-semibold leading-snug text-slate-900 dark:text-slate-100">{r.summary}</p>
-      <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">{r.quickTake}</p>
+      <p className="font-semibold leading-snug text-slate-900 dark:text-slate-100">{result.summary}</p>
+      <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400">{result.quickTake}</p>
 
-      {r.riskFlags.length > 0 && (
+      {result.riskFlags.length > 0 && (
         <ul className="space-y-1">
-          {r.riskFlags.slice(0, 2).map((f, i) => (
+          {result.riskFlags.slice(0, 2).map((f, i) => (
             <li key={i} className="flex items-start gap-1.5 text-xs text-rose-600 dark:text-rose-400">
               <span className="mt-0.5 shrink-0">⚠</span>
               {f}
@@ -54,14 +54,14 @@ function QuickResultCard({ r, question }: { r: BubbleResponse; question: string 
 
       <div className="rounded-lg bg-blue-50 px-3 py-2 dark:bg-blue-950/30">
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">Next step</p>
-        <p className="mt-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">{r.nextStep}</p>
+        <p className="mt-0.5 text-xs font-medium text-blue-700 dark:text-blue-300">{result.nextStep}</p>
       </div>
 
       <div className="flex items-center justify-between">
-        <span className={`text-xs font-semibold ${CONFIDENCE_COLOR[r.confidence] ?? CONFIDENCE_COLOR.LOW}`}>
-          {r.confidence} confidence
+        <span className={`text-xs font-semibold ${CONFIDENCE_COLOR[result.confidence] ?? CONFIDENCE_COLOR.LOW}`}>
+          {result.confidence} confidence
         </span>
-        <span className="text-[10px] text-slate-400 dark:text-slate-500">{r.disclaimer}</span>
+        <span className="text-[10px] text-slate-400 dark:text-slate-500">{result.disclaimer}</span>
       </div>
 
       {/* CTA: upgrade to full analysis */}

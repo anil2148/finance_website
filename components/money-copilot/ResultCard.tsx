@@ -84,6 +84,12 @@ function MetricRow({ label, value, highlight, alert }: { label: string; value: s
   );
 }
 
+function deriveRiskFromConfidence(confidenceLevel: 'low' | 'medium' | 'high'): 'low' | 'medium' | 'high' {
+  if (confidenceLevel === 'high') return 'low';
+  if (confidenceLevel === 'medium') return 'medium';
+  return 'high';
+}
+
 export function ResultCard({ response }: ResultCardProps) {
   const hasScenarios = response.scenarios.length >= 2 &&
     response.scenarios[0].results != null &&
@@ -111,7 +117,7 @@ export function ResultCard({ response }: ResultCardProps) {
   // Derive risk level from scenarios or fall back to confidence-based guess
   const scenarioRisk = hasScenarios ? response.scenarios[winnerIndex]?.results?.riskLevel : null;
   const derivedRisk: 'low' | 'medium' | 'high' =
-    scenarioRisk ?? (response.confidenceLevel === 'high' ? 'low' : response.confidenceLevel === 'medium' ? 'medium' : 'high');
+    scenarioRisk ?? deriveRiskFromConfidence(response.confidenceLevel);
 
   const RISK_PILL: Record<string, string> = {
     low: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-700/40',

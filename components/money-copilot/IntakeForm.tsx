@@ -25,7 +25,7 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
 
   const inferMode = (q: string): DecisionMode => {
     const intent = detectIntent(q);
-    return (intentToDecisionMode(intent) as DecisionMode) ?? 'custom';
+    return intentToDecisionMode(intent) as DecisionMode;
   };
 
   const handleChipClick = (chip: string) => {
