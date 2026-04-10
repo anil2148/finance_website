@@ -61,6 +61,7 @@ const nextConfig = {
       { source: '/best-credit-cards', destination: '/best-credit-cards-2026', permanent: true },
       { source: '/best-savings-accounts', destination: '/best-savings-accounts-usa', permanent: true },
       { source: '/mortgage-rate-comparison', destination: '/compare/mortgage-rate-comparison', permanent: true },
+      { source: '/in/blog/old-vs-new-tax-regime', destination: '/in/old-vs-new-tax-regime', permanent: true },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
       ...normalizeRedirectMap(blogRedirectMap).map((entry) => ({
         source: entry.source,

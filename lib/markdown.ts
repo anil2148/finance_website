@@ -113,7 +113,7 @@ function decodeUriComponentSafe(value: string) {
 }
 
 export function normalizeTag(tag: string) {
-  return decodeUriComponentSafe(tag).trim().toLowerCase();
+  return decodeUriComponentSafe(tag).trim().toLowerCase().replace(/\s+/g, '-');
 }
 
 export function getCategories() {

@@ -14,7 +14,8 @@ export function generateMetadata({ params }: { params: { tag: string } }): Metad
   return {
     title: `#${tag} Guides and Decision Support | FinanceSphere Blog`,
     description: `Browse FinanceSphere guides tagged ${tag} with direct next steps into calculators and comparison frameworks.`,
-    alternates: { canonical: `/blog/tag/${encodeURIComponent(params.tag)}` }
+    alternates: { canonical: `/blog/tag/${tag}` },
+    robots: { index: false, follow: true }
   };
 }
 

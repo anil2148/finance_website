@@ -37,6 +37,7 @@ const LEGACY_REDIRECT_ROUTES = new Set<string>([
   '/investment-growth-calculator',
   '/savings-goal-calculator',
   '/debt-payoff-calculator',
+  '/in/blog/old-vs-new-tax-regime',
   ...redirectMap.map((entry) => entry.source)
 ]);
 

@@ -112,7 +112,7 @@ const pathways = [
   { label: 'SIP vs FD: which fits my goal timeline?', href: '/in/blog/sip-vs-fd', group: 'Investing setup' },
   { label: 'Can I afford this EMI if rates rise 1%?', href: '/in/calculators/emi-calculator', group: 'Home loan check' },
   { label: 'Build a smart 80C allocation plan', href: '/in/blog/ppf-vs-elss', group: 'Tax planning' },
-  { label: 'Old vs new tax regime: which is better for me?', href: '/in/blog/old-vs-new-tax-regime', group: 'Tax planning' },
+  { label: 'Old vs new tax regime: which is better for me?', href: '/in/old-vs-new-tax-regime', group: 'Tax planning' },
   { label: 'How large should my emergency fund be?', href: '/in/blog/emergency-fund-india', group: 'Safety net first' }
 ];
 

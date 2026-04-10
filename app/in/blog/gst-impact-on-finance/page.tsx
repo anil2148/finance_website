@@ -127,7 +127,7 @@ const nextDecisions = [
     title: 'For insurance cost planning with 80D deduction',
     description: 'The 80D deduction applies to the premium including GST. Understand current limits and whether your regime allows the deduction.',
     links: [
-      { label: 'Old vs new tax regime', href: '/in/blog/old-vs-new-tax-regime' },
+      { label: 'Old vs new tax regime', href: '/in/old-vs-new-tax-regime' },
       { label: 'India tax hub', href: '/in/tax' }
     ]
   }

@@ -111,7 +111,7 @@ const sections = [
     links: [
       { label: 'India tax hub', href: '/in/tax' },
       { label: 'India investing hub', href: '/in/investing' },
-      { label: 'Old vs new regime guide', href: '/in/blog/old-vs-new-tax-regime' }
+      { label: 'Old vs new regime guide', href: '/in/old-vs-new-tax-regime' }
     ]
   }
 ];

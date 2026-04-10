@@ -106,7 +106,7 @@ const nextDecisions = [
     description: 'Education loan interest is deductible for 8 years with no upper limit. Keep annual interest payment certificates and claim this deduction even on the new tax regime (for self/family education loans this benefit was retained).',
     links: [
       { label: 'India tax hub', href: '/in/tax' },
-      { label: 'Old vs new tax regime guide', href: '/in/blog/old-vs-new-tax-regime' }
+      { label: 'Old vs new tax regime guide', href: '/in/old-vs-new-tax-regime' }
     ]
   }
 ];

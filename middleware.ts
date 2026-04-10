@@ -63,6 +63,18 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 308);
   }
 
+  const tagMatch = nextUrl.pathname.match(/^\/blog\/tag\/(.+)$/);
+  if (tagMatch) {
+    const rawTag = tagMatch[1];
+    const decoded = (() => { try { return decodeURIComponent(rawTag); } catch { return rawTag; } })();
+    const slugified = decoded.trim().toLowerCase().replace(/\s+/g, '-');
+    if (slugified !== rawTag) {
+      const redirectUrl = nextUrl.clone();
+      redirectUrl.pathname = `/blog/tag/${slugified}`;
+      return NextResponse.redirect(redirectUrl, 308);
+    }
+  }
+
   const decision = getHomepageRoutingDecision({
     pathname: nextUrl.pathname,
     preferredRegion: parsePreferredRegion(request.cookies.get(PREFERRED_REGION_COOKIE)?.value),

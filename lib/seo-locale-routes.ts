@@ -20,6 +20,7 @@ const EXCLUDED_EXACT_PATHS = new Set<string>([
   '/compare/best-investment-apps',
   '/compare/best-savings-accounts-usa',
   '/compare/high-yield-savings-accounts',
+  '/in/blog/old-vs-new-tax-regime',
   '/dashboard',
   '/help',
   '/legal'
