@@ -95,6 +95,8 @@ export function CopilotWorkspace() {
     });
 
     try {
+      console.log('[Copilot] Request:', { question: request.question, context: request.context });
+
       const res = await fetch('/api/money-copilot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -103,10 +105,20 @@ export function CopilotWorkspace() {
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error((data as { error?: string }).error ?? `Request failed (${res.status})`);
+        const errMsg = (data as { error?: string }).error ?? `Request failed (${res.status})`;
+        console.error('[Copilot] Error:', errMsg);
+        throw new Error(errMsg);
       }
 
       const data: CopilotResponse = await res.json();
+      console.log('[Copilot] Response:', data);
+
+      if (!data || (data as unknown as { error?: boolean }).error) {
+        console.error('[Copilot] API returned an error response:', data);
+        setError('Something went wrong. Please try again.');
+        return;
+      }
+
       setResponse(data);
 
       trackEvent({
@@ -121,6 +133,7 @@ export function CopilotWorkspace() {
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
+      console.error('[Copilot] Error:', err);
       setError(message);
     } finally {
       setIsLoading(false);
