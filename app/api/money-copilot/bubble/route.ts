@@ -4,6 +4,8 @@ import { getGroqClient } from '@/lib/groq/client';
 import { sanitizeText } from '@/lib/api/sanitize';
 import type { BubbleRequest, BubbleResponse, PageContext } from '@/lib/money-copilot/types';
 
+export const runtime = "nodejs";
+
 const AI_MAX_TOKENS = 512;
 
 /** Groq model used for quick bubble responses (optimised for speed). */
@@ -221,6 +223,11 @@ export async function POST(req: NextRequest) {
     }
     const body = raw as Partial<BubbleRequest>;
 
+    console.log("[ENV CHECK] GROQ_API_KEY:", process.env.GROQ_API_KEY ? "FOUND" : "MISSING");
+    if (!process.env.GROQ_API_KEY) {
+      throw new Error("Missing GROQ_API_KEY in environment");
+    }
+
     const rawQuestion = sanitizeText(body.question);
     if (!rawQuestion) {
       return NextResponse.json({ error: 'Question is required.' }, { status: 400 });
@@ -249,6 +256,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(response);
   } catch (err) {
     console.error('[money-copilot/bubble] Error:', err);
-    return NextResponse.json({ error: 'Failed to process request. Please try again.' }, { status: 500 });
+    const details = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: `Failed to process request: ${details}` }, { status: 500 });
   }
 }
