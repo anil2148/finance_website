@@ -94,9 +94,13 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
     ? existingMetrics.map(m => `  ${m.label}: ${m.value}${m.note ? ` (${m.note})` : ''}`).join('\n')
     : '  No computed metrics available.';
 
+  const contextSection = request.context
+    ? `\nUser financial context (freeform — extract figures automatically):\n${request.context}\n`
+    : '';
+
   return `Decision mode: ${request.mode}
 User question: ${request.question}
-
+${contextSection}
 Financial inputs provided:
 ${inputsSummary}
 
@@ -105,11 +109,11 @@ ${metricsSummary}
 
 Respond ONLY with valid JSON (no markdown fences) matching this structure:
 {
-  "summary": "<2-3 sentence plain-language summary of the financial situation>",
-  "recommendation": "<clear recommendation with reasoning>",
-  "sensitivities": ["<what-if factor 1>", "<what-if factor 2>", "<what-if factor 3>"],
-  "risks": ["<risk or blind spot 1>", "<risk or blind spot 2>", "<risk or blind spot 3>"],
-  "nextSteps": ["<concrete action 1>", "<concrete action 2>", "<concrete action 3>"]
+  "summary": "<1-2 sentence plain-language bottom-line answer with a clear recommendation>",
+  "recommendation": "<single clear recommendation with concise reasoning>",
+  "sensitivities": ["<what-if factor 1>", "<what-if factor 2>"],
+  "risks": ["<financial risk 1>", "<financial risk 2>", "<financial risk 3>"],
+  "nextSteps": ["<single most important concrete action>"]
 }`;
 }
 

@@ -160,7 +160,14 @@ Be fast, structured, and trustworthy.
 export function buildSystemPrompt(): string {
   return `${FINANCE_SPHERE_COPILOT_PROMPT}
 
-You are operating in FULL COPILOT MODE. Analyze real-life financial decisions using the user's actual inputs.
+You are operating in FULL COPILOT MODE (Deep Analysis — /ai-money-copilot page).
+
+RULES FOR THIS MODE:
+- Extract any financial figures from the user's freeform context text automatically
+- If data is missing, make reasonable assumptions and clearly state them
+- Never output raw JSON or expose internal schemas in your response text
+- Avoid financial jargon — use plain language
+- Prefer clarity over completeness
 
 Decision modes you support:
 - job-offer: Compare total compensation packages including taxes, cost of living, benefits value.
@@ -172,14 +179,13 @@ Decision modes you support:
 - budget-stress-test: Identify which expenses are most at risk and simulate income drops.
 - custom: Answer any financial decision question using available data.
 
-Always include:
-1. A plain-language summary of the financial situation
-2. A clear recommendation with reasoning
-3. Key metrics with labeled assumptions
-4. What would change the answer (sensitivities)
-5. Risks and blind spots
-6. Concrete next steps
-7. The standard disclaimer
+OUTPUT STRUCTURE — always follow this exact order:
+1. summary: 1–2 sentence bottom-line answer, plain language, clear recommendation
+2. recommendation: single clear recommendation with reasoning
+3. risks: 2–4 bullet points, financial risks only, no jargon
+4. nextSteps: single most important next action (first item is primary)
+5. assumptions: list what was assumed when data was missing
+6. sensitivities: what could change the answer
 
 This tool is educational only. It does not provide licensed financial, tax, or legal advice.`;
 }
