@@ -1,0 +1,77 @@
+'use client';
+
+import { useState, useRef, useCallback } from 'react';
+
+export interface CopilotResult {
+  summary: string;
+  recommendation: string;
+  assumptions: string[];
+  keyMetrics: Record<string, unknown>;
+  scenarios: unknown[];
+  risks: string[];
+  nextSteps: string[];
+  confidence: 'LOW' | 'MEDIUM' | 'HIGH';
+  disclaimer: string;
+}
+
+interface UseCopilotReturn {
+  run: (params: { question: string; context?: string; scenarios?: unknown[] }) => Promise<void>;
+  loading: boolean;
+  error: string | null;
+  result: CopilotResult | null;
+}
+
+/**
+ * React hook that calls /api/money-copilot and manages loading, error, and result state.
+ */
+export function useCopilot(): UseCopilotReturn {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<CopilotResult | null>(null);
+
+  // Guard against concurrent calls
+  const inFlightRef = useRef(false);
+
+  const run = useCallback(
+    async (params: { question: string; context?: string; scenarios?: unknown[] }) => {
+      if (inFlightRef.current) return;
+
+      inFlightRef.current = true;
+      setLoading(true);
+      setError(null);
+
+      try {
+        const res = await fetch('/api/money-copilot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            question: params.question,
+            context: params.context ?? '',
+            scenarios: params.scenarios ?? []
+          }),
+          signal: AbortSignal.timeout(30_000)
+        });
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({})) as { error?: string };
+          throw new Error(data.error ?? `Request failed with status ${res.status}`);
+        }
+
+        const data = await res.json() as CopilotResult;
+        setResult(data);
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === 'TimeoutError') {
+          setError('Request timed out. Please try again.');
+        } else {
+          setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
+        }
+      } finally {
+        setLoading(false);
+        inFlightRef.current = false;
+      }
+    },
+    []
+  );
+
+  return { run, loading, error, result };
+}
