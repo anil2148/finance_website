@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { buildCopilotResponse } from '@/lib/money-copilot/output';
+import { getAiNarrative } from '@/lib/money-copilot/ai-client';
 import type { CopilotRequest } from '@/lib/money-copilot/types';
 
 export async function POST(req: NextRequest) {
@@ -14,12 +15,30 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Decision mode is required.' }, { status: 400 });
     }
 
-    const response = buildCopilotResponse({
+    const request: CopilotRequest = {
       mode: body.mode,
       question: body.question.trim(),
       inputs: body.inputs ?? {},
       scenarios: body.scenarios ?? []
-    });
+    };
+
+    // Run rule-based engine for deterministic metrics, scenarios, assumptions, and confidence.
+    const ruleBasedResponse = buildCopilotResponse(request);
+
+    // Attempt to enrich the narrative sections (summary, recommendation, sensitivities, risks,
+    // nextSteps) using an AI provider. Falls back to the rule-based text if AI is unavailable.
+    const aiNarrative = await getAiNarrative(request, ruleBasedResponse.keyMetrics);
+
+    const response = aiNarrative
+      ? {
+          ...ruleBasedResponse,
+          summary: aiNarrative.summary,
+          recommendation: aiNarrative.recommendation,
+          sensitivities: aiNarrative.sensitivities,
+          risks: aiNarrative.risks,
+          nextSteps: aiNarrative.nextSteps
+        }
+      : ruleBasedResponse;
 
     return NextResponse.json(response);
   } catch (err) {
