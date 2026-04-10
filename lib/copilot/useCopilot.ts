@@ -41,25 +41,40 @@ export function useCopilot(): UseCopilotReturn {
       setError(null);
 
       try {
+        const payload = {
+          question: params.question,
+          context: params.context ?? '',
+          scenarios: params.scenarios ?? []
+        };
+        console.log('[Copilot] Request:', { question: params.question, context: params.context });
+
         const res = await fetch('/api/money-copilot', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            question: params.question,
-            context: params.context ?? '',
-            scenarios: params.scenarios ?? []
-          }),
+          body: JSON.stringify(payload),
           signal: AbortSignal.timeout(30_000)
         });
 
         if (!res.ok) {
           const data = await res.json().catch(() => ({})) as { error?: string };
-          throw new Error(data.error ?? `Request failed with status ${res.status}`);
+          const errMsg = data.error ?? `Request failed with status ${res.status}`;
+          console.error('[Copilot] Error:', errMsg);
+          throw new Error(errMsg);
         }
 
         const data = await res.json() as CopilotResult;
+        console.log('[Copilot] Response:', data);
+
+        if (!data || typeof (data as unknown as { error?: unknown }).error === 'string' || (data as unknown as { error?: unknown }).error === true) {
+          const errData = data as unknown as { error?: unknown };
+          console.error('[Copilot] API returned an error response:', data);
+          setError(typeof errData.error === 'string' ? errData.error : 'Something went wrong. Please try again.');
+          return;
+        }
+
         setResult(data);
       } catch (err: unknown) {
+        console.error('[Copilot] Error:', err);
         if (err instanceof Error && err.name === 'TimeoutError') {
           setError('Request timed out. Please try again.');
         } else {

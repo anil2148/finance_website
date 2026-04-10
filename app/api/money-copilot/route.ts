@@ -124,14 +124,23 @@ export async function POST(req: NextRequest) {
   try {
     // Parse and do a basic shape check before type-asserting
     const raw: unknown = await req.json();
+    console.log('[API] Incoming request:', raw);
+
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
       return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
     }
     const body = raw as Partial<CopilotRequest> & { context?: string };
 
     const rawQuestion = sanitizeText(body.question);
+    console.log('[API] Parsed question:', rawQuestion);
+    console.log('[API] Parsed context:', body.context ?? '');
+
     if (!rawQuestion) {
       return NextResponse.json({ error: 'Question is required.' }, { status: 400 });
+    }
+
+    if (!process.env.GROQ_API_KEY && !process.env.OPENAI_API_KEY && !process.env.HIDDEN_AI_OLLAMA_HOST) {
+      console.error('[API] Error: No AI provider API key configured (GROQ_API_KEY, OPENAI_API_KEY, or HIDDEN_AI_OLLAMA_HOST)');
     }
 
     // Quick mode: return a compact BubbleResponse for the floating bubble
@@ -142,6 +151,7 @@ export async function POST(req: NextRequest) {
 
     // Deep mode (default): full structured CopilotResponse
     const mode = body.mode ?? getModeFromQuestion(rawQuestion);
+    console.log('[API] Detected intent:', mode);
 
     const request: CopilotRequest = {
       mode,
@@ -156,7 +166,9 @@ export async function POST(req: NextRequest) {
 
     // Attempt to enrich the narrative sections (summary, recommendation, sensitivities, risks,
     // nextSteps) using an AI provider. Falls back to the rule-based text if AI is unavailable.
+    console.log('[API] Sending request to AI provider...');
     const aiNarrative = await getAiNarrative(request, ruleBasedResponse.keyMetrics);
+    console.log('[API] AI narrative result:', aiNarrative ? 'received' : 'null (using rule-based fallback)');
 
     const response = aiNarrative
       ? {
@@ -169,9 +181,13 @@ export async function POST(req: NextRequest) {
         }
       : ruleBasedResponse;
 
+    console.log('[API] Parsed AI output:', { summary: response.summary, confidence: response.confidenceLevel });
     return NextResponse.json(response);
   } catch (err) {
-    console.error('[money-copilot] Error:', err);
-    return NextResponse.json({ error: 'Failed to process request. Please try again.' }, { status: 500 });
+    console.error('[API] Error:', err);
+    const details = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({
+      error: `Failed to generate AI response: ${details}`
+    }, { status: 500 });
   }
 }

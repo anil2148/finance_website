@@ -226,11 +226,15 @@ async function callGroq(
   userMessage: string,
   systemPrompt: string
 ): Promise<string | null> {
-  if (!process.env.GROQ_API_KEY) return null;
+  if (!process.env.GROQ_API_KEY) {
+    console.error('[ai-client] GROQ_API_KEY is not set — skipping Groq provider');
+    return null;
+  }
 
   let lastError: unknown;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
+      console.log('[API] Sending request to Groq...');
       const client = getGroqClient();
       const completion = await client.chat.completions.create({
         model: GROQ_MODEL,
@@ -241,6 +245,7 @@ async function callGroq(
         temperature: 0.2,
         max_tokens: AI_MAX_TOKENS
       });
+      console.log('[API] Raw Groq response:', completion);
       const content = completion.choices[0]?.message?.content ?? null;
       if (content !== null) {
         console.log('[ai-client] completed_decision via Groq');
@@ -292,11 +297,17 @@ export async function getAiNarrative(
       rawResponse = await callOllama(userMessage, systemPrompt);
     }
 
-    if (rawResponse === null) return null;
+    if (rawResponse === null) {
+      console.error('[ai-client] All AI providers returned null — using rule-based fallback');
+      return null;
+    }
 
     const narrative = parseAiResponse(rawResponse);
     if (narrative) {
+      console.log('[API] Parsed AI output:', { summary: narrative.summary });
       setCacheEntry(cacheKey, narrative);
+    } else {
+      console.error('[API] JSON parse failed:', rawResponse);
     }
     return narrative;
   } catch (err) {
