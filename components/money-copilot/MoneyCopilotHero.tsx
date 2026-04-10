@@ -2,7 +2,7 @@ interface MoneyCopilotHeroProps {
   onSelectChip: (chip: string) => void;
 }
 
-const SMART_CHIPS = ['Job change', 'Rent vs Buy', 'Debt payoff', 'Save vs Invest', 'Retirement planning'];
+const SMART_CHIPS = ['Job Decision', 'Home Buying', 'Debt Strategy', 'Retirement'];
 
 export function MoneyCopilotHero({ onSelectChip }: MoneyCopilotHeroProps) {
   return (
