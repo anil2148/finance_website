@@ -3,11 +3,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Fragment, useEffect, useState } from 'react';
-import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
 import { setPreferredRegionCookie } from '@/lib/region-preference';
+import { MobileMenu } from '@/components/navbar/MobileMenu';
+import { NavItem } from '@/components/navbar/NavItem';
 
 type NavLink = {
   label: string;
@@ -122,28 +124,64 @@ function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+const hamVariants = {
+  closed: {},
+  open: {},
+};
+
+const hamTop = {
+  closed: { rotate: 0, translateY: 0 },
+  open: { rotate: 45, translateY: 6 },
+};
+
+const hamMid = {
+  closed: { opacity: 1 },
+  open: { opacity: 0 },
+};
+
+const hamBot = {
+  closed: { rotate: 0, translateY: 0 },
+  open: { rotate: -45, translateY: -6 },
+};
+
+const logoVariants = {
+  hidden: { opacity: 0, x: -20 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+};
+
+const ctaPulse = {
+  scale: [1, 1.03, 1],
+  transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' },
+};
+
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
 
   useEffect(() => {
     const pathCountry = getCountryForPath(pathname);
     if (pathCountry !== country) setCountry(pathCountry);
   }, [country, pathname, setCountry]);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
   const links = isIndiaContext ? indiaLinks : globalLinks;
   const currentRegionLabel = isIndiaContext ? 'India' : 'United States';
   const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
+
   const switchRegion = (nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);
     const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
-
     setPreferredRegionCookie(regionCookieValue);
-
     setCountry(nextRegion);
-
     if (nextPath !== pathname) {
       // Route through the API endpoint so the response sets the cookie server-side
       // before redirecting to the destination page.
@@ -152,146 +190,139 @@ export function Navbar() {
     }
   };
 
+  const activeCheck = (href: string) => isActive(pathname, href);
+
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/90 shadow-sm backdrop-blur dark:border-slate-700 dark:bg-slate-950/85">
-      <nav className="mx-auto max-w-7xl px-4 py-1.5" role="navigation" aria-label="Primary">
-        <div className="flex items-center justify-between gap-3">
-          <Link href={isIndiaContext ? '/in' : '/'} className="inline-flex items-center" aria-label="FinanceSphere home">
-            <Image src="/images/financesphere-logo.svg" alt="FinanceSphere logo" width={260} height={64} loading="lazy" priority={false} className="h-16 w-auto" />
-          </Link>
+    <>
+      <motion.header
+        className="sticky top-0 z-30 border-b"
+        animate={{
+          backgroundColor: scrolled ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.90)',
+          borderColor: scrolled ? 'rgba(148,163,184,0.6)' : 'rgba(148,163,184,0.4)',
+          boxShadow: scrolled
+            ? '0 4px 24px -4px rgba(15,23,42,0.12), 0 1px 4px -1px rgba(15,23,42,0.06)'
+            : '0 1px 2px 0 rgba(15,23,42,0.04)',
+          backdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)',
+        }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        style={{ WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)' }}
+      >
+        <nav
+          className={`mx-auto max-w-7xl px-4 transition-[padding] duration-200 ${scrolled ? 'py-1' : 'py-1.5'}`}
+          role="navigation"
+          aria-label="Primary"
+        >
+          <div className="flex items-center justify-between gap-3">
+            {/* Logo with entrance animation */}
+            <motion.div variants={logoVariants} initial="hidden" animate="visible">
+              <Link href={isIndiaContext ? '/in' : '/'} className="inline-flex items-center" aria-label="FinanceSphere home">
+                <Image
+                  src="/images/financesphere-logo.svg"
+                  alt="FinanceSphere logo"
+                  width={260}
+                  height={64}
+                  loading="lazy"
+                  priority={false}
+                  className={`w-auto transition-[height] duration-200 ${scrolled ? 'h-14' : 'h-16'}`}
+                />
+              </Link>
+            </motion.div>
 
-            <button
-            className="rounded-xl border border-slate-300 p-2 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800 md:hidden"
-            onClick={() => setOpen((prev) => !prev)}
-            aria-label="Toggle menu"
-            aria-expanded={open}
-          >
-            {open ? <XMarkIcon className="h-5 w-5" /> : <Bars3Icon className="h-5 w-5" />}
-          </button>
-
-          <div className="hidden items-center gap-3 md:flex">
-            <ul className="flex items-center gap-1 text-sm" role="menubar">
-              {links.map((item) => (
-                <li key={item.label} className="group relative" role="none">
-                  {item.href ? (
-                    <Link
-                      className={`rounded-lg px-3 py-2 font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 ${isActive(pathname, item.href) ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-100 dark:bg-blue-500/20 dark:text-blue-200 dark:ring-blue-500/40' : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white'}`}
-                      href={item.href}
-                      role="menuitem"
-                    >
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <Fragment>
-                      <button className="comparison-nav-trigger inline-flex items-center gap-1 rounded-lg px-3 py-2 font-medium text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white" aria-haspopup="true">
-                        {item.label}
-                        <ChevronDownIcon className="h-4 w-4" />
-                      </button>
-                      <ul className="comparison-dropdown" role="menu" aria-label={`${item.label} menu`}>
-                        {item.children?.map((child) => (
-                          <li key={child.href}>
-                            <Link className="comparison-dropdown-link" href={child.href}>
-                              {child.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </Fragment>
-                  )}
-                </li>
-              ))}
-            </ul>
-
-            <Link href={isIndiaContext ? '/in/calculators/emi-calculator' : '/tools'} className="rounded-xl bg-brand px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700">
-              Start planning
-            </Link>
-
-            <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
-              <span>Region</span>
-              <select
-                className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
-                aria-label="Region"
-                value={isIndiaContext ? 'India' : 'US'}
-                onChange={(event) => switchRegion(event.target.value as 'India' | 'US')}
+            {/* Mobile hamburger — animated icon */}
+            <motion.button
+              className="rounded-xl border border-slate-300 p-2 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800 md:hidden"
+              onClick={() => setOpen((prev) => !prev)}
+              aria-label={open ? 'Close menu' : 'Open menu'}
+              aria-expanded={open}
+              variants={hamVariants}
+              animate={open ? 'open' : 'closed'}
+              whileTap={{ scale: 0.92 }}
+            >
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                strokeLinecap="round"
               >
-                <option value="India">India</option>
-                <option value="US">United States</option>
-              </select>
-            </label>
-            <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
-              {currentRegionLabel} ({currentCurrencyLabel})
-            </span>
-            <button onClick={toggleDarkMode} className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800" aria-label="Toggle dark mode">
-              {darkMode ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
-            </button>
-          </div>
-        </div>
+                <motion.line x1="2" y1="5" x2="18" y2="5" variants={hamTop} transition={{ duration: 0.22 }} />
+                <motion.line x1="2" y1="10" x2="18" y2="10" variants={hamMid} transition={{ duration: 0.15 }} />
+                <motion.line x1="2" y1="15" x2="18" y2="15" variants={hamBot} transition={{ duration: 0.22 }} />
+              </svg>
+            </motion.button>
 
-        {open && (
-          <div className="mt-3 space-y-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm md:hidden dark:border-slate-700 dark:bg-slate-900">
-            <ul className="grid gap-2 text-sm">
-              {links.map((item) => (
-                <li key={item.label}>
-                  {item.href ? (
-                    <Link
-                      className={`block rounded-lg px-3 py-2 text-slate-700 transition dark:text-slate-200 ${isActive(pathname, item.href) ? 'bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-200' : 'hover:bg-slate-100 dark:hover:bg-slate-800'}`}
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ) : (
-                    <div className="rounded-xl border border-slate-200 p-2 dark:border-slate-700">
-                      <button
-                        className="flex w-full items-center justify-between rounded-lg px-2 py-2 font-medium text-slate-800 dark:text-slate-100"
-                        onClick={() => setExpandedGroup((prev) => (prev === item.label ? null : item.label))}
-                        aria-expanded={expandedGroup === item.label}
-                      >
-                        {item.label}
-                        <ChevronDownIcon className={`h-4 w-4 transition ${expandedGroup === item.label ? 'rotate-180' : ''}`} />
-                      </button>
-                      {expandedGroup === item.label && (
-                        <ul className="grid gap-1 pl-3 pt-1 text-xs">
-                          {item.children?.map((child) => (
-                            <li key={child.href}>
-                              <Link className="block rounded-lg px-2 py-1.5 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800" href={child.href} onClick={() => setOpen(false)}>
-                                {child.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
+            {/* Desktop nav */}
+            <div className="hidden items-center gap-3 md:flex">
+              <ul className="flex items-center gap-0.5" role="menubar">
+                {links.map((item, i) => (
+                  <NavItem key={item.label} item={item} isActive={activeCheck} index={i} />
+                ))}
+              </ul>
 
-            <Link href={isIndiaContext ? '/in/calculators/emi-calculator' : '/tools'} className="btn-primary w-full text-sm" onClick={() => setOpen(false)}>
-              Start planning
-            </Link>
+              {/* AI Copilot CTA with pulse animation */}
+              <motion.div animate={ctaPulse} whileHover={{ scale: 1.06, boxShadow: '0 0 18px 4px rgba(10,102,194,0.35)' }} className="rounded-xl">
+                <Link
+                  href="/ai-money-copilot"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-brand to-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70"
+                >
+                  <span>✦</span> AI Copilot
+                </Link>
+              </motion.div>
 
-            <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-              <label className="mb-2 block text-xs font-semibold text-slate-600 dark:text-slate-300">Region</label>
-              <select
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
-                aria-label="Region"
-                value={isIndiaContext ? 'India' : 'US'}
-                onChange={(event) => {
-                  switchRegion(event.target.value as 'India' | 'US');
-                  setOpen(false);
-                }}
+              <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
+                <span>Region</span>
+                <select
+                  className="rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100"
+                  aria-label="Region"
+                  value={isIndiaContext ? 'India' : 'US'}
+                  onChange={(event) => switchRegion(event.target.value as 'India' | 'US')}
+                >
+                  <option value="India">India</option>
+                  <option value="US">United States</option>
+                </select>
+              </label>
+              <span className="rounded-lg border border-slate-300 bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-100">
+                {currentRegionLabel} ({currentCurrencyLabel})
+              </span>
+              <motion.button
+                onClick={toggleDarkMode}
+                className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800"
+                aria-label="Toggle dark mode"
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.08 }}
               >
-                <option value="India">India</option>
-                <option value="US">United States</option>
-              </select>
-              <p className="mt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
-                Current: {currentRegionLabel} ({currentCurrencyLabel})
-              </p>
+                {darkMode ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                  </svg>
+                )}
+              </motion.button>
             </div>
           </div>
-        )}
-      </nav>
-    </header>
+        </nav>
+      </motion.header>
+
+      {/* Mobile drawer — rendered in a portal-like fashion outside the header */}
+      <MobileMenu
+        open={open}
+        onClose={() => setOpen(false)}
+        links={links}
+        pathname={pathname}
+        isActive={activeCheck}
+        isIndiaContext={isIndiaContext}
+        expandedGroup={expandedGroup}
+        setExpandedGroup={(g) => setExpandedGroup(g)}
+        currentRegionLabel={currentRegionLabel}
+        currentCurrencyLabel={currentCurrencyLabel}
+        darkMode={darkMode}
+        toggleDarkMode={toggleDarkMode}
+        onRegionChange={switchRegion}
+      />
+    </>
   );
 }
