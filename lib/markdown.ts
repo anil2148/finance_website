@@ -112,8 +112,18 @@ function decodeUriComponentSafe(value: string) {
   }
 }
 
+function fullyDecodeUriComponent(value: string): string {
+  let decoded = value;
+  let prev = '';
+  while (decoded !== prev) {
+    prev = decoded;
+    decoded = decodeUriComponentSafe(decoded);
+  }
+  return decoded;
+}
+
 export function normalizeTag(tag: string) {
-  return decodeUriComponentSafe(tag).trim().toLowerCase();
+  return fullyDecodeUriComponent(tag).trim().toLowerCase();
 }
 
 export function getCategories() {
