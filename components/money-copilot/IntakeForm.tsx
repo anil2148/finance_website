@@ -7,7 +7,7 @@ const CHIP_MODE_MAP: Record<string, DecisionMode> = {
   'Job change': 'job-offer',
   'Rent vs Buy': 'home-affordability',
   'Debt payoff': 'debt-payoff',
-  'Save vs Invest': 'debt-payoff',
+  'Save vs Invest': 'emergency-fund',
   'Retirement planning': 'roth-vs-traditional'
 };
 
@@ -23,6 +23,7 @@ interface IntakeFormProps {
 
 export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: IntakeFormProps) {
   const [question, setQuestion] = useState(initialQuestion);
+  const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [inputs, setInputs] = useState<FinancialInputs>(emptyInputs());
   const [error, setError] = useState('');
@@ -52,6 +53,7 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
       'Retirement planning': 'Am I on track for retirement? Roth vs Traditional?'
     };
     setQuestion(chipQuestions[chip] ?? chip);
+    setSelectedChip(chip);
     setError('');
   };
 
@@ -62,7 +64,8 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
       return;
     }
     setError('');
-    const mode = CHIP_MODE_MAP[question] ?? inferMode(question);
+    // Use chip-mapped mode when the question came from a chip click; otherwise infer from text
+    const mode = (selectedChip && CHIP_MODE_MAP[selectedChip]) ?? inferMode(question);
     onSubmit({ mode, question: question.trim(), inputs, scenarios: [] });
   };
 
@@ -76,7 +79,7 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
         <textarea
           id="copilot-question"
           value={question}
-          onChange={(e) => { setQuestion(e.target.value); setError(''); }}
+          onChange={(e) => { setQuestion(e.target.value); setSelectedChip(null); setError(''); }}
           rows={3}
           placeholder="e.g. I got a job offer in Texas for $120k vs staying in NYC for $145k — which is better financially?"
           className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
