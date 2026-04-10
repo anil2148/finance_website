@@ -7240,5 +7240,11 @@
     "destination": "/blog/cd-ladder-strategy-2026",
     "permanent": true,
     "reason": "REDIRECT"
+  },
+  {
+    "source": "/blog/pre-tax-vs-post-tax-contributions-simple-guide",
+    "destination": "/blog/pre-tax-vs-post-tax-contributions-simple",
+    "permanent": true,
+    "reason": "REDIRECT"
   }
 ]

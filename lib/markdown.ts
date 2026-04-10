@@ -112,8 +112,21 @@ function decodeUriComponentSafe(value: string) {
   }
 }
 
+function fullyDecodeUriComponent(value: string): string {
+  let decoded = value;
+  let prev = '';
+  let iterations = 0;
+  const MAX_ITERATIONS = 10;
+  while (decoded !== prev && iterations < MAX_ITERATIONS) {
+    prev = decoded;
+    decoded = decodeUriComponentSafe(decoded);
+    iterations++;
+  }
+  return decoded;
+}
+
 export function normalizeTag(tag: string) {
-  return decodeUriComponentSafe(tag).trim().toLowerCase();
+  return fullyDecodeUriComponent(tag).trim().toLowerCase();
 }
 
 export function getCategories() {
