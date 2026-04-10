@@ -15,6 +15,12 @@ const CONFIDENCE_LABELS = {
   high: 'High confidence'
 };
 
+const RISK_LABELS = {
+  low: 'Low risk',
+  medium: 'Moderate risk',
+  high: 'High risk'
+};
+
 const RISK_COLORS = {
   low: 'text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-950/20 dark:border-emerald-700/40',
   medium: 'text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/20 dark:border-amber-700/40',
@@ -47,7 +53,7 @@ function ScenarioCompareCard({ scenario, isWinner }: { scenario: Scenario; isWin
       <div className="mb-4 flex items-center justify-between gap-2">
         <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{name}</h4>
         <span className={`shrink-0 rounded-full border px-2 py-0.5 text-xs font-medium ${RISK_COLORS[results.riskLevel]}`}>
-          {results.riskLevel === 'low' ? 'Low risk' : results.riskLevel === 'medium' ? 'Moderate risk' : 'High risk'}
+          {RISK_LABELS[results.riskLevel]}
         </span>
       </div>
 
@@ -119,7 +125,7 @@ export function ResultCard({ response }: ResultCardProps) {
             <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">Scenario Comparison</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
-            {response.scenarios.slice(0, 2).map((scenario, i) => (
+            {response.scenarios.map((scenario, i) => (
               <ScenarioCompareCard key={scenario.id} scenario={scenario} isWinner={winnerIndex === i} />
             ))}
           </div>

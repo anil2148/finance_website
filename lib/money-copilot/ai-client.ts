@@ -113,7 +113,7 @@ Respond ONLY with valid JSON (no markdown fences) matching this structure:
   "recommendation": "<single clear recommendation with concise reasoning>",
   "sensitivities": ["<what-if factor 1>", "<what-if factor 2>"],
   "risks": ["<financial risk 1>", "<financial risk 2>", "<financial risk 3>"],
-  "nextSteps": ["<single most important concrete action>"]
+  "nextSteps": ["<single most important concrete action — provide only one item>"]
 }`;
 }
 
