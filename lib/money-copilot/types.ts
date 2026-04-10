@@ -71,3 +71,26 @@ export interface CopilotRequest {
   inputs: FinancialInputs;
   scenarios: Scenario[];
 }
+
+export interface PageContext {
+  path: string;
+  title?: string;
+  keywords?: string[];
+}
+
+export interface BubbleRequest {
+  question: string;
+  pageContext: PageContext;
+}
+
+export interface BubbleResponse {
+  summary: string;
+  quickTake: string;
+  suggestions: string[];
+  keyNumbers: string[];
+  whatMattersMost: string[];
+  riskFlags: string[];
+  nextStep: string;
+  confidence: 'LOW' | 'MEDIUM' | 'HIGH';
+  disclaimer: string;
+}
