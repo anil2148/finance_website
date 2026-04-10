@@ -138,7 +138,8 @@ export function CopilotWorkspace() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `money-copilot-${currentRequest.mode}-${Date.now()}.txt`;
+    const dateStr = new Date().toISOString().slice(0, 16).replace('T', '-').replace(':', '');
+    a.download = `money-copilot-${currentRequest.mode}-${dateStr}.txt`;
     a.click();
     URL.revokeObjectURL(url);
     trackEvent({ event: 'exported_report', category: 'money_copilot', label: currentRequest.mode });

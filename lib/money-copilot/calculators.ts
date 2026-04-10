@@ -111,7 +111,7 @@ export function calcHomeAffordability(
   return {
     maxHomePrice,
     monthlyPaymentEstimate: maxMonthlyPayment,
-    note: `Based on 28/36 rule with 7% assumed mortgage rate, 30-year term, $${formatCurrency(downPayment)} down payment.`
+    note: `Based on 28/36 rule with 7% assumed mortgage rate, 30-year term, ${formatCurrency(downPayment)} down payment.`
   };
 }
 

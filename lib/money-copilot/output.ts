@@ -486,7 +486,12 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   const confidenceLevel = assessConfidence(request.inputs, effectiveMode);
   const assumptions = buildAssumptions(request.inputs, effectiveMode);
 
-  const handler = MODE_HANDLERS[effectiveMode] ?? customResponse;
+  const VALID_MODES = new Set<DecisionMode>([
+    'job-offer', 'relocation', 'debt-payoff', 'roth-vs-traditional',
+    'emergency-fund', 'home-affordability', 'budget-stress-test', 'custom'
+  ]);
+  const safeMode: DecisionMode = VALID_MODES.has(effectiveMode) ? effectiveMode : 'custom';
+  const handler = MODE_HANDLERS[safeMode];
   const modeResponse = handler(request, computedScenarios);
 
   if (computedScenarios.length === 2) {
