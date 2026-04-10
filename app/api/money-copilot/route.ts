@@ -6,6 +6,8 @@ import { sanitizeText } from '@/lib/api/sanitize';
 import { getGroqClient } from '@/lib/groq/client';
 import type { CopilotRequest, BubbleResponse } from '@/lib/money-copilot/types';
 
+export const runtime = "nodejs";
+
 const QUICK_MAX_TOKENS = 512;
 const QUICK_GROQ_MODEL = 'llama3-8b-8192';
 
@@ -125,6 +127,11 @@ export async function POST(req: NextRequest) {
     // Parse and do a basic shape check before type-asserting
     const raw: unknown = await req.json();
     console.log('[API] Incoming request:', raw);
+
+    console.log("[ENV CHECK] GROQ_API_KEY:", process.env.GROQ_API_KEY ? "FOUND" : "MISSING");
+    if (!process.env.GROQ_API_KEY) {
+      throw new Error("Missing GROQ_API_KEY in environment");
+    }
 
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
       return NextResponse.json({ error: 'Invalid request body.' }, { status: 400 });
