@@ -9,7 +9,9 @@ import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
-import { CopilotBubble } from '@/components/money-copilot/CopilotBubble';
+import { CopilotProvider } from '@/components/money-copilot/CopilotProvider';
+import { CommandBar } from '@/components/money-copilot/CommandBar';
+import { ExecutionPanel } from '@/components/money-copilot/ExecutionPanel';
 import { SITE_ORIGIN, absoluteUrl, organizationSchema, websiteSchema } from '@/lib/seo';
 
 const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
@@ -93,13 +95,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <PreferenceProvider>
           <ErrorMonitoring />
-          <Navbar />
-          <main className="editorial-content mx-auto min-h-screen max-w-7xl px-4 py-8">
-            <Breadcrumbs />
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Footer />
-          <CopilotBubble />
+          <CopilotProvider>
+            <Navbar />
+            <CommandBar />
+            <main className="editorial-content mx-auto min-h-screen max-w-7xl px-4 py-8">
+              <Breadcrumbs />
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer />
+            <ExecutionPanel />
+          </CopilotProvider>
         </PreferenceProvider>
 
         <Analytics />
