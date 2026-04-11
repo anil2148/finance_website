@@ -70,6 +70,8 @@ export function CopilotWorkspace() {
   const [error, setError] = useState('');
   const [savedReports, setSavedReports] = useState<CopilotResponse[]>([]);
   const [selectedPrompt, setSelectedPrompt] = useState(queryParam);
+  /** AI narrative text accumulated during streaming — shown as a typing effect. */
+  const [streamingText, setStreamingText] = useState('');
 
   useEffect(() => {
     setSavedReports(loadSavedReports());
@@ -86,6 +88,7 @@ export function CopilotWorkspace() {
     setIsLoading(true);
     setError('');
     setResponse(null);
+    setStreamingText('');
 
     trackEvent({
       event: 'started_decision',
@@ -110,27 +113,86 @@ export function CopilotWorkspace() {
         throw new Error(errMsg);
       }
 
-      const data: CopilotResponse = await res.json();
-      console.log('[Copilot] Response:', data);
-
-      const errData = data as unknown as { error?: unknown };
-      if (!data || typeof errData.error === 'string' || errData.error === true) {
-        console.error('[Copilot] API returned an error response:', data);
-        setError(typeof errData.error === 'string' ? errData.error : 'Something went wrong. Please try again.');
+      // Handle plain JSON responses (cache hits, quick mode, etc.)
+      const contentType = res.headers.get('content-type') ?? '';
+      if (!contentType.includes('text/event-stream')) {
+        const data: CopilotResponse = await res.json();
+        const errData = data as unknown as { error?: unknown };
+        if (!data || typeof errData.error === 'string' || errData.error === true) {
+          console.error('[Copilot] API returned an error response:', data);
+          setError(typeof errData.error === 'string' ? errData.error : 'Something went wrong. Please try again.');
+          return;
+        }
+        setResponse(data);
+        trackEvent({
+          event: 'completed_decision',
+          category: 'money_copilot',
+          label: request.mode,
+          metadata: { confidenceLevel: data.confidenceLevel, scenarioCount: data.scenarios.length }
+        });
+        if (request.scenarios.length >= 2) {
+          trackEvent({ event: 'compared_scenarios', category: 'money_copilot', label: request.mode });
+        }
         return;
       }
 
-      setResponse(data);
+      // SSE streaming path — read chunks and update UI progressively
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let finalData: CopilotResponse | null = null;
 
-      trackEvent({
-        event: 'completed_decision',
-        category: 'money_copilot',
-        label: request.mode,
-        metadata: { confidenceLevel: data.confidenceLevel, scenarioCount: data.scenarios.length }
-      });
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-      if (request.scenarios.length >= 2) {
-        trackEvent({ event: 'compared_scenarios', category: 'money_copilot', label: request.mode });
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() ?? '';
+
+        for (const part of parts) {
+          const line = part.trim();
+          if (!line.startsWith('data: ')) continue;
+
+          const raw = line.slice(6).trim();
+          if (raw === '[DONE]') break;
+
+          try {
+            const event = JSON.parse(raw) as {
+              type: 'base' | 'chunk' | 'narrative' | 'error';
+              payload?: CopilotResponse;
+              content?: string;
+              message?: string;
+            };
+
+            if (event.type === 'base' && event.payload) {
+              setResponse(event.payload);
+            } else if (event.type === 'chunk' && event.content) {
+              setStreamingText(prev => prev + event.content);
+            } else if (event.type === 'narrative' && event.payload) {
+              finalData = event.payload;
+              setResponse(event.payload);
+              setStreamingText('');
+            } else if (event.type === 'error') {
+              throw new Error(event.message ?? 'Streaming error from server');
+            }
+          } catch (parseErr) {
+            console.warn('[Copilot] Failed to parse SSE event:', parseErr);
+          }
+        }
+      }
+
+      const completedResponse = finalData;
+      if (completedResponse) {
+        trackEvent({
+          event: 'completed_decision',
+          category: 'money_copilot',
+          label: request.mode,
+          metadata: { confidenceLevel: completedResponse.confidenceLevel, scenarioCount: completedResponse.scenarios.length }
+        });
+        if (request.scenarios.length >= 2) {
+          trackEvent({ event: 'compared_scenarios', category: 'money_copilot', label: request.mode });
+        }
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Something went wrong. Please try again.';
@@ -138,6 +200,7 @@ export function CopilotWorkspace() {
       setError(message);
     } finally {
       setIsLoading(false);
+      setStreamingText('');
     }
   }, []);
 
@@ -168,6 +231,7 @@ export function CopilotWorkspace() {
     setCurrentRequest(null);
     setError('');
     setSelectedPrompt('');
+    setStreamingText('');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
@@ -183,10 +247,22 @@ export function CopilotWorkspace() {
         />
       </div>
 
-      {isLoading && (
+      {isLoading && !streamingText && !response && (
         <div className="flex flex-col items-center justify-center gap-3 py-12 text-slate-500 dark:text-slate-400">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-blue-200 border-t-blue-600" />
           <p className="text-sm font-medium">Analyzing your decision…</p>
+        </div>
+      )}
+
+      {isLoading && streamingText && (
+        <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-5 dark:border-blue-700/30 dark:bg-blue-950/20">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-500 dark:text-blue-400">
+            AI is thinking…
+          </p>
+          <p className="whitespace-pre-wrap font-mono text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+            {streamingText}
+            <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-blue-500" />
+          </p>
         </div>
       )}
 
