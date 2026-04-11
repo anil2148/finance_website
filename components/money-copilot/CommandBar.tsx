@@ -144,15 +144,15 @@ export function CommandBar() {
     >
       <div className="mx-auto flex max-w-7xl items-center gap-2">
         {/* Brand pill */}
-        <div className="flex shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-2.5 py-1 text-[11px] font-bold text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+        <div className="flex shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-2.5 py-1.5 text-[11px] font-bold text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
           Copilot
         </div>
 
-        {/* Command input */}
-        <div className="relative flex flex-1 items-center gap-1">
+        {/* Command input — min-w prevents collapsing to an indistinguishable square */}
+        <div className="relative min-w-[4rem] flex-1">
           <input
             ref={inputRef}
             type="text"
@@ -161,48 +161,55 @@ export function CommandBar() {
             onKeyDown={handleKeyDown}
             placeholder="Run a financial decision analysis…  e.g. Should I accept this job offer?"
             disabled={isLoading}
-            className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
           />
           {error && (
             <span className="absolute -bottom-5 left-0 text-[10px] text-rose-600 dark:text-rose-400">{error}</span>
           )}
         </div>
 
-        {/* Execute button */}
-        <button
-          onClick={() => void handleSubmit(query)}
-          disabled={isLoading || query.trim().length === 0}
-          aria-label="Execute analysis"
-          className="flex shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:opacity-40 dark:bg-blue-500 dark:hover:bg-blue-600"
-        >
-          {isLoading ? (
-            <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          )}
-          {isLoading ? 'Analyzing…' : 'Execute'}
-        </button>
-
-        {/* History count + open panel shortcut */}
-        {state.history.length > 0 && !state.isExecutionPanelOpen && (
+        {/* Right action cluster: Execute + history — grouped so the history pill never
+            detaches or shifts the Execute button when it appears/disappears */}
+        <div className="flex shrink-0 items-center gap-2">
+          {/* Execute button — disabled only changes opacity/cursor, not box dimensions */}
           <button
-            onClick={() => {
-              const last = state.history[0];
-              if (last) {
-                dispatch({ type: 'OPEN_PANEL', payload: { question: last.question, result: last.result } });
-              }
-            }}
-            className="flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-[11px] font-medium text-slate-500 transition hover:border-blue-300 hover:text-blue-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400"
-            title="View last result"
+            type="button"
+            onClick={() => void handleSubmit(query)}
+            disabled={isLoading || query.trim().length === 0}
+            aria-label="Execute analysis"
+            className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-blue-500 dark:hover:bg-blue-600"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {state.history.length}
+            {isLoading ? (
+              <div className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            )}
+            <span className="whitespace-nowrap">{isLoading ? 'Analyzing…' : 'Execute'}</span>
           </button>
-        )}
+
+          {/* History count + open panel shortcut */}
+          {state.history.length > 0 && !state.isExecutionPanelOpen && (
+            <button
+              type="button"
+              onClick={() => {
+                const last = state.history[0];
+                if (last) {
+                  dispatch({ type: 'OPEN_PANEL', payload: { question: last.question, result: last.result } });
+                }
+              }}
+              className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-[11px] font-medium text-slate-500 transition hover:border-blue-300 hover:text-blue-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400"
+              title="View last result"
+              aria-label={`View last analysis result (${state.history.length} total)`}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {state.history.length}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

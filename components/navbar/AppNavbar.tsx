@@ -207,8 +207,9 @@ export function AppNavbar() {
               </ul>
             </div>
 
-            {/* ── CENTER: AI Copilot Command Bar — desktop only, flex-1 ── */}
-            <div className="hidden flex-1 lg:block">
+            {/* ── CENTER: AI Copilot Command Bar — desktop only, flex-1.
+                 min-w-0 lets this flex item shrink without overflowing its siblings. */}
+            <div className="hidden min-w-0 flex-1 lg:block">
               <CopilotInput className="w-full" />
             </div>
 
