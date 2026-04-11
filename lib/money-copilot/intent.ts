@@ -57,7 +57,6 @@ export function detectIntent(input: string): Intent {
   if (
     q.includes('job') ||
     q.includes('salary') ||
-    q.includes('job offer') ||
     q.includes('w2') ||
     q.includes('c2c') ||
     q.includes('contractor') ||

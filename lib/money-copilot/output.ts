@@ -459,8 +459,8 @@ function ambiguousOfferResponse(request: CopilotRequest, _scenarios: Scenario[])
   const summary = 'I can help — I just need to know what kind of offer this is.';
 
   const recommendation =
-    'Is this a job offer, loan offer, credit card offer, or mortgage/refinance offer? ' +
-    'Share the key terms (salary, APR, fees, etc.) and your current situation, and I\'ll give you a structured comparison.';
+    "Is this a job offer, loan offer, credit card offer, or mortgage/refinance offer? " +
+    "Share the key terms (salary, APR, fees, etc.) and your current situation, and I'll give you a structured comparison.";
 
   const keyMetrics = [
     { label: 'Status', value: 'Needs clarification', note: 'Specify offer type to proceed' },

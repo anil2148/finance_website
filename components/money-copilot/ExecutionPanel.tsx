@@ -1,7 +1,20 @@
 'use client';
 
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
-import type { ExecutionAction, PipelineResult } from '@/lib/money-copilot/types';
+import type { ExecutionAction, IntentClassification, PipelineResult } from '@/lib/money-copilot/types';
+
+// Confidence below this threshold triggers the "Needs clarification" UI state.
+// Keep in sync with CONFIDENCE_THRESHOLD_MID in pipeline.ts.
+const CLARIFICATION_CONFIDENCE_THRESHOLD = 0.5;
+
+/** Returns true when the intent is ambiguous or confidence is too low to proceed. */
+function needsClarificationState(intent: IntentClassification): boolean {
+  return (
+    intent.type === 'ambiguous-offer' ||
+    intent.needsClarification === true ||
+    intent.confidence < CLARIFICATION_CONFIDENCE_THRESHOLD
+  );
+}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -34,7 +47,7 @@ function ConfidenceBadge({ value }: { value: number }) {
 
 function IntentStep({ result }: { result: PipelineResult }) {
   const { step1_intent: intent } = result;
-  const isAmbiguous = intent.type === 'ambiguous-offer' || intent.needsClarification || intent.confidence < 0.5;
+  const isAmbiguous = needsClarificationState(intent);
   return (
     <section>
       <SectionHeader step={1} title="Intent" />
@@ -105,12 +118,12 @@ function ContextStep({ result }: { result: PipelineResult }) {
 
 function AnalysisStep({ result }: { result: PipelineResult }) {
   const { step1_intent: intent, step3_analysis: analysis } = result;
-  const needsClarification = intent.type === 'ambiguous-offer' || intent.needsClarification || intent.confidence < 0.5;
-  const title = needsClarification ? 'Next Step' : 'Analysis';
+  const showClarification = needsClarificationState(intent);
+  const title = showClarification ? 'Next Step' : 'Analysis';
   return (
     <section>
       <SectionHeader step={3} title={title} />
-      {needsClarification && (
+      {showClarification && (
         <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-700 dark:border-blue-700/40 dark:bg-blue-950/20 dark:text-blue-400">
           Provide more context or clarify the offer type to unlock a full analysis.
         </div>

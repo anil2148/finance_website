@@ -153,20 +153,19 @@ export function classifyIntent(question: string): IntentClassification {
   }
 
   // Also catch bare "offer" or "deal" without any specific qualifier
-  const hasBareOffer = (q.includes('offer') || q.includes(' deal')) && !q.includes('job') && !q.includes('salary');
+  const hasBareOffer =
+    (q.includes('offer') || q.includes(' deal')) &&
+    !JOB_OFFER_QUALIFIERS.some((k) => q.includes(k)) &&
+    !LOAN_OFFER_QUALIFIERS.some((k) => q.includes(k));
   if (hasBareOffer) {
-    const hasJobQualifier = JOB_OFFER_QUALIFIERS.some((k) => q.includes(k));
-    const hasLoanQualifier = LOAN_OFFER_QUALIFIERS.some((k) => q.includes(k));
-    if (!hasJobQualifier && !hasLoanQualifier) {
-      return {
-        type: 'ambiguous-offer',
-        category: 'ambiguous',
-        confidence: 0.3,
-        signals: ['offer / deal (type unclear)'],
-        needsClarification: true,
-        clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
-      };
-    }
+    return {
+      type: 'ambiguous-offer',
+      category: 'ambiguous',
+      confidence: 0.3,
+      signals: ['offer / deal (type unclear)'],
+      needsClarification: true,
+      clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
+    };
   }
 
   const scores: Map<string, { category: IntentCategory; mode: DecisionMode; score: number; signals: string[] }> =
@@ -209,9 +208,10 @@ export function classifyIntent(question: string): IntentClassification {
   const confidence = Math.min(0.95, best.score / (maxPossible * 0.3));
 
   // ── Confidence threshold routing ──────────────────────────────────────────
-  // < 0.50: do not analyze — ask concise clarification
-  // 0.50–0.74: flag for targeted clarification but allow provisional analysis
-  const needsClarification = confidence < CONFIDENCE_THRESHOLD_HIGH;
+  // < 0.50: block analysis — ask a concise clarification question
+  // 0.50–0.74: suggest clarification but allow provisional analysis
+  // >= 0.75: proceed without interruption
+  const needsClarification = confidence < CONFIDENCE_THRESHOLD_MID;
   const clarificationQuestion =
     confidence < CONFIDENCE_THRESHOLD_MID
       ? 'Could you provide more context? For example: what type of offer is this, and what is your current financial situation?'
@@ -224,7 +224,7 @@ export function classifyIntent(question: string): IntentClassification {
     category: best.category,
     confidence: parseFloat(confidence.toFixed(2)),
     signals: [...new Set(best.signals)],
-    needsClarification: needsClarification || undefined,
+    needsClarification: needsClarification ? true : undefined,
     clarificationQuestion,
   };
 }
