@@ -1,5 +1,13 @@
 /** Simple in-memory response cache with 10-minute TTL. */
-const cache = new Map<string, unknown>();
+
+interface CacheEntry {
+  value: unknown;
+  expiresAt: number;
+}
+
+const TTL_MS = 1000 * 60 * 10; // 10 min
+
+const cache = new Map<string, CacheEntry>();
 
 /**
  * Build a cache key from the raw question and freeform context strings.
@@ -9,15 +17,25 @@ const cache = new Map<string, unknown>();
 export const getCacheKey = (question: string, context: string): string =>
   `${question}-${context}`;
 
-/** Return a cached value, or `undefined` if the key is not present. */
-export const getCached = (key: string): unknown | undefined => cache.get(key);
+/**
+ * Return a cached value, or `undefined` if the key is absent or expired.
+ * Expired entries are lazily evicted on read to avoid per-entry timer overhead.
+ */
+export const getCached = (key: string): unknown | undefined => {
+  const entry = cache.get(key);
+  if (!entry) return undefined;
+  if (Date.now() >= entry.expiresAt) {
+    cache.delete(key);
+    return undefined;
+  }
+  return entry.value;
+};
 
 /**
- * Store a value in the cache and schedule its removal after 10 minutes.
- * Using `setTimeout` for TTL cleanup keeps the implementation dependency-free;
- * a Redis adapter can replace this module in production without changing callers.
+ * Store a value in the cache with a 10-minute TTL.
+ * Expiration is checked lazily on the next read; no per-entry timers are used.
+ * A Redis adapter can replace this module in production without changing callers.
  */
 export const setCache = (key: string, value: unknown): void => {
-  cache.set(key, value);
-  setTimeout(() => cache.delete(key), 1000 * 60 * 10); // 10 min TTL
+  cache.set(key, { value, expiresAt: Date.now() + TTL_MS });
 };

@@ -316,7 +316,7 @@ export async function* streamGroqNarrative(
   for (const m of modelsToTry) {
     console.log('[AI] Selected model:', m);
     try {
-      const stream = await client.chat.completions.create({
+      const result = await client.chat.completions.create({
         model: m,
         messages: [
           { role: 'system', content: systemPrompt },
@@ -325,7 +325,15 @@ export async function* streamGroqNarrative(
         temperature: 0.2,
         max_tokens: AI_MAX_TOKENS,
         stream: true
-      }) as AsyncIterable<Groq.Chat.ChatCompletionChunk>;
+      });
+
+      // The Groq SDK overloads the return type based on the `stream` flag;
+      // cast defensively and guard before iterating.
+      const stream = result as unknown as AsyncIterable<Groq.Chat.ChatCompletionChunk>;
+      if (!stream || typeof (stream as unknown as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] !== 'function') {
+        console.error(`[ai-client] Groq streaming response is not iterable for model ${m}`);
+        continue;
+      }
 
       for await (const chunk of stream) {
         const content = chunk.choices?.[0]?.delta?.content ?? '';

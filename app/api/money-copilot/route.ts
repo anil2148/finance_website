@@ -228,12 +228,14 @@ export async function POST(req: NextRequest) {
     //   4. [DONE]      – signals end of stream
     const stream = new ReadableStream({
       async start(controller) {
+        // Accumulated AI text is declared outside the try block so that partial
+        // content is preserved for fallback even if streaming throws mid-way.
+        let accumulated = '';
         try {
           // Phase 1: send rule-based response immediately so the client can render structure
           controller.enqueue(sseEvent({ type: 'base', payload: ruleBasedResponse }));
 
           // Phase 2: stream AI narrative text chunks from Groq
-          let accumulated = '';
           for await (const chunk of streamGroqNarrative(userMessage, systemPrompt, model)) {
             accumulated += chunk;
             controller.enqueue(sseEvent({ type: 'chunk', content: chunk }));
@@ -259,7 +261,7 @@ export async function POST(req: NextRequest) {
             }
           }
 
-          // Fall back to non-streaming AI call if streaming yielded nothing
+          // Fall back to non-streaming AI call if streaming yielded nothing parseable
           if (!aiNarrative) {
             aiNarrative = await getAiNarrative(request, ruleBasedResponse.keyMetrics, model);
           }
@@ -283,6 +285,7 @@ export async function POST(req: NextRequest) {
           controller.enqueue(sseEvent('[DONE]'));
           controller.close();
         } catch (err) {
+          console.error('[API] Streaming error (accumulated so far):', accumulated ? accumulated.slice(0, 200) : '(none)');
           console.error('[API] Streaming error:', err);
           controller.enqueue(sseEvent({ type: 'error', message: err instanceof Error ? err.message : String(err) }));
           controller.close();
