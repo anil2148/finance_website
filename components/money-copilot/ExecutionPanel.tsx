@@ -342,6 +342,18 @@ function PanelInputForm() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally runs once on mount only — initial values captured via refs above.
 
+  // Sync prefill question when OPEN_DRAWER is dispatched while the panel is already
+  // mounted (e.g. clicking a prompt in DrawerEmptyState or an AskAIButton while open).
+  // Only fires in input mode (activeResult === null) to avoid overwriting the query
+  // after a successful submission when OPEN_PANEL sets activeQuestion to the submitted text.
+  useEffect(() => {
+    if (!state.activeResult && state.activeQuestion) {
+      setQuery(state.activeQuestion);
+      requestAnimationFrame(() => { inputRef.current?.focus(); });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.activeQuestion]);
+
   const handleSubmit = useCallback(async (text: string) => {
     const q = text.trim();
     if (!q || isLoading) return;
