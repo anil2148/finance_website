@@ -9,7 +9,10 @@ import type { CopilotRequest, BubbleResponse } from '@/lib/money-copilot/types';
 export const runtime = "nodejs";
 
 const QUICK_MAX_TOKENS = 512;
-const QUICK_GROQ_MODEL = 'llama3-8b-8192';
+/** Groq model for quick mode (overridable via env). */
+const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+/** Fallback Groq model if the primary model fails. */
+const QUICK_GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
 function buildQuickSystemPrompt(): string {
   return `${FINANCE_SPHERE_COPILOT_PROMPT}
@@ -56,27 +59,38 @@ function parseQuickResponse(raw: string): BubbleResponse | null {
   return null;
 }
 
+async function callGroqForQuick(systemPrompt: string, userMessage: string, model: string): Promise<BubbleResponse | null> {
+  console.log('[AI] Using model:', model);
+  try {
+    const client = getGroqClient();
+    const completion = await client.chat.completions.create({
+      model,
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userMessage }
+      ],
+      temperature: 0.2,
+      max_tokens: QUICK_MAX_TOKENS
+    });
+    const content = completion.choices[0]?.message?.content ?? null;
+    if (content) return parseQuickResponse(content);
+  } catch (err) {
+    console.error(`[money-copilot] Groq request failed with model ${model}:`, err);
+  }
+  return null;
+}
+
 async function callAiForQuick(question: string): Promise<BubbleResponse | null> {
   const systemPrompt = buildQuickSystemPrompt();
   const userMessage = buildQuickUserMessage(question);
 
   if (process.env.GROQ_API_KEY) {
-    try {
-      const client = getGroqClient();
-      const completion = await client.chat.completions.create({
-        model: QUICK_GROQ_MODEL,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userMessage }
-        ],
-        temperature: 0.2,
-        max_tokens: QUICK_MAX_TOKENS
-      });
-      const content = completion.choices[0]?.message?.content ?? null;
-      if (content) return parseQuickResponse(content);
-    } catch {
-      // fall through to OpenAI
-    }
+    const primary = await callGroqForQuick(systemPrompt, userMessage, MODEL);
+    if (primary !== null) return primary;
+
+    console.warn(`[money-copilot] Primary model (${MODEL}) failed — retrying with fallback model (${QUICK_GROQ_FALLBACK_MODEL})`);
+    const fallback = await callGroqForQuick(systemPrompt, userMessage, QUICK_GROQ_FALLBACK_MODEL);
+    if (fallback !== null) return fallback;
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
