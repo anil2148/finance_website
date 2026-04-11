@@ -21,6 +21,10 @@ import type {
   ReasoningHistoryEntry,
 } from './types';
 import { getModeFromQuestion } from './prompts';
+import {
+  isAmbiguousOfferQuery,
+  AMBIGUOUS_OFFER_CLARIFICATION,
+} from './intent';
 
 // ─── Layer 1: Intent ─────────────────────────────────────────────────────────
 
@@ -35,7 +39,8 @@ interface RuleSet {
 
 const INTENT_RULES: RuleSet[] = [
   {
-    keywords: ['salary', 'job', 'offer', 'w2', 'c2c', 'contractor', 'compensation', 'income', 'hire', 'promotion'],
+    // Require explicit job-related signals — bare "offer" is NOT sufficient
+    keywords: ['salary', 'job', 'job offer', 'w2', 'c2c', 'contractor', 'compensation', 'income', 'hire', 'promotion'],
     category: 'income',
     mode: 'job-offer',
     weight: 2,
@@ -47,7 +52,7 @@ const INTENT_RULES: RuleSet[] = [
     weight: 2,
   },
   {
-    keywords: ['debt', 'loan', 'credit card', 'payoff', 'pay off', 'refinanc', 'student loan', 'interest rate'],
+    keywords: ['debt', 'loan', 'credit card', 'payoff', 'pay off', 'refinanc', 'student loan', 'interest rate', 'balance transfer'],
     category: 'debt',
     mode: 'debt-payoff',
     weight: 2,
@@ -84,9 +89,31 @@ const INTENT_RULES: RuleSet[] = [
   },
 ];
 
-export function classifyIntent(question: string): IntentClassification {
-  const q = question.toLowerCase();
+/**
+ * Confidence thresholds that control routing:
+ *   >= HIGH   → proceed with intent-specific flow
+ *   MID–HIGH  → suggest clarification but allow provisional analysis
+ *   < MID     → block analysis; ask a concise clarification question
+ *
+ * CONFIDENCE_THRESHOLD_MID is exported for use in the UI layer.
+ */
+const CONFIDENCE_THRESHOLD_HIGH = 0.75;
+export const CONFIDENCE_THRESHOLD_MID = 0.50;
 
+export function classifyIntent(question: string): IntentClassification {
+  // ── Ambiguity check: use the shared helper before keyword scoring ──────────
+  if (isAmbiguousOfferQuery(question)) {
+    return {
+      type: 'ambiguous-offer',
+      category: 'ambiguous',
+      confidence: 0.3,
+      signals: ['offer (type unclear)'],
+      needsClarification: true,
+      clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
+    };
+  }
+
+  const q = question.toLowerCase();
   const scores: Map<string, { category: IntentCategory; mode: DecisionMode; score: number; signals: string[] }> =
     new Map();
 
@@ -111,6 +138,8 @@ export function classifyIntent(question: string): IntentClassification {
       category: 'general',
       confidence: 0.3,
       signals: [],
+      needsClarification: true,
+      clarificationQuestion: 'Could you share more details? For example, is this about a job offer, loan, investment, or retirement decision?',
     };
   }
 
@@ -124,11 +153,25 @@ export function classifyIntent(question: string): IntentClassification {
   const maxPossible = Math.max(...INTENT_RULES.map((r) => r.weight * r.keywords.length));
   const confidence = Math.min(0.95, best.score / (maxPossible * 0.3));
 
+  // ── Confidence threshold routing ──────────────────────────────────────────
+  // < 0.50: block analysis — ask a concise clarification question
+  // 0.50–0.74: suggest clarification but allow provisional analysis
+  // >= 0.75: proceed without interruption
+  const needsClarification = confidence < CONFIDENCE_THRESHOLD_MID;
+  const clarificationQuestion =
+    confidence < CONFIDENCE_THRESHOLD_MID
+      ? 'Could you provide more context? For example: what type of offer is this, and what is your current financial situation?'
+      : confidence < CONFIDENCE_THRESHOLD_HIGH
+      ? 'A few more details would help me give you a more accurate analysis. What is the specific offer type and key terms?'
+      : undefined;
+
   return {
     type: best.mode,
     category: best.category,
     confidence: parseFloat(confidence.toFixed(2)),
     signals: [...new Set(best.signals)],
+    needsClarification: needsClarification ? true : undefined,
+    clarificationQuestion,
   };
 }
 

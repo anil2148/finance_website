@@ -57,6 +57,12 @@ export function compareScenarios(scenarios: Scenario[]): Scenario[] {
 export function extractMissingData(inputs: FinancialInputs, mode: DecisionMode): string[] {
   const missing: string[] = [];
 
+  // Ambiguous offer — the offer type itself is the missing data
+  if (mode === 'ambiguous-offer') {
+    missing.push('Offer type (job offer, loan offer, credit card offer, or mortgage/refinance offer)');
+    return missing;
+  }
+
   const hasSalary = inputs.annualSalary || inputs.hourlyRate;
   if (!hasSalary) missing.push('Annual salary or hourly rate');
 
@@ -94,6 +100,9 @@ export function extractMissingData(inputs: FinancialInputs, mode: DecisionMode):
 }
 
 export function assessConfidence(inputs: FinancialInputs, mode: DecisionMode): 'low' | 'medium' | 'high' {
+  // Ambiguous offer always returns low confidence — the offer type is unknown
+  if (mode === 'ambiguous-offer') return 'low';
+
   const missing = extractMissingData(inputs, mode);
 
   const hasSalary = inputs.annualSalary || inputs.hourlyRate;

@@ -455,6 +455,43 @@ function customResponse(request: CopilotRequest, scenarios: Scenario[]): Partial
   return { summary, recommendation, keyMetrics, sensitivities, risks, nextSteps };
 }
 
+function ambiguousOfferResponse(
+  request: CopilotRequest,
+  // Scenarios are not used for ambiguous offers; parameter is required by the MODE_HANDLERS signature.
+  _scenarios: Scenario[]
+): Partial<CopilotResponse> {
+  const summary = 'I can help — I just need to know what kind of offer this is.';
+
+  const recommendation =
+    "Is this a job offer, loan offer, credit card offer, or mortgage/refinance offer? " +
+    "Share the key terms (salary, APR, fees, etc.) and your current situation, and I'll give you a structured comparison.";
+
+  const keyMetrics = [
+    { label: 'Status', value: 'Needs clarification', note: 'Specify offer type to proceed' },
+    { label: 'Supported offer types', value: 'Job · Loan · Credit card · Mortgage · Refinance' },
+  ];
+
+  const sensitivities = [
+    'For a job offer: salary comparison, benefits, location, and growth matter most.',
+    'For a loan offer: APR, term length, and total interest cost are the key numbers.',
+    'For a credit card offer: promo APR period, transfer fee, and payoff timeline drive the decision.',
+    'For a mortgage/refinance offer: rate differential, closing costs, and break-even timeline are critical.',
+  ];
+
+  const risks = [
+    'Analyzing without knowing the offer type could produce misleading results.',
+    'Different offer types require completely different evaluation frameworks.',
+  ];
+
+  const nextSteps = [
+    'Clarify the offer type: job offer, loan offer, credit card offer, or mortgage/refinance.',
+    'Share the main terms of the offer so a structured comparison can be built.',
+    'Include your current situation (current salary, current rate, current debt) for a meaningful comparison.',
+  ];
+
+  return { summary, recommendation, keyMetrics, sensitivities, risks, nextSteps };
+}
+
 const MODE_HANDLERS: Record<DecisionMode, (req: CopilotRequest, scenarios: Scenario[]) => Partial<CopilotResponse>> = {
   'job-offer': jobOfferResponse,
   'relocation': relocationResponse,
@@ -463,6 +500,7 @@ const MODE_HANDLERS: Record<DecisionMode, (req: CopilotRequest, scenarios: Scena
   'emergency-fund': emergencyFundResponse,
   'home-affordability': homeAffordabilityResponse,
   'budget-stress-test': budgetStressTestResponse,
+  'ambiguous-offer': ambiguousOfferResponse,
   'custom': customResponse
 };
 
@@ -506,7 +544,7 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
 
   const VALID_MODES = new Set<DecisionMode>([
     'job-offer', 'relocation', 'debt-payoff', 'roth-vs-traditional',
-    'emergency-fund', 'home-affordability', 'budget-stress-test', 'custom'
+    'emergency-fund', 'home-affordability', 'budget-stress-test', 'ambiguous-offer', 'custom'
   ]);
   const safeMode: DecisionMode = VALID_MODES.has(effectiveMode) ? effectiveMode : 'custom';
   const handler = MODE_HANDLERS[safeMode];
@@ -515,9 +553,11 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   // ─── Baseline income validation (DATA VALIDATION RULE) ───────────────────
   // Check the enriched inputs so NLP-extracted salary satisfies the baseline check.
   const hasBaselineIncome = !!(enrichedRequest.inputs.annualSalary || enrichedRequest.inputs.hourlyRate);
-  if (!hasBaselineIncome) {
+  if (!hasBaselineIncome && safeMode !== 'ambiguous-offer') {
+    // Use a guided clarification prompt instead of a dead-end "insufficient data" message
     modeResponse.recommendation =
-      'insufficient data — baseline income required. Please provide your annual salary or hourly rate to generate a recommendation.';
+      'To generate a recommendation, I need your current income as a starting point. ' +
+      'What is your annual salary or hourly rate? Once I have that, I can compare your options.';
   }
 
   if (computedScenarios.length === 2) {
