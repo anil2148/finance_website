@@ -11,10 +11,19 @@ import {
 import { getModeFromQuestion, FINANCE_SPHERE_COPILOT_PROMPT } from '@/lib/money-copilot/prompts';
 import { sanitizeText } from '@/lib/api/sanitize';
 import { getGroqClient } from '@/lib/groq/client';
-import { getCacheKey, getCached, setCache } from '@/lib/cache';
+import { hashKey, getCache, setCache } from '@/lib/cache/redis';
 import type { CopilotRequest, CopilotResponse, BubbleResponse } from '@/lib/money-copilot/types';
 
 export const runtime = "nodejs";
+
+/**
+ * In-flight request deduplication map.
+ *
+ * Maps a hashed request key → Promise<CopilotResponse | null> so that
+ * concurrent identical requests share a single AI call rather than each
+ * spawning an independent (expensive) round-trip.
+ */
+const inFlightRequests = new Map<string, Promise<CopilotResponse | null>>();
 
 const QUICK_MAX_TOKENS = 512;
 /** Fast model always used for quick/bubble mode. */
@@ -192,22 +201,37 @@ export async function POST(req: NextRequest) {
     const mode = body.mode ?? getModeFromQuestion(rawQuestion);
     console.log('[API] Detected intent:', mode);
 
+    const sanitizedContext = typeof body.context === 'string' ? sanitizeText(body.context) || undefined : undefined;
+
     const request: CopilotRequest = {
       mode,
       question: rawQuestion,
-      context: typeof body.context === 'string' ? sanitizeText(body.context) || undefined : undefined,
+      context: sanitizedContext,
       inputs: body.inputs ?? {},
       scenarios: body.scenarios ?? []
     };
 
-    // Check API-level response cache first
-    const cacheKey = getCacheKey(rawQuestion, request.context ?? '');
-    const cached = getCached(cacheKey) as CopilotResponse | undefined;
+    // Build a deterministic cache key from question + context + mode.
+    const cacheKey = hashKey(`${rawQuestion}\x00${sanitizedContext ?? ''}\x00${mode}`);
+
+    // Check Redis/memory cache before doing any AI work
+    const cached = await getCache(cacheKey) as CopilotResponse | null;
     if (cached) {
       console.log('[CACHE] HIT');
       return NextResponse.json(cached);
     }
     console.log('[CACHE] MISS');
+
+    // ------------------------------------------------------------------
+    // Request deduplication: if an identical request is already in-flight,
+    // await its result rather than spawning a duplicate AI call.
+    // ------------------------------------------------------------------
+    if (inFlightRequests.has(cacheKey)) {
+      console.log('[DEDUP] Awaiting in-flight request for key:', cacheKey);
+      // Non-null assertion is safe: has() guarantees the key exists
+      const deduped = await inFlightRequests.get(cacheKey)!;
+      if (deduped) return NextResponse.json(deduped);
+    }
 
     // Smart model selection based on mode and question length
     const model = getModel(mode, rawQuestion.length);
@@ -231,6 +255,17 @@ export async function POST(req: NextRequest) {
         // Accumulated AI text is declared outside the try block so that partial
         // content is preserved for fallback even if streaming throws mid-way.
         let accumulated = '';
+
+        // Expose a Promise that resolves to the final response so duplicate
+        // requests can await it instead of re-running the AI pipeline.
+        // Initialized with a no-op to satisfy definite-assignment; the Promise
+        // executor always runs synchronously and overwrites this before first use.
+        let resolveInFlight: (value: CopilotResponse | null) => void = () => {};
+        const inFlightPromise = new Promise<CopilotResponse | null>(resolve => {
+          resolveInFlight = resolve;
+        });
+        inFlightRequests.set(cacheKey, inFlightPromise);
+
         try {
           // Phase 1: send rule-based response immediately so the client can render structure
           controller.enqueue(sseEvent({ type: 'base', payload: ruleBasedResponse }));
@@ -279,16 +314,22 @@ export async function POST(req: NextRequest) {
 
           controller.enqueue(sseEvent({ type: 'narrative', payload: finalResponse }));
 
-          // Cache the final merged response
-          setCache(cacheKey, finalResponse);
+          // Cache the final merged response (Redis with in-memory fallback)
+          await setCache(cacheKey, finalResponse);
+
+          // Resolve in-flight promise so waiting duplicate requests can proceed
+          resolveInFlight(finalResponse);
 
           controller.enqueue(sseEvent('[DONE]'));
           controller.close();
         } catch (err) {
           console.error('[API] Streaming error (accumulated so far):', accumulated ? accumulated.slice(0, 200) : '(none)');
           console.error('[API] Streaming error:', err);
+          resolveInFlight(null);
           controller.enqueue(sseEvent({ type: 'error', message: err instanceof Error ? err.message : String(err) }));
           controller.close();
+        } finally {
+          inFlightRequests.delete(cacheKey);
         }
       }
     });
