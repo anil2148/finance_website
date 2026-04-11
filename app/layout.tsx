@@ -2,7 +2,7 @@ import '@/styles/globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { Navbar } from '@/components/navbar/Navbar';
+import { AppNavbar } from '@/components/navbar/AppNavbar';
 import { Footer } from '@/components/footer/Footer';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
@@ -10,7 +10,6 @@ import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
 import { CopilotProvider } from '@/components/money-copilot/CopilotProvider';
-import { CommandBar } from '@/components/money-copilot/CommandBar';
 import { ExecutionPanel } from '@/components/money-copilot/ExecutionPanel';
 import { SITE_ORIGIN, absoluteUrl, organizationSchema, websiteSchema } from '@/lib/seo';
 
@@ -96,8 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PreferenceProvider>
           <ErrorMonitoring />
           <CopilotProvider>
-            <Navbar />
-            <CommandBar />
+            <AppNavbar />
             <main className="editorial-content mx-auto min-h-screen max-w-7xl px-4 py-8">
               <Breadcrumbs />
               <PageTransition>{children}</PageTransition>
