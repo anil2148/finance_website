@@ -347,9 +347,10 @@ function PanelInputForm() {
   // Only fires in input mode (activeResult === null) to avoid overwriting the query
   // after a successful submission when OPEN_PANEL sets activeQuestion to the submitted text.
   useEffect(() => {
-    if (!state.activeResult && state.activeQuestion) {
+    if (state.activeResult === null && state.activeQuestion) {
       setQuery(state.activeQuestion);
-      requestAnimationFrame(() => { inputRef.current?.focus(); });
+      const raf = requestAnimationFrame(() => { inputRef.current?.focus(); });
+      return () => cancelAnimationFrame(raf);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.activeQuestion]);
