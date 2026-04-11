@@ -2,6 +2,7 @@ import type { CopilotRequest, FinancialInputs } from './types';
 import { buildSystemPrompt } from './prompts';
 import { getGroqClient } from '@/lib/groq/client';
 import { createHash } from 'crypto';
+import type Groq from 'groq-sdk';
 
 /** Standard work hours per year used for hourly-to-annual conversion. */
 const WORK_HOURS_PER_YEAR = 2080;
@@ -9,8 +10,19 @@ const WORK_HOURS_PER_YEAR = 2080;
 /** Maximum tokens to request from the AI provider per response. */
 const AI_MAX_TOKENS = 1024;
 
-/** Groq model to use for full copilot mode (overridable via env). */
-const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+/**
+ * Select the most cost-effective Groq model for the given context.
+ *
+ * Rules:
+ * - `bubble` mode → always the fast/cheap model
+ * - Short queries (< 150 chars) → fast/cheap model
+ * - Everything else (page/scenario/complex) → high-quality model
+ */
+export const getModel = (mode: string, inputLength: number): string => {
+  if (mode === "bubble") return "llama-3.1-8b-instant";
+  if (inputLength < 150) return "llama-3.1-8b-instant";
+  return "llama-3.3-70b-versatile";
+};
 
 /** Fallback Groq model if the primary model fails. */
 const GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
@@ -264,36 +276,87 @@ async function callGroqWithModel(
 
 async function callGroq(
   userMessage: string,
-  systemPrompt: string
+  systemPrompt: string,
+  model: string
 ): Promise<string | null> {
   if (!process.env.GROQ_API_KEY) {
     console.error('[ai-client] GROQ_API_KEY is not set — skipping Groq provider');
     return null;
   }
 
-  // Try primary model first
-  const primary = await callGroqWithModel(userMessage, systemPrompt, MODEL);
+  // Try requested model first
+  const primary = await callGroqWithModel(userMessage, systemPrompt, model);
   if (primary !== null) return primary;
 
-  // Retry with fallback model
-  console.warn(`[ai-client] Primary model (${MODEL}) failed — retrying with fallback model (${GROQ_FALLBACK_MODEL})`);
-  return callGroqWithModel(userMessage, systemPrompt, GROQ_FALLBACK_MODEL);
+  // Only retry with fallback if the chosen model is not already the fallback
+  if (model !== GROQ_FALLBACK_MODEL) {
+    console.warn(`[ai-client] Primary model (${model}) failed — retrying with fallback model (${GROQ_FALLBACK_MODEL})`);
+    return callGroqWithModel(userMessage, systemPrompt, GROQ_FALLBACK_MODEL);
+  }
+  return null;
+}
+
+/**
+ * Stream the Groq chat response as an async iterable of text chunks.
+ * Yields each content delta as it arrives from the API.
+ * Falls back to the GROQ_FALLBACK_MODEL if the primary model throws.
+ */
+export async function* streamGroqNarrative(
+  userMessage: string,
+  systemPrompt: string,
+  model: string
+): AsyncGenerator<string> {
+  if (!process.env.GROQ_API_KEY) return;
+
+  const client = getGroqClient();
+  const modelsToTry = model !== GROQ_FALLBACK_MODEL
+    ? [model, GROQ_FALLBACK_MODEL]
+    : [model];
+
+  for (const m of modelsToTry) {
+    console.log('[AI] Selected model:', m);
+    try {
+      const stream = await client.chat.completions.create({
+        model: m,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage }
+        ],
+        temperature: 0.2,
+        max_tokens: AI_MAX_TOKENS,
+        stream: true
+      }) as AsyncIterable<Groq.Chat.ChatCompletionChunk>;
+
+      for await (const chunk of stream) {
+        const content = chunk.choices?.[0]?.delta?.content ?? '';
+        if (content) yield content;
+      }
+      return; // success — stop trying fallback
+    } catch (err) {
+      console.error(`[ai-client] Groq streaming failed with model ${m}:`, err);
+    }
+  }
 }
 
 export async function getAiNarrative(
   request: CopilotRequest,
-  existingMetrics: Array<{ label: string; value: string; note?: string }>
+  existingMetrics: Array<{ label: string; value: string; note?: string }>,
+  model?: string
 ): Promise<AiNarrative | null> {
   const systemPrompt = buildSystemPrompt();
   const userMessage = buildUserMessage(request, existingMetrics);
+
+  const selectedModel = model ?? getModel(request.mode, request.question.length);
 
   // Check in-memory cache first
   const cacheKey = buildCacheKey(request.mode, userMessage);
   const cached = responseCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) {
+    console.log('[CACHE] HIT');
     return cached.narrative;
   }
 
+  console.log('[CACHE] MISS');
   console.log('[ai-client] started_decision');
 
   try {
@@ -301,7 +364,7 @@ export async function getAiNarrative(
 
     // Groq is the primary AI provider
     if (process.env.GROQ_API_KEY) {
-      rawResponse = await callGroq(userMessage, systemPrompt);
+      rawResponse = await callGroq(userMessage, systemPrompt, selectedModel);
     }
 
     // Fall back to OpenAI if Groq is unavailable or not configured
@@ -332,3 +395,17 @@ export async function getAiNarrative(
     return null;
   }
 }
+
+/**
+ * Build the user message for external callers (e.g. the streaming API route)
+ * that need access to the assembled prompt before streaming begins.
+ */
+export function buildAiUserMessage(
+  request: CopilotRequest,
+  existingMetrics: Array<{ label: string; value: string; note?: string }>
+): string {
+  return buildUserMessage(request, existingMetrics);
+}
+
+/** Expose the system prompt to callers that manage their own Groq streaming. */
+export { buildSystemPrompt as buildAiSystemPrompt };

@@ -1,16 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { buildCopilotResponse } from '@/lib/money-copilot/output';
-import { getAiNarrative } from '@/lib/money-copilot/ai-client';
+import {
+  getAiNarrative,
+  getModel,
+  streamGroqNarrative,
+  buildAiUserMessage,
+  buildAiSystemPrompt,
+  type AiNarrative
+} from '@/lib/money-copilot/ai-client';
 import { getModeFromQuestion, FINANCE_SPHERE_COPILOT_PROMPT } from '@/lib/money-copilot/prompts';
 import { sanitizeText } from '@/lib/api/sanitize';
 import { getGroqClient } from '@/lib/groq/client';
-import type { CopilotRequest, BubbleResponse } from '@/lib/money-copilot/types';
+import { getCacheKey, getCached, setCache } from '@/lib/cache';
+import type { CopilotRequest, CopilotResponse, BubbleResponse } from '@/lib/money-copilot/types';
 
 export const runtime = "nodejs";
 
 const QUICK_MAX_TOKENS = 512;
-/** Groq model for quick mode (overridable via env). */
-const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+/** Fast model always used for quick/bubble mode. */
+const QUICK_MODEL = 'llama-3.1-8b-instant';
 /** Fallback Groq model if the primary model fails. */
 const QUICK_GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
@@ -60,7 +68,7 @@ function parseQuickResponse(raw: string): BubbleResponse | null {
 }
 
 async function callGroqForQuick(systemPrompt: string, userMessage: string, model: string): Promise<BubbleResponse | null> {
-  console.log('[AI] Using model:', model);
+  console.log('[AI] Selected model:', model);
   try {
     const client = getGroqClient();
     const completion = await client.chat.completions.create({
@@ -85,10 +93,11 @@ async function callAiForQuick(question: string): Promise<BubbleResponse | null> 
   const userMessage = buildQuickUserMessage(question);
 
   if (process.env.GROQ_API_KEY) {
-    const primary = await callGroqForQuick(systemPrompt, userMessage, MODEL);
+    // Quick mode always uses the fast cheap model
+    const primary = await callGroqForQuick(systemPrompt, userMessage, QUICK_MODEL);
     if (primary !== null) return primary;
 
-    console.warn(`[money-copilot] Primary model (${MODEL}) failed — retrying with fallback model (${QUICK_GROQ_FALLBACK_MODEL})`);
+    console.warn(`[money-copilot] Primary model (${QUICK_MODEL}) failed — retrying with fallback model (${QUICK_GROQ_FALLBACK_MODEL})`);
     const fallback = await callGroqForQuick(systemPrompt, userMessage, QUICK_GROQ_FALLBACK_MODEL);
     if (fallback !== null) return fallback;
   }
@@ -136,6 +145,15 @@ function buildFallbackQuickResponse(question: string): BubbleResponse {
   };
 }
 
+/**
+ * Encode a Server-Sent Event line.
+ * Payload is JSON-stringified; callers pass a plain object or the string "[DONE]".
+ */
+function sseEvent(payload: unknown): Uint8Array {
+  const data = payload === '[DONE]' ? '[DONE]' : JSON.stringify(payload);
+  return new TextEncoder().encode(`data: ${data}\n\n`);
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Parse and do a basic shape check before type-asserting
@@ -170,7 +188,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(result ?? buildFallbackQuickResponse(rawQuestion));
     }
 
-    // Deep mode (default): full structured CopilotResponse
+    // Deep mode (default): full structured CopilotResponse streamed via SSE
     const mode = body.mode ?? getModeFromQuestion(rawQuestion);
     console.log('[API] Detected intent:', mode);
 
@@ -182,28 +200,103 @@ export async function POST(req: NextRequest) {
       scenarios: body.scenarios ?? []
     };
 
+    // Check API-level response cache first
+    const cacheKey = getCacheKey(rawQuestion, request.context ?? '');
+    const cached = getCached(cacheKey) as CopilotResponse | undefined;
+    if (cached) {
+      console.log('[CACHE] HIT');
+      return NextResponse.json(cached);
+    }
+    console.log('[CACHE] MISS');
+
+    // Smart model selection based on mode and question length
+    const model = getModel(mode, rawQuestion.length);
+    console.log('[AI] Selected model:', model);
+
     // Run rule-based engine for deterministic metrics, scenarios, assumptions, and confidence.
     const ruleBasedResponse = buildCopilotResponse(request);
 
-    // Attempt to enrich the narrative sections (summary, recommendation, sensitivities, risks,
-    // nextSteps) using an AI provider. Falls back to the rule-based text if AI is unavailable.
-    console.log('[API] Sending request to AI provider...');
-    const aiNarrative = await getAiNarrative(request, ruleBasedResponse.keyMetrics);
-    console.log('[API] AI narrative result:', aiNarrative ? 'received' : 'null (using rule-based fallback)');
+    // Build the AI prompt once so we can stream it
+    const systemPrompt = buildAiSystemPrompt();
+    const userMessage = buildAiUserMessage(request, ruleBasedResponse.keyMetrics);
 
-    const response = aiNarrative
-      ? {
-          ...ruleBasedResponse,
-          summary: aiNarrative.summary,
-          recommendation: aiNarrative.recommendation,
-          sensitivities: aiNarrative.sensitivities,
-          risks: aiNarrative.risks,
-          nextSteps: aiNarrative.nextSteps
+    // Stream the response to the client using Server-Sent Events (SSE).
+    // Event sequence:
+    //   1. "base"      – full rule-based response (instant, deterministic)
+    //   2. "chunk"     – AI narrative text delta (typing effect)
+    //   3. "narrative" – complete AI narrative JSON (merged into final result by the client)
+    //   4. [DONE]      – signals end of stream
+    const stream = new ReadableStream({
+      async start(controller) {
+        try {
+          // Phase 1: send rule-based response immediately so the client can render structure
+          controller.enqueue(sseEvent({ type: 'base', payload: ruleBasedResponse }));
+
+          // Phase 2: stream AI narrative text chunks from Groq
+          let accumulated = '';
+          for await (const chunk of streamGroqNarrative(userMessage, systemPrompt, model)) {
+            accumulated += chunk;
+            controller.enqueue(sseEvent({ type: 'chunk', content: chunk }));
+          }
+
+          // Phase 3: parse the complete narrative and send it as a structured update
+          let aiNarrative: AiNarrative | null = null;
+          if (accumulated) {
+            try {
+              const cleaned = accumulated.replace(/^```(?:json)?/m, '').replace(/```$/m, '').trim();
+              const parsed = JSON.parse(cleaned) as Partial<AiNarrative>;
+              if (
+                typeof parsed.summary === 'string' &&
+                typeof parsed.recommendation === 'string' &&
+                Array.isArray(parsed.sensitivities) &&
+                Array.isArray(parsed.risks) &&
+                Array.isArray(parsed.nextSteps)
+              ) {
+                aiNarrative = parsed as AiNarrative;
+              }
+            } catch {
+              console.error('[API] Failed to parse streamed AI narrative');
+            }
+          }
+
+          // Fall back to non-streaming AI call if streaming yielded nothing
+          if (!aiNarrative) {
+            aiNarrative = await getAiNarrative(request, ruleBasedResponse.keyMetrics, model);
+          }
+
+          const finalResponse: CopilotResponse = aiNarrative
+            ? {
+                ...ruleBasedResponse,
+                summary: aiNarrative.summary,
+                recommendation: aiNarrative.recommendation,
+                sensitivities: aiNarrative.sensitivities,
+                risks: aiNarrative.risks,
+                nextSteps: aiNarrative.nextSteps
+              }
+            : ruleBasedResponse;
+
+          controller.enqueue(sseEvent({ type: 'narrative', payload: finalResponse }));
+
+          // Cache the final merged response
+          setCache(cacheKey, finalResponse);
+
+          controller.enqueue(sseEvent('[DONE]'));
+          controller.close();
+        } catch (err) {
+          console.error('[API] Streaming error:', err);
+          controller.enqueue(sseEvent({ type: 'error', message: err instanceof Error ? err.message : String(err) }));
+          controller.close();
         }
-      : ruleBasedResponse;
+      }
+    });
 
-    console.log('[API] Parsed AI output:', { summary: response.summary, confidence: response.confidenceLevel });
-    return NextResponse.json(response);
+    return new Response(stream, {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      }
+    });
   } catch (err) {
     console.error('[API] Error:', err);
     const details = err instanceof Error ? err.message : String(err);

@@ -8,8 +8,8 @@ export const runtime = "nodejs";
 
 const AI_MAX_TOKENS = 512;
 
-/** Groq model used for quick bubble responses (overridable via env). */
-const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+/** Fast model always used for bubble mode (cost-efficient). */
+const MODEL = 'llama-3.1-8b-instant';
 
 /** Fallback Groq model if the primary model fails. */
 const GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
@@ -119,7 +119,7 @@ function parseBubbleResponse(raw: string): BubbleResponse | null {
 
 async function callGroqModel(userMessage: string, systemPrompt: string, model: string): Promise<string | null> {
   const client = getGroqClient();
-  console.log('[AI] Using model:', model);
+  console.log('[AI] Selected model:', model);
   let lastError: unknown;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
