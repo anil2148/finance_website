@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, usePathname } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
 import { MoneyCopilotHero } from '@/components/money-copilot/MoneyCopilotHero';
 import { IntakeForm } from '@/components/money-copilot/IntakeForm';
@@ -62,7 +62,9 @@ function buildTextSummary(request: CopilotRequest, response: CopilotResponse): s
 
 export function CopilotWorkspace() {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const queryParam = searchParams.get('query') ?? '';
+  const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
 
   const [currentRequest, setCurrentRequest] = useState<CopilotRequest | null>(null);
   const [response, setResponse] = useState<CopilotResponse | null>(null);
@@ -84,7 +86,11 @@ export function CopilotWorkspace() {
   }, []);
 
   const handleSubmit = useCallback(async (request: CopilotRequest) => {
-    setCurrentRequest(request);
+    const regionRequest: CopilotRequest = {
+      ...request,
+      region: isIndiaContext ? 'India' : 'US'
+    };
+    setCurrentRequest(regionRequest);
     setIsLoading(true);
     setError('');
     setResponse(null);
@@ -93,17 +99,17 @@ export function CopilotWorkspace() {
     trackEvent({
       event: 'started_decision',
       category: 'money_copilot',
-      label: request.mode,
-      metadata: { hasScenarios: request.scenarios.length > 0 }
+      label: regionRequest.mode,
+      metadata: { hasScenarios: regionRequest.scenarios.length > 0 }
     });
 
     try {
-      console.log('[Copilot] Request:', { question: request.question, context: request.context });
+      console.log('[Copilot] Request:', { question: regionRequest.question, context: regionRequest.context, region: regionRequest.region });
 
       const res = await fetch('/api/money-copilot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(request)
+        body: JSON.stringify(regionRequest)
       });
 
       if (!res.ok) {
@@ -127,11 +133,11 @@ export function CopilotWorkspace() {
         trackEvent({
           event: 'completed_decision',
           category: 'money_copilot',
-          label: request.mode,
+          label: regionRequest.mode,
           metadata: { confidenceLevel: data.confidenceLevel, scenarioCount: data.scenarios.length }
         });
-        if (request.scenarios.length >= 2) {
-          trackEvent({ event: 'compared_scenarios', category: 'money_copilot', label: request.mode });
+        if (regionRequest.scenarios.length >= 2) {
+          trackEvent({ event: 'compared_scenarios', category: 'money_copilot', label: regionRequest.mode });
         }
         return;
       }
@@ -187,11 +193,11 @@ export function CopilotWorkspace() {
         trackEvent({
           event: 'completed_decision',
           category: 'money_copilot',
-          label: request.mode,
+          label: regionRequest.mode,
           metadata: { confidenceLevel: completedResponse.confidenceLevel, scenarioCount: completedResponse.scenarios.length }
         });
-        if (request.scenarios.length >= 2) {
-          trackEvent({ event: 'compared_scenarios', category: 'money_copilot', label: request.mode });
+        if (regionRequest.scenarios.length >= 2) {
+          trackEvent({ event: 'compared_scenarios', category: 'money_copilot', label: regionRequest.mode });
         }
       }
     } catch (err) {
@@ -202,7 +208,7 @@ export function CopilotWorkspace() {
       setIsLoading(false);
       setStreamingText('');
     }
-  }, []);
+  }, [isIndiaContext]);
 
   const handleSaveReport = useCallback(() => {
     if (!response) return;

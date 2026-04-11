@@ -96,6 +96,8 @@ export interface CopilotRequest {
   scenarios: Scenario[];
   /** 'deep' (default) returns full CopilotResponse; 'quick' returns BubbleResponse */
   responseMode?: 'deep' | 'quick';
+  /** Region context for locale-aware salary normalization. Defaults to 'US'. */
+  region?: 'US' | 'India';
 }
 
 export interface PageContext {

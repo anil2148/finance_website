@@ -17,8 +17,33 @@ const DEFAULT_SUGGESTIONS = [
   'Retirement'
 ];
 
+const DEFAULT_SUGGESTIONS_INDIA = [
+  'Salary Decision',
+  'Home Loan EMI',
+  'SIP vs FD',
+  'Tax Planning'
+];
+
 function getPageSuggestions(path: string): string[] {
   const p = path.toLowerCase();
+  const isIndia = p === '/in' || p.startsWith('/in/');
+
+  if (isIndia) {
+    if (p.includes('real-estate') || p.includes('home-loan')) {
+      return ['Home Loan EMI', 'Rent vs Buy in India', 'SIP vs FD', 'Tax Planning'];
+    }
+    if (p.includes('loan') || p.includes('emi')) {
+      return ['Home Loan EMI', 'Personal Loan Payoff', 'Salary Decision', 'SIP vs FD'];
+    }
+    if (p.includes('invest') || p.includes('sip') || p.includes('mutual-fund')) {
+      return ['SIP vs FD', 'SIP Growth Simulation', 'Salary Decision', 'Home Loan EMI'];
+    }
+    if (p.includes('tax')) {
+      return ['Tax Planning', 'Old vs New Tax Regime', 'Salary Decision', 'SIP vs FD'];
+    }
+    return DEFAULT_SUGGESTIONS_INDIA;
+  }
+
   if (p.includes('mortgage') || p.includes('home') || p.includes('real-estate')) {
     return ['Home Buying', 'Can I afford a $500k house?', 'Rent vs Buy', 'Debt Strategy'];
   }
@@ -87,6 +112,7 @@ export function CopilotBubble() {
   const [error, setError] = useState('');
   const suggestions = getPageSuggestions(pathname);
   const inputRef = useRef<HTMLInputElement>(null);
+  const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
 
   useEffect(() => {
     if (isOpen) {
@@ -109,7 +135,8 @@ export function CopilotBubble() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           question: q,
-          responseMode: 'quick'
+          responseMode: 'quick',
+          region: isIndiaContext ? 'India' : 'US'
         })
       });
 
@@ -122,7 +149,7 @@ export function CopilotBubble() {
     } finally {
       setIsLoading(false);
     }
-  }, [isLoading]);
+  }, [isLoading, isIndiaContext]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {

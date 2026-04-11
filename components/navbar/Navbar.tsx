@@ -21,79 +21,75 @@ type NavLink = {
 const globalLinks: NavLink[] = [
   { label: 'Home', href: '/' },
   { label: 'AI Copilot', href: '/ai-money-copilot' },
-  { label: 'Calculators', href: '/calculators' },
+  {
+    label: 'Scenarios',
+    children: [
+      { label: 'Job Offer Analyzer', href: '/ai-money-copilot' },
+      { label: 'Mortgage vs Rent', href: '/calculators/mortgage-calculator' },
+      { label: 'Early Retirement Path', href: '/calculators/retirement-calculator' },
+      { label: 'Debt Payoff Planner', href: '/calculators/debt-payoff-calculator' }
+    ]
+  },
   {
     label: 'Tools',
     children: [
-      { label: 'Debt Payoff', href: '/calculators/debt-payoff-calculator' },
+      { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' },
       { label: 'Mortgage Planner', href: '/calculators/mortgage-calculator' },
       { label: 'Investment Growth', href: '/calculators/investment-growth-calculator' },
-      { label: 'Tax Impact', href: '/calculators/salary-after-tax-calculator' }
+      { label: 'Tax Calculator', href: '/calculators/salary-after-tax-calculator' }
     ]
   },
   {
     label: 'Learn',
     children: [
-      { label: 'Guides', href: '/learn' },
-      { label: 'Strategies', href: '/blog' }
+      { label: 'Financial Guides', href: '/learn' },
+      { label: 'Strategy Playbooks', href: '/blog' }
     ]
   },
   {
-    label: 'Account',
+    label: 'Reports',
     children: [
-      { label: 'Saved Scenarios', href: '/ai-money-copilot' },
-      { label: 'Reports', href: '/ai-money-copilot' }
+      { label: 'Decision History', href: '/ai-money-copilot' },
+      { label: 'Saved Scenarios', href: '/ai-money-copilot' }
     ]
   }
 ];
 
 const indiaLinks: NavLink[] = [
   { label: 'Home', href: '/in' },
+  { label: 'AI Copilot', href: '/ai-money-copilot' },
   {
-    label: 'Credit Cards',
+    label: 'Scenarios',
     children: [
-      { label: 'Credit Cards Hub', href: '/in/best-credit-cards-india' },
-      { label: 'Best Credit Cards India', href: '/in/best-credit-cards-india' }
-    ]
-  },
-  {
-    label: 'Investing',
-    children: [
-      { label: 'Investing Hub', href: '/in/investing' },
-      { label: 'Best Investment Apps', href: '/in/best-investment-apps-india' },
-      { label: 'SIP Calculator', href: '/in/calculators/sip-calculator' }
-    ]
-  },
-  {
-    label: 'Loans & Debt',
-    children: [
-      { label: 'Loans Hub', href: '/in/loans' },
-      { label: 'Home Loan Rates', href: '/in/home-loan-interest-rates-india' },
-      { label: 'EMI Calculator', href: '/in/calculators/emi-calculator' }
-    ]
-  },
-  {
-    label: 'Savings & Banking',
-    children: [
-      { label: 'Banking Hub', href: '/in/banking' },
-      { label: 'Best Savings Accounts', href: '/in/best-savings-accounts-india' },
-      { label: 'Fixed Deposits', href: '/in/best-fixed-deposits-india' }
+      { label: 'Salary Planner (CTC)', href: '/ai-money-copilot' },
+      { label: 'Loan vs Investment', href: '/in/calculators/emi-calculator' },
+      { label: 'SIP Growth Simulator', href: '/in/calculators/sip-calculator' },
+      { label: 'Tax Optimization', href: '/in/tax' }
     ]
   },
   {
     label: 'Tools',
     children: [
-      { label: 'All Calculators', href: '/in/calculators' },
       { label: 'EMI Calculator', href: '/in/calculators/emi-calculator' },
       { label: 'SIP Calculator', href: '/in/calculators/sip-calculator' },
-      { label: 'Tax Hub', href: '/in/tax' },
-      { label: 'Real Estate Hub', href: '/in/real-estate' }
+      { label: 'Tax Calculator (India)', href: '/in/tax' },
+      { label: 'All Calculators', href: '/in/calculators' }
     ]
   },
-  { label: 'Blog', href: '/in/blog' },
-  { label: 'Help', href: '/help' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' }
+  {
+    label: 'Learn',
+    children: [
+      { label: 'Financial Guides', href: '/in/banking' },
+      { label: 'Strategy Playbooks', href: '/in/blog' }
+    ]
+  },
+  {
+    label: 'Reports',
+    children: [
+      { label: 'Decision History', href: '/ai-money-copilot' },
+      { label: 'Saved Scenarios', href: '/ai-money-copilot' }
+    ]
+  }
 ];
 
 function isActive(pathname: string, href: string) {

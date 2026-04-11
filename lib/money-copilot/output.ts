@@ -477,7 +477,8 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   const enrichedInputs: FinancialInputs = hasStructuredIncome
     ? request.inputs
     : (() => {
-        const parsed = parseFinancialDataFromText(request.question, request.context);
+        const region = request.region ?? 'US';
+        const parsed = parseFinancialDataFromText(request.question, request.context, region);
         return mergeNlpIntoInputs(request.inputs, parsed);
       })();
 

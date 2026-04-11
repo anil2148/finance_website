@@ -13,6 +13,8 @@ import { sanitizeText } from '@/lib/api/sanitize';
 import { getGroqClient } from '@/lib/groq/client';
 import { hashKey, getCache, setCache } from '@/lib/cache/redis';
 import type { CopilotRequest, CopilotResponse, BubbleResponse } from '@/lib/money-copilot/types';
+import { normalizeInputsForRegion, parseFinancialDataFromText, mergeNlpIntoInputs } from '@/lib/money-copilot/nlp-parser';
+import type { SalaryRegion } from '@/lib/money-copilot/nlp-parser';
 
 export const runtime = "nodejs";
 
@@ -191,6 +193,10 @@ export async function POST(req: NextRequest) {
       console.error('[API] Error: No AI provider API key configured (GROQ_API_KEY, OPENAI_API_KEY, or HIDDEN_AI_OLLAMA_HOST)');
     }
 
+    // Determine region: accept 'India' or 'US'; default to 'US'
+    const region: SalaryRegion = body.region === 'India' ? 'India' : 'US';
+    console.log('[API] Region context:', region);
+
     // Quick mode: return a compact BubbleResponse for the floating bubble
     if (body.responseMode === 'quick') {
       const result = await callAiForQuick(rawQuestion);
@@ -203,16 +209,23 @@ export async function POST(req: NextRequest) {
 
     const sanitizedContext = typeof body.context === 'string' ? sanitizeText(body.context) || undefined : undefined;
 
+    // Normalize inputs: apply region-aware monthly → annual conversion, then NLP merge
+    const rawInputs = body.inputs ?? {};
+    const regionNormalized = normalizeInputsForRegion(rawInputs, region);
+    const nlpParsed = parseFinancialDataFromText(rawQuestion, sanitizedContext, region);
+    const mergedInputs = mergeNlpIntoInputs(regionNormalized, nlpParsed);
+
     const request: CopilotRequest = {
       mode,
       question: rawQuestion,
       context: sanitizedContext,
-      inputs: body.inputs ?? {},
-      scenarios: body.scenarios ?? []
+      inputs: mergedInputs,
+      scenarios: body.scenarios ?? [],
+      region
     };
 
-    // Build a deterministic cache key from question + context + mode.
-    const cacheKey = hashKey(`${rawQuestion}\x00${sanitizedContext ?? ''}\x00${mode}`);
+    // Build a deterministic cache key from question + context + mode + region.
+    const cacheKey = hashKey(`${rawQuestion}\x00${sanitizedContext ?? ''}\x00${mode}\x00${region}`);
 
     // Check Redis/memory cache before doing any AI work
     const cached = await getCache(cacheKey) as CopilotResponse | null;
