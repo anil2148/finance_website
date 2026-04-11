@@ -219,14 +219,6 @@ export function MobileMenu({
               className="space-y-3 border-t border-slate-200 px-4 py-4 dark:border-slate-700"
               variants={itemVariants}
             >
-              <Link
-                href="/ai-money-copilot"
-                className="btn-primary w-full text-sm"
-                onClick={onClose}
-              >
-                ✦ AI Copilot
-              </Link>
-
               <button
                 type="button"
                 onClick={() => { onClose(); onStartDecision?.(); }}
