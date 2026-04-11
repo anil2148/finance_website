@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import type { CopilotResponse, DecisionMode } from '@/lib/money-copilot/types';
 
 interface StartDecisionModalProps {
@@ -71,12 +72,15 @@ function StepIndicator({ current }: { current: Step }) {
 }
 
 export function StartDecisionModal({ open, onClose }: StartDecisionModalProps) {
+  const pathname = usePathname();
+  const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
   const [step, setStep] = useState<Step>('income');
 
   // Step 1 — income
   const [baseIncome, setBaseIncome] = useState('');
   const [newIncome, setNewIncome] = useState('');
-  const [incomePeriod, setIncomePeriod] = useState<'annual' | 'monthly'>('annual');
+  // India defaults to monthly (CTC); US defaults to annual
+  const [incomePeriod, setIncomePeriod] = useState<'annual' | 'monthly'>(isIndiaContext ? 'monthly' : 'annual');
 
   // Step 2 — goal
   const [goal, setGoal] = useState<GoalKey | null>(null);
@@ -136,7 +140,8 @@ export function StartDecisionModal({ open, onClose }: StartDecisionModalProps) {
         mode: goal as DecisionMode,
         question: scenarioText.trim(),
         inputs,
-        scenarios: []
+        scenarios: [],
+        region: isIndiaContext ? 'India' : 'US'
       };
       const res = await fetch('/api/money-copilot', {
         method: 'POST',

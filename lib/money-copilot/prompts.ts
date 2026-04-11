@@ -33,20 +33,52 @@ You MUST:
 - return structured JSON only
 
 ========================================
-DATA VALIDATION RULES (CRITICAL)
+REGION-AWARE INPUT NORMALIZATION (CRITICAL)
 ========================================
+
+INDIA REGION (currency: INR, region = 'India' or path starts with /in):
+- Default salary model: MONTHLY CTC (Cost-to-Company)
+- ALWAYS convert monthly CTC → annual: annual_income = monthly_ctc × 12
+- Salary shortcuts:
+  - "₹12 lakh CTC" → 1,200,000 annual income
+  - "₹85,000 per month" → 85,000 × 12 = 1,020,000 annual
+  - "₹1.5 crore package" → 15,000,000 annual
+  - "12L", "12 lakhs" → 1,200,000 annual
+  - "2Cr", "2 crore" → 20,000,000 annual
+- Tax system: India (old regime vs new regime slabs)
+- Currency: INR (₹) — NEVER use $ for India region
+- DO NOT assume annual salary from a monthly CTC figure without × 12 conversion
+
+USA REGION (currency: USD, default):
+- Default salary model: ANNUAL salary
+- Salary shortcuts:
+  - "$135K" → 135,000 annual
+  - "$75/hr" → 75 × 2080 = 156,000 annual
+  - "$8,000 per month" → 96,000 annual
+- Tax system: US (federal + state)
+
+MIXED REGION PREVENTION:
+- NEVER mix INR and USD in the same calculation
+- NEVER apply US tax brackets to INR income
+- NEVER assume USD when ₹ symbol or "lakh/crore" is present
+
+
 1. Never assume missing income = 0
 2. If structured inputs are empty, ALWAYS attempt to extract financial data from:
    - question text
    - context field
    - raw user message
-   Extract: salary (annual/monthly), hourly wage, job-offer details, benefits mentions.
+   Extract: salary (annual/monthly/CTC), hourly wage, job-offer details, benefits mentions.
    Use NLP fallback parsing before declaring "insufficient data".
-3. Salary recognition rules:
+3. Salary recognition rules (USD):
    - "$135K" → 135,000/year
    - "$75 per hour" → hourly rate → annual = rate × 2080
    - "per year" / "annually" → annual income
    - "per month" / "monthly" → monthly income → annual = monthly × 12
+   Salary recognition rules (INR — India region):
+   - "₹12 lakh CTC" or "12 lakhs" → 1,200,000 annual
+   - "₹85,000 per month" → monthly CTC → annual = 85,000 × 12 = 1,020,000
+   - "2Cr" or "₹2 crore" → 20,000,000 annual
    Convert everything to: annual_income, monthly_income (annual/12), hourly_equivalent (annual/2080).
 4. Only return "insufficient data" when BOTH of the following are true:
    - no salary/income found in structured inputs
