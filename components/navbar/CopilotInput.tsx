@@ -51,7 +51,8 @@ export function CopilotInput({ className = '', compact = false }: CopilotInputPr
         const contentType = res.headers.get('content-type') ?? '';
 
         if (contentType.includes('text/event-stream')) {
-          const reader = res.body!.getReader();
+          if (!res.body) throw new Error('Response body is empty');
+          const reader = res.body.getReader();
           const decoder = new TextDecoder();
           let buffer = '';
 
@@ -143,7 +144,7 @@ export function CopilotInput({ className = '', compact = false }: CopilotInputPr
           value={query}
           onChange={(e) => { setQuery(e.target.value); setError(''); }}
           onKeyDown={handleKeyDown}
-          placeholder="Run a financial decision analysis…  e.g. Should I accept this job offer?"
+          placeholder="Run a financial decision analysis… e.g. Should I accept this job offer?"
           disabled={isLoading}
           aria-label="Financial decision query"
           className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-900 placeholder-slate-400 transition focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"

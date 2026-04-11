@@ -193,8 +193,7 @@ export function AppNavbar() {
                     alt="FinanceSphere logo"
                     width={200}
                     height={52}
-                    loading="lazy"
-                    priority={false}
+                    priority
                     className={`w-auto transition-[height] duration-200 ${scrolled ? 'h-12' : 'h-14'}`}
                   />
                 </Link>
