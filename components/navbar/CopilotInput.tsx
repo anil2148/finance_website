@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { runPipeline } from '@/lib/money-copilot/pipeline';
 import type { CopilotResponse, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
@@ -17,11 +18,21 @@ interface CopilotInputProps {
  * Shares the same API/pipeline logic as the standalone CommandBar.
  */
 export function CopilotInput({ className = '', compact = false }: CopilotInputProps) {
+  const pathname = usePathname();
   const { state, dispatch } = useCopilot();
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Keep region in sync with the current path so India users get India-specific analysis
+  const pathRegion: 'US' | 'India' =
+    pathname === '/in' || pathname.startsWith('/in/') ? 'India' : 'US';
+  useEffect(() => {
+    if (pathRegion !== state.region) {
+      dispatch({ type: 'SET_REGION', payload: pathRegion });
+    }
+  }, [pathRegion, state.region, dispatch]);
 
   const handleSubmit = useCallback(
     async (text: string) => {
