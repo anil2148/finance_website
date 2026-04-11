@@ -37,195 +37,160 @@ const ACTION_ICON: Record<string, string> = {
   hedge: '🛡️',
 };
 
-function ConfidenceBadge({ value }: { value: number }) {
-  const pct = Math.round(value * 100);
-  const color = pct >= 70 ? 'text-emerald-600 dark:text-emerald-400' : pct >= 45 ? 'text-amber-600 dark:text-amber-400' : 'text-rose-600 dark:text-rose-400';
-  return <span className={`text-xs font-bold tabular-nums ${color}`}>{pct}%</span>;
-}
+/** Maps intent type to a short consumer-readable label. */
+const INTENT_TYPE_LABEL: Record<string, string> = {
+  'job-offer': 'Job offer',
+  'relocation': 'Relocation',
+  'debt-payoff': 'Debt payoff',
+  'roth-vs-traditional': 'Retirement',
+  'emergency-fund': 'Emergency fund',
+  'home-affordability': 'Home buying',
+  'budget-stress-test': 'Budget',
+  'ambiguous-offer': 'Offer',
+  'custom': 'Decision',
+};
 
-// ─── Section: Step 1 — Intent ────────────────────────────────────────────────
+// ─── Decision category cards ──────────────────────────────────────────────────
 
-function IntentStep({ result }: { result: PipelineResult }) {
-  const { step1_intent: intent } = result;
+const DECISION_CARDS = [
+  {
+    key: 'job',
+    label: 'Job offer',
+    emoji: '💼',
+    description: 'Compare offers or evaluate a raise',
+    question: 'I have a job offer — should I take it?',
+  },
+  {
+    key: 'home',
+    label: 'Buying a home',
+    emoji: '🏠',
+    description: 'Estimate what you can afford',
+    question: 'Can I afford to buy a home right now?',
+  },
+  {
+    key: 'credit',
+    label: 'Credit card',
+    emoji: '💳',
+    description: 'Find the right card for your spending',
+    question: 'Which credit card is right for my spending?',
+  },
+  {
+    key: 'debt',
+    label: 'Debt payoff',
+    emoji: '📉',
+    description: 'Find the fastest way out of debt',
+    question: 'What is the fastest way to pay off my debt?',
+  },
+  {
+    key: 'invest',
+    label: 'Investing',
+    emoji: '📈',
+    description: 'Plan your investment strategy',
+    question: 'How should I start investing my money?',
+  },
+];
+
+// ─── Consumer-friendly result sections ────────────────────────────────────────
+
+function RecommendationSection({ result }: { result: PipelineResult }) {
+  const { step5_actionPlan: plan, step4_risk: risk, step1_intent: intent } = result;
+  const primary = plan.primaryAction;
   const isAmbiguous = needsClarificationState(intent);
+
+  const riskLabel =
+    risk.overallScore >= 60 ? 'Higher risk' : risk.overallScore >= 30 ? 'Moderate risk' : 'Lower risk';
+  const riskColor =
+    risk.overallScore >= 60
+      ? 'text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-700/40'
+      : risk.overallScore >= 30
+      ? 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-700/40'
+      : 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-700/40';
+
   return (
     <section>
-      <SectionHeader step={1} title="Intent" />
       {isAmbiguous && (
         <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-700/40 dark:bg-amber-950/20 dark:text-amber-400">
-          <p className="font-semibold">⚠️ Needs clarification</p>
+          <p className="font-semibold">More detail needed</p>
           {intent.clarificationQuestion && (
             <p className="mt-0.5 opacity-90">{intent.clarificationQuestion}</p>
           )}
         </div>
       )}
-      <div className="space-y-2 text-sm">
-        <Row
-          label="Type"
-          value={intent.type === 'ambiguous-offer' ? 'Offer type unclear' : intent.type.replace(/-/g, ' ')}
-        />
-        <Row label="Category" value={intent.category} />
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-500 dark:text-slate-400">Confidence</span>
-          <ConfidenceBadge value={intent.confidence} />
+      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Recommendation</h3>
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/60 dark:bg-blue-950/30">
+        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{primary.label}</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{primary.description}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <span className={`rounded-full border px-2 py-0.5 text-xs font-medium ${riskColor}`}>{riskLabel}</span>
+          {primary.timeframe && (
+            <span className="text-xs text-slate-500 dark:text-slate-400">{primary.timeframe}</span>
+          )}
+          {primary.expectedImpact && (
+            <span className="text-xs text-slate-500 dark:text-slate-400 italic">{primary.expectedImpact}</span>
+          )}
         </div>
-        {intent.signals.length > 0 && (
-          <div>
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Signals</p>
-            <div className="flex flex-wrap gap-1">
-              {intent.signals.slice(0, 6).map((s) => (
-                <span key={s} className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-300">
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );
 }
 
-// ─── Section: Step 2 — Context ───────────────────────────────────────────────
-
-function ContextStep({ result }: { result: PipelineResult }) {
-  const { step2_context: ctx } = result;
+function KeyFindingsSection({ result }: { result: PipelineResult }) {
+  const { step3_analysis: analysis } = result;
+  if (!analysis.keyFindings.length && !analysis.comparisons.length) return null;
   return (
     <section>
-      <SectionHeader step={2} title="Context" />
-      <div className="space-y-2 text-sm">
-        <Row label="Region" value={ctx.region} />
-        <Row label="Risk profile" value={ctx.riskProfile} />
-        {ctx.portfolio?.allocation && (
-          <div>
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Target allocation</p>
-            <div className="flex flex-wrap gap-1">
-              {Object.entries(ctx.portfolio.allocation).map(([k, v]) => (
-                <span key={k} className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                  {k} {v}%
-                </span>
-              ))}
+      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Key findings</h3>
+      {analysis.keyFindings.length > 0 && (
+        <ul className="space-y-2">
+          {analysis.keyFindings.map((f, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
+              <span className="mt-0.5 shrink-0 text-blue-500">›</span>
+              {f}
+            </li>
+          ))}
+        </ul>
+      )}
+      {analysis.comparisons.length > 0 && (
+        <div className="mt-3 space-y-2">
+          {analysis.comparisons.map((c, i) => (
+            <div key={i} className="rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs dark:border-slate-700 dark:bg-slate-800/50">
+              <div className="flex items-center justify-between gap-1 font-medium text-slate-800 dark:text-slate-100">
+                <span>{c.optionA}</span>
+                <span className="text-slate-400">vs</span>
+                <span>{c.optionB}</span>
+              </div>
+              {c.winner !== 'neutral' && (
+                <p className={`mt-1 text-[11px] font-medium ${c.winner === 'A' ? 'text-emerald-600 dark:text-emerald-400' : 'text-blue-600 dark:text-blue-400'}`}>
+                  {c.winner === 'A' ? c.optionA : c.optionB} looks better — {c.delta}
+                </p>
+              )}
             </div>
-          </div>
-        )}
-        <Row label="Session history" value={`${ctx.history.length} prior decision${ctx.history.length !== 1 ? 's' : ''}`} />
-      </div>
-    </section>
-  );
-}
-
-// ─── Section: Step 3 — Analysis ──────────────────────────────────────────────
-
-function AnalysisStep({ result }: { result: PipelineResult }) {
-  const { step1_intent: intent, step3_analysis: analysis } = result;
-  const showClarification = needsClarificationState(intent);
-  const title = showClarification ? 'Next Step' : 'Analysis';
-  return (
-    <section>
-      <SectionHeader step={3} title={title} />
-      {showClarification && (
-        <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-700 dark:border-blue-700/40 dark:bg-blue-950/20 dark:text-blue-400">
-          Provide more context or clarify the offer type to unlock a full analysis.
+          ))}
         </div>
       )}
-      <div className="space-y-3">
-        <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 italic">{analysis.methodology}</p>
-
-        {analysis.keyFindings.length > 0 && (
-          <div>
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Key findings</p>
-            <ul className="space-y-1">
-              {analysis.keyFindings.map((f, i) => (
-                <li key={i} className="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300">
-                  <span className="mt-0.5 shrink-0 text-blue-500">›</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {analysis.dataPoints.length > 0 && (
-          <div>
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Data points</p>
-            <div className="space-y-1">
-              {analysis.dataPoints.slice(0, 6).map((dp, i) => (
-                <div key={i} className="flex items-center justify-between gap-2">
-                  <span className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">{dp.label}</span>
-                  <span className={`shrink-0 rounded-full px-1.5 py-0.5 text-[10px] font-medium ${dp.source === 'assumed' ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/20 dark:text-amber-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'}`}>
-                    {dp.value.slice(0, 30)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {analysis.comparisons.length > 0 && (
-          <div>
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Comparison</p>
-            {analysis.comparisons.map((c, i) => (
-              <div key={i} className="rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-xs dark:border-slate-700 dark:bg-slate-800/50">
-                <div className="flex items-center justify-between gap-1 font-medium text-slate-800 dark:text-slate-100">
-                  <span>{c.optionA}</span>
-                  <span className="text-slate-400">vs</span>
-                  <span>{c.optionB}</span>
-                </div>
-                <div className="mt-1 flex items-center justify-between">
-                  <span className="text-slate-500 dark:text-slate-400">Delta</span>
-                  <span className={`font-bold tabular-nums ${c.winner === 'A' ? 'text-emerald-600 dark:text-emerald-400' : c.winner === 'B' ? 'text-rose-600 dark:text-rose-400' : 'text-slate-600'}`}>
-                    {c.delta} {c.winner !== 'neutral' ? `→ ${c.winner === 'A' ? c.optionA : c.optionB} wins` : '(neutral)'}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
     </section>
   );
 }
 
-// ─── Section: Step 4 — Risk ───────────────────────────────────────────────────
-
-function RiskStep({ result }: { result: PipelineResult }) {
+function RisksSection({ result }: { result: PipelineResult }) {
   const { step4_risk: risk } = result;
-  const scoreColor = risk.overallScore >= 60 ? 'text-red-600 dark:text-red-400' : risk.overallScore >= 30 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400';
-
+  if (!risk.factors.length) return null;
   return (
     <section>
-      <SectionHeader step={4} title="Risk" />
+      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Risks to watch</h3>
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-500 dark:text-slate-400">Overall risk score</span>
-          <span className={`text-lg font-bold tabular-nums ${scoreColor}`}>{risk.overallScore}<span className="text-xs font-normal">/100</span></span>
-        </div>
-
-        {/* Score bar */}
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
-          <div
-            className={`h-full rounded-full transition-all ${risk.overallScore >= 60 ? 'bg-red-500' : risk.overallScore >= 30 ? 'bg-amber-500' : 'bg-emerald-500'}`}
-            style={{ width: `${risk.overallScore}%` }}
-          />
-        </div>
-
-        {risk.factors.length > 0 && (
-          <div className="space-y-1.5 pt-1">
-            {risk.factors.map((f, i) => (
-              <div key={i} className={`flex items-start gap-2 rounded-lg border p-2 text-xs ${RISK_COLOR[f.severity]}`}>
-                <span>{SEVERITY_ICON[f.severity]}</span>
-                <div>
-                  <p className="font-semibold">{f.factor}</p>
-                  <p className="mt-0.5 opacity-80">{f.detail}</p>
-                </div>
-              </div>
-            ))}
+        {risk.factors.map((f, i) => (
+          <div key={i} className={`flex items-start gap-2 rounded-lg border p-2 text-xs ${RISK_COLOR[f.severity]}`}>
+            <span>{SEVERITY_ICON[f.severity]}</span>
+            <div>
+              <p className="font-semibold">{f.factor}</p>
+              <p className="mt-0.5 opacity-80">{f.detail}</p>
+            </div>
           </div>
-        )}
-
+        ))}
         {risk.mitigations.length > 0 && (
-          <div>
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Mitigations</p>
+          <div className="pt-1">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">What you can do</p>
             <ul className="space-y-1">
               {risk.mitigations.map((m, i) => (
                 <li key={i} className="flex items-start gap-1.5 text-xs text-slate-600 dark:text-slate-300">
@@ -241,71 +206,41 @@ function RiskStep({ result }: { result: PipelineResult }) {
   );
 }
 
-// ─── Section: Step 5 — Action Plan ───────────────────────────────────────────
-
-function ActionCard({ action, isPrimary }: { action: ExecutionAction; isPrimary: boolean }) {
-  return (
-    <div className={`rounded-xl border p-3 ${isPrimary ? 'border-blue-300 bg-blue-50 dark:border-blue-700/60 dark:bg-blue-950/30' : 'border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-800/50'}`}>
-      {isPrimary && (
-        <div className="mb-1.5 text-[10px] font-bold uppercase tracking-wide text-blue-600 dark:text-blue-400">Primary action</div>
-      )}
-      <div className="flex items-start gap-2">
-        <span className="text-base leading-none">{ACTION_ICON[action.type]}</span>
-        <div className="flex-1">
-          <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{action.label}</p>
-          <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">{action.description}</p>
-          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-            <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${RISK_COLOR[action.riskLevel]}`}>
-              {action.riskLevel} risk
-            </span>
-            <span className="text-[10px] text-slate-400">{action.timeframe}</span>
-          </div>
-          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 italic">
-            Impact: {action.expectedImpact}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ActionPlanStep({ result }: { result: PipelineResult }) {
+function NextStepsSection({ result }: { result: PipelineResult }) {
   const { step5_actionPlan: plan } = result;
+  const secondaryActions = plan.actions.filter((a) => a.type !== plan.primaryAction.type);
+  if (!secondaryActions.length && !plan.timeline) return null;
   return (
     <section>
-      <SectionHeader step={5} title="Action Plan" />
-      <div className="space-y-2">
-        <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs dark:bg-slate-800/50">
+      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Next steps</h3>
+      {plan.timeline && (
+        <div className="mb-3 rounded-lg bg-slate-50 px-3 py-2 text-xs dark:bg-slate-800/50">
           <span className="font-semibold text-slate-500 dark:text-slate-400">Timeline: </span>
           <span className="text-slate-700 dark:text-slate-300">{plan.timeline}</span>
         </div>
-        {[plan.primaryAction, ...plan.actions.filter((a) => a.type !== plan.primaryAction.type)].map((action) => (
-          <ActionCard key={action.type} action={action} isPrimary={action.type === plan.primaryAction.type} />
-        ))}
-      </div>
+      )}
+      {secondaryActions.length > 0 && (
+        <div className="space-y-2">
+          {secondaryActions.map((action) => (
+            <div key={action.type} className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800/50">
+              <div className="flex items-start gap-2">
+                <span className="text-base leading-none">{ACTION_ICON[action.type] ?? '📋'}</span>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{action.label}</p>
+                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">{action.description}</p>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${RISK_COLOR[action.riskLevel]}`}>
+                      {action.riskLevel} risk
+                    </span>
+                    <span className="text-[10px] text-slate-400">{action.timeframe}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </section>
-  );
-}
-
-// ─── Shared UI ────────────────────────────────────────────────────────────────
-
-function SectionHeader({ step, title }: { step: number; title: string }) {
-  return (
-    <div className="mb-3 flex items-center gap-2">
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-blue-600 text-[10px] font-bold text-white">
-        {step}
-      </span>
-      <h3 className="text-xs font-bold uppercase tracking-wide text-slate-700 dark:text-slate-200">{title}</h3>
-    </div>
-  );
-}
-
-function Row({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-center justify-between gap-2">
-      <span className="text-xs text-slate-500 dark:text-slate-400">{label}</span>
-      <span className="text-xs font-semibold capitalize text-slate-800 dark:text-slate-200">{value}</span>
-    </div>
   );
 }
 
@@ -447,9 +382,9 @@ function PanelInputForm() {
             value={query}
             onChange={(e) => { setQuery(e.target.value); setError(''); }}
             onKeyDown={handleKeyDown}
-            placeholder="Ask a financial question… e.g. Should I accept this job offer?"
+            placeholder="What are you deciding?"
             disabled={isLoading}
-            aria-label="Financial decision query"
+            aria-label="What financial decision are you trying to make?"
             className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-700"
           />
           {error && (
@@ -482,49 +417,75 @@ function PanelInputForm() {
 // ─── Empty input state ────────────────────────────────────────────────────────
 
 function DrawerEmptyState({ history, dispatch }: { history: ReturnType<typeof useCopilot>['state']['history']; dispatch: ReturnType<typeof useCopilot>['dispatch'] }) {
-  const prompts = [
-    'Should I accept this job offer?',
-    'Can I afford a $500k house?',
-    'How fast can I pay off my debt?',
-    'Is now a good time to invest?',
-  ];
   return (
-    <div className="flex flex-col items-center gap-4 px-5 py-8 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950/60">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-        </svg>
+    <div className="flex flex-col gap-5 px-5 py-6">
+      {/* Icon + subtitle */}
+      <div className="text-center">
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950/60">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">What are you deciding?</p>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+          Describe your situation above or pick a topic to get a clear recommendation.
+        </p>
       </div>
+
+      {/* Decision category cards */}
       <div>
-        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Ask a financial question</p>
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Type in the box above and press Ask to run a full 5-step analysis.</p>
-      </div>
-      <div className="w-full space-y-1.5">
-        <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Try these</p>
-        {prompts.map((p) => (
-          <button
-            key={p}
-            type="button"
-            onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: p } })}
-            className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
-          >
-            {p}
-          </button>
-        ))}
-      </div>
-      {history.length > 0 && (
-        <div className="w-full pt-2">
-          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Recent analyses</p>
-          {history.slice(0, 3).map((entry) => (
+        <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Start a decision</p>
+        <div className="flex flex-col gap-2">
+          {DECISION_CARDS.map((card) => (
             <button
-              key={entry.id}
+              key={card.key}
               type="button"
-              onClick={() => dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })}
-              className="mb-1 block w-full rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-left text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
+              onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: card.question } })}
+              className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-left transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500 dark:hover:bg-blue-950/30"
             >
-              <span className="line-clamp-1">{entry.question}</span>
+              <span className="text-xl leading-none">{card.emoji}</span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{card.label}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{card.description}</p>
+              </div>
             </button>
           ))}
+        </div>
+      </div>
+
+      {/* Recent decisions */}
+      {history.length > 0 && (
+        <div>
+          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Recent decisions</p>
+          <div className="flex flex-col gap-1.5">
+            {history.slice(0, 3).map((entry) => {
+              const typeLabel =
+                INTENT_TYPE_LABEL[entry.result.step1_intent.type] ?? entry.result.step1_intent.category;
+              const summary = entry.result.step5_actionPlan.primaryAction.label;
+              return (
+                <button
+                  key={entry.id}
+                  type="button"
+                  onClick={() =>
+                    dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })
+                  }
+                  className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-left transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500"
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+                      {typeLabel}
+                    </span>
+                  </div>
+                  <p className="mt-1 line-clamp-1 text-xs font-medium text-slate-700 dark:text-slate-300">
+                    {entry.question}
+                  </p>
+                  {summary && (
+                    <p className="line-clamp-1 text-[11px] text-slate-500 dark:text-slate-400">{summary}</p>
+                  )}
+                </button>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
@@ -587,41 +548,54 @@ export function ExecutionPanel() {
         <div className="flex-1 overflow-y-auto">
           {activeResult ? (
             <>
-              {/* Request metadata */}
+              {/* Active question label */}
               <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-5 py-1.5 text-[10px] text-slate-400 dark:border-slate-700/60 dark:bg-slate-800/40">
                 <span className="line-clamp-1 italic">&ldquo;{activeQuestion}&rdquo;</span>
                 <span className="shrink-0">{new Date(activeResult.timestamp).toLocaleTimeString()}</span>
               </div>
 
-              {/* 5-step pipeline output */}
+              {/* Consumer-friendly result output */}
               <div className="px-5 py-4">
-                <div className="space-y-6">
-                  <IntentStep result={activeResult} />
+                <div className="space-y-5">
+                  <RecommendationSection result={activeResult} />
                   <hr className="border-slate-100 dark:border-slate-700/60" />
-                  <ContextStep result={activeResult} />
+                  <KeyFindingsSection result={activeResult} />
                   <hr className="border-slate-100 dark:border-slate-700/60" />
-                  <AnalysisStep result={activeResult} />
+                  <RisksSection result={activeResult} />
                   <hr className="border-slate-100 dark:border-slate-700/60" />
-                  <RiskStep result={activeResult} />
-                  <hr className="border-slate-100 dark:border-slate-700/60" />
-                  <ActionPlanStep result={activeResult} />
+                  <NextStepsSection result={activeResult} />
                 </div>
               </div>
 
               {/* History breadcrumb */}
               {history.length > 1 && (
                 <div className="shrink-0 border-t border-slate-100 px-5 py-3 dark:border-slate-700">
-                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Recent analyses ({history.length})</p>
-                  <div className="flex flex-col gap-1">
-                    {history.slice(0, 4).map((entry) => (
-                      <button
-                        key={entry.id}
-                        onClick={() => dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })}
-                        className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-left text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
-                      >
-                        <span className="line-clamp-1">{entry.question}</span>
-                      </button>
-                    ))}
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                    Recent decisions ({history.length})
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {history.slice(0, 4).map((entry) => {
+                      const typeLabel =
+                        INTENT_TYPE_LABEL[entry.result.step1_intent.type] ?? entry.result.step1_intent.category;
+                      return (
+                        <button
+                          key={entry.id}
+                          onClick={() =>
+                            dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })
+                          }
+                          className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2 text-left transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-semibold text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+                              {typeLabel}
+                            </span>
+                          </div>
+                          <p className="mt-0.5 line-clamp-1 text-xs text-slate-600 dark:text-slate-400">
+                            {entry.question}
+                          </p>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

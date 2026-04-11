@@ -5,10 +5,11 @@ import type { CopilotRequest, DecisionMode } from '@/lib/money-copilot/types';
 import { detectIntent, intentToDecisionMode } from '@/lib/money-copilot/intent';
 
 const CHIP_MODE_MAP: Record<string, DecisionMode> = {
-  'Job Decision': 'job-offer',
-  'Home Buying': 'home-affordability',
-  'Debt Strategy': 'debt-payoff',
-  'Retirement': 'roth-vs-traditional'
+  'Job offer': 'job-offer',
+  'Buying a home': 'home-affordability',
+  'Credit card': 'custom',
+  'Debt payoff': 'debt-payoff',
+  'Investing': 'roth-vs-traditional',
 };
 
 interface IntakeFormProps {
@@ -30,10 +31,11 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
 
   const handleChipClick = (chip: string) => {
     const chipQuestions: Record<string, string> = {
-      'Job Decision': 'Should I take this new job offer?',
-      'Home Buying': 'Can I afford a $500k house?',
-      'Debt Strategy': 'Should I pay off debt or invest?',
-      'Retirement': 'Am I on track for retirement? Roth vs Traditional?'
+      'Job offer': 'I have a job offer — should I take it?',
+      'Buying a home': 'Can I afford to buy a home right now?',
+      'Credit card': 'Which credit card is right for my spending?',
+      'Debt payoff': 'What is the fastest way to pay off my debt?',
+      'Investing': 'How should I start investing my money?',
     };
     setQuestion(chipQuestions[chip] ?? chip);
     setSelectedChip(chip);
@@ -56,14 +58,14 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
       {/* Main question input */}
       <div className="rounded-3xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900/90 md:p-6">
         <label htmlFor="copilot-question" className="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">
-          What financial decision are you trying to make?
+          What are you deciding?
         </label>
         <textarea
           id="copilot-question"
           value={question}
           onChange={(e) => { setQuestion(e.target.value); setSelectedChip(null); setError(''); }}
           rows={3}
-          placeholder="e.g. Should I take a $120k job in NJ or $100k in NC?"
+          placeholder="e.g. I have a job offer paying $120k in NJ vs my current $100k in NC — should I take it?"
           className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-800"
         />
         {error && <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{error}</p>}
@@ -75,7 +77,11 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
               key={chip}
               type="button"
               onClick={() => handleChipClick(chip)}
-              className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 transition hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400"
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                selectedChip === chip
+                  ? 'border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-400 dark:bg-blue-500/20 dark:text-blue-300'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:border-blue-500 dark:hover:text-blue-400'
+              }`}
             >
               {chip}
             </button>
@@ -114,7 +120,7 @@ export function IntakeForm({ onSubmit, isLoading, initialQuestion = '' }: Intake
             Analyzing…
           </span>
         ) : (
-          'Analyze'
+          'Get a clear recommendation'
         )}
       </button>
     </form>
