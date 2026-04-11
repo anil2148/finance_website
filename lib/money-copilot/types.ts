@@ -120,3 +120,82 @@ export interface BubbleResponse {
   confidence: 'LOW' | 'MEDIUM' | 'HIGH';
   disclaimer: string;
 }
+
+// ─── Institutional AI Execution Engine ──────────────────────────────────────
+
+export type ExecutionActionType = 'rebalance' | 'simulate' | 'report' | 'hedge';
+
+/** Result of the Intent Layer: what the user wants + how certain we are. */
+export interface IntentClassification {
+  type: DecisionMode;
+  category: 'income' | 'debt' | 'investment' | 'real-estate' | 'tax' | 'retirement' | 'general';
+  confidence: number; // 0–1
+  signals: string[];  // keywords that drove classification
+}
+
+/** Result of the Context Layer: who the user is and what history exists. */
+export interface ContextSnapshot {
+  region: 'US' | 'India';
+  riskProfile: 'conservative' | 'moderate' | 'aggressive';
+  portfolio?: { totalValue?: number; allocation?: Record<string, number> };
+  history: ReasoningHistoryEntry[];
+  sessionId: string;
+}
+
+/** Result of the Reasoning Layer: structured financial analysis without conversational text. */
+export interface ReasoningOutput {
+  methodology: string;
+  dataPoints: Array<{ label: string; value: string; source: 'input' | 'derived' | 'assumed' }>;
+  comparisons: Array<{ optionA: string; optionB: string; delta: string; winner: 'A' | 'B' | 'neutral' }>;
+  keyFindings: string[];
+}
+
+/** A single executable action from the Execution Layer. */
+export interface ExecutionAction {
+  type: ExecutionActionType;
+  label: string;
+  description: string;
+  riskLevel: 'low' | 'medium' | 'high';
+  expectedImpact: string;
+  timeframe: string;
+  parameters?: Record<string, string | number>;
+}
+
+/** Full 5-step pipeline output. */
+export interface PipelineResult {
+  step1_intent: IntentClassification;
+  step2_context: ContextSnapshot;
+  step3_analysis: ReasoningOutput;
+  step4_risk: {
+    overallScore: number; // 0–100
+    factors: Array<{ factor: string; severity: 'low' | 'medium' | 'high'; detail: string }>;
+    mitigations: string[];
+  };
+  step5_actionPlan: {
+    actions: ExecutionAction[];
+    primaryAction: ExecutionAction;
+    timeline: string;
+  };
+  requestId: string;
+  timestamp: string;
+}
+
+/** A single entry in the global reasoning history. */
+export interface ReasoningHistoryEntry {
+  id: string;
+  question: string;
+  intent: IntentClassification;
+  result: PipelineResult;
+  timestamp: string;
+}
+
+/** Global Copilot state persisted across routes. */
+export interface CopilotGlobalState {
+  sessionId: string;
+  region: 'US' | 'India';
+  riskProfile: 'conservative' | 'moderate' | 'aggressive';
+  history: ReasoningHistoryEntry[];
+  isExecutionPanelOpen: boolean;
+  activeResult: PipelineResult | null;
+  activeQuestion: string;
+}
