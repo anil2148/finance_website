@@ -136,7 +136,7 @@ export function CopilotInput({ className = '', compact = false }: CopilotInputPr
   );
 
   return (
-    <div className={`flex items-center gap-2 ${className}`} role="search" aria-label="Copilot command bar">
+    <div className={`flex flex-nowrap items-center gap-2 ${className}`} role="search" aria-label="Copilot command bar">
       {/* Brand pill — full (non-compact) mode only; always shows text since this renders at lg+ */}
       {!compact && (
         <div className="flex shrink-0 items-center gap-1 rounded-lg bg-blue-600 px-2 py-1.5 text-[11px] font-bold text-white">

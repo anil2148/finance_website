@@ -214,7 +214,7 @@ export function AppNavbar() {
             </div>
 
             {/* ── RIGHT: CTA · Region · Currency · Theme ── */}
-            <div className="hidden items-center gap-2 lg:flex">
+            <div className="hidden shrink-0 flex-nowrap items-center gap-2 lg:flex">
               {/* Start a Decision CTA */}
               <motion.button
                 onClick={() => setDecisionModalOpen(true)}
