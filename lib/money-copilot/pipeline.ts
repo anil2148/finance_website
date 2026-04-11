@@ -94,9 +94,11 @@ const INTENT_RULES: RuleSet[] = [
  *   >= HIGH   → proceed with intent-specific flow
  *   MID–HIGH  → suggest clarification but allow provisional analysis
  *   < MID     → block analysis; ask a concise clarification question
+ *
+ * CONFIDENCE_THRESHOLD_MID is exported for use in the UI layer.
  */
 const CONFIDENCE_THRESHOLD_HIGH = 0.75;
-const CONFIDENCE_THRESHOLD_MID = 0.50;
+export const CONFIDENCE_THRESHOLD_MID = 0.50;
 
 export function classifyIntent(question: string): IntentClassification {
   // ── Ambiguity check: use the shared helper before keyword scoring ──────────
@@ -168,7 +170,7 @@ export function classifyIntent(question: string): IntentClassification {
     category: best.category,
     confidence: parseFloat(confidence.toFixed(2)),
     signals: [...new Set(best.signals)],
-    needsClarification: needsClarification || undefined,
+    needsClarification: needsClarification ? true : undefined,
     clarificationQuestion,
   };
 }

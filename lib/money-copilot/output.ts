@@ -455,7 +455,11 @@ function customResponse(request: CopilotRequest, scenarios: Scenario[]): Partial
   return { summary, recommendation, keyMetrics, sensitivities, risks, nextSteps };
 }
 
-function ambiguousOfferResponse(request: CopilotRequest, _scenarios: Scenario[]): Partial<CopilotResponse> {
+function ambiguousOfferResponse(
+  request: CopilotRequest,
+  // Scenarios are not used for ambiguous offers; parameter is required by the MODE_HANDLERS signature.
+  _scenarios: Scenario[]
+): Partial<CopilotResponse> {
   const summary = 'I can help — I just need to know what kind of offer this is.';
 
   const recommendation =

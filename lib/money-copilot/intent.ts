@@ -42,6 +42,9 @@ export const AMBIGUOUS_OFFER_CLARIFICATION =
  * Returns true when a question mentions an "offer" or "deal" in a decision context
  * without specifying a concrete offer type (job, loan, credit card, mortgage, etc.).
  *
+ * @returns true if the query is an ambiguous offer/deal decision; false if a specific
+ *   offer type (job, loan, credit card, mortgage) is mentioned or the question is unrelated.
+ *
  * Centralised here so pipeline.ts and prompts.ts share identical detection logic.
  */
 export function isAmbiguousOfferQuery(question: string): boolean {

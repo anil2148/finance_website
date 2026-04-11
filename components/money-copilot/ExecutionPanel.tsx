@@ -2,17 +2,14 @@
 
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import type { ExecutionAction, IntentClassification, PipelineResult } from '@/lib/money-copilot/types';
-
-// Confidence below this threshold triggers the "Needs clarification" UI state.
-// Keep in sync with CONFIDENCE_THRESHOLD_MID in pipeline.ts.
-const CLARIFICATION_CONFIDENCE_THRESHOLD = 0.5;
+import { CONFIDENCE_THRESHOLD_MID } from '@/lib/money-copilot/pipeline';
 
 /** Returns true when the intent is ambiguous or confidence is too low to proceed. */
 function needsClarificationState(intent: IntentClassification): boolean {
   return (
     intent.type === 'ambiguous-offer' ||
     intent.needsClarification === true ||
-    intent.confidence < CLARIFICATION_CONFIDENCE_THRESHOLD
+    intent.confidence < CONFIDENCE_THRESHOLD_MID
   );
 }
 
