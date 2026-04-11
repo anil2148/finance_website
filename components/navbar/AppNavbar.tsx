@@ -4,13 +4,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
 import { setPreferredRegionCookie } from '@/lib/region-preference';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem } from '@/components/navbar/NavItem';
-import { CopilotInput } from '@/components/navbar/CopilotInput';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
 import { StartDecisionModal } from '@/components/money-copilot/StartDecisionModal';
 
@@ -122,7 +121,6 @@ export function AppNavbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [mobileCopilotVisible, setMobileCopilotVisible] = useState(false);
   const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
   const [decisionModalOpen, setDecisionModalOpen] = useState(false);
 
@@ -207,74 +205,50 @@ export function AppNavbar() {
               </ul>
             </div>
 
-            {/* ── RIGHT: Unified AI action cluster + static controls — desktop only.
-                 This single flex-1 row prevents the split-section overlap bug where
-                 the old separate CENTER (block, flex-1) and RIGHT (no shrink-0) caused
-                 Execute to overflow into RegionSelector at the lg breakpoint.
-                 Structure: [CopilotInput grows] [shrink-0: CTA · Region · Theme] ── */}
-            <div className="hidden min-w-0 flex-1 items-center gap-2 lg:flex">
-              {/* AI command bar — grows to fill all space left by the static controls */}
-              <CopilotInput className="min-w-0 flex-1" />
-
-              {/* Static controls — never shrink, never collide with the input cluster */}
-              <div className="flex shrink-0 items-center gap-2">
-                {/* Start a Decision CTA */}
-                <motion.button
-                  onClick={() => setDecisionModalOpen(true)}
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-emerald-500 bg-emerald-500 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70"
-                >
-                  <span>▶</span>
-                  <span className="hidden whitespace-nowrap xl:inline">Start a Decision</span>
-                  <span className="whitespace-nowrap xl:hidden">Start</span>
-                </motion.button>
-
-                {/* Region selector + currency badge */}
-                <RegionSelector
-                  isIndiaContext={isIndiaContext}
-                  currentRegionLabel={currentRegionLabel}
-                  currentCurrencyLabel={currentCurrencyLabel}
-                  onRegionChange={switchRegion}
-                />
-
-                {/* Theme toggle */}
-                <motion.button
-                  onClick={toggleDarkMode}
-                  className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800"
-                  aria-label="Toggle dark mode"
-                  whileTap={{ scale: 0.9 }}
-                  whileHover={{ scale: 1.08 }}
-                >
-                  {darkMode ? (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
-                    </svg>
-                  ) : (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                    </svg>
-                  )}
-                </motion.button>
-              </div>
-            </div>
-
-            {/* ── MOBILE: Copilot toggle + hamburger ── */}
-            <div className="ml-auto flex items-center gap-2 lg:hidden">
-              {/* Copilot quick-access icon */}
+            {/* ── RIGHT: Static controls — desktop only ── */}
+            <div className="ml-auto hidden items-center gap-2 lg:flex">
+              {/* Start a Decision CTA */}
               <motion.button
-                onClick={() => setMobileCopilotVisible((v) => !v)}
-                whileTap={{ scale: 0.9 }}
-                className="rounded-xl border border-blue-200 bg-blue-50 p-2 text-blue-700 transition hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70 dark:border-blue-500/40 dark:bg-blue-500/10 dark:text-blue-300 dark:hover:bg-blue-500/20"
-                aria-label={mobileCopilotVisible ? 'Hide AI Copilot' : 'Open AI Copilot'}
-                aria-expanded={mobileCopilotVisible}
+                onClick={() => setDecisionModalOpen(true)}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-emerald-500 bg-emerald-500 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+                <span>▶</span>
+                <span className="hidden whitespace-nowrap xl:inline">Start a Decision</span>
+                <span className="whitespace-nowrap xl:hidden">Start</span>
               </motion.button>
 
-              {/* Hamburger */}
+              {/* Region selector + currency badge */}
+              <RegionSelector
+                isIndiaContext={isIndiaContext}
+                currentRegionLabel={currentRegionLabel}
+                currentCurrencyLabel={currentCurrencyLabel}
+                onRegionChange={switchRegion}
+              />
+
+              {/* Theme toggle */}
+              <motion.button
+                onClick={toggleDarkMode}
+                className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800"
+                aria-label="Toggle dark mode"
+                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.08 }}
+              >
+                {darkMode ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+                  </svg>
+                )}
+              </motion.button>
+            </div>
+
+            {/* ── MOBILE: Hamburger ── */}
+            <div className="ml-auto flex items-center gap-2 lg:hidden">
               <motion.button
                 className="rounded-xl border border-slate-300 p-2 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800"
                 onClick={() => setMobileOpen((prev) => !prev)}
@@ -291,23 +265,6 @@ export function AppNavbar() {
               </motion.button>
             </div>
           </div>
-
-          {/* ── MOBILE: Copilot full-width row (animated) ── */}
-          <AnimatePresence initial={false}>
-            {mobileCopilotVisible && (
-              <motion.div
-                key="mobile-copilot"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1, transition: { duration: 0.22, ease: 'easeOut' } }}
-                exit={{ height: 0, opacity: 0, transition: { duration: 0.18, ease: 'easeIn' } }}
-                className="overflow-hidden lg:hidden"
-              >
-                <div className="pb-2 pt-1">
-                  <CopilotInput className="w-full" compact />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </nav>
       </motion.header>
 

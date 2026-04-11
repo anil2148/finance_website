@@ -1,7 +1,10 @@
 'use client';
 
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
-import type { ExecutionAction, IntentClassification, PipelineResult } from '@/lib/money-copilot/types';
+import { runPipeline } from '@/lib/money-copilot/pipeline';
+import type { CopilotResponse, ExecutionAction, IntentClassification, PipelineResult, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
 import { CONFIDENCE_THRESHOLD_MID } from '@/lib/money-copilot/pipeline';
 
 /** Returns true when the intent is ambiguous or confidence is too low to proceed. */
@@ -306,19 +309,229 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
+// ─── Inline input form ────────────────────────────────────────────────────────
+
+function PanelInputForm() {
+  const pathname = usePathname();
+  const { state, dispatch } = useCopilot();
+  const [query, setQuery] = useState(state.activeQuestion ?? '');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Sync region from pathname
+  const pathRegion: 'US' | 'India' =
+    pathname === '/in' || pathname.startsWith('/in/') ? 'India' : 'US';
+  useEffect(() => {
+    if (pathRegion !== state.region) {
+      dispatch({ type: 'SET_REGION', payload: pathRegion });
+    }
+  }, [pathRegion, state.region, dispatch]);
+
+  // When the panel first opens: sync any prefill question and focus the input.
+  // We capture the initial values as refs so the focus effect only runs on mount.
+  const initialQuestion = useRef(state.activeQuestion);
+  const initialHasResult = useRef(!!state.activeResult);
+  useEffect(() => {
+    if (initialQuestion.current && !initialHasResult.current) {
+      setQuery(initialQuestion.current);
+    }
+    // Focus after the component paints using rAF so the element is definitely in the DOM.
+    const raf = requestAnimationFrame(() => { inputRef.current?.focus(); });
+    return () => cancelAnimationFrame(raf);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally runs once on mount only — initial values captured via refs above.
+
+  const handleSubmit = useCallback(async (text: string) => {
+    const q = text.trim();
+    if (!q || isLoading) return;
+
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch('/api/money-copilot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: q,
+          responseMode: 'deep',
+          region: state.region,
+          mode: 'custom',
+          inputs: {},
+          scenarios: [],
+        }),
+      });
+
+      if (!res.ok) throw new Error(`Analysis failed (${res.status})`);
+
+      let copilotResponse: CopilotResponse | null = null;
+      const contentType = res.headers.get('content-type') ?? '';
+
+      if (contentType.includes('text/event-stream')) {
+        if (!res.body) throw new Error('Response body is empty');
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const parts = buffer.split('\n\n');
+          buffer = parts.pop() ?? '';
+          for (const part of parts) {
+            const line = part.trim();
+            if (!line.startsWith('data: ')) continue;
+            const raw = line.slice(6).trim();
+            if (raw === '[DONE]') break;
+            try {
+              const ev = JSON.parse(raw) as { type: string; payload?: CopilotResponse };
+              if ((ev.type === 'narrative' || ev.type === 'base') && ev.payload) {
+                copilotResponse = ev.payload;
+              }
+            } catch { /* ignore parse errors */ }
+          }
+        }
+      } else {
+        copilotResponse = await res.json() as CopilotResponse;
+      }
+
+      if (!copilotResponse) throw new Error('No response received from analysis engine');
+
+      const pipelineResult = runPipeline(
+        q, copilotResponse, state.region, state.riskProfile, state.sessionId, state.history,
+      );
+
+      const historyEntry: ReasoningHistoryEntry = {
+        id: pipelineResult.requestId,
+        question: q,
+        intent: pipelineResult.step1_intent,
+        result: pipelineResult,
+        timestamp: pipelineResult.timestamp,
+      };
+      dispatch({ type: 'ADD_HISTORY_ENTRY', payload: historyEntry });
+      dispatch({ type: 'OPEN_PANEL', payload: { question: q, result: pipelineResult } });
+      setQuery('');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Analysis failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isLoading, state, dispatch]);
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') { e.preventDefault(); void handleSubmit(query); }
+    if (e.key === 'Escape') { setQuery(''); inputRef.current?.blur(); }
+  }, [query, handleSubmit]);
+
+  return (
+    <div className="shrink-0 border-b border-slate-100 bg-slate-50 px-5 py-3 dark:border-slate-700 dark:bg-slate-800/40">
+      <div className="flex items-center gap-2">
+        <div className="relative min-w-0 flex-1">
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => { setQuery(e.target.value); setError(''); }}
+            onKeyDown={handleKeyDown}
+            placeholder="Ask a financial question… e.g. Should I accept this job offer?"
+            disabled={isLoading}
+            aria-label="Financial decision query"
+            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 transition focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-700"
+          />
+          {error && (
+            <span role="alert" className="absolute -bottom-5 left-0 whitespace-nowrap text-[10px] text-rose-600 dark:text-rose-400">
+              {error}
+            </span>
+          )}
+        </div>
+        <button
+          type="button"
+          onClick={() => void handleSubmit(query)}
+          disabled={isLoading || query.trim().length === 0}
+          aria-label="Run analysis"
+          className="flex shrink-0 items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-blue-500 dark:hover:bg-blue-600"
+        >
+          {isLoading ? (
+            <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+          ) : (
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          )}
+          <span>{isLoading ? 'Analyzing…' : 'Ask'}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Empty input state ────────────────────────────────────────────────────────
+
+function DrawerEmptyState({ history, dispatch }: { history: ReturnType<typeof useCopilot>['state']['history']; dispatch: ReturnType<typeof useCopilot>['dispatch'] }) {
+  const prompts = [
+    'Should I accept this job offer?',
+    'Can I afford a $500k house?',
+    'How fast can I pay off my debt?',
+    'Is now a good time to invest?',
+  ];
+  return (
+    <div className="flex flex-col items-center gap-4 px-5 py-8 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-950/60">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Ask a financial question</p>
+        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">Type in the box above and press Ask to run a full 5-step analysis.</p>
+      </div>
+      <div className="w-full space-y-1.5">
+        <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">Try these</p>
+        {prompts.map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: p } })}
+            className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
+          >
+            {p}
+          </button>
+        ))}
+      </div>
+      {history.length > 0 && (
+        <div className="w-full pt-2">
+          <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Recent analyses</p>
+          {history.slice(0, 3).map((entry) => (
+            <button
+              key={entry.id}
+              type="button"
+              onClick={() => dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })}
+              className="mb-1 block w-full rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-left text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
+            >
+              <span className="line-clamp-1">{entry.question}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Panel Root ───────────────────────────────────────────────────────────────
 
 /**
  * Right-side execution panel.
  *
  * Slides in from the right when `state.isExecutionPanelOpen` is true.
- * Displays the 5-step pipeline output in numbered, collapsible-free sections.
+ * Shows an inline input form at the top for new questions, and the
+ * 5-step pipeline output below when a result is available.
  */
 export function ExecutionPanel() {
   const { state, dispatch } = useCopilot();
-  const { isExecutionPanelOpen, activeResult, activeQuestion } = state;
+  const { isExecutionPanelOpen, activeResult, activeQuestion, history } = state;
 
-  if (!isExecutionPanelOpen || !activeResult) return null;
+  if (!isExecutionPanelOpen) return null;
 
   return (
     <>
@@ -332,18 +545,20 @@ export function ExecutionPanel() {
       {/* Panel */}
       <aside
         role="complementary"
-        aria-label="Copilot execution panel"
+        aria-label="AI Decision Assistant"
         className="fixed right-0 top-0 z-50 flex h-full w-[min(420px,100vw)] flex-col border-l border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-slate-900"
       >
         {/* Header */}
         <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-100 bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-4 dark:border-slate-700">
-          <div>
-            <p className="text-sm font-bold text-white">Execution Engine</p>
-            <p className="mt-0.5 text-[10px] text-blue-100 line-clamp-1">&ldquo;{activeQuestion}&rdquo;</p>
+          <div className="flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <p className="text-sm font-bold text-white">AI Decision Assistant</p>
           </div>
           <button
             onClick={() => dispatch({ type: 'CLOSE_PANEL' })}
-            aria-label="Close execution panel"
+            aria-label="Close AI assistant"
             className="rounded-md p-1 text-white/70 transition hover:text-white"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -352,46 +567,56 @@ export function ExecutionPanel() {
           </button>
         </div>
 
-        {/* Request metadata */}
-        <div className="shrink-0 flex items-center justify-between border-b border-slate-100 bg-slate-50 px-5 py-1.5 text-[10px] text-slate-400 dark:border-slate-700/60 dark:bg-slate-800/40">
-          <span>ID: {activeResult.requestId}</span>
-          <span>{new Date(activeResult.timestamp).toLocaleTimeString()}</span>
-        </div>
+        {/* Inline input form — always visible */}
+        <PanelInputForm />
 
-        {/* Scrollable 5-step content */}
-        <div className="flex-1 overflow-y-auto px-5 py-4">
-          <div className="space-y-6">
-            <IntentStep result={activeResult} />
-            <hr className="border-slate-100 dark:border-slate-700/60" />
-            <ContextStep result={activeResult} />
-            <hr className="border-slate-100 dark:border-slate-700/60" />
-            <AnalysisStep result={activeResult} />
-            <hr className="border-slate-100 dark:border-slate-700/60" />
-            <RiskStep result={activeResult} />
-            <hr className="border-slate-100 dark:border-slate-700/60" />
-            <ActionPlanStep result={activeResult} />
-          </div>
-        </div>
+        {/* Scrollable content */}
+        <div className="flex-1 overflow-y-auto">
+          {activeResult ? (
+            <>
+              {/* Request metadata */}
+              <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50 px-5 py-1.5 text-[10px] text-slate-400 dark:border-slate-700/60 dark:bg-slate-800/40">
+                <span className="line-clamp-1 italic">&ldquo;{activeQuestion}&rdquo;</span>
+                <span className="shrink-0">{new Date(activeResult.timestamp).toLocaleTimeString()}</span>
+              </div>
 
-        {/* Footer: history breadcrumb */}
-        {state.history.length > 1 && (
-          <div className="shrink-0 border-t border-slate-100 px-5 py-3 dark:border-slate-700">
-            <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Recent analyses ({state.history.length})</p>
-            <div className="flex flex-col gap-1">
-              {state.history.slice(0, 4).map((entry) => (
-                <button
-                  key={entry.id}
-                  onClick={() =>
-                    dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })
-                  }
-                  className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-left text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
-                >
-                  <span className="line-clamp-1">{entry.question}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+              {/* 5-step pipeline output */}
+              <div className="px-5 py-4">
+                <div className="space-y-6">
+                  <IntentStep result={activeResult} />
+                  <hr className="border-slate-100 dark:border-slate-700/60" />
+                  <ContextStep result={activeResult} />
+                  <hr className="border-slate-100 dark:border-slate-700/60" />
+                  <AnalysisStep result={activeResult} />
+                  <hr className="border-slate-100 dark:border-slate-700/60" />
+                  <RiskStep result={activeResult} />
+                  <hr className="border-slate-100 dark:border-slate-700/60" />
+                  <ActionPlanStep result={activeResult} />
+                </div>
+              </div>
+
+              {/* History breadcrumb */}
+              {history.length > 1 && (
+                <div className="shrink-0 border-t border-slate-100 px-5 py-3 dark:border-slate-700">
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Recent analyses ({history.length})</p>
+                  <div className="flex flex-col gap-1">
+                    {history.slice(0, 4).map((entry) => (
+                      <button
+                        key={entry.id}
+                        onClick={() => dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })}
+                        className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-1.5 text-left text-xs text-slate-600 transition hover:border-blue-300 hover:text-blue-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400"
+                      >
+                        <span className="line-clamp-1">{entry.question}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <DrawerEmptyState history={history} dispatch={dispatch} />
+          )}
+        </div>
 
         {/* Footer: disclaimer */}
         <div className="shrink-0 border-t border-slate-100 px-5 py-3 dark:border-slate-700">

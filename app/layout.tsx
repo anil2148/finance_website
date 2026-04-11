@@ -11,6 +11,7 @@ import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
 import { CopilotProvider } from '@/components/money-copilot/CopilotProvider';
 import { ExecutionPanel } from '@/components/money-copilot/ExecutionPanel';
+import { CopilotBubble } from '@/components/money-copilot/CopilotBubble';
 import { SITE_ORIGIN, absoluteUrl, organizationSchema, websiteSchema } from '@/lib/seo';
 
 const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
@@ -102,6 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </main>
             <Footer />
             <ExecutionPanel />
+            <CopilotBubble />
           </CopilotProvider>
         </PreferenceProvider>
 

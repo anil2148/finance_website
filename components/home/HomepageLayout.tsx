@@ -9,6 +9,7 @@ import { NewsletterForm } from '@/components/NewsletterForm';
 import AuthorBox from '@/components/common/AuthorBox';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 import { AUTHOR_PROFILES, PRIMARY_AUTHOR_ID } from '@/lib/authors';
+import { AskAIButton } from '@/components/money-copilot/AskAIButton';
 
 const popularCalculators = [
   {
@@ -232,6 +233,11 @@ export function HomepageLayout() {
               <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/tools">
                 See where this breaks
               </Link>
+              <AskAIButton
+                label="Ask AI a question"
+                prefillQuestion="Help me make a smarter financial decision"
+                className="border-cyan-300/60 bg-white/10 text-cyan-100 hover:bg-white/20 dark:border-cyan-400/40 dark:bg-white/10 dark:text-cyan-100"
+              />
             </div>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>

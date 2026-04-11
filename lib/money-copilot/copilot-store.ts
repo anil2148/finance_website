@@ -77,6 +77,7 @@ export type CopilotAction =
   | { type: 'SET_REGION'; payload: 'US' | 'India' }
   | { type: 'SET_RISK_PROFILE'; payload: 'conservative' | 'moderate' | 'aggressive' }
   | { type: 'OPEN_PANEL'; payload: { question: string; result: PipelineResult } }
+  | { type: 'OPEN_DRAWER'; payload?: { prefillQuestion?: string } }
   | { type: 'CLOSE_PANEL' }
   | { type: 'ADD_HISTORY_ENTRY'; payload: ReasoningHistoryEntry }
   | { type: 'CLEAR_HISTORY' }
@@ -102,6 +103,15 @@ export function copilotReducer(state: CopilotGlobalState, action: CopilotAction)
         isExecutionPanelOpen: true,
         activeQuestion: action.payload.question,
         activeResult: action.payload.result,
+      };
+      break;
+
+    case 'OPEN_DRAWER':
+      next = {
+        ...state,
+        isExecutionPanelOpen: true,
+        activeResult: null,
+        activeQuestion: action.payload?.prefillQuestion ?? '',
       };
       break;
 
