@@ -20,7 +20,6 @@ type NavLink = {
 
 const globalLinks: NavLink[] = [
   { label: 'Home', href: '/' },
-  { label: 'AI Copilot', href: '/ai-money-copilot' },
   {
     label: 'Scenarios',
     children: [
@@ -57,7 +56,6 @@ const globalLinks: NavLink[] = [
 
 const indiaLinks: NavLink[] = [
   { label: 'Home', href: '/in' },
-  { label: 'AI Copilot', href: '/ai-money-copilot' },
   {
     label: 'Scenarios',
     children: [
