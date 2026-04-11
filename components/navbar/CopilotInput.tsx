@@ -136,19 +136,21 @@ export function CopilotInput({ className = '', compact = false }: CopilotInputPr
   );
 
   return (
-    <div className={`flex items-center gap-2 ${className}`} role="search" aria-label="Copilot command bar">
+    // min-w-0 is required so this flex-1 item can shrink below its content size in the parent row
+    <div className={`flex min-w-0 items-center gap-2 ${className}`} role="search" aria-label="Copilot command bar">
       {/* Brand pill — full (non-compact) mode only; always shows text since this renders at lg+ */}
       {!compact && (
         <div className="flex shrink-0 items-center gap-1 rounded-lg bg-blue-600 px-2 py-1.5 text-[11px] font-bold text-white">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
           </svg>
-          <span>Copilot</span>
+          <span className="whitespace-nowrap">Copilot</span>
         </div>
       )}
 
-      {/* Input area — min-w prevents collapse to an indistinguishable square at tight widths */}
-      <div className="relative min-w-[4rem] flex-1">
+      {/* Input area — min-w-[8rem] ensures the field stays usable at tight widths;
+          flex-1 + min-w-0 allows proper shrinking within the parent flex row */}
+      <div className="relative min-w-0 flex-1" style={{ minWidth: '8rem' }}>
         <input
           ref={inputRef}
           type="text"
