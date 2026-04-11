@@ -328,15 +328,19 @@ function PanelInputForm() {
     }
   }, [pathRegion, state.region, dispatch]);
 
-  // When panel opens with a prefilled question, focus the input
+  // When the panel first opens: sync any prefill question and focus the input.
+  // We capture the initial values as refs so the focus effect only runs on mount.
+  const initialQuestion = useRef(state.activeQuestion);
+  const initialHasResult = useRef(!!state.activeResult);
   useEffect(() => {
-    if (state.activeQuestion && !state.activeResult) {
-      setQuery(state.activeQuestion);
+    if (initialQuestion.current && !initialHasResult.current) {
+      setQuery(initialQuestion.current);
     }
-    // Auto-focus on mount
-    setTimeout(() => inputRef.current?.focus(), 80);
+    // Focus after the component paints using rAF so the element is definitely in the DOM.
+    const raf = requestAnimationFrame(() => { inputRef.current?.focus(); });
+    return () => cancelAnimationFrame(raf);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, []); // Intentionally runs once on mount only — initial values captured via refs above.
 
   const handleSubmit = useCallback(async (text: string) => {
     const q = text.trim();
