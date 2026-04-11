@@ -1,4 +1,5 @@
 import type { DecisionMode } from './types';
+import { isAmbiguousOfferQuery } from './intent';
 
 export const FINANCE_SPHERE_COPILOT_PROMPT = `
 You are FinanceSphere AI Money Copilot, a financial decision intelligence engine.
@@ -364,41 +365,8 @@ export function getStarterPrompts(): string[] {
 export function getModeFromQuestion(question: string): DecisionMode {
   const q = question.toLowerCase();
 
-  // ── Ambiguity check: detect vague "offer/deal" phrases first ──────────────
-  // If the user mentions an offer/deal without specifying what type it is,
-  // route to ambiguous-offer so the copilot asks a targeted clarification.
-  const ambiguousPatterns: string[] = [
-    'should i accept the offer',
-    'should i take the offer',
-    'should i take this offer',
-    'should i accept this offer',
-    'is this offer worth it',
-    'is this a good deal',
-    'should i go for this',
-    'should i accept it',
-    'is this worth it',
-  ];
-  const jobQualifiers: string[] = ['job', 'salary', 'compensation', 'w2', 'c2c', 'contractor', 'employment', 'position'];
-  const loanQualifiers: string[] = ['loan', 'mortgage', 'refinance', 'credit card', 'balance transfer', 'apr', 'interest rate'];
-
-  const matchedAmbiguous = ambiguousPatterns.some((p) => q.includes(p));
-  if (matchedAmbiguous) {
-    const hasJobQualifier = jobQualifiers.some((k) => q.includes(k));
-    const hasLoanQualifier = loanQualifiers.some((k) => q.includes(k));
-    if (!hasJobQualifier && !hasLoanQualifier) return 'ambiguous-offer';
-  }
-
-  // Bare "offer" or "deal" without a specific type qualifier → ambiguous
-  const hasBareOffer =
-    (q.includes('offer') || q.includes(' deal')) &&
-    !jobQualifiers.some((k) => q.includes(k)) &&
-    !loanQualifiers.some((k) => q.includes(k)) &&
-    !q.includes('home') &&
-    !q.includes('house') &&
-    !q.includes('mortgage');
-  if (hasBareOffer && (q.includes('should') || q.includes('worth') || q.includes('accept') || q.includes('take'))) {
-    return 'ambiguous-offer';
-  }
+  // ── Ambiguity check: use the shared helper to avoid duplicating detection logic ──
+  if (isAmbiguousOfferQuery(question)) return 'ambiguous-offer';
 
   if (
     q.includes('move') || q.includes('relocat') || q.includes('moving to') ||

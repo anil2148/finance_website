@@ -21,6 +21,10 @@ import type {
   ReasoningHistoryEntry,
 } from './types';
 import { getModeFromQuestion } from './prompts';
+import {
+  isAmbiguousOfferQuery,
+  AMBIGUOUS_OFFER_CLARIFICATION,
+} from './intent';
 
 // ─── Layer 1: Intent ─────────────────────────────────────────────────────────
 
@@ -32,41 +36,6 @@ interface RuleSet {
   mode: DecisionMode;
   weight: number;
 }
-
-/**
- * Phrases that signal the user is talking about an offer or deal without
- * specifying what type it is (job, loan, credit card, mortgage, etc.).
- */
-const AMBIGUOUS_OFFER_PATTERNS: string[] = [
-  'should i accept the offer',
-  'should i take the offer',
-  'should i take this offer',
-  'should i accept this offer',
-  'is this offer worth it',
-  'is this a good deal',
-  'should i go for this',
-  'should i accept it',
-  'is this worth it',
-];
-
-/** Minimum keyword signals that qualify an "offer" as job-related. */
-const JOB_OFFER_QUALIFIERS: string[] = [
-  'job offer', 'salary offer', 'new job', 'job in', 'position',
-  'w2', 'c2c', 'contractor', 'employment offer', 'compensation package',
-];
-
-/** Minimum keyword signals that qualify an "offer" as loan/debt-related. */
-const LOAN_OFFER_QUALIFIERS: string[] = [
-  'loan offer', 'personal loan', 'mortgage offer', 'refinance offer',
-  'balance transfer', 'credit card offer', 'card offer', 'apr', 'interest rate offer',
-];
-
-/**
- * Clarification question shown to the user when the offer type is ambiguous.
- * Kept short and conversion-friendly.
- */
-const AMBIGUOUS_OFFER_CLARIFICATION =
-  'I can help with that. Is this a job offer, loan offer, credit card offer, or mortgage/refinance offer?';
 
 const INTENT_RULES: RuleSet[] = [
   {
@@ -123,51 +92,26 @@ const INTENT_RULES: RuleSet[] = [
 /**
  * Confidence thresholds that control routing:
  *   >= HIGH   → proceed with intent-specific flow
- *   MID–HIGH  → ask targeted clarification before analysis
- *   < MID     → do not analyze; ask a concise clarification question
+ *   MID–HIGH  → suggest clarification but allow provisional analysis
+ *   < MID     → block analysis; ask a concise clarification question
  */
 const CONFIDENCE_THRESHOLD_HIGH = 0.75;
 const CONFIDENCE_THRESHOLD_MID = 0.50;
 
 export function classifyIntent(question: string): IntentClassification {
-  const q = question.toLowerCase();
-
-  // ── Ambiguity check: detect vague "offer/deal" phrases before keyword scoring ──
-  const isAmbiguousOffer = AMBIGUOUS_OFFER_PATTERNS.some((p) => q.includes(p));
-  if (isAmbiguousOffer) {
-    const hasJobQualifier = JOB_OFFER_QUALIFIERS.some((k) => q.includes(k));
-    const hasLoanQualifier = LOAN_OFFER_QUALIFIERS.some((k) => q.includes(k));
-
-    if (!hasJobQualifier && !hasLoanQualifier) {
-      // Genuinely ambiguous — ask for clarification
-      return {
-        type: 'ambiguous-offer',
-        category: 'ambiguous',
-        confidence: 0.3,
-        signals: ['offer (type unclear)'],
-        needsClarification: true,
-        clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
-      };
-    }
-    // Has qualifiers — fall through to keyword scoring below
-  }
-
-  // Also catch bare "offer" or "deal" without any specific qualifier
-  const hasBareOffer =
-    (q.includes('offer') || q.includes(' deal')) &&
-    !JOB_OFFER_QUALIFIERS.some((k) => q.includes(k)) &&
-    !LOAN_OFFER_QUALIFIERS.some((k) => q.includes(k));
-  if (hasBareOffer) {
+  // ── Ambiguity check: use the shared helper before keyword scoring ──────────
+  if (isAmbiguousOfferQuery(question)) {
     return {
       type: 'ambiguous-offer',
       category: 'ambiguous',
       confidence: 0.3,
-      signals: ['offer / deal (type unclear)'],
+      signals: ['offer (type unclear)'],
       needsClarification: true,
       clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
     };
   }
 
+  const q = question.toLowerCase();
   const scores: Map<string, { category: IntentCategory; mode: DecisionMode; score: number; signals: string[] }> =
     new Map();
 
@@ -224,7 +168,7 @@ export function classifyIntent(question: string): IntentClassification {
     category: best.category,
     confidence: parseFloat(confidence.toFixed(2)),
     signals: [...new Set(best.signals)],
-    needsClarification: needsClarification ? true : undefined,
+    needsClarification: needsClarification || undefined,
     clarificationQuestion,
   };
 }
