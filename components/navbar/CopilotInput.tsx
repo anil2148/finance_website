@@ -150,7 +150,7 @@ export function CopilotInput({ className = '', compact = false }: CopilotInputPr
 
       {/* Input area — min-w-[8rem] ensures the field stays usable at tight widths;
           flex-1 + min-w-0 allows proper shrinking within the parent flex row */}
-      <div className="relative min-w-0 flex-1" style={{ minWidth: '8rem' }}>
+      <div className="relative min-w-[8rem] flex-1">
         <input
           ref={inputRef}
           type="text"
