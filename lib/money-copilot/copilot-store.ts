@@ -14,7 +14,12 @@ const HISTORY_LIMIT = 20;
 // ─── Default state ─────────────────────────────────────────────────────────────
 
 function generateSessionId(): string {
-  return `sess_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  // Use crypto.randomUUID when available (Node 14.17+ / all modern browsers);
+  // fall back to a timestamp suffix only when crypto is unavailable (SSR edge cases).
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return `sess_${crypto.randomUUID()}`;
+  }
+  return `sess_${Date.now()}_${Date.now().toString(36)}`;
 }
 
 export function buildDefaultState(): CopilotGlobalState {

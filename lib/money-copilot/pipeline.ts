@@ -374,7 +374,7 @@ export function runPipeline(
     step3_analysis: reasoning,
     step4_risk: risk,
     step5_actionPlan: executionPlan,
-    requestId: `req_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+    requestId: `req_${Date.now()}_${typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function' ? crypto.randomUUID().slice(0, 8) : Date.now().toString(36)}`,
     timestamp: new Date().toISOString(),
   };
 }
