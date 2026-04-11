@@ -19,6 +19,7 @@ import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 import { getCalculatorInsight } from '@/lib/calculators/insights';
 import { AdUnit } from '@/components/ui/AdUnit';
 import { AD_SLOTS } from '@/lib/adSlots';
+import { AskAIButton } from '@/components/money-copilot/AskAIButton';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -246,6 +247,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 </button>
                 <DownloadPdfButton targetRef={exportRef} calculatorTitle={definition.title} />
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
+                <AskAIButton
+                  label="Ask AI about this result"
+                  prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}`}
+                  variant="secondary"
+                />
                 {savedMessage && <p className="text-xs text-emerald-700 dark:text-emerald-300" role="status">{savedMessage}</p>}
               </div>
 

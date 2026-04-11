@@ -205,7 +205,7 @@ function EmptyState() {
       <div>
         <p className="text-base font-bold text-slate-800 dark:text-slate-200">No analyses yet</p>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400 max-w-sm">
-          Use the <strong className="text-blue-600 dark:text-blue-400">Copilot command bar</strong> at the top of the page to run a financial decision analysis. Results will appear here.
+          Use the <strong className="text-blue-600 dark:text-blue-400">Ask AI</strong> button in the bottom-right corner to run a financial decision analysis. Results will appear here.
         </p>
       </div>
       <p className="rounded-xl bg-blue-50 px-4 py-2.5 text-xs font-medium text-blue-700 dark:bg-blue-950/40 dark:text-blue-300">
@@ -247,10 +247,10 @@ export function CopilotWorkspace() {
           <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
         <p className="text-xs text-blue-700 dark:text-blue-300">
-          <strong>To run a new analysis</strong>, type your financial question into the{' '}
-          <span className="font-bold">Copilot command bar</span> at the top of the page and press{' '}
+          <strong>To run a new analysis</strong>, click the{' '}
+          <span className="font-bold">Ask AI</span> button in the bottom-right corner, type your financial question, and press{' '}
           <kbd className="rounded border border-blue-300 bg-white px-1 py-0.5 font-mono text-[10px] text-blue-700 dark:border-blue-600 dark:bg-slate-800 dark:text-blue-300">Enter</kbd>{' '}
-          or click <strong>Execute</strong>. Results open in the right panel and are saved here.
+          or click <strong>Ask</strong>. Results open in the right panel and are saved here.
         </p>
       </div>
 
