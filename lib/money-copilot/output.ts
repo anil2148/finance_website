@@ -9,6 +9,7 @@ import {
 } from './calculators';
 import { assessConfidence, compareScenarios, computeScenarioResults, extractMissingData } from './scenario';
 import { getModeFromQuestion } from './prompts';
+import { mergeNlpIntoInputs, parseFinancialDataFromText } from './nlp-parser';
 
 const DISCLAIMER =
   'This tool provides educational decision-support estimates only. It is not financial, legal, or tax advice. All calculations use approximations and stated assumptions. Consult a qualified financial professional before making major financial decisions.';
@@ -469,22 +470,38 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   const mode = request.mode !== 'custom' ? request.mode : getModeFromQuestion(request.question);
   const effectiveMode: DecisionMode = mode;
 
-  const computedScenarios = request.scenarios.length > 0
-    ? compareScenarios(request.scenarios)
+  // ─── NLP fallback: extract salary / offer data from natural language ──────
+  // Only run the parser when structured inputs are missing to avoid overwriting
+  // explicit user-entered values with approximate NLP extractions.
+  const hasStructuredIncome = !!(request.inputs.annualSalary || request.inputs.hourlyRate);
+  const enrichedInputs: FinancialInputs = hasStructuredIncome
+    ? request.inputs
+    : (() => {
+        const parsed = parseFinancialDataFromText(request.question, request.context);
+        return mergeNlpIntoInputs(request.inputs, parsed);
+      })();
+
+  // Use the potentially-enriched inputs for the remainder of the function
+  const enrichedRequest: CopilotRequest = hasStructuredIncome
+    ? request
+    : { ...request, inputs: enrichedInputs };
+
+  const computedScenarios = enrichedRequest.scenarios.length > 0
+    ? compareScenarios(enrichedRequest.scenarios)
     : [];
 
-  if (computedScenarios.length === 0 && (request.inputs.annualSalary || request.inputs.hourlyRate)) {
+  if (computedScenarios.length === 0 && (enrichedRequest.inputs.annualSalary || enrichedRequest.inputs.hourlyRate)) {
     computedScenarios.push({
       id: 'default',
       name: 'Current situation',
-      inputs: request.inputs,
-      results: computeScenarioResults(request.inputs)
+      inputs: enrichedRequest.inputs,
+      results: computeScenarioResults(enrichedRequest.inputs)
     });
   }
 
-  const missingData = extractMissingData(request.inputs, effectiveMode);
-  const confidenceLevel = assessConfidence(request.inputs, effectiveMode);
-  const assumptions = buildAssumptions(request.inputs, effectiveMode);
+  const missingData = extractMissingData(enrichedRequest.inputs, effectiveMode);
+  const confidenceLevel = assessConfidence(enrichedRequest.inputs, effectiveMode);
+  const assumptions = buildAssumptions(enrichedRequest.inputs, effectiveMode);
 
   const VALID_MODES = new Set<DecisionMode>([
     'job-offer', 'relocation', 'debt-payoff', 'roth-vs-traditional',
@@ -492,10 +509,11 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   ]);
   const safeMode: DecisionMode = VALID_MODES.has(effectiveMode) ? effectiveMode : 'custom';
   const handler = MODE_HANDLERS[safeMode];
-  const modeResponse = handler(request, computedScenarios);
+  const modeResponse = handler(enrichedRequest, computedScenarios);
 
   // ─── Baseline income validation (DATA VALIDATION RULE) ───────────────────
-  const hasBaselineIncome = !!(request.inputs.annualSalary || request.inputs.hourlyRate);
+  // Check the enriched inputs so NLP-extracted salary satisfies the baseline check.
+  const hasBaselineIncome = !!(enrichedRequest.inputs.annualSalary || enrichedRequest.inputs.hourlyRate);
   if (!hasBaselineIncome) {
     modeResponse.recommendation =
       'insufficient data — baseline income required. Please provide your annual salary or hourly rate to generate a recommendation.';
@@ -515,7 +533,7 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   }
 
   // ─── Decision engine structured fields ───────────────────────────────────
-  const { inputs } = request;
+  const { inputs } = enrichedRequest;
 
   /** Standard work-hours per year: 40h/week × 52 weeks */
   const HOURS_PER_YEAR = 2080;
