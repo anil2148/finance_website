@@ -120,11 +120,6 @@ const logoVariants = {
   visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } },
 };
 
-const ctaPulse = {
-  scale: [1, 1.03, 1],
-  transition: { duration: 2.2, repeat: Infinity, ease: 'easeInOut' },
-};
-
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -231,16 +226,6 @@ export function Navbar() {
                   <NavItem key={item.label} item={item} isActive={activeCheck} index={i} />
                 ))}
               </ul>
-
-              {/* AI Copilot CTA with pulse animation */}
-              <motion.div animate={ctaPulse} whileHover={{ scale: 1.06, boxShadow: '0 0 18px 4px rgba(10,102,194,0.35)' }} className="rounded-xl">
-                <Link
-                  href="/ai-money-copilot"
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-brand to-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70"
-                >
-                  <span>✦</span> AI Copilot
-                </Link>
-              </motion.div>
 
               {/* Start a Decision primary CTA */}
               <motion.button
