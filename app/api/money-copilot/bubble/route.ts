@@ -2,9 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { FINANCE_SPHERE_COPILOT_PROMPT } from '@/lib/money-copilot/prompts';
 import { getGroqClient } from '@/lib/groq/client';
 import { sanitizeText } from '@/lib/api/sanitize';
+import { hashKey, getCache, setCache } from '@/lib/cache/redis';
 import type { BubbleRequest, BubbleResponse, PageContext } from '@/lib/money-copilot/types';
 
 export const runtime = "nodejs";
+
+/**
+ * In-flight request deduplication map for the bubble endpoint.
+ *
+ * Prevents the same question from triggering multiple parallel AI calls.
+ * Keys are SHA-256 hashes of (question + pageContext.path).
+ */
+const inFlightRequests = new Map<string, Promise<BubbleResponse | null>>();
 
 const AI_MAX_TOKENS = 512;
 
@@ -258,16 +267,61 @@ export async function POST(req: NextRequest) {
       pageContext
     };
 
+    // Build a stable cache key from question + page path
+    const cacheKey = hashKey(`bubble\x00${rawQuestion}\x00${pageContext.path}`);
+
+    // Check Redis/memory cache first
+    const cached = await getCache(cacheKey) as BubbleResponse | null;
+    if (cached) {
+      console.log('[CACHE] HIT (bubble)');
+      return NextResponse.json(cached);
+    }
+    console.log('[CACHE] MISS (bubble)');
+
+    // ------------------------------------------------------------------
+    // Request deduplication: if an identical bubble request is already
+    // in-flight, await its result instead of spawning a duplicate call.
+    // ------------------------------------------------------------------
+    if (inFlightRequests.has(cacheKey)) {
+      console.log('[DEDUP] Awaiting in-flight bubble request for key:', cacheKey);
+      // Non-null assertion is safe: has() guarantees the key exists
+      const deduped = await inFlightRequests.get(cacheKey)!;
+      return NextResponse.json(deduped ?? buildFallbackBubbleResponse(bubbleReq));
+    }
+
     const fallbackSuggestions = getSuggestionsForPage(pageContext);
     const systemPrompt = buildBubbleSystemPrompt();
     const userMessage = buildBubbleUserMessage(bubbleReq, fallbackSuggestions);
 
-    const rawResponse = await callAiForBubble(userMessage, systemPrompt);
+    // Register in-flight promise before awaiting so concurrent requests can share it.
+    // Initialized with a no-op to satisfy definite-assignment; the Promise executor
+    // always runs synchronously and overwrites this before first use.
+    let resolveInFlight: (value: BubbleResponse | null) => void = () => {};
+    const inFlightPromise = new Promise<BubbleResponse | null>(resolve => {
+      resolveInFlight = resolve;
+    });
+    inFlightRequests.set(cacheKey, inFlightPromise);
 
-    const parsed = rawResponse ? parseBubbleResponse(rawResponse) : null;
-    const response = parsed ?? buildFallbackBubbleResponse(bubbleReq);
+    try {
+      const rawResponse = await callAiForBubble(userMessage, systemPrompt);
+      const parsed = rawResponse ? parseBubbleResponse(rawResponse) : null;
+      const response = parsed ?? buildFallbackBubbleResponse(bubbleReq);
 
-    return NextResponse.json(response);
+      // Cache successful (non-fallback) responses
+      if (parsed) {
+        await setCache(cacheKey, response);
+      }
+
+      // Resolve with the final response (not just `parsed`) so deduplicated
+      // requests receive the same result as the original request.
+      resolveInFlight(response);
+      return NextResponse.json(response);
+    } catch (err) {
+      resolveInFlight(null);
+      throw err;
+    } finally {
+      inFlightRequests.delete(cacheKey);
+    }
   } catch (err) {
     console.error('[money-copilot/bubble] Error:', err);
     const details = err instanceof Error ? err.message : String(err);
