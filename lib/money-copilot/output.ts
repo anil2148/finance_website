@@ -517,14 +517,17 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   // ─── Decision engine structured fields ───────────────────────────────────
   const { inputs } = request;
 
+  /** Standard work-hours per year: 40h/week × 52 weeks */
+  const HOURS_PER_YEAR = 2080;
+
   // Normalise income to annual, respecting incomePeriod field
   const periodMultiplier = inputs.incomePeriod === 'monthly' ? 12 : 1;
   const baseAnnual = inputs.annualSalary
     ? inputs.annualSalary * periodMultiplier
-    : (inputs.hourlyRate ? inputs.hourlyRate * 2080 : undefined);
+    : (inputs.hourlyRate ? inputs.hourlyRate * HOURS_PER_YEAR : undefined);
   const newAnnual = inputs.newAnnualSalary
     ? inputs.newAnnualSalary * periodMultiplier
-    : (inputs.newHourlyRate ? inputs.newHourlyRate * 2080 : undefined);
+    : (inputs.newHourlyRate ? inputs.newHourlyRate * HOURS_PER_YEAR : undefined);
 
   const { monthlyNet: baseMonthlyNet } = baseAnnual
     ? estimateMonthlyNetIncome(baseAnnual, inputs.state, inputs.employmentType)
@@ -544,7 +547,16 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
     benefitsAnnual === undefined &&
     (effectiveMode === 'job-offer' || effectiveMode === 'relocation');
 
-  // Risk score: 0–100 (higher = riskier)
+  // Risk score: 0–100 (higher = riskier).
+  // Weights: housing burden ratio (max safe: 0.36) → 30 pts, debt load ratio (max safe: 0.20) → 30 pts,
+  // emergency runway shortfall vs 6-month target → 40 pts.
+  const HOUSING_BURDEN_MAX = 0.36;
+  const DEBT_LOAD_MAX = 0.2;
+  const EMERGENCY_TARGET_MONTHS = 6;
+  const HOUSING_WEIGHT = 30;
+  const DEBT_WEIGHT = 30;
+  const EMERGENCY_WEIGHT = 40;
+
   const defaultResults = computedScenarios[0]?.results;
   let riskScore = 50;
   if (defaultResults) {
@@ -552,9 +564,9 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
     riskScore = Math.min(
       100,
       Math.round(
-        (housingBurdenRatio / 0.36) * 30 +
-        (debtLoadRatio / 0.2) * 30 +
-        Math.max(0, (6 - emergencyRunwayMonths) / 6) * 40
+        (housingBurdenRatio / HOUSING_BURDEN_MAX) * HOUSING_WEIGHT +
+        (debtLoadRatio / DEBT_LOAD_MAX) * DEBT_WEIGHT +
+        Math.max(0, (EMERGENCY_TARGET_MONTHS - emergencyRunwayMonths) / EMERGENCY_TARGET_MONTHS) * EMERGENCY_WEIGHT
       )
     );
   }
@@ -591,7 +603,15 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
     riskLevel: riskLevelLabel
   };
 
-  const insight = modeResponse.sensitivities?.[0] ?? modeResponse.risks?.[0] ?? '';
+  // Insight: build a focused 1–2 sentence tradeoff summary from available data.
+  // Prefer the first sensitivity item (most likely to contain a magnitude), then risks,
+  // then a fallback built from the decision engine metrics.
+  let insight = modeResponse.sensitivities?.[0] ?? modeResponse.risks?.[0] ?? '';
+  if (!insight && hasBaselineIncome) {
+    insight = netChangeMonthly !== undefined
+      ? `Switching from ${decisionEngine.currentIncome} to ${decisionEngine.newIncome} results in a net change of ${decisionEngine.netChange} in monthly take-home pay.`
+      : `Estimated monthly take-home is ${decisionEngine.currentIncome} with a ${riskLevelLabel.toLowerCase()} risk profile (risk score ${riskScore}/100).`;
+  }
 
   return {
     summary: modeResponse.summary ?? 'Enter your financial information to receive a personalized analysis.',

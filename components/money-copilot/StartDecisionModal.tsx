@@ -120,11 +120,17 @@ export function StartDecisionModal({ open, onClose }: StartDecisionModalProps) {
     try {
       const baseVal = parseIncome(baseIncome);
       const newVal = parseIncome(newIncome);
+      // Always normalise to annual before sending so the backend receives annual values
+      const baseAnnual = baseVal !== undefined
+        ? (incomePeriod === 'monthly' ? baseVal * 12 : baseVal)
+        : undefined;
+      const newAnnual = newVal !== undefined
+        ? (incomePeriod === 'monthly' ? newVal * 12 : newVal)
+        : undefined;
       const inputs = {
-        ...(incomePeriod === 'annual'
-          ? { annualSalary: baseVal, newAnnualSalary: newVal }
-          : { annualSalary: baseVal ? baseVal * 12 : undefined, newAnnualSalary: newVal ? newVal * 12 : undefined }),
-        incomePeriod
+        annualSalary: baseAnnual,
+        newAnnualSalary: newAnnual,
+        incomePeriod: 'annual' as const
       };
       const body = {
         mode: goal as DecisionMode,
