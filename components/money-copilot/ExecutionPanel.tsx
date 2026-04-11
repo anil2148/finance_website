@@ -34,11 +34,23 @@ function ConfidenceBadge({ value }: { value: number }) {
 
 function IntentStep({ result }: { result: PipelineResult }) {
   const { step1_intent: intent } = result;
+  const isAmbiguous = intent.type === 'ambiguous-offer' || intent.needsClarification || intent.confidence < 0.5;
   return (
     <section>
       <SectionHeader step={1} title="Intent" />
+      {isAmbiguous && (
+        <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-700/40 dark:bg-amber-950/20 dark:text-amber-400">
+          <p className="font-semibold">⚠️ Needs clarification</p>
+          {intent.clarificationQuestion && (
+            <p className="mt-0.5 opacity-90">{intent.clarificationQuestion}</p>
+          )}
+        </div>
+      )}
       <div className="space-y-2 text-sm">
-        <Row label="Type" value={intent.type.replace(/-/g, ' ')} />
+        <Row
+          label="Type"
+          value={intent.type === 'ambiguous-offer' ? 'Offer type unclear' : intent.type.replace(/-/g, ' ')}
+        />
         <Row label="Category" value={intent.category} />
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-500 dark:text-slate-400">Confidence</span>
@@ -92,10 +104,17 @@ function ContextStep({ result }: { result: PipelineResult }) {
 // ─── Section: Step 3 — Analysis ──────────────────────────────────────────────
 
 function AnalysisStep({ result }: { result: PipelineResult }) {
-  const { step3_analysis: analysis } = result;
+  const { step1_intent: intent, step3_analysis: analysis } = result;
+  const needsClarification = intent.type === 'ambiguous-offer' || intent.needsClarification || intent.confidence < 0.5;
+  const title = needsClarification ? 'Next Step' : 'Analysis';
   return (
     <section>
-      <SectionHeader step={3} title="Analysis" />
+      <SectionHeader step={3} title={title} />
+      {needsClarification && (
+        <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-700 dark:border-blue-700/40 dark:bg-blue-950/20 dark:text-blue-400">
+          Provide more context or clarify the offer type to unlock a full analysis.
+        </div>
+      )}
       <div className="space-y-3">
         <p className="text-[11px] leading-relaxed text-slate-500 dark:text-slate-400 italic">{analysis.methodology}</p>
 

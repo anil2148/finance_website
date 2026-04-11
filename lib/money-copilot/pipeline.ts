@@ -33,9 +33,45 @@ interface RuleSet {
   weight: number;
 }
 
+/**
+ * Phrases that signal the user is talking about an offer or deal without
+ * specifying what type it is (job, loan, credit card, mortgage, etc.).
+ */
+const AMBIGUOUS_OFFER_PATTERNS: string[] = [
+  'should i accept the offer',
+  'should i take the offer',
+  'should i take this offer',
+  'should i accept this offer',
+  'is this offer worth it',
+  'is this a good deal',
+  'should i go for this',
+  'should i accept it',
+  'is this worth it',
+];
+
+/** Minimum keyword signals that qualify an "offer" as job-related. */
+const JOB_OFFER_QUALIFIERS: string[] = [
+  'job offer', 'salary offer', 'new job', 'job in', 'position',
+  'w2', 'c2c', 'contractor', 'employment offer', 'compensation package',
+];
+
+/** Minimum keyword signals that qualify an "offer" as loan/debt-related. */
+const LOAN_OFFER_QUALIFIERS: string[] = [
+  'loan offer', 'personal loan', 'mortgage offer', 'refinance offer',
+  'balance transfer', 'credit card offer', 'card offer', 'apr', 'interest rate offer',
+];
+
+/**
+ * Clarification question shown to the user when the offer type is ambiguous.
+ * Kept short and conversion-friendly.
+ */
+const AMBIGUOUS_OFFER_CLARIFICATION =
+  'I can help with that. Is this a job offer, loan offer, credit card offer, or mortgage/refinance offer?';
+
 const INTENT_RULES: RuleSet[] = [
   {
-    keywords: ['salary', 'job', 'offer', 'w2', 'c2c', 'contractor', 'compensation', 'income', 'hire', 'promotion'],
+    // Require explicit job-related signals — bare "offer" is NOT sufficient
+    keywords: ['salary', 'job', 'job offer', 'w2', 'c2c', 'contractor', 'compensation', 'income', 'hire', 'promotion'],
     category: 'income',
     mode: 'job-offer',
     weight: 2,
@@ -47,7 +83,7 @@ const INTENT_RULES: RuleSet[] = [
     weight: 2,
   },
   {
-    keywords: ['debt', 'loan', 'credit card', 'payoff', 'pay off', 'refinanc', 'student loan', 'interest rate'],
+    keywords: ['debt', 'loan', 'credit card', 'payoff', 'pay off', 'refinanc', 'student loan', 'interest rate', 'balance transfer'],
     category: 'debt',
     mode: 'debt-payoff',
     weight: 2,
@@ -84,8 +120,54 @@ const INTENT_RULES: RuleSet[] = [
   },
 ];
 
+/**
+ * Confidence thresholds that control routing:
+ *   >= HIGH   → proceed with intent-specific flow
+ *   MID–HIGH  → ask targeted clarification before analysis
+ *   < MID     → do not analyze; ask a concise clarification question
+ */
+const CONFIDENCE_THRESHOLD_HIGH = 0.75;
+const CONFIDENCE_THRESHOLD_MID = 0.50;
+
 export function classifyIntent(question: string): IntentClassification {
   const q = question.toLowerCase();
+
+  // ── Ambiguity check: detect vague "offer/deal" phrases before keyword scoring ──
+  const isAmbiguousOffer = AMBIGUOUS_OFFER_PATTERNS.some((p) => q.includes(p));
+  if (isAmbiguousOffer) {
+    const hasJobQualifier = JOB_OFFER_QUALIFIERS.some((k) => q.includes(k));
+    const hasLoanQualifier = LOAN_OFFER_QUALIFIERS.some((k) => q.includes(k));
+
+    if (!hasJobQualifier && !hasLoanQualifier) {
+      // Genuinely ambiguous — ask for clarification
+      return {
+        type: 'ambiguous-offer',
+        category: 'ambiguous',
+        confidence: 0.3,
+        signals: ['offer (type unclear)'],
+        needsClarification: true,
+        clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
+      };
+    }
+    // Has qualifiers — fall through to keyword scoring below
+  }
+
+  // Also catch bare "offer" or "deal" without any specific qualifier
+  const hasBareOffer = (q.includes('offer') || q.includes(' deal')) && !q.includes('job') && !q.includes('salary');
+  if (hasBareOffer) {
+    const hasJobQualifier = JOB_OFFER_QUALIFIERS.some((k) => q.includes(k));
+    const hasLoanQualifier = LOAN_OFFER_QUALIFIERS.some((k) => q.includes(k));
+    if (!hasJobQualifier && !hasLoanQualifier) {
+      return {
+        type: 'ambiguous-offer',
+        category: 'ambiguous',
+        confidence: 0.3,
+        signals: ['offer / deal (type unclear)'],
+        needsClarification: true,
+        clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
+      };
+    }
+  }
 
   const scores: Map<string, { category: IntentCategory; mode: DecisionMode; score: number; signals: string[] }> =
     new Map();
@@ -111,6 +193,8 @@ export function classifyIntent(question: string): IntentClassification {
       category: 'general',
       confidence: 0.3,
       signals: [],
+      needsClarification: true,
+      clarificationQuestion: 'Could you share more details? For example, is this about a job offer, loan, investment, or retirement decision?',
     };
   }
 
@@ -124,11 +208,24 @@ export function classifyIntent(question: string): IntentClassification {
   const maxPossible = Math.max(...INTENT_RULES.map((r) => r.weight * r.keywords.length));
   const confidence = Math.min(0.95, best.score / (maxPossible * 0.3));
 
+  // ── Confidence threshold routing ──────────────────────────────────────────
+  // < 0.50: do not analyze — ask concise clarification
+  // 0.50–0.74: flag for targeted clarification but allow provisional analysis
+  const needsClarification = confidence < CONFIDENCE_THRESHOLD_HIGH;
+  const clarificationQuestion =
+    confidence < CONFIDENCE_THRESHOLD_MID
+      ? 'Could you provide more context? For example: what type of offer is this, and what is your current financial situation?'
+      : confidence < CONFIDENCE_THRESHOLD_HIGH
+      ? 'A few more details would help me give you a more accurate analysis. What is the specific offer type and key terms?'
+      : undefined;
+
   return {
     type: best.mode,
     category: best.category,
     confidence: parseFloat(confidence.toFixed(2)),
     signals: [...new Set(best.signals)],
+    needsClarification: needsClarification || undefined,
+    clarificationQuestion,
   };
 }
 

@@ -6,6 +6,7 @@ export type DecisionMode =
   | 'emergency-fund'
   | 'home-affordability'
   | 'budget-stress-test'
+  | 'ambiguous-offer'
   | 'custom';
 
 export interface FinancialInputs {
@@ -128,9 +129,13 @@ export type ExecutionActionType = 'rebalance' | 'simulate' | 'report' | 'hedge';
 /** Result of the Intent Layer: what the user wants + how certain we are. */
 export interface IntentClassification {
   type: DecisionMode;
-  category: 'income' | 'debt' | 'investment' | 'real-estate' | 'tax' | 'retirement' | 'general';
+  category: 'income' | 'debt' | 'investment' | 'real-estate' | 'tax' | 'retirement' | 'general' | 'ambiguous';
   confidence: number; // 0–1
   signals: string[];  // keywords that drove classification
+  /** True when the intent cannot be determined without a follow-up clarification. */
+  needsClarification?: boolean;
+  /** Suggested clarification question to surface to the user. */
+  clarificationQuestion?: string;
 }
 
 /** Result of the Context Layer: who the user is and what history exists. */

@@ -1,4 +1,34 @@
-export type Intent = 'job' | 'home' | 'debt' | 'retirement' | 'general';
+export type Intent = 'job' | 'home' | 'debt' | 'retirement' | 'ambiguous' | 'general';
+
+/**
+ * Phrases that signal the user is asking about an "offer" or "deal" without
+ * specifying what type (job, loan, credit card, mortgage, etc.).
+ */
+const AMBIGUOUS_OFFER_PATTERNS: string[] = [
+  'should i accept the offer',
+  'should i take the offer',
+  'should i take this offer',
+  'should i accept this offer',
+  'is this offer worth it',
+  'is this a good deal',
+  'should i go for this',
+  'should i accept it',
+  'is this worth it',
+  'good deal',
+  'worth it',
+];
+
+/** Keywords that firmly identify an offer as job-related. */
+const JOB_OFFER_QUALIFIERS: string[] = [
+  'job offer', 'salary offer', 'compensation package', 'new job', 'job in',
+  'w2', 'c2c', 'contractor', 'employment offer', 'position',
+];
+
+/** Keywords that firmly identify an offer as loan/debt-related. */
+const LOAN_OFFER_QUALIFIERS: string[] = [
+  'loan offer', 'personal loan', 'mortgage offer', 'refinance offer',
+  'balance transfer', 'credit card offer', 'card offer', 'apr', 'interest rate offer',
+];
 
 /**
  * Detect the financial intent of a user's free-form question using keyword matching.
@@ -8,15 +38,26 @@ export type Intent = 'job' | 'home' | 'debt' | 'retirement' | 'general';
  *   "Can I afford a $500k house?"         → 'home'
  *   "Should I pay off my loan?"           → 'debt'
  *   "Am I saving enough for retirement?"  → 'retirement'
+ *   "Should I accept the offer?"          → 'ambiguous'
  */
 export function detectIntent(input: string): Intent {
   const q = input.toLowerCase();
 
-  // Job / salary decisions
+  // Ambiguous offer — check before the broad "offer" catch below
+  const matchedAmbiguous = AMBIGUOUS_OFFER_PATTERNS.some((p) => q.includes(p));
+  if (matchedAmbiguous) {
+    const hasJobQualifier = JOB_OFFER_QUALIFIERS.some((k) => q.includes(k));
+    const hasLoanQualifier = LOAN_OFFER_QUALIFIERS.some((k) => q.includes(k));
+    if (!hasJobQualifier && !hasLoanQualifier) return 'ambiguous';
+    if (hasJobQualifier) return 'job';
+    if (hasLoanQualifier) return 'debt';
+  }
+
+  // Job / salary decisions (require explicit job signals, not just "offer")
   if (
     q.includes('job') ||
     q.includes('salary') ||
-    q.includes('offer') ||
+    q.includes('job offer') ||
     q.includes('w2') ||
     q.includes('c2c') ||
     q.includes('contractor') ||
@@ -88,6 +129,8 @@ export function intentToDecisionMode(intent: Intent): string {
       return 'debt-payoff';
     case 'retirement':
       return 'roth-vs-traditional';
+    case 'ambiguous':
+      return 'ambiguous-offer';
     default:
       return 'custom';
   }
