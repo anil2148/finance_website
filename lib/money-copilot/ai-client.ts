@@ -9,8 +9,11 @@ const WORK_HOURS_PER_YEAR = 2080;
 /** Maximum tokens to request from the AI provider per response. */
 const AI_MAX_TOKENS = 1024;
 
-/** Groq model to use for full copilot mode. */
-const GROQ_MODEL = 'llama3-8b-8192';
+/** Groq model to use for full copilot mode (overridable via env). */
+const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+
+/** Fallback Groq model if the primary model fails. */
+const GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
 /** Maximum number of retries for Groq API calls. */
 const MAX_RETRIES = 2;
@@ -222,22 +225,19 @@ async function callOllama(
  * Call Groq chat completion API with automatic retries.
  * Uses the singleton client from lib/groq/client.ts.
  */
-async function callGroq(
+async function callGroqWithModel(
   userMessage: string,
-  systemPrompt: string
+  systemPrompt: string,
+  model: string
 ): Promise<string | null> {
-  if (!process.env.GROQ_API_KEY) {
-    console.error('[ai-client] GROQ_API_KEY is not set — skipping Groq provider');
-    return null;
-  }
-
+  const client = getGroqClient();
+  console.log('[AI] Using model:', model);
   let lastError: unknown;
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     try {
       console.log('[API] Sending request to Groq...');
-      const client = getGroqClient();
       const completion = await client.chat.completions.create({
-        model: GROQ_MODEL,
+        model,
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userMessage }
@@ -254,13 +254,30 @@ async function callGroq(
     } catch (err) {
       lastError = err;
       if (attempt < MAX_RETRIES) {
-        // Brief back-off before retry
         await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1)));
       }
     }
   }
-  console.error('[ai-client] Groq request failed after retries:', lastError);
+  console.error(`[ai-client] Groq request failed after retries with model ${model}:`, lastError);
   return null;
+}
+
+async function callGroq(
+  userMessage: string,
+  systemPrompt: string
+): Promise<string | null> {
+  if (!process.env.GROQ_API_KEY) {
+    console.error('[ai-client] GROQ_API_KEY is not set — skipping Groq provider');
+    return null;
+  }
+
+  // Try primary model first
+  const primary = await callGroqWithModel(userMessage, systemPrompt, MODEL);
+  if (primary !== null) return primary;
+
+  // Retry with fallback model
+  console.warn(`[ai-client] Primary model (${MODEL}) failed — retrying with fallback model (${GROQ_FALLBACK_MODEL})`);
+  return callGroqWithModel(userMessage, systemPrompt, GROQ_FALLBACK_MODEL);
 }
 
 export async function getAiNarrative(

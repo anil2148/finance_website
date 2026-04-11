@@ -8,8 +8,11 @@ export const runtime = "nodejs";
 
 const AI_MAX_TOKENS = 512;
 
-/** Groq model used for quick bubble responses (optimised for speed). */
-const GROQ_MODEL = 'llama3-8b-8192';
+/** Groq model used for quick bubble responses (overridable via env). */
+const MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+
+/** Fallback Groq model if the primary model fails. */
+const GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
 /** Maximum retries for Groq API calls in bubble mode. */
 const MAX_RETRIES = 2;
@@ -114,32 +117,43 @@ function parseBubbleResponse(raw: string): BubbleResponse | null {
   return null;
 }
 
+async function callGroqModel(userMessage: string, systemPrompt: string, model: string): Promise<string | null> {
+  const client = getGroqClient();
+  console.log('[AI] Using model:', model);
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const completion = await client.chat.completions.create({
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: userMessage }
+        ],
+        temperature: 0.2,
+        max_tokens: AI_MAX_TOKENS
+      });
+      const content = completion.choices[0]?.message?.content ?? null;
+      if (content) return content;
+    } catch (err) {
+      lastError = err;
+      if (attempt < MAX_RETRIES) {
+        await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1)));
+      }
+    }
+  }
+  console.error(`[money-copilot/bubble] Groq request failed after retries with model ${model}:`, lastError);
+  return null;
+}
+
 async function callAiForBubble(userMessage: string, systemPrompt: string): Promise<string | null> {
   // Groq is the primary provider
   if (process.env.GROQ_API_KEY) {
-    let lastError: unknown;
-    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
-      try {
-        const client = getGroqClient();
-        const completion = await client.chat.completions.create({
-          model: GROQ_MODEL,
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userMessage }
-          ],
-          temperature: 0.2,
-          max_tokens: AI_MAX_TOKENS
-        });
-        const content = completion.choices[0]?.message?.content ?? null;
-        if (content) return content;
-      } catch (err) {
-        lastError = err;
-        if (attempt < MAX_RETRIES) {
-          await new Promise(resolve => setTimeout(resolve, 300 * (attempt + 1)));
-        }
-      }
-    }
-    console.error('[money-copilot/bubble] Groq request failed after retries:', lastError);
+    const primary = await callGroqModel(userMessage, systemPrompt, MODEL);
+    if (primary !== null) return primary;
+
+    console.warn(`[money-copilot/bubble] Primary model (${MODEL}) failed — retrying with fallback model (${GROQ_FALLBACK_MODEL})`);
+    const fallback = await callGroqModel(userMessage, systemPrompt, GROQ_FALLBACK_MODEL);
+    if (fallback !== null) return fallback;
   }
 
   const apiKey = process.env.OPENAI_API_KEY;
