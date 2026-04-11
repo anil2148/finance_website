@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { runPipeline } from '@/lib/money-copilot/pipeline';
 import type { CopilotResponse, ExecutionAction, IntentClassification, PipelineResult, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
+import { calcHomeAffordability, assessRiskLevel, formatCurrency } from '@/lib/money-copilot/calculators';
 import { CONFIDENCE_THRESHOLD_MID } from '@/lib/money-copilot/pipeline';
 
 /** Returns true when the intent is ambiguous or confidence is too low to proceed. */
@@ -241,6 +242,441 @@ function NextStepsSection({ result }: { result: PipelineResult }) {
         </div>
       )}
     </section>
+  );
+}
+
+// ─── Home Affordability Completion Flow ───────────────────────────────────────
+
+interface HAFormValues {
+  annualIncome: string;
+  downPayment: string;
+  monthlyDebt: string;
+  emergencyFund: string;
+  monthlyExpenses: string;
+  hasHighInterestDebt: boolean;
+  highInterestDebtPayment: string;
+}
+
+interface HAComputedOutput {
+  maxHomePrice: number;
+  monthlyPayment: number;
+  housingBurdenPct: number;
+  fullDtiPct: number;
+  emergencyRunwayMonths: number;
+  riskLevel: 'low' | 'medium' | 'high';
+  recommendation: string;
+  why: string[];
+  risksToWatch: string[];
+  bestNextStep: string;
+}
+
+const EMPTY_HA_FORM: HAFormValues = {
+  annualIncome: '',
+  downPayment: '',
+  monthlyDebt: '',
+  emergencyFund: '',
+  monthlyExpenses: '',
+  hasHighInterestDebt: false,
+  highInterestDebtPayment: '',
+};
+
+function parseNumField(s: string): number {
+  const n = parseFloat(s.replace(/[$,\s]/g, ''));
+  return isNaN(n) || n < 0 ? 0 : n;
+}
+
+function computeHomeAffordability(v: HAFormValues): HAComputedOutput {
+  const annualIncome = parseNumField(v.annualIncome);
+  const downPayment = parseNumField(v.downPayment);
+  const hiDebtPayment = v.hasHighInterestDebt ? parseNumField(v.highInterestDebtPayment) : 0;
+  const monthlyDebt = parseNumField(v.monthlyDebt) + hiDebtPayment;
+  const emergencyFund = parseNumField(v.emergencyFund);
+  const monthlyExpenses = parseNumField(v.monthlyExpenses);
+
+  const { maxHomePrice, monthlyPaymentEstimate } = calcHomeAffordability(annualIncome, downPayment, monthlyDebt);
+  const monthlyGross = annualIncome > 0 ? annualIncome / 12 : 0;
+
+  const housingBurdenRatio = monthlyGross > 0 ? monthlyPaymentEstimate / monthlyGross : 0;
+  const existingDebtRatio = monthlyGross > 0 ? monthlyDebt / monthlyGross : 0;
+  const fullDtiRatio = monthlyGross > 0 ? (monthlyDebt + monthlyPaymentEstimate) / monthlyGross : 0;
+  const emergencyRunwayMonths = monthlyExpenses > 0 ? emergencyFund / monthlyExpenses : emergencyFund > 0 ? 12 : 0;
+
+  const riskLevel = assessRiskLevel({
+    housingBurdenRatio,
+    debtLoadRatio: existingDebtRatio,
+    emergencyRunwayMonths,
+  });
+
+  // ── Recommendation ───────────────────────────────────────────────────────────
+  let recommendation: string;
+  if (annualIncome <= 0) {
+    recommendation = 'Enter your annual gross income above to compute affordability.';
+  } else if (riskLevel === 'low') {
+    recommendation = `You can comfortably afford a home up to ${formatCurrency(maxHomePrice)} based on your income and current debts.`;
+  } else if (riskLevel === 'medium') {
+    recommendation = `You may qualify for a home up to ${formatCurrency(maxHomePrice)}, but your finances are stretched. Review the risks below before committing.`;
+  } else {
+    recommendation = `Home buying at this time carries significant financial risk. Consider stabilizing your finances before purchasing.`;
+  }
+
+  // ── Why ──────────────────────────────────────────────────────────────────────
+  const why: string[] = [];
+  if (annualIncome > 0) {
+    why.push(`Maximum affordable home price: ${formatCurrency(maxHomePrice)} (28/36 rule, 7% rate, 30-year term)`);
+    why.push(`Estimated monthly payment: ${formatCurrency(monthlyPaymentEstimate)}`);
+    why.push(`Housing burden: ${(housingBurdenRatio * 100).toFixed(0)}% of gross income (guideline: ≤28%)`);
+    why.push(`Total debt-to-income: ${(fullDtiRatio * 100).toFixed(0)}% including mortgage (guideline: ≤36%)`);
+  }
+  if (monthlyExpenses > 0) {
+    why.push(`Emergency runway: ${emergencyRunwayMonths.toFixed(1)} months of expenses (target: 6+ months)`);
+  }
+  if (downPayment > 0 && maxHomePrice > 0) {
+    const dpPct = (downPayment / maxHomePrice) * 100;
+    why.push(
+      `Down payment: ${formatCurrency(downPayment)} — ${dpPct.toFixed(0)}% of max home price${dpPct < 20 ? ' (below 20%; PMI likely applies)' : ''}`,
+    );
+  }
+
+  // ── Risks to watch ───────────────────────────────────────────────────────────
+  const risksToWatch: string[] = [];
+  if (annualIncome > 0) {
+    if (housingBurdenRatio > 0.35) {
+      risksToWatch.push('Housing costs exceed 35% of gross income — leaves little room for savings or emergencies');
+    } else if (housingBurdenRatio > 0.28) {
+      risksToWatch.push('Housing costs are near the 28% guideline — monitor your budget closely');
+    }
+    if (fullDtiRatio > 0.43) {
+      risksToWatch.push('Total debt-to-income exceeds 43% — may not qualify for a conventional mortgage');
+    } else if (fullDtiRatio > 0.36) {
+      risksToWatch.push('Total debt-to-income exceeds 36% — reducing existing debt first would improve your terms');
+    }
+  }
+  if (monthlyExpenses > 0) {
+    if (emergencyRunwayMonths < 3) {
+      risksToWatch.push('Emergency fund covers less than 3 months — you are exposed to unexpected financial shocks');
+    } else if (emergencyRunwayMonths < 6) {
+      risksToWatch.push('Emergency fund is below the 6-month target — aim to build it before or alongside buying');
+    }
+  }
+  if (v.hasHighInterestDebt) {
+    risksToWatch.push(
+      'High-interest debt (15%+ APR) erodes your net worth faster than a mortgage builds equity — consider paying it down first',
+    );
+  }
+  if (downPayment > 0 && maxHomePrice > 0 && downPayment < maxHomePrice * 0.2) {
+    const pmiEst = Math.round((maxHomePrice * 0.005) / 12);
+    risksToWatch.push(
+      `Down payment is below 20% — expect Private Mortgage Insurance (~${formatCurrency(pmiEst)}/mo until you reach 20% equity)`,
+    );
+  }
+
+  // ── Best next step ───────────────────────────────────────────────────────────
+  let bestNextStep: string;
+  if (annualIncome <= 0) {
+    bestNextStep = 'Enter your annual gross income to get a personalized next step.';
+  } else if (riskLevel === 'low') {
+    bestNextStep = `Get pre-approved for a mortgage up to ${formatCurrency(maxHomePrice)} and start working with a real estate agent to find homes in your budget.`;
+  } else if (riskLevel === 'medium') {
+    if (fullDtiRatio > 0.36) {
+      bestNextStep = 'Pay down existing monthly debt to improve your debt-to-income ratio before applying for a mortgage.';
+    } else if (emergencyRunwayMonths < 6) {
+      bestNextStep = 'Build your emergency fund to at least 6 months of expenses before committing to a home purchase.';
+    } else {
+      bestNextStep = 'Review your monthly budget carefully and consider a lower-priced home or a larger down payment to reduce financial pressure.';
+    }
+  } else {
+    if (v.hasHighInterestDebt) {
+      bestNextStep = 'Prioritize eliminating high-interest debt over the next 12–18 months. Once cleared, reassess your home buying timeline.';
+    } else if (emergencyRunwayMonths < 3) {
+      bestNextStep = 'Build a 3–6 month emergency fund before taking on a mortgage. Consider renting while you save aggressively.';
+    } else {
+      bestNextStep = 'Focus on increasing income or reducing monthly obligations for the next 12 months, then revisit home affordability.';
+    }
+  }
+
+  return {
+    maxHomePrice,
+    monthlyPayment: monthlyPaymentEstimate,
+    housingBurdenPct: housingBurdenRatio * 100,
+    fullDtiPct: fullDtiRatio * 100,
+    emergencyRunwayMonths,
+    riskLevel,
+    recommendation,
+    why,
+    risksToWatch,
+    bestNextStep,
+  };
+}
+
+// ── MoneyField ─────────────────────────────────────────────────────────────────
+
+function MoneyField({
+  id,
+  label,
+  required,
+  value,
+  onChange,
+  placeholder,
+  hint,
+  error,
+}: {
+  id: string;
+  label: string;
+  required?: boolean;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  hint?: string;
+  error?: string;
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300">
+        {label}
+        {required && <span className="ml-0.5 text-red-500">*</span>}
+      </label>
+      <div className="relative">
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">$</span>
+        <input
+          id={id}
+          type="number"
+          min="0"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-7 pr-3 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-blue-500 dark:focus:bg-slate-700"
+        />
+      </div>
+      {hint && <p className="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{hint}</p>}
+      {error && <p className="mt-1 text-[11px] text-red-600 dark:text-red-400">{error}</p>}
+    </div>
+  );
+}
+
+// ── HomeAffordabilityCompletionForm ───────────────────────────────────────────
+
+function HomeAffordabilityCompletionForm({ onSubmit }: { onSubmit: (values: HAFormValues) => void }) {
+  const [values, setValues] = useState<HAFormValues>(EMPTY_HA_FORM);
+  const [errors, setErrors] = useState<Partial<Record<keyof HAFormValues, string>>>({});
+
+  const set = <K extends keyof HAFormValues>(field: K, value: HAFormValues[K]) =>
+    setValues((v) => ({ ...v, [field]: value }));
+
+  const validate = (): boolean => {
+    const errs: Partial<Record<keyof HAFormValues, string>> = {};
+    if (!values.annualIncome || parseNumField(values.annualIncome) <= 0) {
+      errs.annualIncome = 'Required — enter your annual gross income';
+    }
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (validate()) onSubmit(values);
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+        <div className="flex items-start gap-3">
+          <span className="shrink-0 text-lg leading-none">📋</span>
+          <div>
+            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Complete your analysis</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
+              Provide the details below for an accurate home affordability assessment. These inputs replace assumptions
+              with real numbers.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <MoneyField
+          id="ha-income"
+          label="Annual gross income"
+          required
+          value={values.annualIncome}
+          onChange={(v) => set('annualIncome', v)}
+          placeholder="85000"
+          hint="Before taxes — use your total salary or combined household income"
+          error={errors.annualIncome}
+        />
+
+        <MoneyField
+          id="ha-down"
+          label="Down payment / cash on hand"
+          value={values.downPayment}
+          onChange={(v) => set('downPayment', v)}
+          placeholder="40000"
+          hint="Amount you plan to put toward the purchase"
+        />
+
+        <MoneyField
+          id="ha-debt"
+          label="Existing monthly debt payments"
+          value={values.monthlyDebt}
+          onChange={(v) => set('monthlyDebt', v)}
+          placeholder="400"
+          hint="Car loans, student loans, minimum credit card payments — not rent"
+        />
+
+        <MoneyField
+          id="ha-emergency"
+          label="Emergency fund (total saved)"
+          value={values.emergencyFund}
+          onChange={(v) => set('emergencyFund', v)}
+          placeholder="15000"
+          hint="Total liquid savings set aside for emergencies"
+        />
+
+        <MoneyField
+          id="ha-expenses"
+          label="Monthly essential expenses"
+          value={values.monthlyExpenses}
+          onChange={(v) => set('monthlyExpenses', v)}
+          placeholder="3500"
+          hint="Current rent, utilities, groceries, transportation, insurance, etc."
+        />
+
+        {/* High-interest debt toggle */}
+        <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800/50">
+          <label className="flex cursor-pointer items-start gap-3">
+            <input
+              type="checkbox"
+              checked={values.hasHighInterestDebt}
+              onChange={(e) => set('hasHighInterestDebt', e.target.checked)}
+              className="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600"
+            />
+            <div>
+              <span className="text-sm font-medium text-slate-800 dark:text-slate-100">
+                I carry high-interest debt (15%+ APR)
+              </span>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Credit cards, personal loans, payday loans, etc.
+              </p>
+            </div>
+          </label>
+          {values.hasHighInterestDebt && (
+            <div className="mt-3 border-t border-slate-100 pt-3 dark:border-slate-700">
+              <MoneyField
+                id="ha-hi-debt"
+                label="Monthly payment on high-interest debt (optional)"
+                value={values.highInterestDebtPayment}
+                onChange={(v) => set('highInterestDebtPayment', v)}
+                placeholder="300"
+                hint="Total minimum + extra payments per month"
+              />
+            </div>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+        >
+          Run affordability analysis →
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// ── HomeAffordabilityFinalOutput ──────────────────────────────────────────────
+
+const HA_RISK_STYLES: Record<'low' | 'medium' | 'high', string> = {
+  low: 'border-emerald-200 bg-emerald-50 text-emerald-900 dark:border-emerald-700/40 dark:bg-emerald-950/20 dark:text-emerald-300',
+  medium:
+    'border-amber-200 bg-amber-50 text-amber-900 dark:border-amber-700/40 dark:bg-amber-950/20 dark:text-amber-300',
+  high: 'border-red-200 bg-red-50 text-red-900 dark:border-red-700/40 dark:bg-red-950/20 dark:text-red-300',
+};
+
+const HA_RISK_BADGE: Record<'low' | 'medium' | 'high', string> = {
+  low: '✅ Good to proceed',
+  medium: '⚠️ Proceed with caution',
+  high: '🛑 High risk',
+};
+
+function HomeAffordabilityFinalOutput({ output, onRedo }: { output: HAComputedOutput; onRedo: () => void }) {
+  return (
+    <div className="space-y-5">
+      {/* Recommendation */}
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Recommendation</h3>
+        <div className={`rounded-xl border p-4 ${HA_RISK_STYLES[output.riskLevel]}`}>
+          <p className="mb-1.5 text-xs font-semibold">{HA_RISK_BADGE[output.riskLevel]}</p>
+          <p className="text-sm font-medium leading-relaxed">{output.recommendation}</p>
+        </div>
+      </section>
+
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+
+      {/* Why */}
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Why</h3>
+        <ul className="space-y-2">
+          {output.why.map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-xs text-slate-700 dark:text-slate-300">
+              <span className="mt-0.5 shrink-0 text-blue-500">›</span>
+              {item}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {output.risksToWatch.length > 0 && (
+        <>
+          <hr className="border-slate-100 dark:border-slate-700/60" />
+          <section>
+            <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Risks to watch</h3>
+            <ul className="space-y-2">
+              {output.risksToWatch.map((risk, i) => (
+                <li
+                  key={i}
+                  className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2.5 text-xs text-amber-800 dark:border-amber-700/40 dark:bg-amber-950/20 dark:text-amber-300"
+                >
+                  <span className="shrink-0">⚠️</span>
+                  <span>{risk}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </>
+      )}
+
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+
+      {/* Best next step */}
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Best next step</h3>
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-700/50 dark:bg-blue-950/20 dark:text-blue-200">
+          {output.bestNextStep}
+        </div>
+      </section>
+
+      {/* Update inputs link */}
+      <button
+        type="button"
+        onClick={onRedo}
+        className="text-xs text-slate-400 underline hover:text-blue-600 dark:hover:text-blue-400"
+      >
+        ← Update inputs
+      </button>
+    </div>
+  );
+}
+
+// ── HomeAffordabilityFlow ─────────────────────────────────────────────────────
+
+function HomeAffordabilityFlow({ result: _result }: { result: PipelineResult }) {
+  const [submittedValues, setSubmittedValues] = useState<HAFormValues | null>(null);
+  const output = submittedValues ? computeHomeAffordability(submittedValues) : null;
+
+  return output ? (
+    <HomeAffordabilityFinalOutput output={output} onRedo={() => setSubmittedValues(null)} />
+  ) : (
+    <HomeAffordabilityCompletionForm onSubmit={setSubmittedValues} />
   );
 }
 
@@ -556,15 +992,19 @@ export function ExecutionPanel() {
 
               {/* Consumer-friendly result output */}
               <div className="px-5 py-4">
-                <div className="space-y-5">
-                  <RecommendationSection result={activeResult} />
-                  <hr className="border-slate-100 dark:border-slate-700/60" />
-                  <KeyFindingsSection result={activeResult} />
-                  <hr className="border-slate-100 dark:border-slate-700/60" />
-                  <RisksSection result={activeResult} />
-                  <hr className="border-slate-100 dark:border-slate-700/60" />
-                  <NextStepsSection result={activeResult} />
-                </div>
+                {activeResult.step1_intent.type === 'home-affordability' ? (
+                  <HomeAffordabilityFlow key={activeResult.requestId} result={activeResult} />
+                ) : (
+                  <div className="space-y-5">
+                    <RecommendationSection result={activeResult} />
+                    <hr className="border-slate-100 dark:border-slate-700/60" />
+                    <KeyFindingsSection result={activeResult} />
+                    <hr className="border-slate-100 dark:border-slate-700/60" />
+                    <RisksSection result={activeResult} />
+                    <hr className="border-slate-100 dark:border-slate-700/60" />
+                    <NextStepsSection result={activeResult} />
+                  </div>
+                )}
               </div>
 
               {/* History breadcrumb */}
