@@ -11,15 +11,14 @@ interface StartDecisionModalProps {
   onClose: () => void;
 }
 
-type GoalKey = 'job-offer' | 'home-affordability' | 'debt-payoff' | 'roth-vs-traditional' | 'budget-stress-test' | 'custom';
+type GoalKey = 'job-offer' | 'home-affordability' | 'debt-payoff' | 'roth-vs-traditional' | 'custom';
 
 const GOAL_OPTIONS: Array<{ key: GoalKey; label: string; description: string }> = [
-  { key: 'job-offer', label: 'Job / Income Change', description: 'Compare offers, evaluate a raise, or assess W2 vs. contractor.' },
-  { key: 'home-affordability', label: 'Home Buying', description: 'Determine what you can afford with your income and existing debt.' },
-  { key: 'debt-payoff', label: 'Debt Strategy', description: 'Pay off debt vs. invest — find the best path for your cash.' },
-  { key: 'roth-vs-traditional', label: 'Retirement Planning', description: 'Roth vs. traditional 401(k) and retirement contribution strategy.' },
-  { key: 'budget-stress-test', label: 'Budget & Cash Flow', description: 'Stress-test your monthly budget and find cash-flow improvements.' },
-  { key: 'custom', label: 'Other Decision', description: 'Describe any financial decision and get structured analysis.' }
+  { key: 'job-offer', label: 'Job offer', description: 'Compare offers, evaluate a raise, or assess W2 vs. contractor.' },
+  { key: 'home-affordability', label: 'Buying a home', description: 'Determine what you can afford with your income and existing debt.' },
+  { key: 'custom', label: 'Credit card', description: 'Find the right card for your spending habits and goals.' },
+  { key: 'debt-payoff', label: 'Debt payoff', description: 'Find the fastest or most cost-effective way out of debt.' },
+  { key: 'roth-vs-traditional', label: 'Investing', description: 'Plan your investment strategy and retirement contributions.' },
 ];
 
 type Step = 'income' | 'goal' | 'scenario' | 'recommendation';
@@ -194,7 +193,7 @@ export function StartDecisionModal({ open, onClose }: StartDecisionModalProps) {
               <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
                 <div>
                   <h2 className="text-sm font-bold text-slate-900 dark:text-white">Start a Decision</h2>
-                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Guided financial analysis — takes 30 seconds</p>
+                  <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">Guided flow — get a clear recommendation in 30 seconds</p>
                 </div>
                 <button
                   onClick={handleClose}
