@@ -30,6 +30,13 @@ export interface FinancialInputs {
   targetEmergencyMonths?: number;
   riskTolerance?: 'low' | 'medium' | 'high';
   timeHorizon?: number;
+  /** New income for job-offer / relocation comparisons */
+  newAnnualSalary?: number;
+  newHourlyRate?: number;
+  /** Whether salary/income fields are monthly or annual */
+  incomePeriod?: 'monthly' | 'annual';
+  /** Estimated benefits value per year; undefined = unknown */
+  benefitsValueAnnual?: number;
 }
 
 export interface ScenarioResults {
@@ -63,6 +70,21 @@ export interface CopilotResponse {
   disclaimer: string;
   confidenceLevel: 'low' | 'medium' | 'high';
   missingData: string[];
+  /** Decision engine structured fields */
+  decisionSummary?: {
+    confidenceLevel: 'High' | 'Medium' | 'Low';
+    monthlyTakeHome: string;
+    riskLevel: 'Low' | 'Medium' | 'High';
+  };
+  decisionEngine?: {
+    currentIncome: string;
+    newIncome: string;
+    netChange: string;
+    benefitsImpact: string;
+    riskScore: number;
+    confidenceScore: number;
+  };
+  insight?: string;
 }
 
 export interface CopilotRequest {

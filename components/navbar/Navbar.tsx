@@ -10,6 +10,7 @@ import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
 import { setPreferredRegionCookie } from '@/lib/region-preference';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem } from '@/components/navbar/NavItem';
+import { StartDecisionModal } from '@/components/money-copilot/StartDecisionModal';
 
 type NavLink = {
   label: string;
@@ -19,55 +20,31 @@ type NavLink = {
 
 const globalLinks: NavLink[] = [
   { label: 'Home', href: '/' },
-  {
-    label: 'Credit Cards',
-    children: [
-      { label: 'Credit Cards Hub', href: '/credit-cards' },
-      { label: 'Best Credit Cards 2026', href: '/best-credit-cards-2026' },
-      { label: 'Cards for Everyday Spending', href: '/best-credit-cards-everyday-spending' },
-      { label: 'Payoff Calculator', href: '/calculators/credit-card-payoff-calculator' }
-    ]
-  },
-  {
-    label: 'Investing',
-    children: [
-      { label: 'Investing Hub', href: '/learn/investing' },
-      { label: 'Best Investment Apps', href: '/best-investment-apps' },
-      { label: 'Investment Growth Calculator', href: '/calculators/investment-growth-calculator' },
-      { label: 'Retirement Calculator', href: '/calculators/retirement-calculator' }
-    ]
-  },
-  {
-    label: 'Loans & Debt',
-    children: [
-      { label: 'Loans Hub', href: '/loans' },
-      { label: 'Mortgage Rate Comparison', href: '/compare/mortgage-rate-comparison' },
-      { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
-      { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' }
-    ]
-  },
-  {
-    label: 'Savings & Budgeting',
-    children: [
-      { label: 'Savings Hub', href: '/savings' },
-      { label: 'Best Savings Accounts', href: '/best-savings-accounts-usa' },
-      { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },
-      { label: 'Budget Planner', href: '/calculators/budget-planner' }
-    ]
-  },
+  { label: 'AI Copilot', href: '/ai-money-copilot' },
+  { label: 'Calculators', href: '/calculators' },
   {
     label: 'Tools',
     children: [
-      { label: 'All Calculators', href: '/calculators' },
-      { label: 'Net Worth Calculator', href: '/calculators/net-worth-calculator' },
-      { label: 'FIRE Calculator', href: '/calculators/fire-calculator' },
-      { label: 'All Tools', href: '/tools' }
+      { label: 'Debt Payoff', href: '/calculators/debt-payoff-calculator' },
+      { label: 'Mortgage Planner', href: '/calculators/mortgage-calculator' },
+      { label: 'Investment Growth', href: '/calculators/investment-growth-calculator' },
+      { label: 'Tax Impact', href: '/calculators/salary-after-tax-calculator' }
     ]
   },
-  { label: 'Blog', href: '/blog' },
-  { label: 'Help', href: '/help' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' }
+  {
+    label: 'Learn',
+    children: [
+      { label: 'Guides', href: '/learn' },
+      { label: 'Strategies', href: '/blog' }
+    ]
+  },
+  {
+    label: 'Account',
+    children: [
+      { label: 'Saved Scenarios', href: '/ai-money-copilot' },
+      { label: 'Reports', href: '/ai-money-copilot' }
+    ]
+  }
 ];
 
 const indiaLinks: NavLink[] = [
@@ -176,6 +153,7 @@ export function Navbar() {
   const links = isIndiaContext ? indiaLinks : globalLinks;
   const currentRegionLabel = isIndiaContext ? 'India' : 'United States';
   const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
+  const [decisionModalOpen, setDecisionModalOpen] = useState(false);
 
   const switchRegion = (nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);
@@ -270,6 +248,16 @@ export function Navbar() {
                 </Link>
               </motion.div>
 
+              {/* Start a Decision primary CTA */}
+              <motion.button
+                onClick={() => setDecisionModalOpen(true)}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-500 bg-emerald-500 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70"
+              >
+                <span>▶</span> Start a Decision
+              </motion.button>
+
               <label className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
                 <span>Region</span>
                 <select
@@ -322,7 +310,11 @@ export function Navbar() {
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
         onRegionChange={switchRegion}
+        onStartDecision={() => setDecisionModalOpen(true)}
       />
+
+      {/* Start a Decision guided flow modal */}
+      <StartDecisionModal open={decisionModalOpen} onClose={() => setDecisionModalOpen(false)} />
     </>
   );
 }
