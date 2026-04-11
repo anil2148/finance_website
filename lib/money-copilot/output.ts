@@ -494,6 +494,13 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   const handler = MODE_HANDLERS[safeMode];
   const modeResponse = handler(request, computedScenarios);
 
+  // ─── Baseline income validation (DATA VALIDATION RULE) ───────────────────
+  const hasBaselineIncome = !!(request.inputs.annualSalary || request.inputs.hourlyRate);
+  if (!hasBaselineIncome) {
+    modeResponse.recommendation =
+      'insufficient data — baseline income required. Please provide your annual salary or hourly rate to generate a recommendation.';
+  }
+
   if (computedScenarios.length === 2) {
     const s0 = computedScenarios[0].results;
     const s1 = computedScenarios[1].results;
@@ -501,11 +508,90 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
       const score0 = scoreScenario(s0);
       const score1 = scoreScenario(s1);
       const winner = score0 >= score1 ? computedScenarios[0].name : computedScenarios[1].name;
-      if (modeResponse.recommendation) {
+      if (modeResponse.recommendation && hasBaselineIncome) {
         modeResponse.recommendation = `Scenario comparison: "${winner}" scores higher on overall financial health. ` + modeResponse.recommendation;
       }
     }
   }
+
+  // ─── Decision engine structured fields ───────────────────────────────────
+  const { inputs } = request;
+
+  // Normalise income to annual, respecting incomePeriod field
+  const periodMultiplier = inputs.incomePeriod === 'monthly' ? 12 : 1;
+  const baseAnnual = inputs.annualSalary
+    ? inputs.annualSalary * periodMultiplier
+    : (inputs.hourlyRate ? inputs.hourlyRate * 2080 : undefined);
+  const newAnnual = inputs.newAnnualSalary
+    ? inputs.newAnnualSalary * periodMultiplier
+    : (inputs.newHourlyRate ? inputs.newHourlyRate * 2080 : undefined);
+
+  const { monthlyNet: baseMonthlyNet } = baseAnnual
+    ? estimateMonthlyNetIncome(baseAnnual, inputs.state, inputs.employmentType)
+    : { monthlyNet: 0 };
+  const { monthlyNet: newMonthlyNet } = newAnnual
+    ? estimateMonthlyNetIncome(newAnnual, inputs.state, inputs.employmentType)
+    : { monthlyNet: 0 };
+
+  const netChangeMonthly = baseAnnual && newAnnual ? newMonthlyNet - baseMonthlyNet : undefined;
+
+  // Benefits impact: use provided value or flag as unknown
+  const benefitsAnnual = inputs.benefitsValueAnnual;
+  const benefitsImpact = benefitsAnnual !== undefined
+    ? `${formatCurrency(benefitsAnnual / 12)}/mo (${formatCurrency(benefitsAnnual)}/yr estimated)`
+    : 'unknown';
+  const benefitsUnknownAndMaterial =
+    benefitsAnnual === undefined &&
+    (effectiveMode === 'job-offer' || effectiveMode === 'relocation');
+
+  // Risk score: 0–100 (higher = riskier)
+  const defaultResults = computedScenarios[0]?.results;
+  let riskScore = 50;
+  if (defaultResults) {
+    const { housingBurdenRatio, debtLoadRatio, emergencyRunwayMonths } = defaultResults;
+    riskScore = Math.min(
+      100,
+      Math.round(
+        (housingBurdenRatio / 0.36) * 30 +
+        (debtLoadRatio / 0.2) * 30 +
+        Math.max(0, (6 - emergencyRunwayMonths) / 6) * 40
+      )
+    );
+  }
+
+  // Confidence score: 0–100 (higher = more confident)
+  const confidenceScore =
+    confidenceLevel === 'high' ? 85 : confidenceLevel === 'medium' ? 55 : 25;
+
+  // If benefits unknown and material, make recommendation conditional
+  if (benefitsUnknownAndMaterial && hasBaselineIncome) {
+    if (modeResponse.recommendation && !modeResponse.recommendation.includes('insufficient data')) {
+      modeResponse.recommendation +=
+        ' Note: benefits value is unknown — the final recommendation may change once benefits (health, dental, 401k match) are factored in.';
+    }
+  }
+
+  const riskLevelLabel: 'Low' | 'Medium' | 'High' =
+    riskScore < 34 ? 'Low' : riskScore < 67 ? 'Medium' : 'High';
+  const confidenceLevelLabel: 'High' | 'Medium' | 'Low' =
+    confidenceLevel === 'high' ? 'High' : confidenceLevel === 'medium' ? 'Medium' : 'Low';
+
+  const decisionEngine = {
+    currentIncome: baseAnnual ? formatCurrency(baseMonthlyNet) + '/mo' : 'unknown',
+    newIncome: newAnnual ? formatCurrency(newMonthlyNet) + '/mo' : 'unknown',
+    netChange: netChangeMonthly !== undefined ? formatCurrency(netChangeMonthly) + '/mo' : 'N/A',
+    benefitsImpact,
+    riskScore,
+    confidenceScore
+  };
+
+  const decisionSummary = {
+    confidenceLevel: confidenceLevelLabel,
+    monthlyTakeHome: hasBaselineIncome ? formatCurrency(baseMonthlyNet) : 'insufficient data',
+    riskLevel: riskLevelLabel
+  };
+
+  const insight = modeResponse.sensitivities?.[0] ?? modeResponse.risks?.[0] ?? '';
 
   return {
     summary: modeResponse.summary ?? 'Enter your financial information to receive a personalized analysis.',
@@ -518,6 +604,9 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
     nextSteps: modeResponse.nextSteps ?? [],
     disclaimer: DISCLAIMER,
     confidenceLevel,
-    missingData
+    missingData,
+    decisionEngine,
+    decisionSummary,
+    insight
   };
 }
