@@ -31,6 +31,7 @@ export function buildDefaultState(): CopilotGlobalState {
     isExecutionPanelOpen: false,
     activeResult: null,
     activeQuestion: '',
+    pendingAutoSubmit: false,
   };
 }
 
@@ -77,11 +78,12 @@ export type CopilotAction =
   | { type: 'SET_REGION'; payload: 'US' | 'India' }
   | { type: 'SET_RISK_PROFILE'; payload: 'conservative' | 'moderate' | 'aggressive' }
   | { type: 'OPEN_PANEL'; payload: { question: string; result: PipelineResult } }
-  | { type: 'OPEN_DRAWER'; payload?: { prefillQuestion?: string } }
+  | { type: 'OPEN_DRAWER'; payload?: { prefillQuestion?: string; autoSubmit?: boolean } }
   | { type: 'CLOSE_PANEL' }
   | { type: 'ADD_HISTORY_ENTRY'; payload: ReasoningHistoryEntry }
   | { type: 'CLEAR_HISTORY' }
-  | { type: 'SET_ACTIVE_RESULT'; payload: PipelineResult | null };
+  | { type: 'SET_ACTIVE_RESULT'; payload: PipelineResult | null }
+  | { type: 'CLEAR_PENDING_AUTO_SUBMIT' };
 
 // ─── Reducer ───────────────────────────────────────────────────────────────────
 
@@ -103,6 +105,7 @@ export function copilotReducer(state: CopilotGlobalState, action: CopilotAction)
         isExecutionPanelOpen: true,
         activeQuestion: action.payload.question,
         activeResult: action.payload.result,
+        pendingAutoSubmit: false,
       };
       break;
 
@@ -112,11 +115,12 @@ export function copilotReducer(state: CopilotGlobalState, action: CopilotAction)
         isExecutionPanelOpen: true,
         activeResult: null,
         activeQuestion: action.payload?.prefillQuestion ?? '',
+        pendingAutoSubmit: action.payload?.autoSubmit ?? false,
       };
       break;
 
     case 'CLOSE_PANEL':
-      next = { ...state, isExecutionPanelOpen: false };
+      next = { ...state, isExecutionPanelOpen: false, pendingAutoSubmit: false };
       break;
 
     case 'ADD_HISTORY_ENTRY': {
@@ -131,6 +135,10 @@ export function copilotReducer(state: CopilotGlobalState, action: CopilotAction)
 
     case 'SET_ACTIVE_RESULT':
       next = { ...state, activeResult: action.payload };
+      break;
+
+    case 'CLEAR_PENDING_AUTO_SUBMIT':
+      next = { ...state, pendingAutoSubmit: false };
       break;
 
     default:

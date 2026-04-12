@@ -546,7 +546,7 @@ function HomeAffordabilityCompletionForm({ onSubmit, region = 'US' }: { onSubmit
         <div className="flex items-start gap-3">
           <span className="shrink-0 text-lg leading-none">📋</span>
           <div>
-            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Complete your analysis</p>
+            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Personalize with your numbers</p>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
               {isIndia
                 ? 'Provide the details below for an accurate home loan (EMI) affordability assessment based on FOIR guidelines.'
@@ -646,7 +646,7 @@ function HomeAffordabilityCompletionForm({ onSubmit, region = 'US' }: { onSubmit
           type="submit"
           className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
         >
-          Run affordability analysis →
+          Get my recommendation →
         </button>
       </form>
     </div>
@@ -769,7 +769,7 @@ function HomeAffordabilityFlow({ result, region = 'US' }: { result: PipelineResu
         />
       ) : (
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Refine with your exact numbers</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Want a more precise number?</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
             {isIndia
               ? 'The estimate above uses default assumptions. Enter your CTC and existing EMIs for a precise home loan eligibility calculation.'
@@ -817,9 +817,17 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
   // We capture the initial values as refs so the focus effect only runs on mount.
   const initialQuestion = useRef(state.activeQuestion);
   const initialHasResult = useRef(!!state.activeResult);
+  const initialPendingAutoSubmit = useRef(state.pendingAutoSubmit);
   useEffect(() => {
     if (initialQuestion.current && !initialHasResult.current) {
       setQuery(initialQuestion.current);
+    }
+    // Auto-submit immediately when opened from a decision card on the page.
+    // Early return skips the manual focus step — the submit handler drives UX from here.
+    if (initialPendingAutoSubmit.current && initialQuestion.current) {
+      dispatch({ type: 'CLEAR_PENDING_AUTO_SUBMIT' });
+      void handleSubmitRef.current(initialQuestion.current);
+      return; // Skip focus — the loading state and result render will take over
     }
     // Focus after the component paints using rAF so the element is definitely in the DOM.
     const raf = requestAnimationFrame(() => { inputRef.current?.focus(); });
@@ -1001,8 +1009,26 @@ function DrawerEmptyState({
         </div>
         <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">What are you deciding?</p>
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-          Describe your situation above or pick a topic to get a clear recommendation.
+          Pick a topic below or type your situation to get an instant recommendation.
         </p>
+      </div>
+
+      {/* You'll get */}
+      <div className="rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3 dark:border-blue-800/30 dark:bg-blue-950/20">
+        <p className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">You&apos;ll get</p>
+        <ul className="space-y-1.5">
+          {[
+            { icon: '✅', text: 'A clear recommendation' },
+            { icon: '💡', text: 'Why it makes sense for you' },
+            { icon: '⚠️', text: 'Risks to watch out for' },
+            { icon: '→', text: 'What to do next' },
+          ].map(({ icon, text }) => (
+            <li key={text} className="flex items-center gap-2 text-xs text-blue-800 dark:text-blue-300">
+              <span className="shrink-0">{icon}</span>
+              {text}
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* Decision category cards */}
