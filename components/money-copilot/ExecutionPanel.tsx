@@ -1035,12 +1035,13 @@ function NextActionsBar({
 
 // ─── Compact decision cards (shown below response so suggestions stay visible) ─
 
-function CompactDecisionCards({ onSuggestionClick }: { onSuggestionClick: (question: string) => void }) {
+function CompactDecisionCards({ onSuggestionClick, region = 'US' }: { onSuggestionClick: (question: string) => void; region?: 'US' | 'India' }) {
+  const cards = region === 'India' ? DECISION_CARDS_INDIA : DECISION_CARDS_US;
   return (
     <div className="border-t border-slate-100 px-5 py-4 dark:border-slate-700/60">
       <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Try these</p>
       <div className="flex flex-col gap-2">
-        {DECISION_CARDS.map((card) => (
+        {cards.map((card) => (
           <button
             key={card.key}
             type="button"
@@ -1273,6 +1274,7 @@ export function ExecutionPanel() {
               {/* Decision cards — always visible so users can explore other topics */}
               <CompactDecisionCards
                 onSuggestionClick={(q) => formRef.current?.triggerSubmit(q)}
+                region={region ?? 'US'}
               />
 
               {/* History breadcrumb */}
