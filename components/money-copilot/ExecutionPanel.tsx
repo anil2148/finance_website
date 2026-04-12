@@ -8,6 +8,9 @@ import type { CopilotResponse, PipelineResult, ReasoningHistoryEntry } from '@/l
 import {
   calcHomeAffordability,
   calcHomeLoanEMI,
+  calcDebtPayoff,
+  calcInvestingProjection,
+  calcJobOfferComparison,
   assessRiskLevel,
   formatCurrency,
 } from '@/lib/money-copilot/calculators';
@@ -246,6 +249,32 @@ function NextStepsSection({ result }: { result: PipelineResult }) {
           ))}
         </ul>
       )}
+    </section>
+  );
+}
+
+// ─── Key Numbers section (shown for all intents with dataPoints) ──────────────
+
+function KeyNumbersSection({ result }: { result: PipelineResult }) {
+  const { step3_analysis: analysis } = result;
+  const metrics = analysis.dataPoints.filter((d) => d.source !== 'assumed');
+  if (!metrics.length) return null;
+  return (
+    <section>
+      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Key numbers</h3>
+      <div className="grid grid-cols-2 gap-2">
+        {metrics.slice(0, 6).map((m, i) => (
+          <div
+            key={i}
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/50"
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+              {m.label}
+            </p>
+            <p className="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{m.value}</p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -788,6 +817,570 @@ function HomeAffordabilityFlow({ result, region = 'US' }: { result: PipelineResu
   );
 }
 
+// ─── Job Offer Inline Flow ────────────────────────────────────────────────────
+
+interface JobOfferFormValues {
+  currentSalary: string;
+  newSalary: string;
+  employmentType: 'w2' | 'c2c' | 'contractor';
+  state: string;
+}
+
+interface JobOfferOutput {
+  currentMonthlyNet: number;
+  newMonthlyNet: number;
+  monthlyGain: number;
+  annualGain: number;
+  verdict: string;
+  risks: string[];
+}
+
+const EMPTY_JO_FORM: JobOfferFormValues = { currentSalary: '', newSalary: '', employmentType: 'w2', state: '' };
+
+function computeJobOffer(v: JobOfferFormValues, region: 'US' | 'India'): JobOfferOutput {
+  const cur = parseNumField(v.currentSalary);
+  const nxt = parseNumField(v.newSalary);
+  const fmt = (n: number) => formatCurrency(n, region);
+
+  const { currentMonthlyNet, newMonthlyNet, monthlyGain, annualGain } =
+    calcJobOfferComparison(cur > 0 ? cur : (region === 'India' ? 800_000 : 65_000),
+      nxt > 0 ? nxt : (region === 'India' ? 1_000_000 : 75_000), region, v.state || undefined, v.employmentType);
+
+  const isC2C = v.employmentType === 'c2c' || v.employmentType === 'contractor';
+  let verdict: string;
+
+  if (cur <= 0 || nxt <= 0) {
+    verdict = 'Enter both salaries to see a personalised comparison.';
+  } else if (monthlyGain > 500) {
+    verdict = region === 'India'
+      ? `Accept the offer. You gain +${fmt(monthlyGain)}/month (+${fmt(annualGain)}/year) in-hand after tax.`
+      : `Take the offer — you gain +${fmt(monthlyGain)}/month (+${fmt(annualGain)}/year) after taxes.`;
+  } else if (monthlyGain > 0) {
+    verdict = `Marginal gain: +${fmt(monthlyGain)}/month. Negotiate for more or weigh non-salary benefits.`;
+  } else {
+    verdict = `The offers are roughly equivalent after tax. Prioritize benefits, growth, and work-life balance.`;
+  }
+
+  const risks: string[] = [];
+  if (isC2C) risks.push('C2C/contractor adds ~15.3% self-employment tax + you cover health insurance.');
+  if (region === 'India' && nxt > cur) risks.push('Request full CTC breakup — check guaranteed vs. variable pay split.');
+  if (monthlyGain < 200 && nxt > cur) risks.push('After-tax gain is marginal — factor in equity, PTO, and career growth.');
+
+  return { currentMonthlyNet, newMonthlyNet, monthlyGain, annualGain, verdict, risks };
+}
+
+function JobOfferRefinementForm({ onSubmit, region = 'US' }: { onSubmit: (v: JobOfferFormValues) => void; region?: 'US' | 'India' }) {
+  const [values, setValues] = useState<JobOfferFormValues>(EMPTY_JO_FORM);
+  const [errors, setErrors] = useState<Partial<Record<keyof JobOfferFormValues, string>>>({});
+  const isIndia = region === 'India';
+
+  const set = <K extends keyof JobOfferFormValues>(f: K, v: JobOfferFormValues[K]) =>
+    setValues((p) => ({ ...p, [f]: v }));
+
+  const validate = () => {
+    const errs: Partial<Record<keyof JobOfferFormValues, string>> = {};
+    if (!values.currentSalary || parseNumField(values.currentSalary) <= 0) errs.currentSalary = 'Required';
+    if (!values.newSalary || parseNumField(values.newSalary) <= 0) errs.newSalary = 'Required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Refine with your numbers</p>
+        <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">
+          {isIndia ? 'Enter both CTCs for a precise in-hand comparison.' : 'Enter both salaries for a precise after-tax comparison.'}
+        </p>
+      </div>
+      <form onSubmit={(e) => { e.preventDefault(); if (validate()) onSubmit(values); }} className="space-y-3">
+        <MoneyField id="jo-cur" label={isIndia ? 'Current annual CTC' : 'Current annual salary'} required
+          value={values.currentSalary} onChange={(v) => set('currentSalary', v)}
+          placeholder={isIndia ? '800000' : '65000'} error={errors.currentSalary} region={region} />
+        <MoneyField id="jo-new" label={isIndia ? 'New offer CTC' : 'New offer annual salary'} required
+          value={values.newSalary} onChange={(v) => set('newSalary', v)}
+          placeholder={isIndia ? '1000000' : '75000'} error={errors.newSalary} region={region} />
+        {!isIndia && (
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">Employment type</label>
+            <select value={values.employmentType} onChange={(e) => set('employmentType', e.target.value as JobOfferFormValues['employmentType'])}
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 focus:border-blue-400 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
+              <option value="w2">W2 (employee)</option>
+              <option value="c2c">C2C / Corp-to-Corp</option>
+              <option value="contractor">Independent contractor</option>
+            </select>
+          </div>
+        )}
+        {!isIndia && (
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">State (optional)</label>
+            <input type="text" maxLength={2} placeholder="e.g. CA, TX" value={values.state} onChange={(e) => set('state', e.target.value.toUpperCase())}
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" />
+          </div>
+        )}
+        <button type="submit" className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700">
+          Compare offers →
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function JobOfferFinalOutput({ output, region = 'US', onRedo }: { output: JobOfferOutput; region?: 'US' | 'India'; onRedo: () => void }) {
+  const fmt = (n: number) => formatCurrency(n, region);
+  const isPositive = output.monthlyGain >= 0;
+  return (
+    <div className="space-y-4">
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Recommendation</h3>
+        <div className={`rounded-xl border p-4 ${isPositive ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-700/40 dark:bg-emerald-950/20' : 'border-amber-200 bg-amber-50 dark:border-amber-700/40 dark:bg-amber-950/20'}`}>
+          <p className="text-sm font-medium leading-relaxed text-slate-900 dark:text-slate-100">{output.verdict}</p>
+        </div>
+      </section>
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Key numbers</h3>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { label: 'Current monthly net', value: fmt(output.currentMonthlyNet) },
+            { label: 'New offer monthly net', value: fmt(output.newMonthlyNet) },
+            { label: 'Monthly gain', value: `${output.monthlyGain >= 0 ? '+' : ''}${fmt(output.monthlyGain)}` },
+            { label: 'Annual gain', value: `${output.annualGain >= 0 ? '+' : ''}${fmt(output.annualGain)}` },
+          ].map((m) => (
+            <div key={m.label} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/50">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{m.label}</p>
+              <p className="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{m.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      {output.risks.length > 0 && (
+        <section>
+          <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Risks to watch</h3>
+          <ul className="space-y-1.5">
+            {output.risks.map((r, i) => (
+              <li key={i} className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800 dark:border-amber-700/40 dark:bg-amber-950/20 dark:text-amber-300">
+                <span className="shrink-0">⚠️</span><span>{r}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+      <button type="button" onClick={onRedo} className="text-xs text-slate-400 underline hover:text-blue-600 dark:hover:text-blue-400">
+        ← Update inputs
+      </button>
+    </div>
+  );
+}
+
+function JobOfferFlow({ result, region = 'US' }: { result: PipelineResult; region?: 'US' | 'India' }) {
+  const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState<JobOfferFormValues | null>(null);
+  const output = submitted ? computeJobOffer(submitted, region) : null;
+
+  if (output) return <JobOfferFinalOutput output={output} region={region} onRedo={() => setSubmitted(null)} />;
+
+  return (
+    <div className="space-y-5">
+      <RecommendationSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <KeyNumbersSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <RisksSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <NextStepsSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      {showForm ? (
+        <JobOfferRefinementForm region={region} onSubmit={(v) => { setSubmitted(v); setShowForm(false); }} />
+      ) : (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Get precise numbers</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+            {region === 'India' ? 'Enter your current CTC and the new offer CTC for an exact in-hand comparison.' : 'Enter your current salary and new offer for an exact after-tax comparison.'}
+          </p>
+          <button type="button" onClick={() => setShowForm(true)} className="mt-3 rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-700">
+            Enter my numbers →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Debt Payoff Inline Flow ──────────────────────────────────────────────────
+
+interface DebtPayoffFormValues {
+  totalDebt: string;
+  interestRate: string;
+  monthlyPayment: string;
+  region: 'US' | 'India';
+}
+
+interface DebtPayoffOutput {
+  monthsToPayoff: number;
+  totalInterest: number;
+  totalPaid: number;
+  minimumPayment: number;
+  extraPayoffText: string;
+  recommendation: string;
+  nextStep: string;
+}
+
+const EMPTY_DP_FORM: DebtPayoffFormValues = { totalDebt: '', interestRate: '', monthlyPayment: '', region: 'US' };
+
+function computeDebtPayoff(v: DebtPayoffFormValues): DebtPayoffOutput {
+  const principal = parseNumField(v.totalDebt);
+  const annualRate = parseNumField(v.interestRate) / 100;
+  const monthlyPayment = parseNumField(v.monthlyPayment);
+  const region = v.region;
+  const fmt = (n: number) => formatCurrency(n, region);
+
+  const result = calcDebtPayoff(
+    principal > 0 ? principal : 10_000,
+    annualRate > 0 ? annualRate : 0.18,
+    monthlyPayment > 0 ? monthlyPayment : 300,
+  );
+
+  const isPaidOff = isFinite(result.monthsToPayoff);
+  const years = Math.floor(result.monthsToPayoff / 12);
+  const months = result.monthsToPayoff % 12;
+  const timeText = years > 0 ? `${years}yr ${months}mo` : `${months} months`;
+
+  const recommendation = isPaidOff
+    ? result.monthsToPayoff <= 12
+      ? `You can be debt-free in ${timeText}. Stay the course and accelerate any extra cash toward this.`
+      : `Debt-free in ${timeText}. You will pay ${fmt(result.totalInterest)} in interest. Consider the avalanche method (highest rate first) to save on interest.`
+    : `Your monthly payment is too low to cover interest. Increase payment to at least ${fmt(result.minimumPayment + 1)}/month.`;
+
+  const extraPayoffText = isPaidOff && result.monthsToPayoff > 6
+    ? `Paying ${fmt(monthlyPayment > 0 ? monthlyPayment * 1.5 : 450)}/month instead would save ~${fmt(result.totalInterest * 0.3)} in interest.`
+    : '';
+
+  const nextStep = isPaidOff
+    ? region === 'India'
+      ? 'Set up auto-debit for the monthly payment so you never miss a due date. Redirect freed cash to SIP/PPF after payoff.'
+      : 'Automate the payment to avoid missing due dates. Once debt-free, redirect the freed cash to your emergency fund and 401(k).'
+    : 'Increase your monthly payment immediately. Even a small increase dramatically reduces total interest paid.';
+
+  return {
+    monthsToPayoff: result.monthsToPayoff,
+    totalInterest: result.totalInterest,
+    totalPaid: result.totalPaid,
+    minimumPayment: result.minimumPayment,
+    extraPayoffText,
+    recommendation,
+    nextStep,
+  };
+}
+
+function DebtPayoffRefinementForm({ onSubmit, region = 'US' }: { onSubmit: (v: DebtPayoffFormValues) => void; region?: 'US' | 'India' }) {
+  const [values, setValues] = useState<DebtPayoffFormValues>({ ...EMPTY_DP_FORM, region });
+  const [errors, setErrors] = useState<Partial<Record<keyof DebtPayoffFormValues, string>>>({});
+  const set = <K extends keyof DebtPayoffFormValues>(f: K, val: DebtPayoffFormValues[K]) =>
+    setValues((p) => ({ ...p, [f]: val }));
+
+  const validate = () => {
+    const errs: Partial<Record<keyof DebtPayoffFormValues, string>> = {};
+    if (!values.totalDebt || parseNumField(values.totalDebt) <= 0) errs.totalDebt = 'Required';
+    if (!values.interestRate || parseNumField(values.interestRate) <= 0) errs.interestRate = 'Required';
+    if (!values.monthlyPayment || parseNumField(values.monthlyPayment) <= 0) errs.monthlyPayment = 'Required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const isIndia = region === 'India';
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Calculate exact payoff timeline</p>
+        <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">Enter your debt details to see exactly when you&apos;ll be debt-free.</p>
+      </div>
+      <form onSubmit={(e) => { e.preventDefault(); if (validate()) onSubmit(values); }} className="space-y-3">
+        <MoneyField id="dp-debt" label={isIndia ? 'Total debt balance' : 'Total debt balance'} required
+          value={values.totalDebt} onChange={(v) => set('totalDebt', v)}
+          placeholder={isIndia ? '200000' : '10000'} error={errors.totalDebt} region={region} />
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">Annual interest rate (%)<span className="ml-0.5 text-red-500">*</span></label>
+          <input type="number" min="0" max="100" step="0.1" placeholder={isIndia ? '18' : '21'}
+            value={values.interestRate} onChange={(e) => set('interestRate', e.target.value)}
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" />
+          {errors.interestRate && <p className="mt-1 text-[11px] text-red-600">{errors.interestRate}</p>}
+        </div>
+        <MoneyField id="dp-payment" label="Monthly payment" required
+          value={values.monthlyPayment} onChange={(v) => set('monthlyPayment', v)}
+          placeholder={isIndia ? '5000' : '300'} error={errors.monthlyPayment} region={region} />
+        <button type="submit" className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700">
+          Calculate payoff →
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function DebtPayoffFinalOutput({ output, region = 'US', onRedo }: { output: DebtPayoffOutput; region?: 'US' | 'India'; onRedo: () => void }) {
+  const fmt = (n: number) => formatCurrency(n, region);
+  const isPaidOff = isFinite(output.monthsToPayoff);
+  const years = Math.floor(output.monthsToPayoff / 12);
+  const mos = output.monthsToPayoff % 12;
+
+  return (
+    <div className="space-y-4">
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Recommendation</h3>
+        <div className={`rounded-xl border p-4 ${isPaidOff ? 'border-emerald-200 bg-emerald-50 dark:border-emerald-700/40 dark:bg-emerald-950/20' : 'border-red-200 bg-red-50 dark:border-red-700/40 dark:bg-red-950/20'}`}>
+          <p className="text-sm font-medium leading-relaxed text-slate-900 dark:text-slate-100">{output.recommendation}</p>
+        </div>
+      </section>
+      {isPaidOff && (
+        <section>
+          <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Key numbers</h3>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { label: 'Payoff time', value: years > 0 ? `${years}yr ${mos}mo` : `${mos} months` },
+              { label: 'Total interest paid', value: fmt(output.totalInterest) },
+              { label: 'Total paid', value: fmt(output.totalPaid) },
+              { label: 'Monthly payment', value: fmt(output.totalPaid / output.monthsToPayoff) },
+            ].map((m) => (
+              <div key={m.label} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/50">
+                <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{m.label}</p>
+                <p className="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{m.value}</p>
+              </div>
+            ))}
+          </div>
+          {output.extraPayoffText && (
+            <p className="mt-2 text-xs text-blue-700 dark:text-blue-300">💡 {output.extraPayoffText}</p>
+          )}
+        </section>
+      )}
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Best next step</h3>
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-700/50 dark:bg-blue-950/20 dark:text-blue-200">
+          {output.nextStep}
+        </div>
+      </section>
+      <button type="button" onClick={onRedo} className="text-xs text-slate-400 underline hover:text-blue-600 dark:hover:text-blue-400">
+        ← Update inputs
+      </button>
+    </div>
+  );
+}
+
+function DebtPayoffFlow({ result, region = 'US' }: { result: PipelineResult; region?: 'US' | 'India' }) {
+  const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState<DebtPayoffFormValues | null>(null);
+  const output = submitted ? computeDebtPayoff(submitted) : null;
+
+  if (output) return <DebtPayoffFinalOutput output={output} region={region} onRedo={() => setSubmitted(null)} />;
+
+  return (
+    <div className="space-y-5">
+      <RecommendationSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <KeyNumbersSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <RisksSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <NextStepsSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      {showForm ? (
+        <DebtPayoffRefinementForm region={region} onSubmit={(v) => { setSubmitted({ ...v, region }); setShowForm(false); }} />
+      ) : (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Calculate exact payoff timeline</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+            {region === 'India' ? 'Enter your loan balance, interest rate, and EMI for an exact payoff projection.' : 'Enter your debt balance, APR, and monthly payment for an exact payoff projection.'}
+          </p>
+          <button type="button" onClick={() => setShowForm(true)} className="mt-3 rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-700">
+            Enter my numbers →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Investing Projections Inline Flow ────────────────────────────────────────
+
+interface InvestingFormValues {
+  monthlyContribution: string;
+  currentSavings: string;
+  annualReturn: string;
+  years: string;
+}
+
+interface InvestingOutput {
+  finalValue: number;
+  totalContributed: number;
+  gain: number;
+  years: number;
+  monthlyContribution: number;
+  recommendation: string;
+  nextStep: string;
+}
+
+const EMPTY_INV_FORM: InvestingFormValues = { monthlyContribution: '', currentSavings: '', annualReturn: '', years: '' };
+
+function computeInvesting(v: InvestingFormValues, region: 'US' | 'India'): InvestingOutput {
+  const monthly = parseNumField(v.monthlyContribution) || (region === 'India' ? 10_000 : 500);
+  const initial = parseNumField(v.currentSavings);
+  const rate = parseNumField(v.annualReturn) / 100 || (region === 'India' ? 0.12 : 0.07);
+  const yrs = parseNumField(v.years) || 20;
+  const fmt = (n: number) => formatCurrency(n, region);
+
+  const { finalValue, totalContributed, gain } = calcInvestingProjection(monthly, initial, rate, yrs);
+
+  const multiplier = totalContributed > 0 ? finalValue / totalContributed : 1;
+
+  const recommendation =
+    multiplier >= 3
+      ? `${fmt(monthly)}/month for ${yrs} years grows to ${fmt(finalValue)} — ${multiplier.toFixed(1)}× your money at ${(rate * 100).toFixed(0)}% annual return.`
+      : `${fmt(monthly)}/month for ${yrs} years grows to ${fmt(finalValue)}. Consider increasing contributions or extending the horizon to build more wealth.`;
+
+  const nextStep = region === 'India'
+    ? `Start or increase your SIP by ${fmt(monthly)}/month today. Diversify across equity mutual funds (index funds + ELSS) for long-term growth.`
+    : `Automate ${fmt(monthly)}/month to a low-cost index fund (e.g. VTSAX or SPY). Max out your 401(k) match first, then IRA.`;
+
+  return { finalValue, totalContributed, gain, years: yrs, monthlyContribution: monthly, recommendation, nextStep };
+}
+
+function InvestingRefinementForm({ onSubmit, region = 'US' }: { onSubmit: (v: InvestingFormValues) => void; region?: 'US' | 'India' }) {
+  const [values, setValues] = useState<InvestingFormValues>(EMPTY_INV_FORM);
+  const [errors, setErrors] = useState<Partial<Record<keyof InvestingFormValues, string>>>({});
+  const set = <K extends keyof InvestingFormValues>(f: K, val: InvestingFormValues[K]) =>
+    setValues((p) => ({ ...p, [f]: val }));
+
+  const validate = () => {
+    const errs: Partial<Record<keyof InvestingFormValues, string>> = {};
+    if (!values.monthlyContribution || parseNumField(values.monthlyContribution) <= 0) errs.monthlyContribution = 'Required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const isIndia = region === 'India';
+  return (
+    <div className="space-y-4">
+      <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Project your investment growth</p>
+        <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300">See exactly how your investments grow over time with compound returns.</p>
+      </div>
+      <form onSubmit={(e) => { e.preventDefault(); if (validate()) onSubmit(values); }} className="space-y-3">
+        <MoneyField id="inv-monthly" label={isIndia ? 'Monthly SIP / investment' : 'Monthly investment amount'} required
+          value={values.monthlyContribution} onChange={(v) => set('monthlyContribution', v)}
+          placeholder={isIndia ? '10000' : '500'} error={errors.monthlyContribution} region={region} />
+        <MoneyField id="inv-existing" label={isIndia ? 'Existing portfolio / savings (optional)' : 'Current savings / portfolio (optional)'}
+          value={values.currentSavings} onChange={(v) => set('currentSavings', v)}
+          placeholder={isIndia ? '200000' : '10000'} region={region} />
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">Expected annual return (%)</label>
+          <input type="number" min="0" max="50" step="0.5" placeholder={isIndia ? '12' : '7'}
+            value={values.annualReturn} onChange={(e) => set('annualReturn', e.target.value)}
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" />
+          <p className="mt-0.5 text-[11px] text-slate-400">{isIndia ? 'Nifty 50 avg ~12% CAGR; conservative: 8–10%' : 'S&P 500 historical avg ~7%; conservative: 5–6%'}</p>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-slate-700 dark:text-slate-300">Investment horizon (years)</label>
+          <input type="number" min="1" max="50" placeholder="20"
+            value={values.years} onChange={(e) => set('years', e.target.value)}
+            className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:border-blue-400 focus:outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100" />
+        </div>
+        <button type="submit" className="w-full rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700">
+          Project growth →
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function InvestingFinalOutput({ output, region = 'US', onRedo }: { output: InvestingOutput; region?: 'US' | 'India'; onRedo: () => void }) {
+  const fmt = (n: number) => formatCurrency(n, region);
+  return (
+    <div className="space-y-4">
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Recommendation</h3>
+        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-700/40 dark:bg-emerald-950/20">
+          <p className="text-sm font-medium leading-relaxed text-slate-900 dark:text-slate-100">{output.recommendation}</p>
+        </div>
+      </section>
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Key numbers</h3>
+        <div className="grid grid-cols-2 gap-2">
+          {[
+            { label: 'Projected value', value: fmt(output.finalValue) },
+            { label: 'Total contributed', value: fmt(output.totalContributed) },
+            { label: 'Investment gains', value: fmt(output.gain) },
+            { label: 'Investment horizon', value: `${output.years} years` },
+          ].map((m) => (
+            <div key={m.label} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 dark:border-slate-700 dark:bg-slate-800/50">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{m.label}</p>
+              <p className="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{m.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+      <section>
+        <h3 className="mb-2 text-sm font-bold text-slate-800 dark:text-slate-100">Best next step</h3>
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-700/50 dark:bg-blue-950/20 dark:text-blue-200">
+          {output.nextStep}
+        </div>
+      </section>
+      <button type="button" onClick={onRedo} className="text-xs text-slate-400 underline hover:text-blue-600 dark:hover:text-blue-400">
+        ← Update inputs
+      </button>
+    </div>
+  );
+}
+
+function InvestingFlow({ result, region = 'US' }: { result: PipelineResult; region?: 'US' | 'India' }) {
+  const [showForm, setShowForm] = useState(false);
+  const [submitted, setSubmitted] = useState<InvestingFormValues | null>(null);
+  const output = submitted ? computeInvesting(submitted, region) : null;
+
+  if (output) return <InvestingFinalOutput output={output} region={region} onRedo={() => setSubmitted(null)} />;
+
+  return (
+    <div className="space-y-5">
+      <RecommendationSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <KeyNumbersSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <RisksSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <NextStepsSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      {showForm ? (
+        <InvestingRefinementForm region={region} onSubmit={(v) => { setSubmitted(v); setShowForm(false); }} />
+      ) : (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Project your portfolio growth</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+            {region === 'India' ? 'Enter your SIP amount and horizon to see your projected corpus.' : 'Enter your monthly contribution and horizon to see projected portfolio value.'}
+          </p>
+          <button type="button" onClick={() => setShowForm(true)} className="mt-3 rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-700">
+            Enter my numbers →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Generic result view (for intents without a dedicated flow) ───────────────
+
+function GenericResultView({ result }: { result: PipelineResult }) {
+  return (
+    <div className="space-y-5">
+      <RecommendationSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <KeyNumbersSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <KeyFindingsSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <RisksSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <NextStepsSection result={result} />
+    </div>
+  );
+}
+
 // ─── Inline input form ────────────────────────────────────────────────────────
 
 /** Imperative handle exposed via forwardRef so suggestion cards can trigger auto-submit. */
@@ -1003,8 +1596,8 @@ function NextActionsBar({
 }) {
   const ACTIONS = [
     { label: '🔢 Refine with my numbers', text: `Refine with my specific numbers: ${question}` },
-    { label: '🔄 Change assumptions', text: `What if I change these assumptions: ${question}` },
-    { label: '⚖️ Compare alternatives', text: `Compare alternatives for: ${question}` },
+    { label: '⚖️ Compare options', text: `Compare the options for: ${question}` },
+    { label: '📊 Run full analysis', text: `Run a full analysis for: ${question}` },
   ];
 
   return (
@@ -1251,16 +1844,14 @@ export function ExecutionPanel() {
               <div className="px-5 py-4">
                 {activeResult.step1_intent.type === 'home-affordability' ? (
                   <HomeAffordabilityFlow key={activeResult.requestId} result={activeResult} region={region ?? 'US'} />
+                ) : activeResult.step1_intent.type === 'job-offer' || activeResult.step1_intent.type === 'relocation' ? (
+                  <JobOfferFlow key={activeResult.requestId} result={activeResult} region={region ?? 'US'} />
+                ) : activeResult.step1_intent.type === 'debt-payoff' ? (
+                  <DebtPayoffFlow key={activeResult.requestId} result={activeResult} region={region ?? 'US'} />
+                ) : activeResult.step1_intent.type === 'roth-vs-traditional' ? (
+                  <InvestingFlow key={activeResult.requestId} result={activeResult} region={region ?? 'US'} />
                 ) : (
-                  <div className="space-y-5">
-                    <RecommendationSection result={activeResult} />
-                    <hr className="border-slate-100 dark:border-slate-700/60" />
-                    <KeyFindingsSection result={activeResult} />
-                    <hr className="border-slate-100 dark:border-slate-700/60" />
-                    <RisksSection result={activeResult} />
-                    <hr className="border-slate-100 dark:border-slate-700/60" />
-                    <NextStepsSection result={activeResult} />
-                  </div>
+                  <GenericResultView key={activeResult.requestId} result={activeResult} />
                 )}
               </div>
 

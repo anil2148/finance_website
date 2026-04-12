@@ -11,7 +11,7 @@ import { setPreferredRegionCookie } from '@/lib/region-preference';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem } from '@/components/navbar/NavItem';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
-import { StartDecisionModal } from '@/components/money-copilot/StartDecisionModal';
+import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 
 type NavLink = {
   label: string;
@@ -122,7 +122,7 @@ export function AppNavbar() {
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
-  const [decisionModalOpen, setDecisionModalOpen] = useState(false);
+  const { dispatch } = useCopilot();
 
   // Sync region with path
   useEffect(() => {
@@ -207,16 +207,18 @@ export function AppNavbar() {
 
             {/* ── RIGHT: Static controls — desktop only ── */}
             <div className="ml-auto hidden items-center gap-2 lg:flex">
-              {/* Start a Decision CTA */}
+              {/* Ask AI / Copilot CTA */}
               <motion.button
-                onClick={() => setDecisionModalOpen(true)}
+                onClick={() => dispatch({ type: 'OPEN_DRAWER' })}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-emerald-500 bg-emerald-500 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-blue-600 bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70"
               >
-                <span>▶</span>
-                <span className="hidden whitespace-nowrap xl:inline">Start a Decision</span>
-                <span className="whitespace-nowrap xl:hidden">Start</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                <span className="hidden whitespace-nowrap xl:inline">Ask AI Copilot</span>
+                <span className="whitespace-nowrap xl:hidden">Copilot</span>
               </motion.button>
 
               {/* Region selector + currency badge */}
@@ -283,11 +285,8 @@ export function AppNavbar() {
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
         onRegionChange={switchRegion}
-        onStartDecision={() => setDecisionModalOpen(true)}
+        onStartDecision={() => { setMobileOpen(false); dispatch({ type: 'OPEN_DRAWER' }); }}
       />
-
-      {/* Start a Decision modal */}
-      <StartDecisionModal open={decisionModalOpen} onClose={() => setDecisionModalOpen(false)} />
     </>
   );
 }
