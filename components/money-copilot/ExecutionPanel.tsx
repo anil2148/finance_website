@@ -794,6 +794,8 @@ function HomeAffordabilityFlow({ result, region = 'US' }: { result: PipelineResu
 interface PanelInputHandle {
   /** Populate the input with text and immediately run the analysis. */
   triggerSubmit: (text: string) => void;
+  /** Populate the input with text and focus it without submitting. */
+  prefill: (text: string) => void;
 }
 
 const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputFormInner(_, ref) {
@@ -929,11 +931,15 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
   const handleSubmitRef = useRef(handleSubmit);
   handleSubmitRef.current = handleSubmit;
 
-  // Expose triggerSubmit so suggestion cards in DrawerEmptyState can auto-run analysis.
+  // Expose triggerSubmit / prefill so callers can drive the input imperatively.
   useImperativeHandle(ref, () => ({
     triggerSubmit: (text: string) => {
       setQuery(text);
       void handleSubmitRef.current(text);
+    },
+    prefill: (text: string) => {
+      setQuery(text);
+      requestAnimationFrame(() => { inputRef.current?.focus(); });
     },
   }), []);
 
@@ -983,6 +989,75 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
     </div>
   );
 });
+
+// ─── Next actions bar (shown after every response) ───────────────────────────
+
+function NextActionsBar({
+  question,
+  onPrefill,
+  onNewDecision,
+}: {
+  question: string;
+  onPrefill: (text: string) => void;
+  onNewDecision: () => void;
+}) {
+  const ACTIONS = [
+    { label: '🔢 Refine with my numbers', text: `Refine with my specific numbers: ${question}` },
+    { label: '🔄 Change assumptions', text: `What if I change these assumptions: ${question}` },
+    { label: '⚖️ Compare alternatives', text: `Compare alternatives for: ${question}` },
+  ];
+
+  return (
+    <div className="border-t border-slate-100 px-5 py-4 dark:border-slate-700/60">
+      <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Next actions</p>
+      <div className="flex flex-col gap-2">
+        {ACTIONS.map((a) => (
+          <button
+            key={a.label}
+            type="button"
+            onClick={() => onPrefill(a.text)}
+            className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-left text-xs font-medium text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-blue-500 dark:hover:bg-blue-950/30 dark:hover:text-blue-300"
+          >
+            {a.label}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={onNewDecision}
+          className="flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-left text-xs font-semibold text-blue-700 transition hover:border-blue-400 hover:bg-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-blue-700/50 dark:bg-blue-950/20 dark:text-blue-300 dark:hover:border-blue-500 dark:hover:bg-blue-950/40"
+        >
+          🆕 Start new decision
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Compact decision cards (shown below response so suggestions stay visible) ─
+
+function CompactDecisionCards({ onSuggestionClick }: { onSuggestionClick: (question: string) => void }) {
+  return (
+    <div className="border-t border-slate-100 px-5 py-4 dark:border-slate-700/60">
+      <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Try these</p>
+      <div className="flex flex-col gap-2">
+        {DECISION_CARDS.map((card) => (
+          <button
+            key={card.key}
+            type="button"
+            onClick={() => onSuggestionClick(card.question)}
+            className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-left transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500 dark:hover:bg-blue-950/30"
+          >
+            <span className="text-lg leading-none">{card.emoji}</span>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{card.label}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{card.description}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 // ─── Empty input state ────────────────────────────────────────────────────────
 
@@ -1136,15 +1211,26 @@ export function ExecutionPanel() {
             </svg>
             <p className="text-sm font-bold text-white">AI Decision Assistant</p>
           </div>
-          <button
-            onClick={() => dispatch({ type: 'CLOSE_PANEL' })}
-            aria-label="Close AI assistant"
-            className="rounded-md p-1 text-white/70 transition hover:text-white"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+          <div className="flex items-center gap-2">
+            {activeResult && (
+              <button
+                type="button"
+                onClick={() => dispatch({ type: 'OPEN_DRAWER' })}
+                className="rounded-md px-2 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/30 transition hover:bg-white/10 hover:text-white"
+              >
+                New decision
+              </button>
+            )}
+            <button
+              onClick={() => dispatch({ type: 'CLOSE_PANEL' })}
+              aria-label="Close AI assistant"
+              className="rounded-md p-1 text-white/70 transition hover:text-white"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         {/* Inline input form — always visible */}
@@ -1176,6 +1262,18 @@ export function ExecutionPanel() {
                   </div>
                 )}
               </div>
+
+              {/* Next actions — lets users continue without a refresh */}
+              <NextActionsBar
+                question={activeQuestion ?? ''}
+                onPrefill={(text) => formRef.current?.prefill(text)}
+                onNewDecision={() => dispatch({ type: 'OPEN_DRAWER' })}
+              />
+
+              {/* Decision cards — always visible so users can explore other topics */}
+              <CompactDecisionCards
+                onSuggestionClick={(q) => formRef.current?.triggerSubmit(q)}
+              />
 
               {/* History breadcrumb */}
               {history.length > 1 && (
