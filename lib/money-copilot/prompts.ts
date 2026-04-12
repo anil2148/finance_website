@@ -113,7 +113,8 @@ Offer type detection:
 - Mentions APR/rate/term/loan → assume loan offer
 - Mentions APR/transfer/balance → assume credit card offer
 - Mentions rate/mortgage/refinance → assume mortgage/refinance offer
-- No clear signal → use job offer as the default
+- No clear signal → use job offer as the default (job-offer queries are the most common
+  ambiguous use case; this maximises helpfulness for the widest share of users)
 
 ========================================
 REGION-AWARE INPUT NORMALIZATION (CRITICAL)

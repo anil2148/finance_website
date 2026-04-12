@@ -11,6 +11,22 @@ import { assessConfidence, compareScenarios, computeScenarioResults, extractMiss
 import { getModeFromQuestion } from './prompts';
 import { mergeNlpIntoInputs, parseFinancialDataFromText } from './nlp-parser';
 
+// ─── Shared constants ─────────────────────────────────────────────────────────
+/** Standard work hours per year: 40h/week × 52 weeks */
+const ANNUAL_WORK_HOURS = 2080;
+
+/** Rate used to estimate the total compensation premium needed for C2C/contractor
+ *  roles to break even with W2 (covers self-employment tax + benefits offset).
+ *  Mid-point of the commonly cited 15–20% range. */
+const C2C_BENEFITS_OFFSET_RATE = 0.17;
+
+/** Average state income tax rate used as a proxy when state is unknown. */
+const AVG_STATE_TAX_RATE = 0.05;
+
+/** Approximate max loan reduction per $500/month of additional debt at 7% APR
+ *  over a 30-year term: $500 / (0.07/12) * (1 - (1.07/12)^-360) ≈ $65,000. */
+const DEBT_TO_HOME_PRICE_MULTIPLIER = 65_000;
+
 const DISCLAIMER =
   'This tool provides educational decision-support estimates only. It is not financial, legal, or tax advice. All calculations use approximations and stated assumptions. Consult a qualified financial professional before making major financial decisions.';
 
@@ -50,7 +66,7 @@ function applyIncomeDefaults(inputs: FinancialInputs, region?: 'US' | 'India'): 
 
 function buildAssumptions(inputs: FinancialInputs, mode: DecisionMode): string[] {
   const assumptions: string[] = [];
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : 0);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : 0);
 
   if (salary) {
     const { estimatedTaxRate, note } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
@@ -88,8 +104,8 @@ function jobOfferResponse(request: CopilotRequest, scenarios: Scenario[]): Parti
   const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
   const { inputs } = { ...request, inputs: enriched };
 
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : d.annualSalary);
-  const newSalary = inputs.newAnnualSalary ?? (inputs.newHourlyRate ? inputs.newHourlyRate * 2080 : d.newAnnualSalary);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
+  const newSalary = inputs.newAnnualSalary ?? (inputs.newHourlyRate ? inputs.newHourlyRate * ANNUAL_WORK_HOURS : d.newAnnualSalary);
   const { monthlyNet, monthlyGross } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
   const { monthlyNet: newMonthlyNet } = estimateMonthlyNetIncome(newSalary, inputs.state, inputs.employmentType);
   const obligations = calcMonthlyObligations(inputs);
@@ -105,7 +121,7 @@ function jobOfferResponse(request: CopilotRequest, scenarios: Scenario[]): Parti
   const summary = `${isC2C ? 'C2C offer: ' : ''}Current take-home ~${formatCurrency(monthlyNet)}/month vs. new offer ~${formatCurrency(newMonthlyNet)}/month — net gain of ${formatCurrency(netMonthlyGain)}/month after taxes.${defaultNote}`;
 
   const recommendation = isC2C
-    ? `C2C/contractor roles require 15–20% more gross pay than equivalent W2 to break even after self-employment taxes and benefits costs. The ${formatCurrency(newSalary)} offer needs ~${formatCurrency(newSalary * 0.17)} added to offset benefits loss vs. a W2. ${netMonthlyGain > 0 ? `Still nets +${formatCurrency(netMonthlyGain)}/month.` : 'Does not break even at this rate.'}`
+    ? `C2C/contractor roles require 15–20% more gross pay than equivalent W2 to break even after self-employment taxes and benefits costs. The ${formatCurrency(newSalary)} offer needs ~${formatCurrency(newSalary * C2C_BENEFITS_OFFSET_RATE)} added to offset benefits loss vs. a W2. ${netMonthlyGain > 0 ? `Still nets +${formatCurrency(netMonthlyGain)}/month.` : 'Does not break even at this rate.'}`
     : netMonthlyGain > 200
       ? `Take the offer. The ${formatCurrency(newSalary)} package nets +${formatCurrency(netMonthlyGain)}/month (+${formatCurrency(netMonthlyGain * 12)}/year) after taxes. Confirm benefits package before signing.`
       : netMonthlyGain > 0
@@ -128,7 +144,7 @@ function jobOfferResponse(request: CopilotRequest, scenarios: Scenario[]): Parti
   const sensitivities = [
     'If the role moves from W2 to C2C, net pay drops by roughly $800–$1,800/month at this income level.',
     'A 10% salary increase would add ~' + formatCurrency(salary * 0.1 / 12 * 0.75) + '/month after taxes.',
-    'Moving to a no-income-tax state (TX, FL, NV) would add ~' + formatCurrency(salary * 0.05 / 12) + '/month net.',
+    'Moving to a no-income-tax state (TX, FL, NV) would add ~' + formatCurrency(salary * AVG_STATE_TAX_RATE / 12) + '/month net.',
     'Loss of employer 401(k) match could cost $2,000–$8,000/year in total compensation.'
   ];
 
@@ -153,18 +169,18 @@ function relocationResponse(request: CopilotRequest, scenarios: Scenario[]): Par
   const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
   const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
   const { inputs } = { ...request, inputs: enriched };
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : d.annualSalary);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
 
   const stateKey = inputs.state?.toUpperCase().trim();
   const noTaxStates = new Set(['TX', 'FL', 'NV', 'WA', 'SD', 'WY', 'AK', 'TN', 'NH']);
   const isNoTaxState = stateKey ? noTaxStates.has(stateKey) : false;
 
-  const taxSavings = isNoTaxState ? salary * 0.05 : 0;
+  const taxSavings = isNoTaxState ? salary * AVG_STATE_TAX_RATE : 0;
   const defaultNote = usedDefaults ? ` (assumed ${region === 'India' ? '₹8L CTC' : '$65K salary'} — ${REFINEMENT_PROMPT})` : '';
 
   const summary = inputs.state
     ? `Relocating to ${inputs.state}${isNoTaxState ? ' (no state income tax)' : ''} on ${formatCurrency(salary)}/year: ${isNoTaxState ? `estimated annual tax savings of ${formatCurrency(taxSavings)}` : 'tax differential depends on origin state'}.${defaultNote}`
-    : `Relocation analysis: on ${formatCurrency(salary)}/year, moving to a no-income-tax state like TX or FL saves ~${formatCurrency(salary * 0.05)}/year.${defaultNote}`;
+    : `Relocation analysis: on ${formatCurrency(salary)}/year, moving to a no-income-tax state like TX or FL saves ~${formatCurrency(salary * AVG_STATE_TAX_RATE)}/year.${defaultNote}`;
 
   const recommendation = isNoTaxState && inputs.state
     ? `Move makes financial sense if housing cost increase is under ${formatCurrency(taxSavings / 12)}/month. Moving to ${inputs.state} (no state income tax) saves ~${formatCurrency(taxSavings)}/year (~${formatCurrency(taxSavings / 12)}/month). Break even on $5K moving costs in ~${Math.ceil(5000 / (taxSavings / 12))} months.`
@@ -358,7 +374,7 @@ function homeAffordabilityResponse(request: CopilotRequest, scenarios: Scenario[
   const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
   const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
   const { inputs } = { ...request, inputs: enriched };
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : d.homeIncome);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.homeIncome);
   const downPayment = inputs.cashOnHand ?? d.downPayment;
   const monthlyDebt = inputs.debtPayments ?? d.homeDebt;
 
@@ -381,7 +397,7 @@ function homeAffordabilityResponse(request: CopilotRequest, scenarios: Scenario[
 
   const sensitivities = [
     'A 1% increase in mortgage rate reduces your max loan by roughly 10%.',
-    'Each $500/month in existing debt reduces your max home price by ~$65,000.',
+    `Each $500/month in existing debt reduces your max home price by ~${formatCurrency(DEBT_TO_HOME_PRICE_MULTIPLIER)}.`,
     'A 20% down payment eliminates PMI (~0.5–1.5% annually on loan balance).',
     'Property taxes and homeowner insurance typically add $300–$800/month to true housing cost.'
   ];
@@ -408,7 +424,7 @@ function budgetStressTestResponse(request: CopilotRequest, scenarios: Scenario[]
   const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
   const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
   const { inputs } = { ...request, inputs: enriched };
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : d.annualSalary);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
   const { monthlyNet, monthlyGross } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
 
   const obligations = calcMonthlyObligations(inputs);
@@ -467,7 +483,7 @@ function customResponse(request: CopilotRequest, scenarios: Scenario[]): Partial
   const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
   const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
   const { inputs } = { ...request, inputs: enriched };
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : d.annualSalary);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
   const { monthlyNet } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
   const obligations = calcMonthlyObligations(inputs);
   const leftover = Math.max(0, monthlyNet - obligations);
@@ -517,7 +533,7 @@ function ambiguousOfferResponse(
   const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
   const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
   const { inputs } = { ...request, inputs: enriched };
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : d.annualSalary);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
   const newSalary = inputs.newAnnualSalary ?? d.newAnnualSalary;
   const { monthlyNet } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
   const { monthlyNet: newMonthlyNet } = estimateMonthlyNetIncome(newSalary, inputs.state, inputs.employmentType);
@@ -641,17 +657,14 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   // ─── Decision engine structured fields ───────────────────────────────────
   const { inputs } = enrichedRequest;
 
-  /** Standard work-hours per year: 40h/week × 52 weeks */
-  const HOURS_PER_YEAR = 2080;
-
   // Normalise income to annual, respecting incomePeriod field
   const periodMultiplier = inputs.incomePeriod === 'monthly' ? 12 : 1;
   const baseAnnual = inputs.annualSalary
     ? inputs.annualSalary * periodMultiplier
-    : (inputs.hourlyRate ? inputs.hourlyRate * HOURS_PER_YEAR : undefined);
+    : (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : undefined);
   const newAnnual = inputs.newAnnualSalary
     ? inputs.newAnnualSalary * periodMultiplier
-    : (inputs.newHourlyRate ? inputs.newHourlyRate * HOURS_PER_YEAR : undefined);
+    : (inputs.newHourlyRate ? inputs.newHourlyRate * ANNUAL_WORK_HOURS : undefined);
 
   const { monthlyNet: baseMonthlyNet } = baseAnnual
     ? estimateMonthlyNetIncome(baseAnnual, inputs.state, inputs.employmentType)
