@@ -5,7 +5,12 @@ import { usePathname } from 'next/navigation';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { runPipeline } from '@/lib/money-copilot/pipeline';
 import type { CopilotResponse, PipelineResult, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
-import { calcHomeAffordability, assessRiskLevel, formatCurrency } from '@/lib/money-copilot/calculators';
+import {
+  calcHomeAffordability,
+  calcHomeLoanEMI,
+  assessRiskLevel,
+  formatCurrency,
+} from '@/lib/money-copilot/calculators';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -37,7 +42,7 @@ const INTENT_TYPE_LABEL: Record<string, string> = {
 
 // ─── Decision category cards ──────────────────────────────────────────────────
 
-const DECISION_CARDS = [
+const DECISION_CARDS_US = [
   {
     key: 'job',
     label: 'Job offer',
@@ -72,6 +77,44 @@ const DECISION_CARDS = [
     emoji: '📈',
     description: 'Plan your investment strategy',
     question: 'How should I start investing my money?',
+  },
+];
+
+const DECISION_CARDS_INDIA = [
+  {
+    key: 'job',
+    label: 'Job offer',
+    emoji: '💼',
+    description: 'Compare CTC or evaluate a hike',
+    question: 'I have a job offer — should I take it?',
+  },
+  {
+    key: 'home',
+    label: 'Home loan / EMI',
+    emoji: '🏠',
+    description: 'Estimate what home loan you can afford',
+    question: 'Can I afford a home loan in India right now?',
+  },
+  {
+    key: 'tax',
+    label: 'Tax saving',
+    emoji: '🧾',
+    description: 'Old vs new regime and 80C planning',
+    question: 'Which tax regime is better for me — old or new?',
+  },
+  {
+    key: 'debt',
+    label: 'Loan / EMI payoff',
+    emoji: '📉',
+    description: 'Prepay loan or invest — which is better?',
+    question: 'Should I prepay my home loan or invest instead?',
+  },
+  {
+    key: 'invest',
+    label: 'Investments',
+    emoji: '📈',
+    description: 'SIP, ELSS, PPF, or NPS — where to invest?',
+    question: 'How should I invest my savings in India?',
   },
 ];
 
@@ -243,19 +286,32 @@ const EMPTY_HA_FORM: HAFormValues = {
 };
 
 function parseNumField(s: string): number {
-  const n = parseFloat(s.replace(/[$,\s]/g, ''));
+  const n = parseFloat(s.replace(/[$₹,\s]/g, ''));
   return isNaN(n) || n < 0 ? 0 : n;
 }
 
-function computeHomeAffordability(v: HAFormValues): HAComputedOutput {
+function computeHomeAffordability(v: HAFormValues, region: 'US' | 'India' = 'US'): HAComputedOutput {
   const annualIncome = parseNumField(v.annualIncome);
   const downPayment = parseNumField(v.downPayment);
   const hiDebtPayment = v.hasHighInterestDebt ? parseNumField(v.highInterestDebtPayment) : 0;
   const monthlyDebt = parseNumField(v.monthlyDebt) + hiDebtPayment;
   const emergencyFund = parseNumField(v.emergencyFund);
   const monthlyExpenses = parseNumField(v.monthlyExpenses);
+  const fmt = (n: number) => formatCurrency(n, region);
 
-  const { maxHomePrice, monthlyPaymentEstimate } = calcHomeAffordability(annualIncome, downPayment, monthlyDebt);
+  let maxHomePrice: number;
+  let monthlyPaymentEstimate: number;
+
+  if (region === 'India') {
+    const { maxHomePrice: mp, emiEstimate } = calcHomeLoanEMI(annualIncome, downPayment, monthlyDebt);
+    maxHomePrice = mp;
+    monthlyPaymentEstimate = emiEstimate;
+  } else {
+    const { maxHomePrice: mp, monthlyPaymentEstimate: mp2 } = calcHomeAffordability(annualIncome, downPayment, monthlyDebt);
+    maxHomePrice = mp;
+    monthlyPaymentEstimate = mp2;
+  }
+
   const monthlyGross = annualIncome > 0 ? annualIncome / 12 : 0;
 
   const housingBurdenRatio = monthlyGross > 0 ? monthlyPaymentEstimate / monthlyGross : 0;
@@ -272,22 +328,37 @@ function computeHomeAffordability(v: HAFormValues): HAComputedOutput {
   // ── Recommendation ───────────────────────────────────────────────────────────
   let recommendation: string;
   if (annualIncome <= 0) {
-    recommendation = 'Enter your annual gross income above to compute affordability.';
+    recommendation = region === 'India'
+      ? 'Enter your annual CTC above to compute home loan affordability.'
+      : 'Enter your annual gross income above to compute affordability.';
   } else if (riskLevel === 'low') {
-    recommendation = `You can comfortably afford a home up to ${formatCurrency(maxHomePrice)} based on your income and current debts.`;
+    recommendation = region === 'India'
+      ? `You can comfortably take a home loan up to ${fmt(maxHomePrice)} based on your CTC and existing EMIs.`
+      : `You can comfortably afford a home up to ${fmt(maxHomePrice)} based on your income and current debts.`;
   } else if (riskLevel === 'medium') {
-    recommendation = `You may qualify for a home up to ${formatCurrency(maxHomePrice)}, but your finances are stretched. Review the risks below before committing.`;
+    recommendation = region === 'India'
+      ? `You may qualify for a home up to ${fmt(maxHomePrice)}, but your finances are stretched. Review the risks below before committing.`
+      : `You may qualify for a home up to ${fmt(maxHomePrice)}, but your finances are stretched. Review the risks below before committing.`;
   } else {
-    recommendation = `Home buying at this time carries significant financial risk. Consider stabilizing your finances before purchasing.`;
+    recommendation = region === 'India'
+      ? 'Taking a home loan at this time carries significant financial risk. Consider improving your CIBIL score and reducing existing EMIs first.'
+      : 'Home buying at this time carries significant financial risk. Consider stabilizing your finances before purchasing.';
   }
 
   // ── Why ──────────────────────────────────────────────────────────────────────
   const why: string[] = [];
   if (annualIncome > 0) {
-    why.push(`Maximum affordable home price: ${formatCurrency(maxHomePrice)} (28/36 rule, 7% rate, 30-year term)`);
-    why.push(`Estimated monthly payment: ${formatCurrency(monthlyPaymentEstimate)}`);
-    why.push(`Housing burden: ${(housingBurdenRatio * 100).toFixed(0)}% of gross income (guideline: ≤28%)`);
-    why.push(`Total debt-to-income: ${(fullDtiRatio * 100).toFixed(0)}% including mortgage (guideline: ≤36%)`);
+    if (region === 'India') {
+      why.push(`Maximum affordable home price: ${fmt(maxHomePrice)} (50% FOIR, 8.5% rate, 20-year term)`);
+      why.push(`Max eligible EMI: ${fmt(monthlyPaymentEstimate)}/month`);
+      why.push(`FOIR: ${(housingBurdenRatio * 100).toFixed(0)}% of gross monthly income (guideline: ≤50%)`);
+      why.push(`Total EMI-to-income ratio: ${(fullDtiRatio * 100).toFixed(0)}% including new EMI`);
+    } else {
+      why.push(`Maximum affordable home price: ${fmt(maxHomePrice)} (28/36 rule, 7% rate, 30-year term)`);
+      why.push(`Estimated monthly payment: ${fmt(monthlyPaymentEstimate)}`);
+      why.push(`Housing burden: ${(housingBurdenRatio * 100).toFixed(0)}% of gross income (guideline: ≤28%)`);
+      why.push(`Total debt-to-income: ${(fullDtiRatio * 100).toFixed(0)}% including mortgage (guideline: ≤36%)`);
+    }
   }
   if (monthlyExpenses > 0) {
     why.push(`Emergency runway: ${emergencyRunwayMonths.toFixed(1)} months of expenses (target: 6+ months)`);
@@ -295,22 +366,35 @@ function computeHomeAffordability(v: HAFormValues): HAComputedOutput {
   if (downPayment > 0 && maxHomePrice > 0) {
     const dpPct = (downPayment / maxHomePrice) * 100;
     why.push(
-      `Down payment: ${formatCurrency(downPayment)} — ${dpPct.toFixed(0)}% of max home price${dpPct < 20 ? ' (below 20%; PMI likely applies)' : ''}`,
+      `Down payment: ${fmt(downPayment)} — ${dpPct.toFixed(0)}% of max home price${
+        region === 'India'
+          ? dpPct < 20 ? ' (below 20%; you may need LMI/higher rate)' : ''
+          : dpPct < 20 ? ' (below 20%; PMI likely applies)' : ''
+      }`,
     );
   }
 
   // ── Risks to watch ───────────────────────────────────────────────────────────
   const risksToWatch: string[] = [];
   if (annualIncome > 0) {
-    if (housingBurdenRatio > 0.35) {
-      risksToWatch.push('Housing costs exceed 35% of gross income — leaves little room for savings or emergencies');
-    } else if (housingBurdenRatio > 0.28) {
-      risksToWatch.push('Housing costs are near the 28% guideline — monitor your budget closely');
+    const foirLimit = region === 'India' ? 0.50 : 0.35;
+    if (housingBurdenRatio > foirLimit) {
+      risksToWatch.push(region === 'India'
+        ? 'EMI exceeds 50% FOIR — most banks will not approve this loan without additional income proof'
+        : 'Housing costs exceed 35% of gross income — leaves little room for savings or emergencies');
+    } else if (housingBurdenRatio > (region === 'India' ? 0.40 : 0.28)) {
+      risksToWatch.push(region === 'India'
+        ? 'EMI is near the 40% FOIR threshold — monitor cash flow carefully after taking the loan'
+        : 'Housing costs are near the 28% guideline — monitor your budget closely');
     }
-    if (fullDtiRatio > 0.43) {
-      risksToWatch.push('Total debt-to-income exceeds 43% — may not qualify for a conventional mortgage');
-    } else if (fullDtiRatio > 0.36) {
-      risksToWatch.push('Total debt-to-income exceeds 36% — reducing existing debt first would improve your terms');
+    if (fullDtiRatio > (region === 'India' ? 0.55 : 0.43)) {
+      risksToWatch.push(region === 'India'
+        ? 'Total EMI obligations exceed 55% of income — banks may reject the application'
+        : 'Total debt-to-income exceeds 43% — may not qualify for a conventional mortgage');
+    } else if (fullDtiRatio > (region === 'India' ? 0.50 : 0.36)) {
+      risksToWatch.push(region === 'India'
+        ? 'Total EMI obligations exceed 50% of income — reducing existing EMIs first would improve your eligibility'
+        : 'Total debt-to-income exceeds 36% — reducing existing debt first would improve your terms');
     }
   }
   if (monthlyExpenses > 0) {
@@ -321,38 +405,51 @@ function computeHomeAffordability(v: HAFormValues): HAComputedOutput {
     }
   }
   if (v.hasHighInterestDebt) {
-    risksToWatch.push(
-      'High-interest debt (15%+ APR) erodes your net worth faster than a mortgage builds equity — consider paying it down first',
-    );
+    risksToWatch.push(region === 'India'
+      ? 'High-interest debt (personal loan >10% p.a.) erodes your net worth quickly — consider paying it down before taking a home loan'
+      : 'High-interest debt (15%+ APR) erodes your net worth faster than a mortgage builds equity — consider paying it down first');
   }
   if (downPayment > 0 && maxHomePrice > 0 && downPayment < maxHomePrice * 0.2) {
-    const pmiEst = Math.round((maxHomePrice * 0.005) / 12);
-    risksToWatch.push(
-      `Down payment is below 20% — expect Private Mortgage Insurance (~${formatCurrency(pmiEst)}/mo until you reach 20% equity)`,
-    );
+    risksToWatch.push(region === 'India'
+      ? `Down payment is below 20% — you will need to borrow more and pay higher EMIs; check if you qualify for PMAY subsidy`
+      : `Down payment is below 20% — expect Private Mortgage Insurance (~${formatCurrency(Math.round((maxHomePrice * 0.005) / 12))}/mo until you reach 20% equity)`);
   }
 
   // ── Best next step ───────────────────────────────────────────────────────────
   let bestNextStep: string;
   if (annualIncome <= 0) {
-    bestNextStep = 'Enter your annual gross income to get a personalized next step.';
+    bestNextStep = region === 'India'
+      ? 'Enter your annual CTC to get a personalized home loan estimate.'
+      : 'Enter your annual gross income to get a personalized next step.';
   } else if (riskLevel === 'low') {
-    bestNextStep = `Get pre-approved for a mortgage up to ${formatCurrency(maxHomePrice)} and start working with a real estate agent to find homes in your budget.`;
+    bestNextStep = region === 'India'
+      ? `Check your CIBIL score (target 750+) and get a home loan pre-approval from your bank for up to ${fmt(maxHomePrice)}.`
+      : `Get pre-approved for a mortgage up to ${fmt(maxHomePrice)} and start working with a real estate agent to find homes in your budget.`;
   } else if (riskLevel === 'medium') {
-    if (fullDtiRatio > 0.36) {
-      bestNextStep = 'Pay down existing monthly debt to improve your debt-to-income ratio before applying for a mortgage.';
+    if (fullDtiRatio > (region === 'India' ? 0.50 : 0.36)) {
+      bestNextStep = region === 'India'
+        ? 'Reduce existing EMI obligations before applying for a home loan to improve your FOIR.'
+        : 'Pay down existing monthly debt to improve your debt-to-income ratio before applying for a mortgage.';
     } else if (emergencyRunwayMonths < 6) {
       bestNextStep = 'Build your emergency fund to at least 6 months of expenses before committing to a home purchase.';
     } else {
-      bestNextStep = 'Review your monthly budget carefully and consider a lower-priced home or a larger down payment to reduce financial pressure.';
+      bestNextStep = region === 'India'
+        ? 'Review your monthly budget carefully and consider a lower-priced property or a larger down payment to reduce EMI pressure.'
+        : 'Review your monthly budget carefully and consider a lower-priced home or a larger down payment to reduce financial pressure.';
     }
   } else {
     if (v.hasHighInterestDebt) {
-      bestNextStep = 'Prioritize eliminating high-interest debt over the next 12–18 months. Once cleared, reassess your home buying timeline.';
+      bestNextStep = region === 'India'
+        ? 'Prioritize closing personal loans and credit card debt first. Once cleared, revisit your home loan eligibility.'
+        : 'Prioritize eliminating high-interest debt over the next 12–18 months. Once cleared, reassess your home buying timeline.';
     } else if (emergencyRunwayMonths < 3) {
-      bestNextStep = 'Build a 3–6 month emergency fund before taking on a mortgage. Consider renting while you save aggressively.';
+      bestNextStep = region === 'India'
+        ? 'Build a 3–6 month emergency fund in a liquid FD before taking a home loan. Continue renting while you save.'
+        : 'Build a 3–6 month emergency fund before taking on a mortgage. Consider renting while you save aggressively.';
     } else {
-      bestNextStep = 'Focus on increasing income or reducing monthly obligations for the next 12 months, then revisit home affordability.';
+      bestNextStep = region === 'India'
+        ? 'Focus on increasing CTC or reducing EMI obligations for the next 12 months, then revisit home loan affordability.'
+        : 'Focus on increasing income or reducing monthly obligations for the next 12 months, then revisit home affordability.';
     }
   }
 
@@ -381,6 +478,7 @@ function MoneyField({
   placeholder,
   hint,
   error,
+  region,
 }: {
   id: string;
   label: string;
@@ -390,7 +488,9 @@ function MoneyField({
   placeholder?: string;
   hint?: string;
   error?: string;
+  region?: 'US' | 'India';
 }) {
+  const currencySymbol = region === 'India' ? '₹' : '$';
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300">
@@ -398,7 +498,7 @@ function MoneyField({
         {required && <span className="ml-0.5 text-red-500">*</span>}
       </label>
       <div className="relative">
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">$</span>
+        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">{currencySymbol}</span>
         <input
           id={id}
           type="number"
@@ -417,9 +517,10 @@ function MoneyField({
 
 // ── HomeAffordabilityCompletionForm ───────────────────────────────────────────
 
-function HomeAffordabilityCompletionForm({ onSubmit }: { onSubmit: (values: HAFormValues) => void }) {
+function HomeAffordabilityCompletionForm({ onSubmit, region = 'US' }: { onSubmit: (values: HAFormValues) => void; region?: 'US' | 'India' }) {
   const [values, setValues] = useState<HAFormValues>(EMPTY_HA_FORM);
   const [errors, setErrors] = useState<Partial<Record<keyof HAFormValues, string>>>({});
+  const isIndia = region === 'India';
 
   const set = <K extends keyof HAFormValues>(field: K, value: HAFormValues[K]) =>
     setValues((v) => ({ ...v, [field]: value }));
@@ -427,7 +528,7 @@ function HomeAffordabilityCompletionForm({ onSubmit }: { onSubmit: (values: HAFo
   const validate = (): boolean => {
     const errs: Partial<Record<keyof HAFormValues, string>> = {};
     if (!values.annualIncome || parseNumField(values.annualIncome) <= 0) {
-      errs.annualIncome = 'Required — enter your annual gross income';
+      errs.annualIncome = isIndia ? 'Required — enter your annual CTC' : 'Required — enter your annual gross income';
     }
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -447,7 +548,9 @@ function HomeAffordabilityCompletionForm({ onSubmit }: { onSubmit: (values: HAFo
           <div>
             <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Personalize with your numbers</p>
             <p className="mt-0.5 text-xs leading-relaxed text-slate-600 dark:text-slate-300">
-              Optional: enter your details for a more precise calculation. We&apos;ll use smart defaults for anything you skip.
+              {isIndia
+                ? 'Provide the details below for an accurate home loan (EMI) affordability assessment based on FOIR guidelines.'
+                : 'Provide the details below for an accurate home affordability assessment. These inputs replace assumptions with real numbers.'}
             </p>
           </div>
         </div>
@@ -456,49 +559,54 @@ function HomeAffordabilityCompletionForm({ onSubmit }: { onSubmit: (values: HAFo
       <form onSubmit={handleSubmit} className="space-y-3">
         <MoneyField
           id="ha-income"
-          label="Annual gross income"
+          label={isIndia ? 'Annual CTC (Cost to Company)' : 'Annual gross income'}
           required
           value={values.annualIncome}
           onChange={(v) => set('annualIncome', v)}
-          placeholder="85000"
-          hint="Before taxes — use your total salary or combined household income"
+          placeholder={isIndia ? '1000000' : '85000'}
+          hint={isIndia ? 'Your total annual CTC — in-hand will be calculated automatically' : 'Before taxes — use your total salary or combined household income'}
           error={errors.annualIncome}
+          region={region}
         />
 
         <MoneyField
           id="ha-down"
-          label="Down payment / cash on hand"
+          label={isIndia ? 'Down payment available' : 'Down payment / cash on hand'}
           value={values.downPayment}
           onChange={(v) => set('downPayment', v)}
-          placeholder="40000"
-          hint="Amount you plan to put toward the purchase"
+          placeholder={isIndia ? '500000' : '40000'}
+          hint={isIndia ? 'Typically 20% of the property value; affects loan amount and EMI' : 'Amount you plan to put toward the purchase'}
+          region={region}
         />
 
         <MoneyField
           id="ha-debt"
-          label="Existing monthly debt payments"
+          label={isIndia ? 'Existing monthly EMI obligations' : 'Existing monthly debt payments'}
           value={values.monthlyDebt}
           onChange={(v) => set('monthlyDebt', v)}
-          placeholder="400"
-          hint="Car loans, student loans, minimum credit card payments — not rent"
+          placeholder={isIndia ? '5000' : '400'}
+          hint={isIndia ? 'Car EMI, personal loan EMI, credit card minimum — not rent' : 'Car loans, student loans, minimum credit card payments — not rent'}
+          region={region}
         />
 
         <MoneyField
           id="ha-emergency"
-          label="Emergency fund (total saved)"
+          label={isIndia ? 'Liquid savings / emergency fund' : 'Emergency fund (total saved)'}
           value={values.emergencyFund}
           onChange={(v) => set('emergencyFund', v)}
-          placeholder="15000"
-          hint="Total liquid savings set aside for emergencies"
+          placeholder={isIndia ? '300000' : '15000'}
+          hint={isIndia ? 'Total in savings account or liquid FD set aside for emergencies' : 'Total liquid savings set aside for emergencies'}
+          region={region}
         />
 
         <MoneyField
           id="ha-expenses"
-          label="Monthly essential expenses"
+          label={isIndia ? 'Monthly essential expenses' : 'Monthly essential expenses'}
           value={values.monthlyExpenses}
           onChange={(v) => set('monthlyExpenses', v)}
-          placeholder="3500"
-          hint="Current rent, utilities, groceries, transportation, insurance, etc."
+          placeholder={isIndia ? '25000' : '3500'}
+          hint={isIndia ? 'Rent, groceries, utilities, transport, insurance, etc.' : 'Current rent, utilities, groceries, transportation, insurance, etc.'}
+          region={region}
         />
 
         {/* High-interest debt toggle */}
@@ -512,10 +620,10 @@ function HomeAffordabilityCompletionForm({ onSubmit }: { onSubmit: (values: HAFo
             />
             <div>
               <span className="text-sm font-medium text-slate-800 dark:text-slate-100">
-                I carry high-interest debt (15%+ APR)
+                {isIndia ? 'I carry high-interest debt (personal loan/credit card >10% p.a.)' : 'I carry high-interest debt (15%+ APR)'}
               </span>
               <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-                Credit cards, personal loans, payday loans, etc.
+                {isIndia ? 'Personal loans, credit card dues, etc.' : 'Credit cards, personal loans, payday loans, etc.'}
               </p>
             </div>
           </label>
@@ -523,11 +631,12 @@ function HomeAffordabilityCompletionForm({ onSubmit }: { onSubmit: (values: HAFo
             <div className="mt-3 border-t border-slate-100 pt-3 dark:border-slate-700">
               <MoneyField
                 id="ha-hi-debt"
-                label="Monthly payment on high-interest debt (optional)"
+                label={isIndia ? 'Monthly payment on high-interest debt (optional)' : 'Monthly payment on high-interest debt (optional)'}
                 value={values.highInterestDebtPayment}
                 onChange={(v) => set('highInterestDebtPayment', v)}
-                placeholder="300"
-                hint="Total minimum + extra payments per month"
+                placeholder={isIndia ? '5000' : '300'}
+                hint={isIndia ? 'Total minimum + extra payments per month' : 'Total minimum + extra payments per month'}
+                region={region}
               />
             </div>
           )}
@@ -630,10 +739,11 @@ function HomeAffordabilityFinalOutput({ output, onRedo }: { output: HAComputedOu
 
 // ── HomeAffordabilityFlow ─────────────────────────────────────────────────────
 
-function HomeAffordabilityFlow({ result }: { result: PipelineResult }) {
+function HomeAffordabilityFlow({ result, region = 'US' }: { result: PipelineResult; region?: 'US' | 'India' }) {
   const [showRefinement, setShowRefinement] = useState(false);
   const [submittedValues, setSubmittedValues] = useState<HAFormValues | null>(null);
-  const output = submittedValues ? computeHomeAffordability(submittedValues) : null;
+  const output = submittedValues ? computeHomeAffordability(submittedValues, region) : null;
+  const isIndia = region === 'India';
 
   if (output) {
     return <HomeAffordabilityFinalOutput output={output} onRedo={() => setSubmittedValues(null)} />;
@@ -654,13 +764,16 @@ function HomeAffordabilityFlow({ result }: { result: PipelineResult }) {
       {/* Offer precise calculation with real numbers */}
       {showRefinement ? (
         <HomeAffordabilityCompletionForm
+          region={region}
           onSubmit={(values) => { setSubmittedValues(values); setShowRefinement(false); }}
         />
       ) : (
         <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Want a more precise number?</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
-            Enter your income and existing debts for a personalized affordability estimate tailored to your situation.
+            {isIndia
+              ? 'The estimate above uses default assumptions. Enter your CTC and existing EMIs for a precise home loan eligibility calculation.'
+              : 'The estimate above uses default assumptions. Enter your income and debt for a precise, personalized affordability calculation.'}
           </p>
           <button
             type="button"
@@ -952,11 +1065,14 @@ function DrawerEmptyState({
   history,
   dispatch,
   onSuggestionClick,
+  region = 'US',
 }: {
   history: ReturnType<typeof useCopilot>['state']['history'];
   dispatch: ReturnType<typeof useCopilot>['dispatch'];
   onSuggestionClick?: (question: string) => void;
+  region?: 'US' | 'India';
 }) {
+  const decisionCards = region === 'India' ? DECISION_CARDS_INDIA : DECISION_CARDS_US;
   return (
     <div className="flex flex-col gap-5 px-5 py-6">
       {/* Icon + subtitle */}
@@ -994,7 +1110,7 @@ function DrawerEmptyState({
       <div>
         <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Start a decision</p>
         <div className="flex flex-col gap-2">
-          {DECISION_CARDS.map((card) => (
+          {decisionCards.map((card) => (
             <button
               key={card.key}
               type="button"
@@ -1067,7 +1183,7 @@ function DrawerEmptyState({
  */
 export function ExecutionPanel() {
   const { state, dispatch } = useCopilot();
-  const { isExecutionPanelOpen, activeResult, activeQuestion, history } = state;
+  const { isExecutionPanelOpen, activeResult, activeQuestion, history, region } = state;
   const formRef = useRef<PanelInputHandle | null>(null);
 
   if (!isExecutionPanelOpen) return null;
@@ -1133,7 +1249,7 @@ export function ExecutionPanel() {
               {/* Consumer-friendly result output */}
               <div className="px-5 py-4">
                 {activeResult.step1_intent.type === 'home-affordability' ? (
-                  <HomeAffordabilityFlow key={activeResult.requestId} result={activeResult} />
+                  <HomeAffordabilityFlow key={activeResult.requestId} result={activeResult} region={region ?? 'US'} />
                 ) : (
                   <div className="space-y-5">
                     <RecommendationSection result={activeResult} />
@@ -1197,6 +1313,7 @@ export function ExecutionPanel() {
             <DrawerEmptyState
               history={history}
               dispatch={dispatch}
+              region={region ?? 'US'}
               onSuggestionClick={(q) => formRef.current?.triggerSubmit(q)}
             />
           )}

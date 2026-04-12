@@ -27,59 +27,92 @@ const GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
 const MAX_RETRIES = 2;
 
 /** Map URL path prefixes to context-aware suggestions. */
-function getSuggestionsForPage(ctx: PageContext): string[] {
+function getSuggestionsForPage(ctx: PageContext, region: 'US' | 'India' = 'US'): string[] {
   const p = ctx.path.toLowerCase();
+  const isIndia = region === 'India';
 
   if (p.includes('mortgage') || p.includes('home') || p.includes('real-estate') || p.includes('housing')) {
-    return ['Should I buy or rent?', 'Can I afford this home?', 'How much house can I afford?'];
+    return isIndia
+      ? ['Should I buy or rent in India?', 'What home loan EMI can I afford?', 'How much home can I afford on my CTC?']
+      : ['Should I buy or rent?', 'Can I afford this home?', 'How much house can I afford?'];
   }
   if (p.includes('debt') || p.includes('loan') || p.includes('credit')) {
-    return ['Should I pay off debt or invest?', 'Which debt should I tackle first?', 'Is this loan risky?'];
+    return isIndia
+      ? ['Should I prepay my home loan or invest?', 'Which EMI should I tackle first?', 'Is this personal loan risky?']
+      : ['Should I pay off debt or invest?', 'Which debt should I tackle first?', 'Is this loan risky?'];
   }
-  if (p.includes('savings') || p.includes('saving') || p.includes('hysa')) {
-    return ['Am I saving enough?', 'HYSA vs investing — which is better?', 'How long to reach my savings goal?'];
+  if (p.includes('savings') || p.includes('saving') || p.includes('hysa') || p.includes('fd')) {
+    return isIndia
+      ? ['Am I saving enough?', 'FD vs mutual fund — which is better?', 'How long to reach my savings goal?']
+      : ['Am I saving enough?', 'HYSA vs investing — which is better?', 'How long to reach my savings goal?'];
   }
-  if (p.includes('retirement') || p.includes('401k') || p.includes('roth') || p.includes('ira')) {
-    return ['Roth vs Traditional 401(k) — which wins?', 'Am I on track to retire?', 'Should I max my 401(k) or IRA first?'];
+  if (p.includes('retirement') || p.includes('401k') || p.includes('roth') || p.includes('ira') || p.includes('nps') || p.includes('ppf') || p.includes('epf')) {
+    return isIndia
+      ? ['Old regime vs new regime — which saves more tax?', 'Should I invest in NPS or PPF?', 'How much should I save for retirement?']
+      : ['Roth vs Traditional 401(k) — which wins?', 'Am I on track to retire?', 'Should I max my 401(k) or IRA first?'];
   }
   if (p.includes('budget') || p.includes('cash-flow') || p.includes('expense')) {
-    return ['What improves cash flow fastest?', 'Where should I cut spending?', 'Can I afford this expense?'];
+    return isIndia
+      ? ['What improves my monthly cash flow?', 'Where should I cut spending?', 'Can I afford this expense?']
+      : ['What improves cash flow fastest?', 'Where should I cut spending?', 'Can I afford this expense?'];
   }
-  if (p.includes('invest') || p.includes('stock') || p.includes('market')) {
-    return ['Is now a good time to invest?', 'How do I build a starter portfolio?', 'Lump sum vs dollar-cost averaging?'];
+  if (p.includes('invest') || p.includes('stock') || p.includes('market') || p.includes('mutual') || p.includes('elss')) {
+    return isIndia
+      ? ['Should I invest in ELSS or PPF?', 'How do I start a SIP?', 'Lump sum vs SIP — which is better?']
+      : ['Is now a good time to invest?', 'How do I build a starter portfolio?', 'Lump sum vs dollar-cost averaging?'];
   }
   if (p.includes('tax')) {
-    return ['How do I reduce my tax bill?', 'Should I contribute pre-tax or post-tax?', 'What deductions apply to me?'];
+    return isIndia
+      ? ['How do I save tax under Section 80C?', 'Old vs new tax regime — what should I choose?', 'Can I claim HRA exemption?']
+      : ['How do I reduce my tax bill?', 'Should I contribute pre-tax or post-tax?', 'What deductions apply to me?'];
   }
-  if (p.includes('ai-money-copilot')) {
+  if (p.includes('ai-money-copilot') || p.includes('copilot')) {
     return ['How do I use this tool?', 'What financial questions can you help with?', 'Compare two job offers for me'];
   }
 
-  return [
-    'Should I buy or rent?',
-    'Am I saving enough?',
-    'What improves cash flow fastest?',
-    'Is this loan risky?',
-    'Roth vs Traditional 401(k)?'
-  ];
+  return isIndia
+    ? [
+        'Should I buy or rent in India?',
+        'Am I saving enough?',
+        'Old regime vs new regime?',
+        'Should I prepay my home loan?',
+        'How do I invest in mutual funds?',
+      ]
+    : [
+        'Should I buy or rent?',
+        'Am I saving enough?',
+        'What improves cash flow fastest?',
+        'Is this loan risky?',
+        'Roth vs Traditional 401(k)?',
+      ];
 }
 
-function buildBubbleSystemPrompt(): string {
-  return `${FINANCE_SPHERE_COPILOT_PROMPT}
+function buildBubbleSystemPrompt(region: 'US' | 'India' = 'US'): string {
+  const regionContext = region === 'India'
+    ? '\n\nIMPORTANT: This user is in INDIA. Always respond using Indian financial terminology and context:\n- Use ₹ (INR) currency with Indian number format (lakh, crore)\n- Use terms: CTC, in-hand salary, EMI, CIBIL score, home loan, 80C, 80D, EPF, PPF, ELSS, NPS, SIP, mutual funds, FD, RBI rate\n- Use Indian interest rates (home loan ~8.5%, FD ~7%, personal loan ~10-18%)\n- Apply India income tax rules (new regime / old regime with 80C deductions)\n- Reference relevant Indian financial products and institutions\n- NEVER use US-specific terms: mortgage, 401k, Roth IRA, APR, FICO, W2, federal/state tax in US context'
+    : '\n\nIMPORTANT: This user is in the US. Use USD ($) currency and US financial terminology:\n- Use terms: salary, take-home pay, mortgage, credit score, APR, 401(k), Roth IRA, W2, federal/state tax\n- Apply US tax rules and interest rates\n- NEVER use India-specific terms for US users';
+
+  return `${FINANCE_SPHERE_COPILOT_PROMPT}${regionContext}
 
 You are currently operating in QUICK BUBBLE MODE. Keep responses extremely concise and return ONLY valid JSON matching the BubbleResponse format. No markdown fences. No extra text.`;
 }
 
 function buildBubbleUserMessage(req: BubbleRequest, fallbackSuggestions: string[]): string {
   const ctx = req.pageContext;
+  const region = req.region ?? 'US';
+  const defaultAssumption = region === 'India'
+    ? '₹8L India CTC'
+    : '$65K US salary';
+
   return `Page context:
 - URL path: ${ctx.path}
 - Page title: ${ctx.title ?? 'Unknown'}
 - Keywords: ${ctx.keywords && ctx.keywords.length > 0 ? ctx.keywords.join(', ') : 'none'}
+- Region: ${region}
 
 User question: ${req.question}
 
-IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., $65K US salary, ₹8L India CTC). Never ask for data before answering.
+IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., ${defaultAssumption}). Never ask for data before answering.
 
 Respond ONLY with valid JSON (no markdown fences) matching this structure:
 {
@@ -230,10 +263,18 @@ async function callAiForBubble(userMessage: string, systemPrompt: string): Promi
 }
 
 function buildFallbackBubbleResponse(req: BubbleRequest): BubbleResponse {
+  const region = req.region ?? 'US';
+  const isIndia = region === 'India';
   return {
-    summary: 'Based on typical assumptions: reduce high-rate debt first, then invest. Your exact numbers will change this — Want me to personalize this with your numbers?',
-    quickTake: `For "${req.question}" — most people should: (1) cover 3 months expenses in savings, (2) capture any employer 401k match, (3) pay off debt over 7% APR, then invest the rest.`,
-    keyPoints: ['Assumed median income ($65K US / ₹8L India) — share yours for exact analysis', 'General framework based on common financial priorities'],
+    summary: isIndia
+      ? 'Based on typical assumptions: reduce high-interest debt (personal loans >10%) first, then invest in ELSS/PPF. Your exact numbers will change this — Want me to personalize this with your numbers?'
+      : 'Based on typical assumptions: reduce high-rate debt first, then invest. Your exact numbers will change this — Want me to personalize this with your numbers?',
+    quickTake: isIndia
+      ? `For "${req.question}" — most people should: (1) build 3 months expenses in a liquid FD, (2) maximize EPF/80C investments, (3) pay off debt above 10% p.a., then invest the rest in mutual funds/SIPs.`
+      : `For "${req.question}" — most people should: (1) cover 3 months expenses in savings, (2) capture any employer 401k match, (3) pay off debt over 7% APR, then invest the rest.`,
+    keyPoints: isIndia
+      ? ['Assumed ₹8L CTC — share yours for exact analysis', 'General framework based on Indian financial priorities']
+      : ['Assumed median income ($65K US) — share yours for exact analysis', 'General framework based on common financial priorities'],
     riskFlags: ['Without your specific numbers, this is a directional guide — not a personalized plan'],
     nextStep: 'Visit the full AI Money Copilot at /ai-money-copilot to enter your details and get a precise recommendation.',
     confidence: 'LOW',
@@ -259,6 +300,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Question is required.' }, { status: 400 });
     }
 
+    const region: 'US' | 'India' = body.region === 'India' ? 'India' : 'US';
+
     const pageContext: PageContext = {
       path: typeof body.pageContext?.path === 'string' ? body.pageContext.path : '/',
       title: typeof body.pageContext?.title === 'string' ? body.pageContext.title : undefined,
@@ -267,11 +310,12 @@ export async function POST(req: NextRequest) {
 
     const bubbleReq: BubbleRequest = {
       question: rawQuestion,
-      pageContext
+      pageContext,
+      region
     };
 
-    // Build a stable cache key from question + page path
-    const cacheKey = hashKey(`bubble\x00${rawQuestion}\x00${pageContext.path}`);
+    // Build a stable cache key from question + page path + region
+    const cacheKey = hashKey(`bubble\x00${rawQuestion}\x00${pageContext.path}\x00${region}`);
 
     // Check Redis/memory cache first
     const cached = await getCache(cacheKey) as BubbleResponse | null;
@@ -292,8 +336,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(deduped ?? buildFallbackBubbleResponse(bubbleReq));
     }
 
-    const fallbackSuggestions = getSuggestionsForPage(pageContext);
-    const systemPrompt = buildBubbleSystemPrompt();
+    const fallbackSuggestions = getSuggestionsForPage(pageContext, region);
+    const systemPrompt = buildBubbleSystemPrompt(region);
     const userMessage = buildBubbleUserMessage(bubbleReq, fallbackSuggestions);
 
     // Register in-flight promise before awaiting so concurrent requests can share it.
