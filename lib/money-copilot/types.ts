@@ -153,6 +153,10 @@ export interface ReasoningOutput {
   dataPoints: Array<{ label: string; value: string; source: 'input' | 'derived' | 'assumed' }>;
   comparisons: Array<{ optionA: string; optionB: string; delta: string; winner: 'A' | 'B' | 'neutral' }>;
   keyFindings: string[];
+  /** The financial recommendation text from the AI/rule-based engine (shown as the Recommendation section). */
+  recommendation: string;
+  /** Concrete next steps from the AI/rule-based engine (shown as the Best next step section). */
+  nextSteps: string[];
 }
 
 /** A single executable action from the Execution Layer. */
