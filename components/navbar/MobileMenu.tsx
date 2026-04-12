@@ -222,9 +222,12 @@ export function MobileMenu({
               <button
                 type="button"
                 onClick={() => { onClose(); onStartDecision?.(); }}
-                className="w-full rounded-xl border border-emerald-500 bg-emerald-500 py-2 text-sm font-semibold text-white transition hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-blue-600 bg-blue-600 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70"
               >
-                ▶ Start a Decision
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Ask AI Copilot
               </button>
 
               <div className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
