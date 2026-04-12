@@ -194,6 +194,7 @@ function NextStepsSection({ result }: { result: PipelineResult }) {
       )}
       {analysis.nextSteps.length > 0 && (
         <ul className="space-y-2">
+          {/* Cap at 3 steps to keep the panel scannable without scrolling */}
           {analysis.nextSteps.slice(0, 3).map((step, i) => (
             <li key={i} className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300">
               <span className="mt-0.5 shrink-0 text-emerald-500">✓</span>
