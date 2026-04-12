@@ -249,3 +249,106 @@ export function calcHomeLoanEMI(
 export function formatPercent(value: number): string {
   return (value * 100).toFixed(1) + '%';
 }
+
+/**
+ * Debt payoff calculator using standard amortization.
+ * @param principal  Total debt balance
+ * @param annualRate Interest rate as a decimal (e.g. 0.18 for 18%)
+ * @param monthlyPayment  Fixed monthly payment
+ * @returns monthsToPayoff, totalInterest, totalPaid — or monthsToPayoff=Infinity if payment < minimum
+ */
+export function calcDebtPayoff(
+  principal: number,
+  annualRate: number,
+  monthlyPayment: number,
+): { monthsToPayoff: number; totalInterest: number; totalPaid: number; minimumPayment: number } {
+  const monthlyRate = annualRate / 12;
+  const minimumPayment = principal * monthlyRate; // interest-only = absolute minimum
+
+  if (principal <= 0) {
+    return { monthsToPayoff: 0, totalInterest: 0, totalPaid: 0, minimumPayment: 0 };
+  }
+
+  if (monthlyRate === 0) {
+    const months = Math.ceil(principal / monthlyPayment);
+    return { monthsToPayoff: months, totalInterest: 0, totalPaid: principal, minimumPayment: 0 };
+  }
+
+  if (monthlyPayment <= minimumPayment) {
+    return { monthsToPayoff: Infinity, totalInterest: Infinity, totalPaid: Infinity, minimumPayment };
+  }
+
+  // Standard amortization: n = -log(1 - r*P/PMT) / log(1+r)
+  const n = -Math.log(1 - (monthlyRate * principal) / monthlyPayment) / Math.log(1 + monthlyRate);
+  const months = Math.ceil(n);
+  const totalPaid = monthlyPayment * months;
+  const totalInterest = totalPaid - principal;
+
+  return { monthsToPayoff: months, totalInterest: Math.max(0, totalInterest), totalPaid, minimumPayment };
+}
+
+/**
+ * Investing / compound growth projection.
+ * Uses the standard future value formula for periodic contributions.
+ * @param monthlyContribution  Amount invested each month
+ * @param initialAmount  Current portfolio / savings balance
+ * @param annualReturnRate  Expected annual return as a decimal (e.g. 0.07 for 7%)
+ * @param years  Investment horizon in years
+ */
+export function calcInvestingProjection(
+  monthlyContribution: number,
+  initialAmount: number,
+  annualReturnRate: number,
+  years: number,
+): { finalValue: number; totalContributed: number; gain: number; initialGrowth: number } {
+  const months = Math.round(years * 12);
+  const monthlyRate = annualReturnRate / 12;
+
+  let finalValue: number;
+  if (monthlyRate === 0) {
+    finalValue = initialAmount + monthlyContribution * months;
+  } else {
+    // FV of lump sum + FV of annuity
+    const fvLump = initialAmount * Math.pow(1 + monthlyRate, months);
+    const fvAnnuity = monthlyContribution * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+    finalValue = fvLump + fvAnnuity;
+  }
+
+  const totalContributed = initialAmount + monthlyContribution * months;
+  const gain = finalValue - totalContributed;
+  const initialGrowth = initialAmount > 0
+    ? initialAmount * Math.pow(1 + monthlyRate, months) - initialAmount
+    : 0;
+
+  return { finalValue, totalContributed, gain, initialGrowth };
+}
+
+/**
+ * Job offer comparison: compute monthly net income for both current and new salary.
+ */
+export function calcJobOfferComparison(
+  currentAnnualSalary: number,
+  newAnnualSalary: number,
+  region: 'US' | 'India',
+  state?: string,
+  employmentType?: string,
+): {
+  currentMonthlyNet: number;
+  newMonthlyNet: number;
+  monthlyGain: number;
+  annualGain: number;
+  currentMonthlyGross: number;
+  newMonthlyGross: number;
+} {
+  const cur = estimateMonthlyNetIncomeForRegion(currentAnnualSalary, region, state, employmentType);
+  const nxt = estimateMonthlyNetIncomeForRegion(newAnnualSalary, region, state, employmentType);
+  const monthlyGain = nxt.monthlyNet - cur.monthlyNet;
+  return {
+    currentMonthlyNet: cur.monthlyNet,
+    newMonthlyNet: nxt.monthlyNet,
+    monthlyGain,
+    annualGain: monthlyGain * 12,
+    currentMonthlyGross: cur.monthlyGross,
+    newMonthlyGross: nxt.monthlyGross,
+  };
+}
