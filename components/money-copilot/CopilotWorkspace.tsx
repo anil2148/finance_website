@@ -119,7 +119,7 @@ function DecisionCard({ entry }: { entry: ReasoningHistoryEntry }) {
 
           {analysis.keyFindings.length > 0 && (
             <section>
-              <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Why</h3>
+              <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Key reasons</h3>
               <ul className="space-y-1">
                 {analysis.keyFindings.slice(0, 3).map((f, i) => (
                   <li key={i} className="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300">
@@ -151,7 +151,7 @@ function DecisionCard({ entry }: { entry: ReasoningHistoryEntry }) {
 
           {plan.timeline && (
             <section>
-              <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">What to do next</h3>
+              <h3 className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">Next steps</h3>
               <div className="rounded-lg bg-slate-50 px-3 py-2 text-xs dark:bg-slate-800/50">
                 <span className="text-slate-700 dark:text-slate-300">{plan.timeline}</span>
               </div>

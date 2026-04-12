@@ -709,11 +709,12 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
     if (initialQuestion.current && !initialHasResult.current) {
       setQuery(initialQuestion.current);
     }
-    // Auto-submit immediately when opened from a decision card on the page
+    // Auto-submit immediately when opened from a decision card on the page.
+    // Early return skips the manual focus step — the submit handler drives UX from here.
     if (initialPendingAutoSubmit.current && initialQuestion.current) {
       dispatch({ type: 'CLEAR_PENDING_AUTO_SUBMIT' });
       void handleSubmitRef.current(initialQuestion.current);
-      return;
+      return; // Skip focus — the loading state and result render will take over
     }
     // Focus after the component paints using rAF so the element is definitely in the DOM.
     const raf = requestAnimationFrame(() => { inputRef.current?.focus(); });
