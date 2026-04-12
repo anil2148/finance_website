@@ -207,4 +207,6 @@ export interface CopilotGlobalState {
   isExecutionPanelOpen: boolean;
   activeResult: PipelineResult | null;
   activeQuestion: string;
+  /** When true, PanelInputForm will auto-submit activeQuestion on mount. Set by OPEN_DRAWER with autoSubmit:true. */
+  pendingAutoSubmit: boolean;
 }
