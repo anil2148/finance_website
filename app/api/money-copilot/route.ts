@@ -33,16 +33,21 @@ const QUICK_MODEL = 'llama-3.1-8b-instant';
 /** Fallback Groq model if the primary model fails. */
 const QUICK_GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
-function buildQuickSystemPrompt(): string {
-  return `${FINANCE_SPHERE_COPILOT_PROMPT}
+function buildQuickSystemPrompt(region: 'US' | 'India' = 'US'): string {
+  const regionContext = region === 'India'
+    ? '\n\nIMPORTANT: This user is in INDIA. Always respond using Indian financial context:\n- Use ₹ (INR) with Indian number format (lakh, crore)\n- Use terms: CTC, in-hand salary, EMI, CIBIL, home loan, 80C, EPF, PPF, ELSS, SIP, FD, RBI rate\n- Apply Indian interest rates and tax rules (new/old regime)\n- NEVER use US-specific terms like mortgage, 401k, Roth IRA, APR, FICO, W2'
+    : '\n\nIMPORTANT: This user is in the US. Use USD ($) and US financial terminology (salary, mortgage, 401k, APR, credit score). NEVER use India-specific terms.';
+
+  return `${FINANCE_SPHERE_COPILOT_PROMPT}${regionContext}
 
 You are in QUICK MODE. Return ONLY valid JSON matching the BubbleResponse format. No markdown fences.`;
 }
 
-function buildQuickUserMessage(question: string): string {
+function buildQuickUserMessage(question: string, region: 'US' | 'India' = 'US'): string {
+  const defaultAssumption = region === 'India' ? '₹8L India CTC' : '$65K US salary';
   return `User question: ${question}
 
-IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., $65K US salary, ₹8L India CTC). Never respond with "I need more information" without first answering.
+IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., ${defaultAssumption}). Never respond with "I need more information" without first answering.
 
 Respond ONLY with valid JSON (no markdown fences):
 {
@@ -103,9 +108,9 @@ async function callGroqForQuick(systemPrompt: string, userMessage: string, model
   return null;
 }
 
-async function callAiForQuick(question: string): Promise<BubbleResponse | null> {
-  const systemPrompt = buildQuickSystemPrompt();
-  const userMessage = buildQuickUserMessage(question);
+async function callAiForQuick(question: string, region: 'US' | 'India' = 'US'): Promise<BubbleResponse | null> {
+  const systemPrompt = buildQuickSystemPrompt(region);
+  const userMessage = buildQuickUserMessage(question, region);
 
   if (process.env.GROQ_API_KEY) {
     // Quick mode always uses the fast cheap model
@@ -148,11 +153,18 @@ async function callAiForQuick(question: string): Promise<BubbleResponse | null> 
   return null;
 }
 
-function buildFallbackQuickResponse(question: string): BubbleResponse {
+function buildFallbackQuickResponse(question: string, region: 'US' | 'India' = 'US'): BubbleResponse {
+  const isIndia = region === 'India';
   return {
-    summary: 'Based on typical financial assumptions: focus on the option that improves your monthly cash flow while keeping 3 months of expenses in savings. Want me to personalize this with your numbers?',
-    quickTake: `For "${question}" — the best move depends on your income and obligations, but most people benefit from reducing high-rate debt first, then investing.`,
-    keyPoints: ['Assumed median income ($65K US / ₹8L India) — share yours for exact numbers', '3-month emergency fund is the baseline safety net'],
+    summary: isIndia
+      ? 'Based on typical Indian financial assumptions: focus on the option that improves your monthly in-hand while keeping 3 months of expenses in a liquid FD. Want me to personalize this with your numbers?'
+      : 'Based on typical financial assumptions: focus on the option that improves your monthly cash flow while keeping 3 months of expenses in savings. Want me to personalize this with your numbers?',
+    quickTake: isIndia
+      ? `For "${question}" — the best move depends on your CTC and EMI obligations, but most people benefit from reducing high-rate debt (>10% p.a.) first, then investing in ELSS/SIP.`
+      : `For "${question}" — the best move depends on your income and obligations, but most people benefit from reducing high-rate debt first, then investing.`,
+    keyPoints: isIndia
+      ? ['Assumed ₹8L CTC — share yours for exact numbers', '3-month emergency fund in liquid FD is the baseline safety net']
+      : ['Assumed median income ($65K US) — share yours for exact numbers', '3-month emergency fund is the baseline safety net'],
     riskFlags: ['Without your specific numbers, this is a general framework — not a personalized plan'],
     nextStep: 'Use the full AI Money Copilot at /ai-money-copilot to enter your numbers and get a personalized analysis.',
     confidence: 'LOW',
@@ -203,8 +215,8 @@ export async function POST(req: NextRequest) {
 
     // Quick mode: return a compact BubbleResponse for the floating bubble
     if (body.responseMode === 'quick') {
-      const result = await callAiForQuick(rawQuestion);
-      return NextResponse.json(result ?? buildFallbackQuickResponse(rawQuestion));
+      const result = await callAiForQuick(rawQuestion, region);
+      return NextResponse.json(result ?? buildFallbackQuickResponse(rawQuestion, region));
     }
 
     // Deep mode (default): full structured CopilotResponse streamed via SSE

@@ -74,28 +74,30 @@ export interface AiNarrative {
   nextSteps: string[];
 }
 
-function formatInputsForPrompt(inputs: FinancialInputs): string {
+function formatInputsForPrompt(inputs: FinancialInputs, region?: 'US' | 'India'): string {
   const lines: string[] = [];
+  const currency = region === 'India' ? '₹' : '$';
+  const fmt = (v: number) => `${currency}${v.toLocaleString(region === 'India' ? 'en-IN' : 'en-US')}`;
 
   const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * WORK_HOURS_PER_YEAR : null);
-  if (salary) lines.push(`Annual salary: $${salary.toLocaleString()}`);
-  if (inputs.hourlyRate) lines.push(`Hourly rate: $${inputs.hourlyRate}/hr`);
-  if (inputs.bonus) lines.push(`Annual bonus: $${inputs.bonus.toLocaleString()}`);
+  if (salary) lines.push(`Annual ${region === 'India' ? 'CTC' : 'salary'}: ${fmt(salary)}`);
+  if (inputs.hourlyRate) lines.push(`Hourly rate: ${fmt(inputs.hourlyRate)}/hr`);
+  if (inputs.bonus) lines.push(`${region === 'India' ? 'Annual bonus/variable' : 'Annual bonus'}: ${fmt(inputs.bonus)}`);
   if (inputs.employmentType) lines.push(`Employment type: ${inputs.employmentType}`);
-  if (inputs.state) lines.push(`State: ${inputs.state}`);
+  if (inputs.state) lines.push(`${region === 'India' ? 'State/City' : 'State'}: ${inputs.state}`);
   if (inputs.city) lines.push(`City: ${inputs.city}`);
 
   const housing = inputs.monthlyRent ?? inputs.mortgage;
-  if (housing) lines.push(`Monthly housing cost: $${housing.toLocaleString()}`);
-  if (inputs.debtPayments) lines.push(`Monthly debt payments: $${inputs.debtPayments.toLocaleString()}`);
-  if (inputs.childcare) lines.push(`Monthly childcare: $${inputs.childcare.toLocaleString()}`);
-  if (inputs.insurance) lines.push(`Monthly insurance: $${inputs.insurance.toLocaleString()}`);
-  if (inputs.transportation) lines.push(`Monthly transportation: $${inputs.transportation.toLocaleString()}`);
-  if (inputs.groceries) lines.push(`Monthly groceries: $${inputs.groceries.toLocaleString()}`);
-  if (inputs.utilities) lines.push(`Monthly utilities: $${inputs.utilities.toLocaleString()}`);
-  if (inputs.cashOnHand) lines.push(`Cash on hand / savings: $${inputs.cashOnHand.toLocaleString()}`);
+  if (housing) lines.push(`Monthly ${region === 'India' ? 'rent/EMI' : 'housing cost'}: ${fmt(housing)}`);
+  if (inputs.debtPayments) lines.push(`Monthly ${region === 'India' ? 'loan EMI payments' : 'debt payments'}: ${fmt(inputs.debtPayments)}`);
+  if (inputs.childcare) lines.push(`Monthly childcare: ${fmt(inputs.childcare)}`);
+  if (inputs.insurance) lines.push(`Monthly insurance: ${fmt(inputs.insurance)}`);
+  if (inputs.transportation) lines.push(`Monthly transportation: ${fmt(inputs.transportation)}`);
+  if (inputs.groceries) lines.push(`Monthly groceries: ${fmt(inputs.groceries)}`);
+  if (inputs.utilities) lines.push(`Monthly utilities: ${fmt(inputs.utilities)}`);
+  if (inputs.cashOnHand) lines.push(`Cash on hand / savings: ${fmt(inputs.cashOnHand)}`);
   if (inputs.savingsRate) lines.push(`Savings rate goal: ${inputs.savingsRate}%`);
-  if (inputs.employerMatch) lines.push(`Employer 401(k) match: ${inputs.employerMatch}%`);
+  if (inputs.employerMatch) lines.push(`${region === 'India' ? 'Employer PF/NPS match' : 'Employer 401(k) match'}: ${inputs.employerMatch}%`);
   if (inputs.timeHorizon) lines.push(`Investment time horizon: ${inputs.timeHorizon} years`);
   if (inputs.riskTolerance) lines.push(`Risk tolerance: ${inputs.riskTolerance}`);
   if (inputs.targetEmergencyMonths) lines.push(`Target emergency fund: ${inputs.targetEmergencyMonths} months`);
@@ -104,7 +106,7 @@ function formatInputsForPrompt(inputs: FinancialInputs): string {
 }
 
 function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ label: string; value: string; note?: string }>): string {
-  const inputsSummary = formatInputsForPrompt(request.inputs);
+  const inputsSummary = formatInputsForPrompt(request.inputs, request.region);
   const metricsSummary = existingMetrics.length > 0
     ? existingMetrics.map(m => `  ${m.label}: ${m.value}${m.note ? ` (${m.note})` : ''}`).join('\n')
     : '  No computed metrics available.';
@@ -113,8 +115,12 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
     ? `\nUser financial context (freeform — extract figures automatically):\n${request.context}\n`
     : '';
 
+  const regionContext = request.region === 'India'
+    ? `Region: India. Use ₹ (INR) currency. Use Indian financial terminology (CTC, in-hand salary, EMI, CIBIL, 80C, EPF, PPF, ELSS, home loan, lakh, crore). Apply Indian tax rules and interest rates.\n`
+    : `Region: US. Use $ (USD) currency. Use US financial terminology (salary, take-home pay, APR, credit score, mortgage, 401k, Roth IRA).\n`;
+
   return `Decision mode: ${request.mode}
-User question: ${request.question}
+${regionContext}User question: ${request.question}
 ${contextSection}
 Financial inputs provided:
 ${inputsSummary}

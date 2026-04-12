@@ -110,6 +110,8 @@ export interface PageContext {
 export interface BubbleRequest {
   question: string;
   pageContext: PageContext;
+  /** Region context for locale-aware responses. Defaults to 'US'. */
+  region?: 'US' | 'India';
 }
 
 export interface BubbleResponse {
