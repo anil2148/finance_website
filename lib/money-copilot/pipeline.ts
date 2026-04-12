@@ -256,6 +256,8 @@ export function buildReasoning(
     dataPoints,
     comparisons,
     keyFindings,
+    recommendation: copilotResponse.recommendation,
+    nextSteps: copilotResponse.nextSteps,
   };
 }
 
@@ -280,7 +282,7 @@ const ACTION_TEMPLATES: ActionTemplate[] = [
     riskLevel: 'low',
     impact: () => 'Quantifies cash-flow delta and compounding effect of the decision before commitment.',
     timeframe: 'Immediate — results in seconds',
-    relevantCategories: ['income', 'debt', 'investment', 'retirement', 'general'],
+    relevantCategories: ['income', 'debt', 'investment', 'retirement', 'general', 'ambiguous'],
   },
   {
     type: 'report',
@@ -290,7 +292,7 @@ const ACTION_TEMPLATES: ActionTemplate[] = [
     riskLevel: 'low',
     impact: () => 'Creates a shareable, auditable record of the decision rationale and assumptions.',
     timeframe: 'Immediate',
-    relevantCategories: ['income', 'debt', 'investment', 'real-estate', 'tax', 'retirement', 'general'],
+    relevantCategories: ['income', 'debt', 'investment', 'real-estate', 'tax', 'retirement', 'general', 'ambiguous'],
   },
   {
     type: 'rebalance',
@@ -332,18 +334,31 @@ export function buildExecutionPlan(
     timeframe: t.timeframe,
   }));
 
-  // Primary action: simulate first if low risk, hedge if risk > 60
-  const primary =
-    riskScore > 60
-      ? (actions.find((a) => a.type === 'hedge') ?? actions[0])
-      : (actions.find((a) => a.type === 'simulate') ?? actions[0]);
-
   const timeline =
     riskScore > 70
       ? 'Urgent: address primary risk within 1–2 weeks'
       : riskScore > 40
       ? 'Moderate: execute plan within 1–3 months'
       : 'Standard: implement over 3–6 months';
+
+  // Primary action: simulate first if low risk, hedge if risk > 60
+  const primary =
+    riskScore > 60
+      ? (actions.find((a) => a.type === 'hedge') ?? actions[0])
+      : (actions.find((a) => a.type === 'simulate') ?? actions[0]);
+
+  // Safe fallback: if the intent category matched no templates, return a generic report action
+  if (!primary) {
+    const fallback: ExecutionAction = {
+      type: 'report',
+      label: 'Review the Analysis',
+      description: 'Review the complete financial analysis and recommendation above for your next steps.',
+      riskLevel: 'low',
+      expectedImpact: 'Gives you a clear framework for your financial decision.',
+      timeframe: 'Immediate',
+    };
+    return { actions: [fallback], primaryAction: fallback, timeline };
+  }
 
   return { actions, primaryAction: primary, timeline };
 }

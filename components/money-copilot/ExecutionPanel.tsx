@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { usePathname } from 'next/navigation';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { runPipeline } from '@/lib/money-copilot/pipeline';
-import type { CopilotResponse, ExecutionAction, IntentClassification, PipelineResult, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
+import type { CopilotResponse, PipelineResult, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
 import { calcHomeAffordability, assessRiskLevel, formatCurrency } from '@/lib/money-copilot/calculators';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -21,12 +21,6 @@ const SEVERITY_ICON: Record<string, string> = {
   high: '🔴',
 };
 
-const ACTION_ICON: Record<string, string> = {
-  rebalance: '⚖️',
-  simulate: '📊',
-  report: '📄',
-  hedge: '🛡️',
-};
 
 /** Maps intent type to a short consumer-readable label. */
 const INTENT_TYPE_LABEL: Record<string, string> = {
@@ -84,8 +78,7 @@ const DECISION_CARDS = [
 // ─── Consumer-friendly result sections ────────────────────────────────────────
 
 function RecommendationSection({ result }: { result: PipelineResult }) {
-  const { step5_actionPlan: plan, step4_risk: risk, step1_intent: intent } = result;
-  const primary = plan.primaryAction;
+  const { step3_analysis: analysis, step4_risk: risk, step1_intent: intent } = result;
 
   const riskLabel =
     risk.overallScore >= 60 ? 'Higher risk' : risk.overallScore >= 30 ? 'Moderate risk' : 'Lower risk';
@@ -106,16 +99,9 @@ function RecommendationSection({ result }: { result: PipelineResult }) {
       )}
       <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Recommendation</h3>
       <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/60 dark:bg-blue-950/30">
-        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">{primary.label}</p>
-        <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-300">{primary.description}</p>
+        <p className="text-sm leading-relaxed text-slate-900 dark:text-slate-100">{analysis.recommendation}</p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <span className={`rounded-full border px-2 py-0.5 text-xs font-medium ${riskColor}`}>{riskLabel}</span>
-          {primary.timeframe && (
-            <span className="text-xs text-slate-500 dark:text-slate-400">{primary.timeframe}</span>
-          )}
-          {primary.expectedImpact && (
-            <span className="text-xs text-slate-500 dark:text-slate-400 italic">{primary.expectedImpact}</span>
-          )}
         </div>
       </div>
     </section>
@@ -127,7 +113,7 @@ function KeyFindingsSection({ result }: { result: PipelineResult }) {
   if (!analysis.keyFindings.length && !analysis.comparisons.length) return null;
   return (
     <section>
-      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Key findings</h3>
+      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Why</h3>
       {analysis.keyFindings.length > 0 && (
         <ul className="space-y-2">
           {analysis.keyFindings.map((f, i) => (
@@ -195,38 +181,27 @@ function RisksSection({ result }: { result: PipelineResult }) {
 }
 
 function NextStepsSection({ result }: { result: PipelineResult }) {
-  const { step5_actionPlan: plan } = result;
-  const secondaryActions = plan.actions.filter((a) => a.type !== plan.primaryAction.type);
-  if (!secondaryActions.length && !plan.timeline) return null;
+  const { step3_analysis: analysis, step5_actionPlan: plan } = result;
+  if (!analysis.nextSteps.length && !plan.timeline) return null;
   return (
     <section>
-      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Next steps</h3>
+      <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Best next step</h3>
       {plan.timeline && (
         <div className="mb-3 rounded-lg bg-slate-50 px-3 py-2 text-xs dark:bg-slate-800/50">
           <span className="font-semibold text-slate-500 dark:text-slate-400">Timeline: </span>
           <span className="text-slate-700 dark:text-slate-300">{plan.timeline}</span>
         </div>
       )}
-      {secondaryActions.length > 0 && (
-        <div className="space-y-2">
-          {secondaryActions.map((action) => (
-            <div key={action.type} className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-800/50">
-              <div className="flex items-start gap-2">
-                <span className="text-base leading-none">{ACTION_ICON[action.type] ?? '📋'}</span>
-                <div className="flex-1">
-                  <p className="text-xs font-bold text-slate-900 dark:text-slate-100">{action.label}</p>
-                  <p className="mt-0.5 text-[11px] leading-relaxed text-slate-600 dark:text-slate-400">{action.description}</p>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                    <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${RISK_COLOR[action.riskLevel]}`}>
-                      {action.riskLevel} risk
-                    </span>
-                    <span className="text-[10px] text-slate-400">{action.timeframe}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {analysis.nextSteps.length > 0 && (
+        <ul className="space-y-2">
+          {/* Cap at 3 steps to keep the panel scannable without scrolling */}
+          {analysis.nextSteps.slice(0, 3).map((step, i) => (
+            <li key={i} className="flex items-start gap-2 rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300">
+              <span className="mt-0.5 shrink-0 text-emerald-500">✓</span>
+              {step}
+            </li>
           ))}
-        </div>
+        </ul>
       )}
     </section>
   );
@@ -656,20 +631,60 @@ function HomeAffordabilityFinalOutput({ output, onRedo }: { output: HAComputedOu
 
 // ── HomeAffordabilityFlow ─────────────────────────────────────────────────────
 
-function HomeAffordabilityFlow({ result: _result }: { result: PipelineResult }) {
+function HomeAffordabilityFlow({ result }: { result: PipelineResult }) {
+  const [showRefinement, setShowRefinement] = useState(false);
   const [submittedValues, setSubmittedValues] = useState<HAFormValues | null>(null);
   const output = submittedValues ? computeHomeAffordability(submittedValues) : null;
 
-  return output ? (
-    <HomeAffordabilityFinalOutput output={output} onRedo={() => setSubmittedValues(null)} />
-  ) : (
-    <HomeAffordabilityCompletionForm onSubmit={setSubmittedValues} />
+  if (output) {
+    return <HomeAffordabilityFinalOutput output={output} onRedo={() => setSubmittedValues(null)} />;
+  }
+
+  return (
+    <div className="space-y-5">
+      {/* Show AI/rule-based result immediately with assumption-based defaults */}
+      <RecommendationSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <KeyFindingsSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <RisksSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+      <NextStepsSection result={result} />
+      <hr className="border-slate-100 dark:border-slate-700/60" />
+
+      {/* Offer precise calculation with real numbers */}
+      {showRefinement ? (
+        <HomeAffordabilityCompletionForm
+          onSubmit={(values) => { setSubmittedValues(values); setShowRefinement(false); }}
+        />
+      ) : (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-700/50 dark:bg-blue-950/20">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Refine with your exact numbers</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+            The estimate above uses default assumptions. Enter your income and debt for a precise, personalized affordability calculation.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowRefinement(true)}
+            className="mt-3 rounded-xl bg-blue-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+          >
+            Enter my numbers →
+          </button>
+        </div>
+      )}
+    </div>
   );
 }
 
 // ─── Inline input form ────────────────────────────────────────────────────────
 
-function PanelInputForm() {
+/** Imperative handle exposed via forwardRef so suggestion cards can trigger auto-submit. */
+interface PanelInputHandle {
+  /** Populate the input with text and immediately run the analysis. */
+  triggerSubmit: (text: string) => void;
+}
+
+const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputFormInner(_, ref) {
   const pathname = usePathname();
   const { state, dispatch } = useCopilot();
   const [query, setQuery] = useState(state.activeQuestion ?? '');
@@ -790,6 +805,18 @@ function PanelInputForm() {
     }
   }, [isLoading, state, dispatch]);
 
+  // Always-current ref to handleSubmit so the imperative handle never goes stale.
+  const handleSubmitRef = useRef(handleSubmit);
+  handleSubmitRef.current = handleSubmit;
+
+  // Expose triggerSubmit so suggestion cards in DrawerEmptyState can auto-run analysis.
+  useImperativeHandle(ref, () => ({
+    triggerSubmit: (text: string) => {
+      setQuery(text);
+      void handleSubmitRef.current(text);
+    },
+  }), []);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') { e.preventDefault(); void handleSubmit(query); }
     if (e.key === 'Escape') { setQuery(''); inputRef.current?.blur(); }
@@ -835,11 +862,19 @@ function PanelInputForm() {
       </div>
     </div>
   );
-}
+});
 
 // ─── Empty input state ────────────────────────────────────────────────────────
 
-function DrawerEmptyState({ history, dispatch }: { history: ReturnType<typeof useCopilot>['state']['history']; dispatch: ReturnType<typeof useCopilot>['dispatch'] }) {
+function DrawerEmptyState({
+  history,
+  dispatch,
+  onSuggestionClick,
+}: {
+  history: ReturnType<typeof useCopilot>['state']['history'];
+  dispatch: ReturnType<typeof useCopilot>['dispatch'];
+  onSuggestionClick?: (question: string) => void;
+}) {
   return (
     <div className="flex flex-col gap-5 px-5 py-6">
       {/* Icon + subtitle */}
@@ -863,7 +898,13 @@ function DrawerEmptyState({ history, dispatch }: { history: ReturnType<typeof us
             <button
               key={card.key}
               type="button"
-              onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: card.question } })}
+              onClick={() => {
+                if (onSuggestionClick) {
+                  onSuggestionClick(card.question);
+                } else {
+                  dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: card.question } });
+                }
+              }}
               className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-left transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500 dark:hover:bg-blue-950/30"
             >
               <span className="text-xl leading-none">{card.emoji}</span>
@@ -884,7 +925,7 @@ function DrawerEmptyState({ history, dispatch }: { history: ReturnType<typeof us
             {history.slice(0, 3).map((entry) => {
               const typeLabel =
                 INTENT_TYPE_LABEL[entry.result.step1_intent.type] ?? entry.result.step1_intent.category;
-              const summary = entry.result.step5_actionPlan.primaryAction.label;
+              const summary = entry.result.step3_analysis.recommendation;
               return (
                 <button
                   key={entry.id}
@@ -927,6 +968,7 @@ function DrawerEmptyState({ history, dispatch }: { history: ReturnType<typeof us
 export function ExecutionPanel() {
   const { state, dispatch } = useCopilot();
   const { isExecutionPanelOpen, activeResult, activeQuestion, history } = state;
+  const formRef = useRef<PanelInputHandle | null>(null);
 
   if (!isExecutionPanelOpen) return null;
 
@@ -965,7 +1007,7 @@ export function ExecutionPanel() {
         </div>
 
         {/* Inline input form — always visible */}
-        <PanelInputForm />
+        <PanelInputForm ref={formRef} />
 
         {/* Scrollable content */}
         <div className="flex-1 overflow-y-auto">
@@ -1007,6 +1049,7 @@ export function ExecutionPanel() {
                       return (
                         <button
                           key={entry.id}
+                          type="button"
                           onClick={() =>
                             dispatch({ type: 'OPEN_PANEL', payload: { question: entry.question, result: entry.result } })
                           }
@@ -1028,7 +1071,11 @@ export function ExecutionPanel() {
               )}
             </>
           ) : (
-            <DrawerEmptyState history={history} dispatch={dispatch} />
+            <DrawerEmptyState
+              history={history}
+              dispatch={dispatch}
+              onSuggestionClick={(q) => formRef.current?.triggerSubmit(q)}
+            />
           )}
         </div>
 
