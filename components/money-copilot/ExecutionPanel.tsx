@@ -6,16 +6,6 @@ import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { runPipeline } from '@/lib/money-copilot/pipeline';
 import type { CopilotResponse, ExecutionAction, IntentClassification, PipelineResult, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
 import { calcHomeAffordability, assessRiskLevel, formatCurrency } from '@/lib/money-copilot/calculators';
-import { CONFIDENCE_THRESHOLD_MID } from '@/lib/money-copilot/pipeline';
-
-/** Returns true when the intent is ambiguous or confidence is too low to proceed. */
-function needsClarificationState(intent: IntentClassification): boolean {
-  return (
-    intent.type === 'ambiguous-offer' ||
-    intent.needsClarification === true ||
-    intent.confidence < CONFIDENCE_THRESHOLD_MID
-  );
-}
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -96,7 +86,6 @@ const DECISION_CARDS = [
 function RecommendationSection({ result }: { result: PipelineResult }) {
   const { step5_actionPlan: plan, step4_risk: risk, step1_intent: intent } = result;
   const primary = plan.primaryAction;
-  const isAmbiguous = needsClarificationState(intent);
 
   const riskLabel =
     risk.overallScore >= 60 ? 'Higher risk' : risk.overallScore >= 30 ? 'Moderate risk' : 'Lower risk';
@@ -109,12 +98,10 @@ function RecommendationSection({ result }: { result: PipelineResult }) {
 
   return (
     <section>
-      {isAmbiguous && (
-        <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700 dark:border-amber-700/40 dark:bg-amber-950/20 dark:text-amber-400">
-          <p className="font-semibold">More detail needed</p>
-          {intent.clarificationQuestion && (
-            <p className="mt-0.5 opacity-90">{intent.clarificationQuestion}</p>
-          )}
+      {intent.clarificationQuestion && intent.type === 'ambiguous-offer' && (
+        <div className="mb-3 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-700 dark:border-blue-700/40 dark:bg-blue-950/20 dark:text-blue-400">
+          <p className="font-semibold">Tip: share the offer type for a more precise analysis</p>
+          <p className="mt-0.5 opacity-90">{intent.clarificationQuestion}</p>
         </div>
       )}
       <h3 className="mb-3 text-sm font-bold text-slate-800 dark:text-slate-100">Recommendation</h3>

@@ -102,13 +102,15 @@ export const CONFIDENCE_THRESHOLD_MID = 0.50;
 
 export function classifyIntent(question: string): IntentClassification {
   // ── Ambiguity check: use the shared helper before keyword scoring ──────────
+  // Note: even for ambiguous offer queries we still proceed with analysis (job-offer assumption).
+  // The clarificationQuestion is surfaced as a secondary hint, not a blocker.
   if (isAmbiguousOfferQuery(question)) {
     return {
       type: 'ambiguous-offer',
       category: 'ambiguous',
-      confidence: 0.3,
-      signals: ['offer (type unclear)'],
-      needsClarification: true,
+      confidence: 0.5,
+      signals: ['offer (type unclear — assumed job offer)'],
+      needsClarification: undefined,
       clarificationQuestion: AMBIGUOUS_OFFER_CLARIFICATION,
     };
   }
@@ -133,13 +135,14 @@ export function classifyIntent(question: string): IntentClassification {
   }
 
   if (scores.size === 0) {
+    // No keyword match — fall back to custom mode and always proceed with analysis
     return {
       type: getModeFromQuestion(question),
       category: 'general',
-      confidence: 0.3,
+      confidence: 0.5,
       signals: [],
-      needsClarification: true,
-      clarificationQuestion: 'Could you share more details? For example, is this about a job offer, loan, investment, or retirement decision?',
+      needsClarification: undefined,
+      clarificationQuestion: undefined,
     };
   }
 
@@ -153,16 +156,10 @@ export function classifyIntent(question: string): IntentClassification {
   const maxPossible = Math.max(...INTENT_RULES.map((r) => r.weight * r.keywords.length));
   const confidence = Math.min(0.95, best.score / (maxPossible * 0.3));
 
-  // ── Confidence threshold routing ──────────────────────────────────────────
-  // < 0.50: block analysis — ask a concise clarification question
-  // 0.50–0.74: suggest clarification but allow provisional analysis
-  // >= 0.75: proceed without interruption
-  const needsClarification = confidence < CONFIDENCE_THRESHOLD_MID;
+  // Always proceed — no blocking on low confidence. Clarification is optional/supplemental.
   const clarificationQuestion =
-    confidence < CONFIDENCE_THRESHOLD_MID
-      ? 'Could you provide more context? For example: what type of offer is this, and what is your current financial situation?'
-      : confidence < CONFIDENCE_THRESHOLD_HIGH
-      ? 'A few more details would help me give you a more accurate analysis. What is the specific offer type and key terms?'
+    confidence < CONFIDENCE_THRESHOLD_HIGH
+      ? 'A few more details would help me give you a more accurate analysis. What is the specific situation and key terms?'
       : undefined;
 
   return {
@@ -170,7 +167,7 @@ export function classifyIntent(question: string): IntentClassification {
     category: best.category,
     confidence: parseFloat(confidence.toFixed(2)),
     signals: [...new Set(best.signals)],
-    needsClarification: needsClarification ? true : undefined,
+    needsClarification: undefined,
     clarificationQuestion,
   };
 }
