@@ -11,12 +11,62 @@ import { assessConfidence, compareScenarios, computeScenarioResults, extractMiss
 import { getModeFromQuestion } from './prompts';
 import { mergeNlpIntoInputs, parseFinancialDataFromText } from './nlp-parser';
 
+// ─── Shared constants ─────────────────────────────────────────────────────────
+/** Standard work hours per year: 40h/week × 52 weeks */
+const ANNUAL_WORK_HOURS = 2080;
+
+/** Rate used to estimate the total compensation premium needed for C2C/contractor
+ *  roles to break even with W2 (covers self-employment tax + benefits offset).
+ *  Mid-point of the commonly cited 15–20% range. */
+const C2C_BENEFITS_OFFSET_RATE = 0.17;
+
+/** Average state income tax rate used as a proxy when state is unknown. */
+const AVG_STATE_TAX_RATE = 0.05;
+
+/** Approximate max loan reduction per $500/month of additional debt at 7% APR
+ *  over a 30-year term: $500 / (0.07/12) * (1 - (1.07/12)^-360) ≈ $65,000. */
+const DEBT_TO_HOME_PRICE_MULTIPLIER = 65_000;
+
 const DISCLAIMER =
   'This tool provides educational decision-support estimates only. It is not financial, legal, or tax advice. All calculations use approximations and stated assumptions. Consult a qualified financial professional before making major financial decisions.';
 
+// ─── Default assumption models ────────────────────────────────────────────────
+// Used when user inputs are missing so the AI always produces a useful answer.
+const REFINEMENT_PROMPT = 'Want me to personalize this with your numbers?';
+
+const US_DEFAULTS = {
+  annualSalary: 65_000,
+  newAnnualSalary: 75_000,
+  housing: 1_500,
+  downPayment: 20_000,
+  debtPayments: 300,
+  homeIncome: 80_000,
+  homeDebt: 300,
+};
+
+const INDIA_DEFAULTS = {
+  annualSalary: 800_000, // ₹8 LPA
+  newAnnualSalary: 1_000_000, // ₹10 LPA
+  housing: 15_000, // ₹15K/month
+  downPayment: 500_000, // ₹5L
+  homeIncome: 1_000_000, // ₹10 LPA
+  homeDebt: 5_000,
+};
+
+/** Apply reasonable defaults for missing income fields. Returns enriched inputs and a flag indicating defaults were used. */
+function applyIncomeDefaults(inputs: FinancialInputs, region?: 'US' | 'India'): { inputs: FinancialInputs; usedDefaults: boolean } {
+  const hasSalary = !!(inputs.annualSalary || inputs.hourlyRate);
+  if (hasSalary) return { inputs, usedDefaults: false };
+  const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+  return {
+    inputs: { ...inputs, annualSalary: d.annualSalary },
+    usedDefaults: true,
+  };
+}
+
 function buildAssumptions(inputs: FinancialInputs, mode: DecisionMode): string[] {
   const assumptions: string[] = [];
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : 0);
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : 0);
 
   if (salary) {
     const { estimatedTaxRate, note } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
@@ -49,27 +99,41 @@ function buildAssumptions(inputs: FinancialInputs, mode: DecisionMode): string[]
 }
 
 function jobOfferResponse(request: CopilotRequest, scenarios: Scenario[]): Partial<CopilotResponse> {
-  const { inputs } = request;
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : 0);
+  const region = request.region ?? 'US';
+  const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+  const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
+  const { inputs } = { ...request, inputs: enriched };
+
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
+  const newSalary = inputs.newAnnualSalary ?? (inputs.newHourlyRate ? inputs.newHourlyRate * ANNUAL_WORK_HOURS : d.newAnnualSalary);
   const { monthlyNet, monthlyGross } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
+  const { monthlyNet: newMonthlyNet } = estimateMonthlyNetIncome(newSalary, inputs.state, inputs.employmentType);
   const obligations = calcMonthlyObligations(inputs);
   const leftover = Math.max(0, monthlyNet - obligations);
+  const netMonthlyGain = newMonthlyNet - monthlyNet;
 
   const isC2C = inputs.employmentType === 'c2c' || inputs.employmentType === 'contractor';
 
-  const summary = salary
-    ? `Based on ${formatCurrency(salary)} annual salary${isC2C ? ' (C2C/contractor)' : ''} in ${inputs.state ?? 'your state'}, estimated monthly take-home is ${formatCurrency(monthlyNet)} with ${formatCurrency(leftover)} left after tracked obligations.`
-    : 'Enter your salary or hourly rate to get a full comparison.';
+  const defaultNote = usedDefaults
+    ? ` (using assumed ${region === 'India' ? '₹8L→₹10L CTC' : '$65K→$75K'} — ${REFINEMENT_PROMPT})`
+    : '';
+
+  const summary = `${isC2C ? 'C2C offer: ' : ''}Current take-home ~${formatCurrency(monthlyNet)}/month vs. new offer ~${formatCurrency(newMonthlyNet)}/month — net gain of ${formatCurrency(netMonthlyGain)}/month after taxes.${defaultNote}`;
 
   const recommendation = isC2C
-    ? `C2C/contractor roles require 15–20% more gross pay than equivalent W2 to break even after self-employment taxes, benefits costs, and lack of employer match. The ${formatCurrency(salary)} offer needs careful comparison against W2 alternatives.`
-    : `With ${formatCurrency(monthlyNet)} monthly take-home and ${formatCurrency(leftover)} surplus, evaluate whether the offer supports your savings goals and covers current obligations.`;
+    ? `C2C/contractor roles require 15–20% more gross pay than equivalent W2 to break even after self-employment taxes and benefits costs. The ${formatCurrency(newSalary)} offer needs ~${formatCurrency(newSalary * C2C_BENEFITS_OFFSET_RATE)} added to offset benefits loss vs. a W2. ${netMonthlyGain > 0 ? `Still nets +${formatCurrency(netMonthlyGain)}/month.` : 'Does not break even at this rate.'}`
+    : netMonthlyGain > 200
+      ? `Take the offer. The ${formatCurrency(newSalary)} package nets +${formatCurrency(netMonthlyGain)}/month (+${formatCurrency(netMonthlyGain * 12)}/year) after taxes. Confirm benefits package before signing.`
+      : netMonthlyGain > 0
+        ? `Marginal gain: only +${formatCurrency(netMonthlyGain)}/month after taxes on the ${formatCurrency(newSalary)} offer. Negotiate for more or factor in non-salary benefits (equity, PTO, flexibility).`
+        : `The offers are roughly equivalent after taxes. Prioritize benefits, growth potential, and job security over base salary.`;
 
   const keyMetrics = [
-    { label: 'Estimated monthly take-home', value: formatCurrency(monthlyNet), note: 'After estimated taxes' },
-    { label: 'Monthly gross', value: formatCurrency(monthlyGross) },
+    { label: 'Current take-home (est.)', value: formatCurrency(monthlyNet), note: 'After estimated taxes' },
+    { label: 'New offer take-home (est.)', value: formatCurrency(newMonthlyNet), note: 'After estimated taxes' },
+    { label: 'Monthly net gain', value: `${netMonthlyGain >= 0 ? '+' : ''}${formatCurrency(netMonthlyGain)}` },
     { label: 'Monthly obligations tracked', value: formatCurrency(obligations) },
-    { label: 'Monthly surplus', value: formatCurrency(leftover) }
+    { label: 'Monthly surplus (new)', value: formatCurrency(Math.max(0, newMonthlyNet - obligations)) }
   ];
 
   if (isC2C) {
@@ -80,7 +144,7 @@ function jobOfferResponse(request: CopilotRequest, scenarios: Scenario[]): Parti
   const sensitivities = [
     'If the role moves from W2 to C2C, net pay drops by roughly $800–$1,800/month at this income level.',
     'A 10% salary increase would add ~' + formatCurrency(salary * 0.1 / 12 * 0.75) + '/month after taxes.',
-    'Moving to a no-income-tax state (TX, FL, NV) would add ~' + formatCurrency(salary * 0.05 / 12) + '/month net.',
+    'Moving to a no-income-tax state (TX, FL, NV) would add ~' + formatCurrency(salary * AVG_STATE_TAX_RATE / 12) + '/month net.',
     'Loss of employer 401(k) match could cost $2,000–$8,000/year in total compensation.'
   ];
 
@@ -101,29 +165,32 @@ function jobOfferResponse(request: CopilotRequest, scenarios: Scenario[]): Parti
 }
 
 function relocationResponse(request: CopilotRequest, scenarios: Scenario[]): Partial<CopilotResponse> {
-  const { inputs } = request;
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : 0);
-
-  const summary = inputs.state
-    ? `Relocation analysis for moving to ${inputs.state}. Key factors: state income tax differential, housing cost changes, and cost-of-living adjustment.`
-    : 'Enter the destination state and salary to estimate the relocation financial impact.';
+  const region = request.region ?? 'US';
+  const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+  const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
+  const { inputs } = { ...request, inputs: enriched };
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
 
   const stateKey = inputs.state?.toUpperCase().trim();
   const noTaxStates = new Set(['TX', 'FL', 'NV', 'WA', 'SD', 'WY', 'AK', 'TN', 'NH']);
   const isNoTaxState = stateKey ? noTaxStates.has(stateKey) : false;
 
-  const taxSavings = isNoTaxState && salary ? salary * 0.05 : 0;
+  const taxSavings = isNoTaxState ? salary * AVG_STATE_TAX_RATE : 0;
+  const defaultNote = usedDefaults ? ` (assumed ${region === 'India' ? '₹8L CTC' : '$65K salary'} — ${REFINEMENT_PROMPT})` : '';
 
-  const recommendation = isNoTaxState && salary
-    ? `Moving to ${inputs.state} (no state income tax) could save ~${formatCurrency(taxSavings)}/year in state taxes on ${formatCurrency(salary)} salary — roughly ${formatCurrency(taxSavings / 12)}/month. However, verify that housing and cost-of-living increases do not offset this gain.`
-    : salary
-      ? `The net financial benefit of relocation depends heavily on the tax rate differential and housing cost change. Enter both origin and destination scenario details to compare.`
-      : 'Enter your salary and destination state to begin the relocation analysis.';
+  const summary = inputs.state
+    ? `Relocating to ${inputs.state}${isNoTaxState ? ' (no state income tax)' : ''} on ${formatCurrency(salary)}/year: ${isNoTaxState ? `estimated annual tax savings of ${formatCurrency(taxSavings)}` : 'tax differential depends on origin state'}.${defaultNote}`
+    : `Relocation analysis: on ${formatCurrency(salary)}/year, moving to a no-income-tax state like TX or FL saves ~${formatCurrency(salary * AVG_STATE_TAX_RATE)}/year.${defaultNote}`;
+
+  const recommendation = isNoTaxState && inputs.state
+    ? `Move makes financial sense if housing cost increase is under ${formatCurrency(taxSavings / 12)}/month. Moving to ${inputs.state} (no state income tax) saves ~${formatCurrency(taxSavings)}/year (~${formatCurrency(taxSavings / 12)}/month). Break even on $5K moving costs in ~${Math.ceil(5000 / (taxSavings / 12))} months.`
+    : `For most relocations, the financial case comes down to: (1) state tax differential, (2) housing cost change, (3) cost-of-living delta. Moving to TX, FL, or NV from a high-tax state saves ~5% of income annually. Moving within high-tax states breaks even only if housing improves.`;
 
   const keyMetrics = [
-    { label: 'Estimated annual state tax savings', value: isNoTaxState ? formatCurrency(taxSavings) : 'Enter both states', note: isNoTaxState ? 'Based on ~5% avg state rate differential' : undefined },
-    { label: 'Monthly housing cost', value: inputs.monthlyRent ? formatCurrency(inputs.monthlyRent) : inputs.mortgage ? formatCurrency(inputs.mortgage) : 'Not entered' },
-    { label: 'Destination state', value: inputs.state ?? 'Not specified' }
+    { label: 'Annual state tax savings (est.)', value: isNoTaxState ? formatCurrency(taxSavings) : 'Depends on origin state', note: isNoTaxState ? 'Based on ~5% avg state rate' : 'Enter origin state for exact figure' },
+    { label: 'Monthly savings', value: isNoTaxState ? formatCurrency(taxSavings / 12) : 'N/A' },
+    { label: 'Monthly housing cost', value: inputs.monthlyRent ? formatCurrency(inputs.monthlyRent) : inputs.mortgage ? formatCurrency(inputs.mortgage) : `Assumed ${formatCurrency(d.housing)}` },
+    { label: 'Destination state', value: inputs.state ?? 'Not specified (enter for exact analysis)' }
   ];
 
   const sensitivities = [
@@ -303,35 +370,34 @@ function emergencyFundResponse(request: CopilotRequest, scenarios: Scenario[]): 
 }
 
 function homeAffordabilityResponse(request: CopilotRequest, scenarios: Scenario[]): Partial<CopilotResponse> {
-  const { inputs } = request;
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : 0);
-  const downPayment = inputs.cashOnHand ?? 0;
-  const monthlyDebt = inputs.debtPayments ?? 0;
+  const region = request.region ?? 'US';
+  const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+  const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
+  const { inputs } = { ...request, inputs: enriched };
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.homeIncome);
+  const downPayment = inputs.cashOnHand ?? d.downPayment;
+  const monthlyDebt = inputs.debtPayments ?? d.homeDebt;
 
-  const { maxHomePrice, monthlyPaymentEstimate, note } = salary
-    ? calcHomeAffordability(salary, downPayment, monthlyDebt)
-    : { maxHomePrice: 0, monthlyPaymentEstimate: 0, note: 'Enter salary to calculate.' };
+  const { maxHomePrice, monthlyPaymentEstimate, note } = calcHomeAffordability(salary, downPayment, monthlyDebt);
 
-  const summary = salary
-    ? `Based on ${formatCurrency(salary)} annual income, ${formatCurrency(downPayment)} available down payment, and ${formatCurrency(monthlyDebt)}/month existing debt, the 28/36 rule suggests a maximum home price around ${formatCurrency(maxHomePrice)}.`
-    : 'Enter your annual salary to calculate home affordability.';
+  const defaultNote = usedDefaults ? ` (assumed ${region === 'India' ? '₹10L income' : '$80K income'}, ${region === 'India' ? '₹5L' : '$20K'} down — ${REFINEMENT_PROMPT})` : '';
 
-  const recommendation = salary
-    ? `Your estimated max monthly housing payment is ${formatCurrency(monthlyPaymentEstimate)}, which with 7% mortgage rate and 30-year term supports a loan of ~${formatCurrency(maxHomePrice - downPayment)}. A ${formatCurrency(maxHomePrice)} home is the upper bound — aim for 80–90% of this to maintain financial cushion.`
-    : 'Enter your income and down payment to get a personalized affordability estimate.';
+  const summary = `On ${formatCurrency(salary)}/year with ${formatCurrency(downPayment)} down and ${formatCurrency(monthlyDebt)}/month existing debt: max home ~${formatCurrency(maxHomePrice)} (28/36 rule, 7% rate).${defaultNote}`;
+
+  const recommendation = `Your budget supports up to ~${formatCurrency(maxHomePrice)}. Monthly housing payment estimate: ${formatCurrency(monthlyPaymentEstimate)} (PITI). Aim for 80–90% of this ceiling (~${formatCurrency(maxHomePrice * 0.85)}) to keep a financial cushion. With 20% down you avoid PMI; on ${formatCurrency(maxHomePrice)} that means a ${formatCurrency(maxHomePrice * 0.20)} down payment.`;
 
   const keyMetrics = [
-    { label: 'Annual salary', value: salary ? formatCurrency(salary) : 'Not entered' },
-    { label: 'Available down payment', value: formatCurrency(downPayment) },
+    { label: 'Annual income (used)', value: formatCurrency(salary) },
+    { label: 'Down payment available', value: formatCurrency(downPayment) },
     { label: 'Existing monthly debt', value: formatCurrency(monthlyDebt) },
-    { label: 'Max monthly housing payment', value: salary ? formatCurrency(monthlyPaymentEstimate) : 'N/A', note: '28% of gross income rule' },
-    { label: 'Max home price estimate', value: salary ? formatCurrency(maxHomePrice) : 'N/A', note },
-    { label: 'Down payment percentage', value: maxHomePrice > 0 ? formatPercent(downPayment / maxHomePrice) : 'N/A' }
+    { label: 'Max monthly housing payment', value: formatCurrency(monthlyPaymentEstimate), note: '28% of gross income rule' },
+    { label: 'Max home price estimate', value: formatCurrency(maxHomePrice), note },
+    { label: '20% down on max home', value: formatCurrency(maxHomePrice * 0.20), note: 'Required to avoid PMI' }
   ];
 
   const sensitivities = [
     'A 1% increase in mortgage rate reduces your max loan by roughly 10%.',
-    'Each $500/month in existing debt reduces your max home price by ~' + formatCurrency(500 / (0.07 / 12) * ((1 - Math.pow(1 + 0.07 / 12, -360)) / 1)) + '.',
+    `Each $500/month in existing debt reduces your max home price by ~${formatCurrency(DEBT_TO_HOME_PRICE_MULTIPLIER)}.`,
     'A 20% down payment eliminates PMI (~0.5–1.5% annually on loan balance).',
     'Property taxes and homeowner insurance typically add $300–$800/month to true housing cost.'
   ];
@@ -354,11 +420,12 @@ function homeAffordabilityResponse(request: CopilotRequest, scenarios: Scenario[
 }
 
 function budgetStressTestResponse(request: CopilotRequest, scenarios: Scenario[]): Partial<CopilotResponse> {
-  const { inputs } = request;
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : 0);
-  const { monthlyNet, monthlyGross } = salary
-    ? estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType)
-    : { monthlyNet: 0, monthlyGross: 0 };
+  const region = request.region ?? 'US';
+  const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+  const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
+  const { inputs } = { ...request, inputs: enriched };
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
+  const { monthlyNet, monthlyGross } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
 
   const obligations = calcMonthlyObligations(inputs);
   const leftover = Math.max(0, monthlyNet - obligations);
@@ -367,23 +434,23 @@ function budgetStressTestResponse(request: CopilotRequest, scenarios: Scenario[]
   const stress20 = Math.max(0, monthlyNet * 0.8 - obligations);
   const stress30 = Math.max(0, monthlyNet * 0.7 - obligations);
 
-  const summary = salary
-    ? `At ${formatCurrency(monthlyNet)}/month take-home vs. ${formatCurrency(obligations)}/month in obligations, you have a ${formatCurrency(leftover)} buffer. Stress tests show how much buffer remains under income shocks.`
-    : 'Enter your salary and monthly expenses to run a budget stress test.';
+  const defaultNote = usedDefaults ? ` (assumed ${region === 'India' ? '₹8L salary' : '$65K salary'} — ${REFINEMENT_PROMPT})` : '';
+
+  const summary = `At ${formatCurrency(monthlyNet)}/month take-home vs. ${formatCurrency(obligations)}/month in obligations: ${formatCurrency(leftover)}/month buffer. -10% income → ${formatCurrency(stress10)} buffer; -20% → ${formatCurrency(stress20)}.${defaultNote}`;
 
   const recommendation = leftover > 800
-    ? `Your current budget has meaningful cushion. A 10% income reduction leaves ${formatCurrency(stress10)}/month, and a 20% shock leaves ${formatCurrency(stress20)}/month. Your plan holds under moderate stress.`
+    ? `Your budget has solid cushion. A 10% income drop leaves ${formatCurrency(stress10)}/month — still manageable. Ensure 3 months of expenses (${formatCurrency(obligations * 3)}) is in a HYSA before increasing fixed costs.`
     : leftover > 0
       ? `Your buffer of ${formatCurrency(leftover)}/month is thin. A 10% income cut would leave only ${formatCurrency(stress10)}/month. Identify at least $300–$500/month in discretionary cuts that could activate quickly if income drops.`
-      : `Your current obligations exceed or nearly meet your estimated take-home. This budget is under stress at baseline. Identify non-essential expenses to cut immediately.`;
+      : `Your obligations nearly exceed your take-home. This budget is under stress at baseline — identify non-essential expenses to cut now before any income disruption.`;
 
   const keyMetrics = [
-    { label: 'Monthly take-home', value: salary ? formatCurrency(monthlyNet) : 'Not entered' },
+    { label: 'Monthly take-home', value: formatCurrency(monthlyNet) },
     { label: 'Monthly obligations', value: formatCurrency(obligations) },
     { label: 'Current monthly surplus', value: formatCurrency(leftover) },
-    { label: 'Surplus at -10% income', value: salary ? formatCurrency(stress10) : 'N/A' },
-    { label: 'Surplus at -20% income', value: salary ? formatCurrency(stress20) : 'N/A' },
-    { label: 'Surplus at -30% income', value: salary ? formatCurrency(stress30) : 'N/A' },
+    { label: 'Surplus at -10% income', value: formatCurrency(stress10) },
+    { label: 'Surplus at -20% income', value: formatCurrency(stress20) },
+    { label: 'Surplus at -30% income', value: formatCurrency(stress30) },
     { label: 'Housing burden', value: monthlyGross > 0 ? formatPercent((inputs.monthlyRent ?? inputs.mortgage ?? 0) / monthlyGross) : 'N/A' }
   ];
 
@@ -412,26 +479,28 @@ function budgetStressTestResponse(request: CopilotRequest, scenarios: Scenario[]
 }
 
 function customResponse(request: CopilotRequest, scenarios: Scenario[]): Partial<CopilotResponse> {
-  const { inputs } = request;
-  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * 2080 : 0);
-  const { monthlyNet } = salary
-    ? estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType)
-    : { monthlyNet: 0 };
+  const region = request.region ?? 'US';
+  const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+  const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
+  const { inputs } = { ...request, inputs: enriched };
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
+  const { monthlyNet } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
   const obligations = calcMonthlyObligations(inputs);
   const leftover = Math.max(0, monthlyNet - obligations);
 
-  const summary = salary
-    ? `Based on ${formatCurrency(salary)} annual income and ${formatCurrency(obligations)}/month in tracked obligations, your estimated monthly surplus is ${formatCurrency(leftover)}.`
-    : `Enter your income and expenses to get a personalized financial analysis. The question "${request.question}" can be analyzed with more data.`;
+  const defaultNote = usedDefaults ? ` (assumed ${region === 'India' ? '₹8L salary' : '$65K salary'} — ${REFINEMENT_PROMPT})` : '';
 
-  const recommendation = salary
-    ? `With a ${formatCurrency(leftover)}/month surplus, focus on: (1) ensuring emergency fund covers 3–6 months, (2) capturing employer 401(k) match, (3) eliminating high-rate debt. Use the specific decision modes above for more targeted analysis.`
-    : 'Provide your income, housing cost, and key expenses to get a full analysis tailored to your question.';
+  const summary = `On ${formatCurrency(salary)}/year: ~${formatCurrency(monthlyNet)}/month take-home, ${formatCurrency(obligations)}/month tracked obligations, ${formatCurrency(leftover)}/month surplus.${defaultNote}`;
+
+  const recommendation = leftover > 500
+    ? `With ${formatCurrency(leftover)}/month surplus: (1) ensure 3-month emergency fund (${formatCurrency(obligations * 3)}), (2) capture full employer 401(k) match, (3) then attack any high-rate debt (>7% APR). Use a specific mode above for deeper analysis.`
+    : `With ${formatCurrency(leftover)}/month surplus, cash flow is tight. Prioritize: (1) minimum payments on all debt, (2) one month emergency buffer, (3) identify $200–$400/month in discretionary cuts. Don't invest until high-rate debt is under control.`;
 
   const keyMetrics = [
-    { label: 'Monthly take-home estimate', value: salary ? formatCurrency(monthlyNet) : 'Not entered' },
+    { label: 'Monthly take-home', value: formatCurrency(monthlyNet) },
     { label: 'Monthly obligations tracked', value: formatCurrency(obligations) },
-    { label: 'Estimated monthly surplus', value: salary ? formatCurrency(leftover) : 'N/A' }
+    { label: 'Estimated monthly surplus', value: formatCurrency(leftover) },
+    { label: '3-month emergency target', value: formatCurrency(obligations * 3) }
   ];
 
   const sensitivities = [
@@ -457,36 +526,51 @@ function customResponse(request: CopilotRequest, scenarios: Scenario[]): Partial
 
 function ambiguousOfferResponse(
   request: CopilotRequest,
-  // Scenarios are not used for ambiguous offers; parameter is required by the MODE_HANDLERS signature.
   _scenarios: Scenario[]
 ): Partial<CopilotResponse> {
-  const summary = 'I can help — I just need to know what kind of offer this is.';
+  // Provide a useful recommendation immediately, treating it as a job offer (most common case)
+  const region = request.region ?? 'US';
+  const d = region === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+  const { inputs: enriched, usedDefaults } = applyIncomeDefaults(request.inputs, region);
+  const { inputs } = { ...request, inputs: enriched };
+  const salary = inputs.annualSalary ?? (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : d.annualSalary);
+  const newSalary = inputs.newAnnualSalary ?? d.newAnnualSalary;
+  const { monthlyNet } = estimateMonthlyNetIncome(salary, inputs.state, inputs.employmentType);
+  const { monthlyNet: newMonthlyNet } = estimateMonthlyNetIncome(newSalary, inputs.state, inputs.employmentType);
+  const netGain = newMonthlyNet - monthlyNet;
 
-  const recommendation =
-    "Is this a job offer, loan offer, credit card offer, or mortgage/refinance offer? " +
-    "Share the key terms (salary, APR, fees, etc.) and your current situation, and I'll give you a structured comparison.";
+  const defaultNote = usedDefaults ? ` (assumed ${region === 'India' ? '₹8L→₹10L' : '$65K→$75K'})` : '';
+
+  const summary = `Treating this as a job offer${defaultNote}: +${formatCurrency(netGain)}/month net after taxes. ${REFINEMENT_PROMPT} — or tell me if this is a loan, credit card, or mortgage offer.`;
+
+  const recommendation = netGain > 0
+    ? `Take it. A +${formatCurrency(netGain)}/month net gain (+${formatCurrency(netGain * 12)}/year) is meaningful. Confirm the full benefits package (health, 401k match, PTO) adds at least $8,000–$15,000/year in value on top. If this is a loan or credit card offer instead, the evaluation framework is completely different — let me know.`
+    : `The offers appear roughly equivalent after taxes${defaultNote}. Look beyond base salary: benefits, equity, flexibility, and growth potential often tip the balance. If this is a loan or mortgage offer, share the APR and terms for a full analysis.`;
 
   const keyMetrics = [
-    { label: 'Status', value: 'Needs clarification', note: 'Specify offer type to proceed' },
-    { label: 'Supported offer types', value: 'Job · Loan · Credit card · Mortgage · Refinance' },
+    { label: 'Assumed offer type', value: 'Job offer (most common)', note: 'Tell me if this is a loan, credit card, or mortgage offer' },
+    { label: 'Current take-home (est.)', value: formatCurrency(monthlyNet) },
+    { label: 'New take-home (est.)', value: formatCurrency(newMonthlyNet) },
+    { label: 'Monthly net gain', value: `${netGain >= 0 ? '+' : ''}${formatCurrency(netGain)}` },
   ];
 
   const sensitivities = [
-    'For a job offer: salary comparison, benefits, location, and growth matter most.',
-    'For a loan offer: APR, term length, and total interest cost are the key numbers.',
-    'For a credit card offer: promo APR period, transfer fee, and payoff timeline drive the decision.',
-    'For a mortgage/refinance offer: rate differential, closing costs, and break-even timeline are critical.',
+    'For a job offer: benefits value ($8K–$20K/year) often matters more than base salary difference.',
+    'For a loan offer: APR and term length determine total cost — share those for an exact analysis.',
+    'For a credit card offer: balance transfer fee vs. interest savings is the key calculation.',
+    'For a mortgage/refinance offer: closing costs vs. monthly savings determines break-even timeline.',
   ];
 
   const risks = [
-    'Analyzing without knowing the offer type could produce misleading results.',
-    'Different offer types require completely different evaluation frameworks.',
+    'Treating this as the wrong offer type may lead to an incorrect framework — confirm the offer type.',
+    'Different offer types require completely different evaluation criteria.',
+    'Benefits, equity, and non-cash compensation are easy to overlook in any offer comparison.',
   ];
 
   const nextSteps = [
-    'Clarify the offer type: job offer, loan offer, credit card offer, or mortgage/refinance.',
-    'Share the main terms of the offer so a structured comparison can be built.',
-    'Include your current situation (current salary, current rate, current debt) for a meaningful comparison.',
+    `Tell me the offer type (job, loan, credit card, or mortgage) and share the key terms for a full analysis.`,
+    'For any offer: get everything in writing before accepting.',
+    'Compare the full economic value over 3 years, not just the first-year numbers.',
   ];
 
   return { summary, recommendation, keyMetrics, sensitivities, risks, nextSteps };
@@ -529,12 +613,17 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
     ? compareScenarios(enrichedRequest.scenarios)
     : [];
 
-  if (computedScenarios.length === 0 && (enrichedRequest.inputs.annualSalary || enrichedRequest.inputs.hourlyRate)) {
+  // Always create a default scenario using income defaults when none are provided
+  if (computedScenarios.length === 0) {
+    const d = (request.region ?? 'US') === 'India' ? INDIA_DEFAULTS : US_DEFAULTS;
+    const scenarioInputs = enrichedRequest.inputs.annualSalary || enrichedRequest.inputs.hourlyRate
+      ? enrichedRequest.inputs
+      : { ...enrichedRequest.inputs, annualSalary: d.annualSalary };
     computedScenarios.push({
       id: 'default',
       name: 'Current situation',
-      inputs: enrichedRequest.inputs,
-      results: computeScenarioResults(enrichedRequest.inputs)
+      inputs: scenarioInputs,
+      results: computeScenarioResults(scenarioInputs)
     });
   }
 
@@ -550,16 +639,8 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   const handler = MODE_HANDLERS[safeMode];
   const modeResponse = handler(enrichedRequest, computedScenarios);
 
-  // ─── Baseline income validation (DATA VALIDATION RULE) ───────────────────
-  // Check the enriched inputs so NLP-extracted salary satisfies the baseline check.
+  // ─── Scenario comparison (when user provides two explicit scenarios) ───────
   const hasBaselineIncome = !!(enrichedRequest.inputs.annualSalary || enrichedRequest.inputs.hourlyRate);
-  if (!hasBaselineIncome && safeMode !== 'ambiguous-offer') {
-    // Use a guided clarification prompt instead of a dead-end "insufficient data" message
-    modeResponse.recommendation =
-      'To generate a recommendation, I need your current income as a starting point. ' +
-      'What is your annual salary or hourly rate? Once I have that, I can compare your options.';
-  }
-
   if (computedScenarios.length === 2) {
     const s0 = computedScenarios[0].results;
     const s1 = computedScenarios[1].results;
@@ -576,17 +657,14 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
   // ─── Decision engine structured fields ───────────────────────────────────
   const { inputs } = enrichedRequest;
 
-  /** Standard work-hours per year: 40h/week × 52 weeks */
-  const HOURS_PER_YEAR = 2080;
-
   // Normalise income to annual, respecting incomePeriod field
   const periodMultiplier = inputs.incomePeriod === 'monthly' ? 12 : 1;
   const baseAnnual = inputs.annualSalary
     ? inputs.annualSalary * periodMultiplier
-    : (inputs.hourlyRate ? inputs.hourlyRate * HOURS_PER_YEAR : undefined);
+    : (inputs.hourlyRate ? inputs.hourlyRate * ANNUAL_WORK_HOURS : undefined);
   const newAnnual = inputs.newAnnualSalary
     ? inputs.newAnnualSalary * periodMultiplier
-    : (inputs.newHourlyRate ? inputs.newHourlyRate * HOURS_PER_YEAR : undefined);
+    : (inputs.newHourlyRate ? inputs.newHourlyRate * ANNUAL_WORK_HOURS : undefined);
 
   const { monthlyNet: baseMonthlyNet } = baseAnnual
     ? estimateMonthlyNetIncome(baseAnnual, inputs.state, inputs.employmentType)

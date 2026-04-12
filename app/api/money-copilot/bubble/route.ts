@@ -79,18 +79,21 @@ function buildBubbleUserMessage(req: BubbleRequest, fallbackSuggestions: string[
 
 User question: ${req.question}
 
+IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., $65K US salary, ₹8L India CTC). Never ask for data before answering.
+
 Respond ONLY with valid JSON (no markdown fences) matching this structure:
 {
-  "summary": "<1-2 sentence bottom line>",
-  "quickTake": "<simple plain-language reasoning, 1-2 sentences>",
-  "keyPoints": ["<key number or assumption>"],
-  "riskFlags": ["<risk or unknown>"],
-  "nextStep": "<one clear immediate action>",
+  "summary": "<1-2 sentence bottom-line recommendation with numbers — use defaults if no data provided>",
+  "quickTake": "<simple plain-language why, 1-2 sentences — include the key financial tradeoff>",
+  "keyPoints": ["<key number, assumption, or metric used>"],
+  "riskFlags": ["<specific risk to watch>"],
+  "nextStep": "<one clear immediate action — be specific>",
   "confidence": "LOW",
   "disclaimer": "Educational decision support only, not financial advice."
 }
 
-If the question is vague or inputs are missing, set confidence to "LOW". Default suggestions: ${JSON.stringify(fallbackSuggestions)}`;
+End summary or quickTake with: "Want me to personalize this with your numbers?"
+Default suggestions if needed: ${JSON.stringify(fallbackSuggestions)}`;
 }
 
 function parseBubbleResponse(raw: string): BubbleResponse | null {
@@ -228,11 +231,11 @@ async function callAiForBubble(userMessage: string, systemPrompt: string): Promi
 
 function buildFallbackBubbleResponse(req: BubbleRequest): BubbleResponse {
   return {
-    summary: 'I can help you think through this financial decision.',
-    quickTake: `For "${req.question}" — provide more details for a tailored analysis.`,
-    keyPoints: ['No specific inputs provided — estimates are based on general assumptions'],
-    riskFlags: ['Missing data reduces confidence significantly'],
-    nextStep: 'Visit the full AI Money Copilot at /ai-money-copilot for a deep-dive analysis.',
+    summary: 'Based on typical assumptions: reduce high-rate debt first, then invest. Your exact numbers will change this — Want me to personalize this with your numbers?',
+    quickTake: `For "${req.question}" — most people should: (1) cover 3 months expenses in savings, (2) capture any employer 401k match, (3) pay off debt over 7% APR, then invest the rest.`,
+    keyPoints: ['Assumed median income ($65K US / ₹8L India) — share yours for exact analysis', 'General framework based on common financial priorities'],
+    riskFlags: ['Without your specific numbers, this is a directional guide — not a personalized plan'],
+    nextStep: 'Visit the full AI Money Copilot at /ai-money-copilot to enter your details and get a precise recommendation.',
     confidence: 'LOW',
     disclaimer: 'Educational decision support only, not financial advice.'
   };

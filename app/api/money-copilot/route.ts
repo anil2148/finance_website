@@ -42,16 +42,20 @@ You are in QUICK MODE. Return ONLY valid JSON matching the BubbleResponse format
 function buildQuickUserMessage(question: string): string {
   return `User question: ${question}
 
+IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., $65K US salary, ₹8L India CTC). Never respond with "I need more information" without first answering.
+
 Respond ONLY with valid JSON (no markdown fences):
 {
-  "summary": "<1-2 sentence bottom line>",
-  "quickTake": "<plain-language reasoning, 1-2 sentences>",
-  "keyPoints": ["<key number or assumption>"],
-  "riskFlags": ["<risk or unknown>"],
-  "nextStep": "<one clear immediate action>",
+  "summary": "<1-2 sentence bottom-line recommendation with numbers — use defaults if no data provided>",
+  "quickTake": "<plain-language why, 1-2 sentences — key financial tradeoff>",
+  "keyPoints": ["<key number, assumption used, or metric>"],
+  "riskFlags": ["<specific risk to watch>"],
+  "nextStep": "<one concrete action — be specific>",
   "confidence": "LOW",
   "disclaimer": "Educational only, not financial advice."
-}`;
+}
+
+End with: "Want me to personalize this with your numbers?"`;
 }
 
 function parseQuickResponse(raw: string): BubbleResponse | null {
@@ -146,11 +150,11 @@ async function callAiForQuick(question: string): Promise<BubbleResponse | null> 
 
 function buildFallbackQuickResponse(question: string): BubbleResponse {
   return {
-    summary: 'Here is a quick take on your financial question.',
-    quickTake: `For "${question}" — provide more details for a tailored analysis.`,
-    keyPoints: ['No specific inputs provided — estimates are based on general assumptions'],
-    riskFlags: ['Missing data reduces confidence significantly'],
-    nextStep: 'Use the full AI Money Copilot at /ai-money-copilot for a deep-dive analysis.',
+    summary: 'Based on typical financial assumptions: focus on the option that improves your monthly cash flow while keeping 3 months of expenses in savings. Want me to personalize this with your numbers?',
+    quickTake: `For "${question}" — the best move depends on your income and obligations, but most people benefit from reducing high-rate debt first, then investing.`,
+    keyPoints: ['Assumed median income ($65K US / ₹8L India) — share yours for exact numbers', '3-month emergency fund is the baseline safety net'],
+    riskFlags: ['Without your specific numbers, this is a general framework — not a personalized plan'],
+    nextStep: 'Use the full AI Money Copilot at /ai-money-copilot to enter your numbers and get a personalized analysis.',
     confidence: 'LOW',
     disclaimer: 'Educational only, not financial advice.'
   };
