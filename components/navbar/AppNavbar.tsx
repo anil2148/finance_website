@@ -22,21 +22,14 @@ type NavLink = {
 const globalLinks: NavLink[] = [
   { label: 'Home', href: '/' },
   {
-    label: 'Scenarios',
+    label: 'Decisions',
     children: [
       { label: 'Job Offer Analyzer', href: '/ai-money-copilot' },
-      { label: 'Mortgage vs Rent', href: '/calculators/mortgage-calculator' },
-      { label: 'Early Retirement Path', href: '/calculators/retirement-calculator' },
+      { label: 'Home Affordability', href: '/calculators/mortgage-calculator' },
       { label: 'Debt Payoff Planner', href: '/calculators/debt-payoff-calculator' },
-    ],
-  },
-  {
-    label: 'Tools',
-    children: [
-      { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' },
-      { label: 'Mortgage Planner', href: '/calculators/mortgage-calculator' },
       { label: 'Investment Growth', href: '/calculators/investment-growth-calculator' },
       { label: 'Tax Calculator', href: '/calculators/salary-after-tax-calculator' },
+      { label: 'Retirement Planning', href: '/calculators/retirement-calculator' },
     ],
   },
   {
@@ -58,20 +51,12 @@ const globalLinks: NavLink[] = [
 const indiaLinks: NavLink[] = [
   { label: 'Home', href: '/in' },
   {
-    label: 'Scenarios',
+    label: 'Decisions',
     children: [
-      { label: 'Salary Planner (CTC)', href: '/ai-money-copilot' },
-      { label: 'Loan vs Investment', href: '/in/calculators/emi-calculator' },
+      { label: 'Salary / CTC Planner', href: '/ai-money-copilot' },
+      { label: 'EMI / Home Loan', href: '/in/calculators/emi-calculator' },
       { label: 'SIP Growth Simulator', href: '/in/calculators/sip-calculator' },
-      { label: 'Tax Optimization', href: '/in/tax' },
-    ],
-  },
-  {
-    label: 'Tools',
-    children: [
-      { label: 'EMI Calculator', href: '/in/calculators/emi-calculator' },
-      { label: 'SIP Calculator', href: '/in/calculators/sip-calculator' },
-      { label: 'Tax Calculator (India)', href: '/in/tax' },
+      { label: 'Tax Regime Comparison', href: '/in/tax' },
       { label: 'All Calculators', href: '/in/calculators' },
     ],
   },
@@ -207,11 +192,12 @@ export function AppNavbar() {
 
             {/* ── RIGHT: Static controls — desktop only ── */}
             <div className="ml-auto hidden items-center gap-2 lg:flex">
-              {/* Ask AI / Copilot CTA */}
+              {/* Primary decision CTA — routes into the AI Copilot drawer */}
               <motion.button
                 onClick={() => dispatch({ type: 'OPEN_DRAWER' })}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
+                aria-label={isIndiaContext ? 'Ask AI Copilot — EMI, SIP, home loan, tax' : 'Ask AI Copilot — mortgage, debt, investing, tax'}
                 className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-blue-600 bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
