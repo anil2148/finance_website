@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 import { BlogCard } from '@/components/ui/BlogCard';
-import { getPosts, normalizeTag } from '@/lib/markdown';
+import { getPosts, slugifyTag } from '@/lib/markdown';
 
 const defaultTagJourney = [
   { href: '/calculators', label: 'Run a calculator' },
@@ -10,26 +11,33 @@ const defaultTagJourney = [
 ];
 
 export function generateMetadata({ params }: { params: { tag: string } }): Metadata {
-  const tag = normalizeTag(params.tag);
+  const tag = slugifyTag(params.tag);
   return {
     title: `#${tag} Guides and Decision Support | FinanceSphere Blog`,
     description: `Browse FinanceSphere guides tagged ${tag} with direct next steps into calculators and comparison frameworks.`,
-    alternates: { canonical: `/blog/tag/${encodeURIComponent(tag)}` }
+    alternates: { canonical: `/blog/tag/${tag}` },
+    robots: { index: false, follow: true }
   };
 }
 
 export default function BlogTagPage({ params }: { params: { tag: string } }) {
-  const currentTag = normalizeTag(params.tag);
-  const posts = getPosts().filter((post) => post.tags.some((tag) => normalizeTag(tag) === currentTag));
+  const slug = slugifyTag(params.tag);
+
+  if (params.tag !== slug) {
+    redirect(`/blog/tag/${slug}`);
+  }
+
+  const currentSlug = slug;
+  const posts = getPosts().filter((post) => post.tags.some((tag) => slugifyTag(tag) === currentSlug));
   const lifeStageLine =
-    currentTag === 'retirement' || currentTag === 'retirement-planning'
+    currentSlug === 'retirement' || currentSlug === 'retirement-planning'
       ? 'If you are within 10 years of retirement, downside protection often matters more than max upside.'
       : 'If you are in your first 5 working years, consistency usually beats complexity.';
 
   return (
     <section className="space-y-5">
       <header className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h1 className="text-2xl font-bold">Tag: #{params.tag}</h1>
+        <h1 className="text-2xl font-bold">Tag: #{currentSlug}</h1>
         <p className="mt-2 text-slate-600">This page groups articles around one decision theme. Use it to compare conflicting approaches, not just collect tips.</p>
         <p className="mt-2 text-sm italic text-slate-500">{lifeStageLine}</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
@@ -76,7 +84,7 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
           </section>
           <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
             <h2 className="text-lg font-semibold text-slate-900">What people get wrong</h2>
-            <p className="mt-2 text-sm text-slate-700">Scenario: You read three posts under #{params.tag}, combine all recommendations, and apply them at once.</p>
+            <p className="mt-2 text-sm text-slate-700">Scenario: You read three posts under #{currentSlug}, combine all recommendations, and apply them at once.</p>
             <p className="mt-1 text-sm text-slate-700">Failure: The stack is too aggressive for your monthly cash flow.</p>
             <p className="mt-1 text-sm text-slate-700">Consequence: You abandon everything after one difficult month.</p>
             <p className="mt-3 text-sm text-slate-700"><span className="font-semibold text-blue-700">If this tag decision affects debt payments</span> → test downside first. <span className="font-semibold text-blue-700">If it affects long-term investing only</span> → test consistency over 12 months.</p>
