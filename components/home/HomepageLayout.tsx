@@ -26,6 +26,11 @@ const popularCalculators = [
     title: 'Debt Payoff Calculator',
     href: '/calculators/debt-payoff-calculator',
     description: 'Compare payoff timelines and interest cost when you add extra monthly payments.'
+  },
+  {
+    title: 'Debt Snowball Calculator',
+    href: '/calculators/debt-snowball-calculator',
+    description: 'Sequence your debts smallest-first, see the momentum effect, and model when each balance clears.'
   }
 ];
 
@@ -36,8 +41,8 @@ const goalCards = [
     description: 'Estimate payoff dates and interest savings, then compare balance transfer cards or consolidation loans that fit your profile.',
     primaryLabel: 'Start with the Debt Payoff Calculator',
     primaryHref: '/calculators/debt-payoff-calculator',
-    secondaryLabel: 'Compare consolidation options',
-    secondaryHref: '/loans'
+    secondaryLabel: 'Improve your DTI before applying',
+    secondaryHref: '/blog/debt-to-income-ratio-90-day-plan'
   },
   {
     tag: 'Model it before you commit',

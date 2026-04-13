@@ -33,7 +33,8 @@ export const matchingCalculatorLinksByBlogCategory: Record<string, Array<{ label
   ],
   loans: [
     { label: 'Loan Calculator', href: '/calculators/loan-calculator' },
-    { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' }
+    { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' },
+    { label: 'Debt Snowball Calculator', href: '/calculators/debt-snowball-calculator' }
   ],
   savings: [
     { label: 'Savings Goal Calculator', href: '/calculators/savings-goal-calculator' },

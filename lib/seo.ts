@@ -40,7 +40,7 @@ export function createPageMetadata({ title, description, pathname, type = 'websi
     title,
     description,
     alternates: {
-      canonical: canonicalPath,
+      canonical: buildSiteUrl(canonicalPath),
       languages: Object.keys(languageAlternates).length > 0 ? languageAlternates : undefined
     },
     openGraph: {

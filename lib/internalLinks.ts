@@ -25,6 +25,7 @@ const categoryLinks: Record<string, RelatedLink[]> = {
     { label: 'Loans hub', href: '/learn/loans', type: 'hub' },
     { label: 'Personal loan comparisons', href: '/loans', type: 'comparison' },
     { label: 'Loan calculator', href: '/calculators/loan-calculator', type: 'calculator' },
+    { label: 'Debt snowball calculator', href: '/calculators/debt-snowball-calculator', type: 'calculator' },
     { label: 'Debt-to-income approval prep', href: '/blog/debt-to-income-ratio-90-day-plan', type: 'article' }
   ],
   mortgages: [
