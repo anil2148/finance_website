@@ -37,7 +37,7 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
   return (
     <section className="space-y-5">
       <header className="rounded-2xl border border-slate-200 bg-white p-5">
-        <h1 className="text-2xl font-bold">Tag: #{currentSlug}</h1>
+        <h1 className="text-2xl font-bold">Tag: #{currentSlug.replace(/-/g, ' ')}</h1>
         <p className="mt-2 text-slate-600">This page groups articles around one decision theme. Use it to compare conflicting approaches, not just collect tips.</p>
         <p className="mt-2 text-sm italic text-slate-500">{lifeStageLine}</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
@@ -84,7 +84,7 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
           </section>
           <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
             <h2 className="text-lg font-semibold text-slate-900">What people get wrong</h2>
-            <p className="mt-2 text-sm text-slate-700">Scenario: You read three posts under #{currentSlug}, combine all recommendations, and apply them at once.</p>
+            <p className="mt-2 text-sm text-slate-700">Scenario: You read three posts under #{currentSlug.replace(/-/g, ' ')}, combine all recommendations, and apply them at once.</p>
             <p className="mt-1 text-sm text-slate-700">Failure: The stack is too aggressive for your monthly cash flow.</p>
             <p className="mt-1 text-sm text-slate-700">Consequence: You abandon everything after one difficult month.</p>
             <p className="mt-3 text-sm text-slate-700"><span className="font-semibold text-blue-700">If this tag decision affects debt payments</span> → test downside first. <span className="font-semibold text-blue-700">If it affects long-term investing only</span> → test consistency over 12 months.</p>
