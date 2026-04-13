@@ -9,6 +9,8 @@ import {
 } from '@/lib/region-preference';
 
 const PRIMARY_HOST = 'www.financesphere.io';
+// Hosts that must always redirect to PRIMARY_HOST regardless of protocol.
+// PRIMARY_HOST itself is excluded here; its HTTP→HTTPS redirect is handled explicitly below.
 const NON_WWW_HOSTS = new Set(['financesphere.io']);
 
 type HomepageRoutingDecision =
