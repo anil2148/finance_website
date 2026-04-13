@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { permanentRedirect } from 'next/navigation';
 import { BlogCard } from '@/components/ui/BlogCard';
 import { getPosts, slugifyTag } from '@/lib/markdown';
 
@@ -24,7 +24,7 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
   const slug = slugifyTag(params.tag);
 
   if (params.tag !== slug) {
-    redirect(`/blog/tag/${slug}`);
+    permanentRedirect(`/blog/tag/${slug}`);
   }
 
   const currentSlug = slug;

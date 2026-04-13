@@ -133,7 +133,8 @@ const hubs: Record<string, HubConfig> = {
     ],
     calculators: [
       { href: '/calculators/loan-calculator', label: 'Loan calculator' },
-      { href: '/calculators/debt-payoff-calculator', label: 'Debt payoff calculator' }
+      { href: '/calculators/debt-payoff-calculator', label: 'Debt payoff calculator' },
+      { href: '/calculators/debt-snowball-calculator', label: 'Debt snowball calculator' }
     ],
     comparisons: [
       { href: '/loans', label: 'Personal loan comparisons' },

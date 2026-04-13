@@ -9,7 +9,9 @@ import {
 } from '@/lib/region-preference';
 
 const PRIMARY_HOST = 'www.financesphere.io';
-const LEGACY_HOSTS = new Set(['financesphere.io', 'www.financesphere.io']);
+// Hosts that must always redirect to PRIMARY_HOST regardless of protocol.
+// PRIMARY_HOST itself is excluded here; its HTTP→HTTPS redirect is handled explicitly below.
+const NON_WWW_HOSTS = new Set(['financesphere.io']);
 
 type HomepageRoutingDecision =
   | { action: 'next' }
@@ -58,7 +60,7 @@ export function middleware(request: NextRequest) {
   const host = headers.get('host')?.toLowerCase() ?? '';
   const forwardedProto = headers.get('x-forwarded-proto')?.toLowerCase() ?? nextUrl.protocol.replace(':', '');
 
-  if (LEGACY_HOSTS.has(host) && (host !== PRIMARY_HOST || forwardedProto !== 'https')) {
+  if (NON_WWW_HOSTS.has(host) || (host === PRIMARY_HOST && forwardedProto !== 'https')) {
     const redirectUrl = new URL(nextUrl.pathname + nextUrl.search, `https://${PRIMARY_HOST}`);
     return NextResponse.redirect(redirectUrl, 308);
   }
