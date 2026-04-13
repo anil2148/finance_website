@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import redirectMap from '@/content/audit/blog-redirect-map.json';
-import { getCategories, getPosts, getTags, normalizeTag } from '@/lib/markdown';
+import { getCategories, getPosts, getTags, slugifyTag } from '@/lib/markdown';
 import { getCanonicalUrl, isIndexableRoute } from '@/lib/seo-locale-routes';
 import { shouldIncludeInSitemap, type RouteMeta } from '@/lib/seo/sitemap-filter';
 
@@ -21,6 +21,7 @@ const CREDIT_CARD_REGIONS = ['california', 'texas', 'florida'];
 const INVESTMENT_AUDIENCES = ['beginners', 'students', 'professionals'];
 
 const LEGACY_REDIRECT_ROUTES = new Set<string>([
+  '/about-us',
   '/compare/best-credit-cards-2026',
   '/compare/best-investment-apps',
   '/compare/best-savings-accounts-usa',
@@ -133,7 +134,7 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
 
   const blogTagEntries = getTags()
     .map((tag) => ({
-      pathname: `/blog/tag/${encodeURIComponent(normalizeTag(tag))}`,
+      pathname: `/blog/tag/${slugifyTag(tag)}`,
       lastModified: BUILD_TIMESTAMP
     }))
     .filter((entry) => isSitemapEligible(entry.pathname));
@@ -143,7 +144,7 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
       pathname: `/learn/${cluster}`,
       lastModified: BUILD_TIMESTAMP,
       meta: {
-        seoQuality: 'weak' as const
+        sitemap: true as const
       }
     }))
     .filter((entry) => isSitemapEligible(entry.pathname, entry.meta));

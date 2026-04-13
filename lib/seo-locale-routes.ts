@@ -4,6 +4,7 @@ const EXCLUDED_ROUTE_PREFIXES = ['/api', '/admin', '/blog/tag'];
 const EXCLUDED_EXACT_PATHS = new Set<string>([
   '/us',
   '/hello',
+  '/about-us',
   '/best-credit-cards',
   '/best-savings-accounts',
   '/mortgage-rate-comparison',

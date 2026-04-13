@@ -194,8 +194,8 @@ export default function BlogPage() {
 
       <div className="flex flex-wrap gap-2 text-xs">
         {tags.map((tag) => (
-          <Link key={tag} href={`/blog/tag/${encodeURIComponent(tag)}`} className="rounded-full border border-slate-200 px-3 py-1 text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-            #{tag}
+          <Link key={tag} href={`/blog/tag/${tag}`} className="rounded-full border border-slate-200 px-3 py-1 text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+            #{tag.replace(/-/g, ' ')}
           </Link>
         ))}
       </div>

@@ -129,19 +129,27 @@ export function normalizeTag(tag: string) {
   return fullyDecodeUriComponent(tag).trim().toLowerCase();
 }
 
+export function slugifyTag(tag: string): string {
+  return normalizeTag(tag)
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 export function getCategories() {
   return [...new Set(getPosts().map((post) => post.category))];
 }
 
 export function getTags() {
-  const unique = new Map<string, string>();
+  const unique = new Set<string>();
 
   for (const tag of getPosts().flatMap((post) => post.tags)) {
-    const normalized = normalizeTag(tag);
-    if (normalized && !unique.has(normalized)) unique.set(normalized, tag.trim());
+    const slug = slugifyTag(tag);
+    if (slug) unique.add(slug);
   }
 
-  return [...unique.values()];
+  return [...unique];
 }
 
 export function getHeadings(content: string) {
