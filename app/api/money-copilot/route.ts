@@ -12,9 +12,10 @@ import { getModeFromQuestion, FINANCE_SPHERE_COPILOT_PROMPT } from '@/lib/money-
 import { sanitizeText } from '@/lib/api/sanitize';
 import { getGroqClient } from '@/lib/groq/client';
 import { hashKey, getCache, setCache } from '@/lib/cache/redis';
-import type { CopilotRequest, CopilotResponse, BubbleResponse } from '@/lib/money-copilot/types';
+import type { AiPageContext, CopilotRequest, CopilotResponse, BubbleResponse } from '@/lib/money-copilot/types';
 import { normalizeInputsForRegion, parseFinancialDataFromText, mergeNlpIntoInputs } from '@/lib/money-copilot/nlp-parser';
 import type { SalaryRegion } from '@/lib/money-copilot/nlp-parser';
+import { currencyFromRegion, regionFromPath } from '@/lib/money-copilot/ai-page-context';
 
 export const runtime = "nodejs";
 
@@ -32,6 +33,40 @@ const QUICK_MAX_TOKENS = 512;
 const QUICK_MODEL = 'llama-3.1-8b-instant';
 /** Fallback Groq model if the primary model fails. */
 const QUICK_GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
+
+function sanitizePageContext(raw: unknown): AiPageContext | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const candidate = raw as Partial<AiPageContext>;
+  if (typeof candidate.pageUrl !== 'string') return undefined;
+
+  const pathRegion = regionFromPath(candidate.pageUrl);
+
+  return {
+    pageType: typeof candidate.pageType === 'string' ? candidate.pageType : 'decision-page',
+    pageTitle: typeof candidate.pageTitle === 'string' ? candidate.pageTitle : 'FinanceSphere',
+    pageUrl: candidate.pageUrl,
+    region: pathRegion,
+    currency: currencyFromRegion(pathRegion),
+    intent: typeof candidate.intent === 'string' ? candidate.intent : 'general-financial-guidance',
+    marketContext: typeof candidate.marketContext === 'string' ? candidate.marketContext : undefined,
+    pageFamily: typeof candidate.pageFamily === 'string' ? candidate.pageFamily : undefined,
+    structuredValues:
+      candidate.structuredValues && typeof candidate.structuredValues === 'object' && !Array.isArray(candidate.structuredValues)
+        ? candidate.structuredValues
+        : undefined,
+    calculatorState:
+      candidate.calculatorState && typeof candidate.calculatorState === 'object' && !Array.isArray(candidate.calculatorState)
+        ? candidate.calculatorState
+        : undefined,
+    suggestedPrompts:
+      Array.isArray(candidate.suggestedPrompts) ? candidate.suggestedPrompts.filter((item): item is string => typeof item === 'string') : undefined,
+    groundingMessage: typeof candidate.groundingMessage === 'string' ? candidate.groundingMessage : undefined,
+    aiMode:
+      candidate.aiMode === 'contextual' || candidate.aiMode === 'generic' || candidate.aiMode === 'hidden'
+        ? candidate.aiMode
+        : undefined,
+  };
+}
 
 function buildQuickSystemPrompt(region: 'US' | 'India' = 'US'): string {
   const regionContext = region === 'India'
@@ -237,7 +272,8 @@ export async function POST(req: NextRequest) {
       context: sanitizedContext,
       inputs: mergedInputs,
       scenarios: body.scenarios ?? [],
-      region
+      region,
+      pageContext: sanitizePageContext(body.pageContext),
     };
 
     // Build a deterministic cache key from question + context + mode + region.
