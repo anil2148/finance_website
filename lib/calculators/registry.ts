@@ -5,7 +5,11 @@ import { calculateMortgage } from '@/lib/calculators/mortgage';
 import { calculateRetirement } from '@/lib/calculators/retirement';
 import { BaseCalculatorInputs, CalculatorDefinition, CalculatorResult } from '@/lib/calculators/types';
 
-const debtPayoffResult = (title: string, inputs: BaseCalculatorInputs): CalculatorResult => {
+const debtPayoffResult = (
+  title: string,
+  inputs: BaseCalculatorInputs,
+  strategy?: { methodLabel: string }
+): CalculatorResult => {
   const requiredPayment = inputs.minimumPayment > 0 ? inputs.minimumPayment : paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years);
   const payment = requiredPayment + inputs.monthlyContribution;
   const projection = buildAmortizationProjection(inputs, payment);
@@ -26,7 +30,8 @@ const debtPayoffResult = (title: string, inputs: BaseCalculatorInputs): Calculat
       currencyBreakdown('Debt Balance', inputs.loanAmount),
       currencyBreakdown('Minimum Payment', requiredPayment),
       currencyBreakdown('Extra Monthly Payment', inputs.monthlyContribution),
-      { label: 'Interest Rate', value: `${inputs.interestRate}%` }
+      { label: 'Interest Rate', value: `${inputs.interestRate}%` },
+      ...(strategy ? [{ label: 'Payoff Method', value: strategy.methodLabel }] : [])
     ],
     chartKinds: ['amortization', 'bar', 'pie']
   };
@@ -150,7 +155,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     faq: [{ question: 'What is debt snowball?', answer: 'It pays smallest debt first while making minimum payments on others.' }],
     blogLinks: [{ title: 'Debt-to-Income Ratio Guide', href: '/blog/debt-to-income-ratio-90-day-plan' }],
     defaultInputs: { ...defaultInputs, loanAmount: 40000, years: 8 },
-    compute: (inputs) => debtPayoffResult('Debt Snowball Projection', inputs)
+    compute: (inputs) =>
+      debtPayoffResult('Debt Snowball Projection', inputs, {
+        methodLabel: 'Snowball (smallest balance first)'
+      })
   },
   {
     slug: 'debt-avalanche-calculator',
@@ -161,7 +169,10 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     faq: [{ question: 'What is debt avalanche?', answer: 'It focuses extra payments on the highest-interest debt first.' }],
     blogLinks: [{ title: 'Personal Loan vs Credit Card', href: '/blog/personal-loan-comparison-for-bad-month-resilience' }],
     defaultInputs: { ...defaultInputs, loanAmount: 40000, years: 8 },
-    compute: (inputs) => debtPayoffResult('Debt Avalanche Projection', inputs)
+    compute: (inputs) =>
+      debtPayoffResult('Debt Avalanche Projection', inputs, {
+        methodLabel: 'Avalanche (highest APR first)'
+      })
   },
   {
     slug: 'investment-growth-calculator',
