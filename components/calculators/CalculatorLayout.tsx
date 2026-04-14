@@ -20,6 +20,7 @@ import { getCalculatorInsight } from '@/lib/calculators/insights';
 import { AdUnit } from '@/components/ui/AdUnit';
 import { AD_SLOTS } from '@/lib/adSlots';
 import { AskAIButton } from '@/components/money-copilot/AskAIButton';
+import { useSyncAiPageContext } from '@/components/money-copilot/useAiPageContext';
 import type { AiPageContext } from '@/lib/money-copilot/types';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
@@ -309,6 +310,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       'Show safer target values',
     ],
   } satisfies Partial<AiPageContext>;
+
+  useSyncAiPageContext(aiContext);
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>

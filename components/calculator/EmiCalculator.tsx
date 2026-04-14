@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { FinanceLineChart } from '@/components/charts/FinanceLineChart';
 import { AskAIButton } from '@/components/money-copilot/AskAIButton';
+import { useSyncAiPageContext } from '@/components/money-copilot/useAiPageContext';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import type { AiPageContext } from '@/lib/money-copilot/types';
 import { getCurrencySymbol, getLocaleForCurrency } from '@/lib/utils';
@@ -246,6 +247,8 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
               'What is a safer target value for this plan?',
             ],
   } satisfies Partial<AiPageContext>;
+
+  useSyncAiPageContext(aiContext);
 
   return (
     <section className="grid gap-4 lg:grid-cols-2">
