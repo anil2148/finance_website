@@ -10,6 +10,7 @@
  */
 
 import { BaseCalculatorInputs } from '@/lib/calculators/types';
+import { buildAmortizationProjection, paymentFromPrincipal } from '@/lib/calculators/engine';
 
 export type CalculatorInsight = {
   whatItMeans: string;
@@ -35,32 +36,65 @@ function mortgagePayment(principal: number, annualRate: number, years: number): 
 }
 
 export function getMortgageInsight(inputs: BaseCalculatorInputs): CalculatorInsight {
-  const { loanAmount, interestRate, years } = inputs;
-  const monthly = mortgagePayment(loanAmount, interestRate, years);
-  const totalPaid = monthly * years * 12;
-  const totalInterest = totalPaid - loanAmount;
-  const interestPct = Math.round((totalInterest / loanAmount) * 100);
+  const principal = Math.max(0, (inputs.homePrice ?? 0) - (inputs.downPayment ?? 0));
+  const { interestRate, years } = inputs;
+  const hasValidInputs = principal > 0 && interestRate >= 0 && years > 0;
+
+  if (!hasValidInputs) {
+    return {
+      whatItMeans:
+        'Enter home price, down payment, APR, and term to generate a complete mortgage interpretation. Narrative guidance appears only after all required values are valid.',
+      realWorldImpact: [
+        'Add your baseline numbers first, then review payment, total interest, and payoff path together.',
+        'Use the same scenario for both summary cards and narrative interpretation to avoid contradictory planning.'
+      ],
+      recommendations: [
+        'Set realistic property tax, insurance, and PMI assumptions before evaluating affordability.',
+        'Run one baseline and one stress-test scenario (+1% APR) before comparing lenders.'
+      ],
+      topRisks: [
+        'Making affordability decisions from incomplete inputs.',
+        'Comparing lender offers before validating total monthly housing cost.'
+      ],
+      nextSteps: [
+        'Fill all mortgage inputs.',
+        'Review the updated summary cards.',
+        'Then ask AI to explain the result with your current numbers.'
+      ]
+    };
+  }
+
+  const basePayment = paymentFromPrincipal(principal, interestRate, years);
+  const extraPrincipal = Math.max(0, inputs.monthlyContribution ?? 0);
+  const payment = basePayment + extraPrincipal;
+  const projection = buildAmortizationProjection({ ...inputs, loanAmount: principal }, payment);
+  const payoffMonths = projection.find((point) => point.balance <= 0)?.month ?? years * 12;
+  const totalInterest = Math.abs(projection.at(-1)?.interestEarned ?? 0);
+  const totalPaid = payment * payoffMonths;
+  const interestPct = principal > 0 ? Math.round((totalInterest / principal) * 100) : 0;
+  const escrowMonthly = (inputs.propertyTax ?? 0) / 12 + (inputs.insurance ?? 0) / 12 + (inputs.pmi ?? 0);
+  const totalHousing = payment + escrowMonthly;
 
   // Extra $200/month impact
   const extraPayment = 200;
-  const extraMonthly = monthly + extraPayment;
+  const extraMonthly = basePayment + extraPayment;
   // Approximate months to payoff with extra payment
   const r = interestRate / 100 / 12;
-  const payoffMonths =
-    r > 0 ? Math.ceil(-Math.log(1 - (loanAmount * r) / extraMonthly) / Math.log(1 + r)) : years * 12;
+  const extraPayoffMonths =
+    r > 0 ? Math.ceil(-Math.log(1 - (principal * r) / extraMonthly) / Math.log(1 + r)) : years * 12;
   const normalMonths = years * 12;
-  const monthsSaved = Math.max(0, normalMonths - payoffMonths);
+  const monthsSaved = Math.max(0, normalMonths - extraPayoffMonths);
   const yearsSaved = Math.floor(monthsSaved / 12);
-  const interestSaved = Math.max(0, totalInterest - (extraMonthly * payoffMonths - loanAmount));
+  const interestSaved = Math.max(0, totalInterest - (extraMonthly * extraPayoffMonths - principal));
 
   // Stress test: rate +1%
-  const stressMonthly = mortgagePayment(loanAmount, interestRate + 1, years);
-  const stressIncrease = stressMonthly - monthly;
+  const stressMonthly = paymentFromPrincipal(principal, interestRate + 1, years);
+  const stressIncrease = stressMonthly - basePayment;
 
   return {
-    whatItMeans: `Your estimated monthly principal-and-interest payment is ${fmt(monthly)}. Over a ${years}-year term you will pay approximately ${fmt(totalInterest)} in interest — ${interestPct}% of the original loan amount on top of the ${fmt(loanAmount)} you borrowed. This does not include property taxes, homeowner's insurance, or HOA fees, which typically add $300–$700/month on a median-priced home.`,
+    whatItMeans: `Your monthly principal-and-interest payment is ${fmt(basePayment)}, and your estimated total housing payment is ${fmt(totalHousing)} after adding taxes, insurance, and PMI inputs. Over approximately ${(payoffMonths / 12).toFixed(1)} years, this scenario produces about ${fmt(totalInterest)} in interest (${interestPct}% of the ${fmt(principal)} mortgage principal).`,
     realWorldImpact: [
-      `Total cost of ownership over ${years} years: ${fmt(totalPaid)} (principal + interest only).`,
+      `Projected principal-and-interest paid across the modeled payoff timeline: ${fmt(totalPaid)}.`,
       `If you add ${fmt(extraPayment, false)}/month in extra principal, you could save roughly ${fmt(interestSaved)} in interest and pay off the mortgage ${yearsSaved > 0 ? `about ${yearsSaved} year${yearsSaved > 1 ? 's' : ''}` : 'several months'} earlier.`,
       `A 1-point rate increase (to ${fmt(interestRate + 1, false)}%) raises your monthly payment by ${fmt(stressIncrease)} — that is an extra ${fmt(stressIncrease * 12)} per year you need to budget for.`
     ],

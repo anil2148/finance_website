@@ -236,7 +236,7 @@ export function HomepageLayout() {
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
-              Most financial content explains what things are. This site helps you decide what to do — with actual numbers, stress tests, and what happens when things do not go according to plan.
+              Run the decision with your numbers first, stress-test it, then choose the product or strategy that still works when life gets messy.
             </p>
             <div className="flex flex-wrap gap-3">
               <AskAIButton
@@ -245,7 +245,13 @@ export function HomepageLayout() {
                 aiContext={{
                   pageType: 'homepage',
                   intent: 'financial-decision-triage',
-                  groundingMessage: 'I’m using the homepage context to route your decision.',
+                  groundingMessage: 'I’m using this homepage context to route your next move.',
+                  structuredValues: {
+                    pageTitle: 'FinanceSphere Homepage',
+                    region: 'US',
+                    pageType: 'homepage',
+                    primaryFlow: ['Start a decision', 'Run a calculator', 'Compare options']
+                  },
                   suggestedPrompts: [
                     'Help me choose the best next financial move',
                     'Which calculator should I run first?',
@@ -380,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Use this sequence: run one calculator, stress-test your downside, then use a comparison page to choose between options that still work.
+          Use one operating sequence: run a baseline scenario, test downside assumptions, then use comparison pages only for options that still fit.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (

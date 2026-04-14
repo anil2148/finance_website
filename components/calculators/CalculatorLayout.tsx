@@ -69,6 +69,38 @@ const guideMessageBySlug: Record<string, { title: string; body: string }> = {
   }
 };
 
+const specializedCalculatorConfigs: Record<string, {
+  eyebrow: string;
+  introTitle: string;
+  introBody: string;
+  audience: string;
+  decision: string;
+  aiLabel: string;
+  aiPrompts: string[];
+  aiGroundingMessage: string;
+}> = {
+  'mortgage-calculator': {
+    eyebrow: 'Mortgage Decision Page',
+    introTitle: 'Decide a safe home budget before you shop lenders',
+    introBody: 'Use this calculator to test whether the payment is sustainable in both normal and bad-month scenarios before you request preapproval.',
+    audience: 'Home buyers and refinancers comparing payment safety, not just qualification.',
+    decision: 'Choose home budget, term, and rate scenario that remain manageable after taxes, insurance, and PMI.',
+    aiLabel: 'Explain this mortgage result',
+    aiPrompts: ['Explain this payment using my current numbers', 'What changes if rates increase by 1%?', 'What is a safer target monthly housing cost?'],
+    aiGroundingMessage: 'I’m using your current mortgage inputs and outputs from this page.'
+  },
+  'debt-snowball-calculator': {
+    eyebrow: 'Debt Payoff Strategy Page',
+    introTitle: 'Build a debt payoff plan you can keep executing',
+    introBody: 'This page helps you decide whether a snowball approach creates enough momentum while still reducing interest at a realistic monthly pace.',
+    audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
+    decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
+    aiLabel: 'Use my debt snowball numbers',
+    aiPrompts: ['Which balance should I focus on first from this result?', 'How much faster if I add $100 more each month?', 'How should I recover after one missed payment month?'],
+    aiGroundingMessage: 'I’m using your current debt snowball inputs and payoff outputs from this page.'
+  }
+};
+
 const INSIGHT_BASELINE_INPUTS: BaseCalculatorInputs = {
   loanAmount: 0,
   homePrice: 0,
@@ -115,6 +147,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     body: 'Adjust sliders on the left, review summary cards, and then save or export your result below.'
   };
   const fieldMeta = useMemo(() => CALCULATOR_INPUT_SCHEMAS[slug] ?? [], [slug]);
+  const specializedConfig = specializedCalculatorConfigs[slug];
 
   useEffect(() => {
     const hasSeenGuide = window.localStorage.getItem(`calculator-guide-${slug}`);
@@ -188,7 +221,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     region: currency === 'INR' ? 'IN' : 'US',
     currency: currency === 'INR' ? 'INR' : 'USD',
     intent: 'calculator-result-explainer',
-    groundingMessage: 'I’m using the live values already visible on this page, including calculator inputs and outputs.',
+    groundingMessage: specializedConfig?.aiGroundingMessage ?? 'I’m using the live values already visible on this page, including calculator inputs and outputs.',
     calculatorState: {
       slug,
       inputs,
@@ -212,18 +245,28 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         suffix: field.suffix ?? '',
       })),
     },
-    suggestedPrompts: [
-      'Explain this result',
-      'Stress-test this scenario',
-      'Show safer target values',
-    ],
+    suggestedPrompts: specializedConfig?.aiPrompts ?? ['Explain this result', 'Stress-test this scenario', 'Show safer target values'],
   } satisfies Partial<AiPageContext>;
 
   useSyncAiPageContext(aiContext);
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
-      <CalculatorHeader title={definition.title} description={definition.description} />
+      <CalculatorHeader
+        title={definition.title}
+        description={definition.description}
+        eyebrow={specializedConfig?.eyebrow ?? 'Finance Toolkit'}
+      />
+      {specializedConfig ? (
+        <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
+          <h2 className="text-xl font-semibold text-blue-900 dark:text-blue-100">{specializedConfig.introTitle}</h2>
+          <p className="mt-2 text-sm text-blue-900 dark:text-blue-200">{specializedConfig.introBody}</p>
+          <div className="mt-3 grid gap-3 text-sm md:grid-cols-2">
+            <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Who this is for:</span> {specializedConfig.audience}</p>
+            <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Decision this page supports:</span> {specializedConfig.decision}</p>
+          </div>
+        </section>
+      ) : null}
       <div className="sticky top-16 z-20 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-900 shadow-sm dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
         You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
       </div>
@@ -240,18 +283,19 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
-        <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Calculator Directory</h2>
-          <div className="grid gap-1 text-sm">
-            {calculatorDefinitions.map((item) => (
-              <Link key={item.slug} href={`/calculators/${item.slug}`} className={`rounded-lg px-2 py-1 text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 ${item.slug === slug ? 'bg-slate-100 font-semibold text-brand dark:bg-slate-800 dark:text-blue-300' : ''}`}>
-                {item.title}
-              </Link>
-            ))}
-          </div>
-        </aside>
-
+      <div className={`grid gap-6 ${specializedConfig ? '' : 'lg:grid-cols-[260px_1fr]'}`}>
+        {!specializedConfig ? (
+          <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Calculator Directory</h2>
+            <div className="grid gap-1 text-sm">
+              {calculatorDefinitions.map((item) => (
+                <Link key={item.slug} href={`/calculators/${item.slug}`} className={`rounded-lg px-2 py-1 text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 ${item.slug === slug ? 'bg-slate-100 font-semibold text-brand dark:bg-slate-800 dark:text-blue-300' : ''}`}>
+                  {item.title}
+                </Link>
+              ))}
+            </div>
+          </aside>
+        ) : null}
         <div className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-4 rounded-3xl bg-slate-950 p-4 sm:p-6">
@@ -279,7 +323,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <DownloadPdfButton targetRef={exportRef} calculatorTitle={definition.title} />
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
                 <AskAIButton
-                  label="Ask AI about this result"
+                  label={specializedConfig?.aiLabel ?? 'Ask AI about this result'}
                   prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}`}
                   aiContext={aiContext}
                   variant="secondary"
