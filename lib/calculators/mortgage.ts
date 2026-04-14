@@ -2,23 +2,35 @@ import { buildAmortizationProjection, currencyBreakdown, paymentFromPrincipal } 
 import { BaseCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
 export const calculateMortgage = (inputs: BaseCalculatorInputs): CalculatorResult => {
-  const payment = paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years);
-  const projection = buildAmortizationProjection(inputs, payment);
-  const totalPaid = payment * inputs.years * 12;
-  const totalInterest = totalPaid - inputs.loanAmount;
+  const principal = inputs.loanAmount > 0 ? inputs.loanAmount : Math.max(0, inputs.homePrice - inputs.downPayment);
+  const basePayment = paymentFromPrincipal(principal, inputs.interestRate, inputs.years);
+  const payment = basePayment + inputs.monthlyContribution;
+  const projection = buildAmortizationProjection({ ...inputs, loanAmount: principal }, payment);
+  const payoffMonths = projection.find((point) => point.balance <= 0)?.month ?? inputs.years * 12;
+  const totalInterest = Math.abs(projection.at(-1)?.interestEarned ?? 0);
+  const escrowMonthly = inputs.propertyTax / 12 + inputs.insurance / 12 + inputs.pmi;
+  const totalMonthlyHousing = payment + escrowMonthly;
+  const totalPaid = payment * payoffMonths;
 
   return {
     title: 'Mortgage Projection',
     summary: [
-      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Estimated monthly principal and interest payment.' },
-      { label: 'Total Interest', value: totalInterest, currency: true, helpText: 'Total financing cost over the full term.' },
-      { label: 'Total Paid', value: totalPaid, currency: true, helpText: 'Total amount paid over loan duration.' }
+      { label: 'Monthly P&I Payment', value: payment, currency: true, helpText: 'Principal and interest payment, including extra monthly principal.' },
+      { label: 'Estimated Total Monthly Cost', value: totalMonthlyHousing, currency: true, helpText: 'P&I plus property tax, home insurance, and PMI inputs.' },
+      { label: 'Total Interest', value: totalInterest, currency: true, helpText: 'Total financing cost over the payoff timeline.' }
     ],
     projection,
     breakdown: [
-      currencyBreakdown('Loan Amount', inputs.loanAmount),
+      currencyBreakdown('Home Price', inputs.homePrice),
+      currencyBreakdown('Down Payment', inputs.downPayment),
+      currencyBreakdown('Mortgage Principal', principal),
+      currencyBreakdown('Property Tax (Annual)', inputs.propertyTax),
+      currencyBreakdown('Home Insurance (Annual)', inputs.insurance),
+      currencyBreakdown('PMI (Monthly)', inputs.pmi),
       { label: 'Interest Rate', value: `${inputs.interestRate}%` },
-      { label: 'Loan Term', value: `${inputs.years} years` }
+      { label: 'Loan Term', value: `${inputs.years} years` },
+      { label: 'Estimated Payoff', value: `${(payoffMonths / 12).toFixed(1)} years` },
+      currencyBreakdown('Total Paid (P&I)', totalPaid)
     ],
     chartKinds: ['amortization', 'pie', 'bar']
   };

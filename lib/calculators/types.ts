@@ -1,8 +1,14 @@
 export type BaseCalculatorInputs = {
   loanAmount: number;
+  homePrice: number;
+  downPayment: number;
   interestRate: number;
+  minimumPayment: number;
   monthlyContribution: number;
   years: number;
+  propertyTax: number;
+  insurance: number;
+  pmi: number;
   inflationRate: number;
   expectedReturn: number;
 };
