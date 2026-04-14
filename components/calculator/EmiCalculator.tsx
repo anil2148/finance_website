@@ -151,6 +151,14 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const isLoanType = type === 'loan' || type === 'mortgage';
   const isCompoundType = type === 'compound' || type === 'retirement';
+  const principalLabel =
+    type === 'mortgage'
+      ? `Loan Principal (${currencySymbol})`
+      : type === 'loan'
+        ? `Current Balance (${currencySymbol})`
+        : `Starting Balance (${currencySymbol})`;
+  const rateLabel = type === 'compound' || type === 'retirement' ? 'Expected Return (%)' : 'APR (%)';
+  const contributionLabel = type === 'retirement' ? `Monthly Retirement Contribution (${currencySymbol})` : `Monthly Contribution (${currencySymbol})`;
 
   const applyScenario = (label: string) => {
     if (type === 'mortgage' || type === 'loan') {
@@ -285,12 +293,12 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
           ) : (
             <>
               <label className="text-sm text-slate-700 dark:text-slate-300 sm:col-span-2">
-                Principal ({currencySymbol}) / Initial Amount
+                {principalLabel}
                 <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={principal} onChange={(event) => setPrincipal(Number(event.target.value))} />
                 <input className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-blue-600" type="range" min={0} max={isIndiaCurrency ? 20000000 : 1000000} step={isIndiaCurrency ? 50000 : 1000} value={principal} onChange={(event) => setPrincipal(Number(event.target.value))} />
               </label>
               <label className="text-sm text-slate-700 dark:text-slate-300">
-                Annual Rate (%)
+                {rateLabel}
                 <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={rate} onChange={(event) => setRate(Number(event.target.value))} />
                 <input className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-blue-600" type="range" min={0} max={20} step={0.05} value={rate} onChange={(event) => setRate(Number(event.target.value))} />
               </label>
@@ -301,7 +309,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
               </label>
               {(type === 'compound' || type === 'retirement') && (
                 <label className="text-sm text-slate-700 dark:text-slate-300 sm:col-span-2">
-                  Monthly Contribution ({currencySymbol})
+                  {contributionLabel}
                   <input className="mt-1 w-full rounded-lg border px-3 py-2" type="number" value={contribution} onChange={(event) => setContribution(Number(event.target.value))} />
                   <input className="mt-2 h-2 w-full cursor-pointer appearance-none rounded-full bg-slate-200 accent-blue-600" type="range" min={0} max={isIndiaCurrency ? 300000 : 10000} step={isIndiaCurrency ? 500 : 50} value={contribution} onChange={(event) => setContribution(Number(event.target.value))} />
                 </label>

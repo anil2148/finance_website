@@ -67,16 +67,50 @@ const guideMessageBySlug: Record<string, { title: string; body: string }> = {
   }
 };
 
-const defaultFieldMeta: Array<{ key: keyof BaseCalculatorInputs; label: string; tooltip: string; min: number; max: number; step?: number; prefix?: string; suffix?: string }> = [
-  { key: 'loanAmount', label: 'Loan Amount / Starting Balance', tooltip: 'Starting principal, debt, or investment amount.', min: 1000, max: 2000000, step: 500, prefix: '$' },
-  { key: 'interestRate', label: 'Interest Rate', tooltip: 'APR for loans or liabilities.', min: 0, max: 35, step: 0.1, suffix: '%' },
-  { key: 'monthlyContribution', label: 'Monthly Contribution', tooltip: 'Extra monthly payment or investment contribution.', min: 0, max: 25000, step: 25, prefix: '$' },
-  { key: 'years', label: 'Years', tooltip: 'Projection horizon in years.', min: 1, max: 50, step: 1, suffix: 'y' },
-  { key: 'inflationRate', label: 'Inflation Rate', tooltip: 'Expected annual inflation for purchasing power adjustment.', min: 0, max: 10, step: 0.1, suffix: '%' },
-  { key: 'expectedReturn', label: 'Expected Return', tooltip: 'Projected annual investment return.', min: 0, max: 20, step: 0.1, suffix: '%' }
-];
+type FieldMeta = {
+  key: keyof BaseCalculatorInputs;
+  label: string;
+  tooltip: string;
+  min: number;
+  max: number;
+  step?: number;
+  prefix?: string;
+  suffix?: string;
+};
 
-const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculatorInputs, { label: string; tooltip: string }>>> = {
+const defaultFieldMeta: Record<keyof BaseCalculatorInputs, FieldMeta> = {
+  loanAmount: { key: 'loanAmount', label: 'Loan Amount / Starting Balance', tooltip: 'Starting principal, debt, or investment amount.', min: 1000, max: 2000000, step: 500, prefix: '$' },
+  interestRate: { key: 'interestRate', label: 'Interest Rate', tooltip: 'APR for loans or liabilities.', min: 0, max: 35, step: 0.1, suffix: '%' },
+  monthlyContribution: { key: 'monthlyContribution', label: 'Monthly Contribution', tooltip: 'Extra monthly payment or investment contribution.', min: 0, max: 25000, step: 25, prefix: '$' },
+  years: { key: 'years', label: 'Years', tooltip: 'Projection horizon in years.', min: 1, max: 50, step: 1, suffix: 'y' },
+  inflationRate: { key: 'inflationRate', label: 'Inflation Rate', tooltip: 'Expected annual inflation for purchasing power adjustment.', min: 0, max: 10, step: 0.1, suffix: '%' },
+  expectedReturn: { key: 'expectedReturn', label: 'Expected Return', tooltip: 'Projected annual investment return.', min: 0, max: 20, step: 0.1, suffix: '%' }
+};
+
+const fieldKeysBySlug: Record<string, Array<keyof BaseCalculatorInputs>> = {
+  'mortgage-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'loan-calculator': ['loanAmount', 'interestRate', 'years'],
+  'auto-loan-calculator': ['loanAmount', 'interestRate', 'years'],
+  'student-loan-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'debt-payoff-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'debt-snowball-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'debt-avalanche-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'credit-card-payoff-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'compound-interest-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'investment-growth-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'retirement-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'fire-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'savings-goal-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'net-worth-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'budget-planner': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'salary-after-tax-calculator': ['loanAmount', 'interestRate', 'inflationRate']
+};
+
+const defaultFieldOrder: Array<keyof BaseCalculatorInputs> = ['loanAmount', 'interestRate', 'monthlyContribution', 'years', 'inflationRate', 'expectedReturn'];
+
+const fallbackFieldMeta = defaultFieldOrder.map((fieldKey) => defaultFieldMeta[fieldKey]);
+
+const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculatorInputs, Partial<Omit<FieldMeta, 'key'>>>>> = {
   'mortgage-calculator': {
     loanAmount: { label: 'Mortgage Principal', tooltip: 'Amount financed after down payment and closing-credit adjustments.' },
     interestRate: { label: 'Mortgage APR', tooltip: 'Annual mortgage interest rate used to calculate principal-and-interest payments.' },
@@ -90,11 +124,60 @@ const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculat
   },
   'debt-payoff-calculator': {
     loanAmount: { label: 'Current Debt Balance', tooltip: 'Outstanding debt principal you want to repay.' },
-    monthlyContribution: { label: 'Extra Debt Payment', tooltip: 'Additional amount paid each month above minimum requirements.' }
+    monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Additional amount paid each month above your minimum payment.' },
+    years: { label: 'Payoff Target', tooltip: 'Optional target timeline to compare your current payment strategy.' }
+  },
+  'debt-snowball-calculator': {
+    loanAmount: { label: 'Total Debt Balance', tooltip: 'Combined remaining balance across all debts in your payoff plan.' },
+    interestRate: { label: 'Blended APR', tooltip: 'Average APR across debts while you model the snowball sequence.' },
+    monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Extra payment amount directed to your current snowball target debt.' },
+    years: { label: 'Payoff Target', tooltip: 'Optional payoff horizon to test whether your payment pace is realistic.' }
+  },
+  'debt-avalanche-calculator': {
+    loanAmount: { label: 'Total Debt Balance', tooltip: 'Combined remaining balance across all debts in your payoff plan.' },
+    interestRate: { label: 'Blended APR', tooltip: 'Average APR across debts while prioritizing highest-rate balances first.' },
+    monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Extra payment amount focused on your highest-rate debt each month.' },
+    years: { label: 'Payoff Target', tooltip: 'Optional payoff horizon to test whether your current strategy is on track.' }
+  },
+  'credit-card-payoff-calculator': {
+    loanAmount: { label: 'Current Card Balance', tooltip: 'Total revolving credit-card debt included in this payoff plan.' },
+    interestRate: { label: 'Card APR', tooltip: 'Average annual percentage rate applied to your card balances.' },
+    monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Additional amount paid each month above your card minimum payment.' },
+    years: { label: 'Payoff Target', tooltip: 'Optional timeline for comparing monthly payment scenarios.' }
+  },
+  'compound-interest-calculator': {
+    loanAmount: { label: 'Starting Balance', tooltip: 'Amount already invested before new monthly contributions.' }
+  },
+  'retirement-calculator': {
+    loanAmount: { label: 'Current Savings', tooltip: 'Current value of retirement accounts and long-term investment balances.' },
+    years: { label: 'Years to Retirement', tooltip: 'Years remaining until your planned retirement date.' }
+  },
+  'fire-calculator': {
+    loanAmount: { label: 'Current Savings', tooltip: 'Current investable assets available for your FIRE plan.' },
+    years: { label: 'Years to FI Target', tooltip: 'Years you plan to continue saving before financial independence.' }
+  },
+  'investment-growth-calculator': {
+    loanAmount: { label: 'Starting Balance', tooltip: 'Amount already invested before monthly additions.' }
+  },
+  'loan-calculator': {
+    loanAmount: { label: 'Loan Principal', tooltip: 'Amount borrowed before any payments are made.' },
+    interestRate: { label: 'Loan APR', tooltip: 'Annual percentage rate used to calculate your payment schedule.' },
+    years: { label: 'Loan Term', tooltip: 'Length of time to repay the loan.' }
+  },
+  'auto-loan-calculator': {
+    loanAmount: { label: 'Auto Loan Principal', tooltip: 'Amount financed for the vehicle after down payment and trade-in credits.' },
+    interestRate: { label: 'Auto Loan APR', tooltip: 'Annual percentage rate offered for your car loan.' },
+    years: { label: 'Loan Term', tooltip: 'Length of the auto-loan repayment period in years.' }
+  },
+  'student-loan-calculator': {
+    loanAmount: { label: 'Student Loan Balance', tooltip: 'Current student-loan principal to be repaid.' },
+    interestRate: { label: 'Loan APR', tooltip: 'Average annual percentage rate across your student loans.' },
+    years: { label: 'Repayment Term', tooltip: 'Planned repayment period in years.' },
+    monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Additional amount paid each month above the required student-loan payment.' }
   },
   'savings-goal-calculator': {
     loanAmount: { label: 'Current Savings', tooltip: 'Money already saved toward your target goal.' },
-    monthlyContribution: { label: 'Monthly Savings', tooltip: 'Amount you plan to save each month toward your goal.' }
+    monthlyContribution: { label: 'Monthly Contribution', tooltip: 'Amount you plan to add each month toward your target.' }
   }
 };
 
@@ -119,10 +202,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     title: 'First-time walkthrough',
     body: 'Adjust sliders on the left, review summary cards, and then save or export your result below.'
   };
-  const fieldMeta = useMemo(
-    () => defaultFieldMeta.map((field) => ({ ...field, ...(fieldMetaOverridesBySlug[slug]?.[field.key] ?? {}) })),
-    [slug]
-  );
+  const fieldMeta = useMemo(() => {
+    const fieldKeys = fieldKeysBySlug[slug];
+    if (!fieldKeys) return fallbackFieldMeta;
+    return fieldKeys.map((fieldKey) => ({ ...defaultFieldMeta[fieldKey], ...(fieldMetaOverridesBySlug[slug]?.[fieldKey] ?? {}) }));
+  }, [slug]);
 
   useEffect(() => {
     const hasSeenGuide = window.localStorage.getItem(`calculator-guide-${slug}`);
