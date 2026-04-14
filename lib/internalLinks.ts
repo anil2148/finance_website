@@ -107,7 +107,7 @@ export function getDiversifiedMoneyLinks(cluster: string) {
     ],
     'credit-cards': [
       { label: 'Best credit cards 2026', href: '/best-credit-cards-2026', type: 'comparison' },
-      { label: 'Best everyday credit cards', href: '/best-credit-cards', type: 'comparison' },
+      { label: 'Best everyday credit cards', href: '/best-credit-cards-everyday-spending', type: 'comparison' },
       { label: 'Credit card payoff calculator', href: '/calculators/credit-card-payoff-calculator', type: 'calculator' },
       { label: 'Credit cards hub', href: '/learn/credit-cards', type: 'hub' }
     ],

@@ -80,7 +80,7 @@ const helpTopics: HelpItem[] = [
     ],
     links: [
       { href: '/financial-disclaimer', label: 'Read our financial disclaimer' },
-      { href: '/mortgage-rate-comparison', label: 'Check mortgage rate comparisons' }
+      { href: '/compare/mortgage-rate-comparison', label: 'Check mortgage rate comparisons' }
     ]
   },
   {

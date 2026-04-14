@@ -38,14 +38,7 @@ const globalLinks: NavLink[] = [
       { label: 'Financial Guides', href: '/learn' },
       { label: 'Strategy Playbooks', href: '/blog' },
     ],
-  },
-  {
-    label: 'Reports',
-    children: [
-      { label: 'Decision History', href: '/ai-money-copilot' },
-      { label: 'Saved Scenarios', href: '/ai-money-copilot' },
-    ],
-  },
+  }
 ];
 
 const indiaLinks: NavLink[] = [
@@ -66,14 +59,7 @@ const indiaLinks: NavLink[] = [
       { label: 'Financial Guides', href: '/in/banking' },
       { label: 'Strategy Playbooks', href: '/in/blog' },
     ],
-  },
-  {
-    label: 'Reports',
-    children: [
-      { label: 'Decision History', href: '/ai-money-copilot' },
-      { label: 'Saved Scenarios', href: '/ai-money-copilot' },
-    ],
-  },
+  }
 ];
 
 function isActive(pathname: string, href: string) {
@@ -95,7 +81,7 @@ const logoVariants = {
  * AppNavbar — enterprise-grade 3-section navigation for FinanceSphere.
  *
  * Layout:
- *   LEFT   — Logo + primary nav items (Home, Scenarios, Tools, Learn, Reports)
+ *   LEFT   — Logo + primary nav items (Home, Decisions, Learn)
  *   CENTER — AI Copilot command bar (visually dominant, flex-1)
  *   RIGHT  — Start a Decision CTA · Region selector · Currency badge · Theme toggle
  *
@@ -197,14 +183,14 @@ export function AppNavbar() {
                 onClick={() => dispatch({ type: 'OPEN_DRAWER' })}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                aria-label={isIndiaContext ? 'Ask AI Copilot for decision guidance — EMI, SIP, home loan, tax' : 'Ask AI Copilot for decision guidance — mortgage, debt, investing, tax'}
+                aria-label={isIndiaContext ? 'Start a decision with AI guidance — EMI, SIP, home loan, tax' : 'Start a decision with AI guidance — mortgage, debt, investing, tax'}
                 className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-blue-600 bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
-                <span className="hidden whitespace-nowrap xl:inline">Ask AI Copilot</span>
-                <span className="whitespace-nowrap xl:hidden">Ask AI</span>
+                <span className="hidden whitespace-nowrap xl:inline">Start a decision</span>
+                <span className="whitespace-nowrap xl:hidden">Start</span>
               </motion.button>
 
               {/* Region selector + currency badge */}

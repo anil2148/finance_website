@@ -2,12 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { BlogSearch } from '@/components/ui/BlogSearch';
-import { getCategories, getPosts, getTags } from '@/lib/markdown';
+import { getCategories, getPosts } from '@/lib/markdown';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { createPageMetadata } from '@/lib/seo';
 import { AdUnit } from '@/components/ui/AdUnit';
 import { AD_SLOTS } from '@/lib/adSlots';
-import { slugifyTag } from '@/lib/tagSlug';
 
 export const revalidate = 3600;
 
@@ -83,7 +82,6 @@ const featuredCategoryOrder = [
 export default function BlogPage() {
   const posts = getPosts();
   const categories = getCategories();
-  const tags = getTags().slice(0, 12);
   const featuredAcrossCategories = featuredCategoryOrder
     .map((category) => {
       const topPost = posts.find((post) => post.category === category);
@@ -189,14 +187,6 @@ export default function BlogPage() {
         {categories.map((category) => (
           <Link key={category} href={`/blog/category/${category}`} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-slate-700 transition hover:border-blue-200 hover:bg-blue-50">
             {category}
-          </Link>
-        ))}
-      </div>
-
-      <div className="flex flex-wrap gap-2 text-xs">
-        {tags.map((tag) => (
-          <Link key={tag} href={`/blog/tag/${slugifyTag(tag)}`} className="rounded-full border border-slate-200 px-3 py-1 text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
-            #{tag.replace(/-/g, ' ')}
           </Link>
         ))}
       </div>

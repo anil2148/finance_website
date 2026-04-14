@@ -89,7 +89,7 @@ const hubs: Record<string, HubConfig> = {
     resources: [
       { href: '/best-credit-cards-2026', title: 'Best credit cards comparison', description: 'Compare reward structures, annual fees, and intro APR terms.', tag: 'Start here' },
       { href: '/blog/credit-utilization-statement-cycle-playbook', title: 'Credit utilization timing tactics', description: 'Use statement timing and per-card management to protect your score.' },
-      { href: '/best-credit-cards', title: 'Best cards for everyday spending', description: 'Review no-fee and rewards-focused card structures for daily use.' }
+      { href: '/best-credit-cards-everyday-spending', title: 'Best cards for everyday spending', description: 'Review no-fee and rewards-focused card structures for daily use.' }
     ],
     calculators: [
       { href: '/calculators/credit-card-payoff-calculator', label: 'Credit card payoff calculator' },

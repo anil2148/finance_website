@@ -231,21 +231,15 @@ export function HomepageLayout() {
               Most financial content explains what things are. This site helps you decide what to do — with actual numbers, stress tests, and what happens when things do not go according to plan.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Link className="rounded-xl bg-cyan-300 px-4 py-2 font-semibold text-slate-950 transition hover:scale-[1.02] hover:bg-cyan-200" href="/calculators">
-                Run the numbers first
-              </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/comparison">
-                Compare before committing
-              </Link>
-              <Link className="rounded-xl border border-white/50 bg-white/5 px-4 py-2 font-semibold transition hover:bg-white/15" href="/tools">
-                See where this breaks
-              </Link>
               <AskAIButton
-                label="Ask AI a question"
+                label="Start a decision"
                 prefillQuestion="Help me make a smarter financial decision"
-                className="border-cyan-300/60 bg-white/10 text-cyan-100 hover:bg-white/20 dark:border-cyan-400/40 dark:bg-white/10 dark:text-cyan-100"
+                className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
             </div>
+            <p className="text-xs text-blue-200">
+              Prefer a manual path? <Link href="/calculators" className="font-semibold text-cyan-200 hover:underline">Open calculators</Link> or <Link href="/learn/investing" className="font-semibold text-cyan-200 hover:underline">read the investing hub</Link>.
+            </p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
