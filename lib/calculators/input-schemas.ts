@@ -36,6 +36,7 @@ export const CALCULATOR_INPUT_SCHEMAS: Record<string, CalculatorFieldMeta[]> = {
     { key: 'loanAmount', label: 'Student Loan Balance', tooltip: 'Current student-loan principal to be repaid.', min: 1000, max: 2000000, step: 500, prefix: '$' },
     { key: 'interestRate', label: 'Loan APR', tooltip: 'Average annual percentage rate across your student loans.', min: 0, max: 35, step: 0.1, suffix: '%' },
     { key: 'years', label: 'Repayment Term', tooltip: 'Planned repayment period in years.', min: 1, max: 50, step: 1, suffix: 'y' },
+    { key: 'minimumPayment', label: 'Required Monthly Payment', tooltip: 'Required monthly student-loan payment. Leave at 0 to auto-estimate from term and APR.', min: 0, max: 20000, step: 25, prefix: '$' },
     { key: 'monthlyContribution', label: 'Extra Monthly Payment', tooltip: 'Additional amount paid each month above the required student-loan payment.', min: 0, max: 25000, step: 25, prefix: '$' }
   ],
   'debt-payoff-calculator': [

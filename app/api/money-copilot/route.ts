@@ -34,6 +34,13 @@ const QUICK_MODEL = 'llama-3.1-8b-instant';
 /** Fallback Groq model if the primary model fails. */
 const QUICK_GROQ_FALLBACK_MODEL = 'llama-3.1-8b-instant';
 
+function stableStringify(value: unknown): string {
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map((item) => stableStringify(item)).join(',')}]`;
+  const entries = Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b));
+  return `{${entries.map(([key, val]) => `${JSON.stringify(key)}:${stableStringify(val)}`).join(',')}}`;
+}
+
 function sanitizePageContext(raw: unknown): AiPageContext | undefined {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
   const candidate = raw as Partial<AiPageContext>;
@@ -276,6 +283,7 @@ export async function POST(req: NextRequest) {
     const nlpParsed = parseFinancialDataFromText(rawQuestion, sanitizedContext, region);
     const mergedInputs = mergeNlpIntoInputs(regionNormalized, nlpParsed);
 
+    const safePageContext = sanitizePageContext(body.pageContext);
     const request: CopilotRequest = {
       mode,
       question: rawQuestion,
@@ -283,11 +291,11 @@ export async function POST(req: NextRequest) {
       inputs: mergedInputs,
       scenarios: body.scenarios ?? [],
       region,
-      pageContext: sanitizePageContext(body.pageContext),
+      pageContext: safePageContext,
     };
 
     // Build a deterministic cache key from question + context + mode + region.
-    const cacheKey = hashKey(`${rawQuestion}\x00${sanitizedContext ?? ''}\x00${mode}\x00${region}`);
+    const cacheKey = hashKey(`${rawQuestion}\x00${sanitizedContext ?? ''}\x00${mode}\x00${region}\x00${stableStringify(safePageContext ?? null)}`);
 
     // Check Redis/memory cache before doing any AI work
     const cached = await getCache(cacheKey) as CopilotResponse | null;

@@ -68,6 +68,10 @@ function filePathToRoute(pageFilePath: string): string {
     .filter(Boolean)
     .filter((segment) => !segment.startsWith('(') && !segment.endsWith(')'));
 
+  if (segments.some((segment) => segment.includes('[') || segment.includes(']'))) {
+    return '';
+  }
+
   return `/${segments.join('/')}`.replace(/\/+$/, '');
 }
 

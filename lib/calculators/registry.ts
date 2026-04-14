@@ -274,8 +274,15 @@ const rawCalculatorDefinitions: CalculatorDefinition[] = [
     seoDescription: 'Compare repayment scenarios and see how extra payments change total interest and payoff date.',
     faq: [{ question: 'Can I pay student loans early?', answer: 'Yes. Paying above the required amount can reduce interest cost and shorten your repayment timeline.' }],
     blogLinks: [{ title: 'Debt-to-Income Ratio Guide', href: '/blog/debt-to-income-ratio-90-day-plan' }],
-    defaultInputs: { ...defaultInputs, loanAmount: 45000, years: 10, interestRate: 5.8 },
-    compute: calculateLoan
+    defaultInputs: { ...defaultInputs, loanAmount: 45000, years: 10, interestRate: 5.8, minimumPayment: 500, monthlyContribution: 150 },
+    compute: (inputs) =>
+      debtPayoffResult('Student Loan Repayment Plan', {
+        ...inputs,
+        minimumPayment:
+          inputs.minimumPayment > 0
+            ? inputs.minimumPayment
+            : paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years)
+      })
   },
   {
     slug: 'debt-payoff-calculator',
