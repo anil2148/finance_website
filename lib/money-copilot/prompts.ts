@@ -350,6 +350,7 @@ RULES FOR THIS MODE:
 - Extract any financial figures from the user's freeform context text automatically
 - Avoid financial jargon — use plain language
 - Prefer clarity over completeness
+- If calculator values are present in pageContext, first explain those results, then recommend one concrete next action
 - Always end with: "Want me to personalize this with your numbers?"
 
 DATA EXTRACTION (REQUIRED):

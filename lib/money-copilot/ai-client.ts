@@ -122,10 +122,35 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
     ? `Region: India. Use ₹ (INR) currency. Use Indian financial terminology (CTC, in-hand salary, EMI, CIBIL, 80C, EPF, PPF, ELSS, home loan, lakh, crore). Apply Indian tax rules and interest rates.\n`
     : `Region: US. Use $ (USD) currency. Use US financial terminology (salary, take-home pay, APR, credit score, mortgage, 401k, Roth IRA).\n`;
 
+  const calculatorSnapshot = (() => {
+    const calculatorState = request.pageContext?.calculatorState;
+    if (!calculatorState || typeof calculatorState !== 'object') return '';
+    const outputs = (calculatorState as { outputs?: { headlineMetric?: unknown; headlineValue?: unknown; summary?: unknown } }).outputs;
+    if (!outputs || typeof outputs !== 'object') return '';
+    const headlineMetric = typeof outputs.headlineMetric === 'string' ? outputs.headlineMetric : 'headline result';
+    const headlineValue = typeof outputs.headlineValue === 'string' ? outputs.headlineValue : undefined;
+    const summaryRows = Array.isArray(outputs.summary)
+      ? outputs.summary
+          .slice(0, 3)
+          .map((row) => {
+            if (!row || typeof row !== 'object') return null;
+            const label = typeof (row as { label?: unknown }).label === 'string' ? (row as { label: string }).label : null;
+            const value = typeof (row as { value?: unknown }).value === 'number' ? (row as { value: number }).value : null;
+            return label && value !== null ? `${label}: ${value}` : null;
+          })
+          .filter((item): item is string => Boolean(item))
+      : [];
+
+    const headlineLine = headlineValue ? `${headlineMetric}: ${headlineValue}` : headlineMetric;
+    const summaryLine = summaryRows.length > 0 ? `\nCalculator summary rows:\n- ${summaryRows.join('\n- ')}` : '';
+    return `\nCalculator snapshot (authoritative and already visible to user):\n${headlineLine}${summaryLine}\n`;
+  })();
+
   return `Decision mode: ${request.mode}
 ${regionContext}User question: ${request.question}
 ${contextSection}
 ${pageContextSection}
+${calculatorSnapshot}
 Financial inputs provided:
 ${inputsSummary}
 
@@ -135,6 +160,7 @@ ${metricsSummary}
 Critical grounding rules:
 - Use pageContext.structuredValues and pageContext.calculatorState when available.
 - Do NOT ask the user to repeat numbers already in page context, calculator inputs, or calculator outputs.
+- If calculator snapshot is present, start by explaining what the visible result means and give a next action.
 - If values are visible in page context, use them directly and move to recommendation/tradeoffs.
 - On low-context pages, acknowledge limited context and avoid pretending page-specific calculations exist.
 

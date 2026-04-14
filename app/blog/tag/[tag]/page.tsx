@@ -13,19 +13,12 @@ const defaultTagJourney = [
 
 export function generateMetadata({ params }: { params: { tag: string } }): Metadata {
   const tag = slugifyTag(params.tag);
-  if (!tag) {
-    return {
-      title: 'Blog Tags | FinanceSphere',
-      description: 'Browse FinanceSphere blog topics.',
-      alternates: { canonical: '/blog' },
-      robots: { index: false, follow: true }
-    };
-  }
-
+  const safeTag = tag || 'finance';
   return {
-    title: `#${tag} Guides and Decision Support | FinanceSphere Blog`,
-    description: `Browse FinanceSphere guides tagged ${tag} with direct next steps into calculators and comparison frameworks.`,
-    alternates: { canonical: `/blog/tag/${tag}` },
+    title: `#${safeTag} Guides and Decision Support | FinanceSphere Blog`,
+    description: `Browse FinanceSphere guides tagged ${safeTag} with direct next steps into calculators and comparison frameworks.`,
+    // SEO cleanup: de-index tag archives and canonicalize all variants to the main blog index.
+    alternates: { canonical: '/blog' },
     robots: { index: false, follow: true }
   };
 }
