@@ -81,8 +81,8 @@ const specializedCalculatorConfigs: Record<string, {
 }> = {
   'mortgage-calculator': {
     eyebrow: 'Mortgage Decision Page',
-    introTitle: 'Decide a safe home budget before you shop lenders',
-    introBody: 'Use this calculator to test whether the payment is sustainable in both normal and bad-month scenarios before you request preapproval.',
+    introTitle: 'Decide a safe payment range before lender preapproval',
+    introBody: 'Model principal, total monthly housing cost, and lifetime interest together so your home budget is based on cashflow durability — not just approval limits.',
     audience: 'Home buyers and refinancers comparing payment safety, not just qualification.',
     decision: 'Choose home budget, term, and rate scenario that remain manageable after taxes, insurance, and PMI.',
     aiLabel: 'Ask AI about this result (use my numbers)',
@@ -91,8 +91,8 @@ const specializedCalculatorConfigs: Record<string, {
   },
   'debt-snowball-calculator': {
     eyebrow: 'Debt Payoff Strategy Page',
-    introTitle: 'Build a debt payoff plan you can keep executing',
-    introBody: 'This page helps you decide whether a snowball approach creates enough momentum while still reducing interest at a realistic monthly pace.',
+    introTitle: 'Build a snowball plan that survives real life months',
+    introBody: 'Use this payoff view to set a smallest-balance-first sequence, then test whether your monthly payment level is realistic when income or expenses fluctuate.',
     audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
     decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
     aiLabel: 'Use my current snowball numbers',
@@ -213,6 +213,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     () => new Map(result.summary.map((item) => [item.label, item])),
     [result.summary]
   );
+  const isValidNumber = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isFinite(value);
 
   const formattedBreakdown = result.breakdown.map((row) => {
     if (!row.currency || typeof row.amount !== 'number') return row;
@@ -252,8 +254,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       };
     }
 
-    const safePrincipal = mortgagePrincipal as number;
-    const safeTotalInterest = totalInterest as number;
+    const safePrincipal = mortgagePrincipal;
+    const safeTotalInterest = totalInterest;
     const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
     const safeInterestShare = Number.isFinite(interestShare) ? interestShare : null;
     const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
@@ -264,11 +266,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest as number)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost as number)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${interestShareText} of principal) over ${payoffText}.`,
       realWorldImpact: [
         `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
-        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid as number)}.`,
+        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid)}.`,
         `Ending projected balance after the modeled term: ${formatCurrency(remainingBalance)}.`,
       ],
     };
-  }, [formatCurrency, inputs.years, result.breakdown, result.projection, slug, summaryByLabel]);
+  }, [formatCurrency, inputs.downPayment, inputs.homePrice, inputs.years, result.projection, slug, summaryByLabel]);
 
   const displayedInsight = mortgageNarrative
     ? {
@@ -320,6 +322,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         title={definition.title}
         description={definition.description}
         eyebrow={specializedConfig?.eyebrow ?? 'Finance Toolkit'}
+        ctaLabel={specializedConfig ? undefined : 'Explore all calculators'}
       />
       {specializedConfig ? (
         <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
@@ -389,7 +392,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <DownloadPdfButton targetRef={exportRef} calculatorTitle={definition.title} />
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
                 <AskAIButton
-                  label={specializedConfig?.aiLabel ?? 'Ask AI about this result'}
+                  label={specializedConfig?.aiLabel ?? 'Ask AI about these numbers'}
                   prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}`}
                   aiContext={aiContext}
                   variant="secondary"

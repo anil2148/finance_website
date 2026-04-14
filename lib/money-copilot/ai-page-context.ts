@@ -331,6 +331,63 @@ const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
     }),
   },
   {
+    // Comparison pages
+    matches: (pathname) => pathname.includes('/compare/') || pathname === '/comparison',
+    build: (context) => ({
+      pageType: 'comparison',
+      aiMode: 'contextual',
+      intent: 'generic-finance-question',
+      groundingMessage: 'I’m using this comparison page context, including page title, region, and values visible on this page.',
+      structuredValues: {
+        ...context.structuredValues,
+        comparisonPath: context.pageUrl,
+      },
+      suggestedPrompts: [
+        'Summarize the trade-offs on this comparison page',
+        'Which option profile looks safest for a bad-month budget?',
+        'What should I verify before I choose from these options?',
+      ],
+    }),
+  },
+  {
+    // Guides and learning hubs
+    matches: (pathname) => pathname.includes('/learn/'),
+    build: (context) => ({
+      pageType: 'guide',
+      aiMode: 'contextual',
+      intent: 'generic-finance-question',
+      groundingMessage: 'I’m using this guide page context (title, region, and key points shown on the page).',
+      structuredValues: {
+        ...context.structuredValues,
+        guidePath: context.pageUrl,
+      },
+      suggestedPrompts: [
+        'Give me a checklist based on this guide',
+        'What would this guide suggest as my next decision?',
+        'Which calculator should I run after reading this page?',
+      ],
+    }),
+  },
+  {
+    // Blog articles
+    matches: (pathname) => pathname.includes('/blog/'),
+    build: (context) => ({
+      pageType: 'blog',
+      aiMode: 'contextual',
+      intent: 'generic-finance-question',
+      groundingMessage: 'I’m using this article context (page title, region, and current on-page values).',
+      structuredValues: {
+        ...context.structuredValues,
+        articlePath: context.pageUrl,
+      },
+      suggestedPrompts: [
+        'Summarize this article into an action plan',
+        'What assumptions in this article should I stress-test?',
+        'Turn this article into next-week decisions for me',
+      ],
+    }),
+  },
+  {
     // About pages
     matches: (pathname) => pathname === '/about' || pathname === '/about-us',
     build: () => ({
@@ -391,8 +448,8 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
     suggestedPrompts: defaultSuggestedPrompts(region),
     groundingMessage:
       region === 'IN'
-        ? 'I’m using the current India page context and values available here.'
-        : 'I’m using the current page context and values available here.',
+        ? 'I’m using the values shown on this India page, plus page title and region context.'
+        : 'I’m using the values shown on this page, plus page title and region context.',
     aiMode: shouldHideContextualAi(pathname) ? 'hidden' : 'generic',
   };
 
