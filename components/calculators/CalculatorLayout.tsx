@@ -81,18 +81,18 @@ const specializedCalculatorConfigs: Record<string, {
 }> = {
   'mortgage-calculator': {
     eyebrow: 'Mortgage Decision Page',
-    introTitle: 'Decide a safe home budget before you shop lenders',
-    introBody: 'Use this calculator to test whether the payment is sustainable in both normal and bad-month scenarios before you request preapproval.',
+    introTitle: 'Decide a safe payment range before lender preapproval',
+    introBody: 'Model principal, total monthly housing cost, and lifetime interest together so your home budget is based on cashflow durability — not just approval limits.',
     audience: 'Home buyers and refinancers comparing payment safety, not just qualification.',
     decision: 'Choose home budget, term, and rate scenario that remain manageable after taxes, insurance, and PMI.',
-    aiLabel: 'Explain this mortgage result',
+    aiLabel: 'Use my current mortgage numbers',
     aiPrompts: ['Explain this payment using my current numbers', 'What changes if rates increase by 1%?', 'What is a safer target monthly housing cost?'],
     aiGroundingMessage: 'I’m using your current mortgage inputs and outputs from this page.'
   },
   'debt-snowball-calculator': {
     eyebrow: 'Debt Payoff Strategy Page',
-    introTitle: 'Build a debt payoff plan you can keep executing',
-    introBody: 'This page helps you decide whether a snowball approach creates enough momentum while still reducing interest at a realistic monthly pace.',
+    introTitle: 'Build a snowball plan that survives real life months',
+    introBody: 'Use this payoff view to set a smallest-balance-first sequence, then test whether your monthly payment level is realistic when income or expenses fluctuate.',
     audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
     decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
     aiLabel: 'Use my debt snowball numbers',
@@ -211,6 +211,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     () => new Map(result.summary.map((item) => [item.label, item])),
     [result.summary]
   );
+  const isValidNumber = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isFinite(value);
 
   const formattedBreakdown = result.breakdown.map((row) => {
     if (!row.currency || typeof row.amount !== 'number') return row;
@@ -226,17 +228,20 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     const principalAndInterest = summaryByLabel.get('Monthly P&I Payment')?.value;
     const totalMonthlyCost = summaryByLabel.get('Estimated Total Monthly Cost')?.value;
     const totalInterest = summaryByLabel.get('Total Interest')?.value;
-    const mortgagePrincipal = result.breakdown.find((row) => row.label === 'Mortgage Principal')?.amount;
-    const payoffText = result.breakdown.find((row) => row.label === 'Estimated Payoff')?.value ?? `${inputs.years} years`;
     const projectionEnd = result.projection.at(-1);
-    const totalPaid = result.breakdown.find((row) => row.label === 'Total Paid (P&I)')?.amount;
+    const payoffPoint = result.projection.find((point) => point.balance <= 0) ?? projectionEnd;
+    const payoffYears = payoffPoint?.year ?? inputs.years;
+    const mortgagePrincipal = Math.max(0, inputs.homePrice - inputs.downPayment);
+    const totalPaid = mortgagePrincipal + (isValidNumber(totalInterest) ? totalInterest : 0);
 
-    const requiredNumbers = [principalAndInterest, totalMonthlyCost, totalInterest, mortgagePrincipal, totalPaid];
-    const isValid = requiredNumbers.every(
-      (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0
-    );
+    const hasValidCoreOutputs =
+      isValidNumber(principalAndInterest) &&
+      isValidNumber(totalMonthlyCost) &&
+      isValidNumber(totalInterest) &&
+      isValidNumber(payoffYears) &&
+      isValidNumber(projectionEnd?.balance);
 
-    if (!isValid || !projectionEnd) {
+    if (!hasValidCoreOutputs || !projectionEnd) {
       return {
         isReady: false,
         whatItMeans:
@@ -248,22 +253,22 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       };
     }
 
-    const safePrincipal = mortgagePrincipal as number;
-    const safeTotalInterest = totalInterest as number;
+    const safePrincipal = mortgagePrincipal;
+    const safeTotalInterest = totalInterest;
     const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
     const safeInterestShare = Number.isFinite(interestShare) ? interestShare : 0;
-    const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
+    const remainingBalance = Math.max(0, projectionEnd.balance);
 
     return {
       isReady: true,
-      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest as number)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost as number)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${safeInterestShare.toFixed(1)}% of principal) over ${payoffText}.`,
+      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${safeInterestShare.toFixed(1)}% of principal) over ${payoffYears.toFixed(1)} years.`,
       realWorldImpact: [
         `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
-        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid as number)}.`,
+        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid)}.`,
         `Ending projected balance after the modeled term: ${formatCurrency(remainingBalance)}.`,
       ],
     };
-  }, [formatCurrency, inputs.years, result.breakdown, result.projection, slug, summaryByLabel]);
+  }, [formatCurrency, inputs.downPayment, inputs.homePrice, inputs.years, result.projection, slug, summaryByLabel]);
 
   const displayedInsight = mortgageNarrative
     ? {
@@ -315,6 +320,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         title={definition.title}
         description={definition.description}
         eyebrow={specializedConfig?.eyebrow ?? 'Finance Toolkit'}
+        ctaLabel={specializedConfig ? undefined : 'Explore all calculators'}
       />
       {specializedConfig ? (
         <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
@@ -331,10 +337,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
         </div>
       ) : null}
-      {/* Sharing: encourage backlinks and distribution for calculator/tool pages. */}
-      <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
+      {!specializedConfig ? (
+        <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
+      ) : null}
 
-      {showGuide && (
+      {!specializedConfig && showGuide && (
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-100" role="status">
           <p className="font-semibold">{guideMessage.title}</p>
           <p>{guideMessage.body}</p>
@@ -384,7 +391,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <DownloadPdfButton targetRef={exportRef} calculatorTitle={definition.title} />
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
                 <AskAIButton
-                  label={specializedConfig?.aiLabel ?? 'Ask AI about this result'}
+                  label={specializedConfig?.aiLabel ?? 'Ask AI about these numbers'}
                   prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}`}
                   aiContext={aiContext}
                   variant="secondary"
