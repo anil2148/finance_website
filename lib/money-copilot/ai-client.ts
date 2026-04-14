@@ -184,6 +184,7 @@ Critical grounding rules:
 - Use pageContext.structuredValues and pageContext.calculatorState when available.
 - Treat pageType, region, and currency as fixed context for this answer.
 - Do NOT ask the user to repeat numbers already in page context, calculator inputs, or calculator outputs.
+- If page context exists, explicitly acknowledge it in the first sentence (for example: "I’m using your current mortgage inputs shown on this page.").
 - If calculator snapshot is present, start by explaining what the visible result means, then provide one concrete next action.
 - If calculator snapshot is present, reflect the visible labels/values exactly before proposing changes.
 - If values are visible in page context, use them directly and move to recommendation/tradeoffs.
