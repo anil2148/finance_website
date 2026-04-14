@@ -4,6 +4,7 @@ import { calculateLoan } from '@/lib/calculators/loan';
 import { calculateMortgage } from '@/lib/calculators/mortgage';
 import { calculateRetirement } from '@/lib/calculators/retirement';
 import { BaseCalculatorInputs, CalculatorDefinition, CalculatorResult } from '@/lib/calculators/types';
+import { CALCULATOR_INPUT_SCHEMAS } from '@/lib/calculators/input-schemas';
 
 const debtPayoffResult = (
   title: string,
@@ -73,7 +74,7 @@ const defaultInputs: BaseCalculatorInputs = {
   expectedReturn: 7
 };
 
-export const calculatorDefinitions: CalculatorDefinition[] = [
+const rawCalculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'mortgage-calculator',
     title: 'Mortgage Calculator',
@@ -282,5 +283,21 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
     compute: (inputs) => debtPayoffResult('Debt Payoff Projection', inputs)
   }
 ];
+
+function withStrictInputs(definition: CalculatorDefinition): CalculatorDefinition {
+  const schema = CALCULATOR_INPUT_SCHEMAS[definition.slug] ?? definition.inputSchema ?? [];
+  const strictDefaults = schema.reduce((acc, field) => {
+    acc[field.key] = definition.defaultInputs[field.key] ?? 0;
+    return acc;
+  }, {} as Record<string, number>);
+
+  return {
+    ...definition,
+    inputSchema: schema,
+    defaultInputs: Object.keys(strictDefaults).length > 0 ? strictDefaults : definition.defaultInputs,
+  };
+}
+
+export const calculatorDefinitions: CalculatorDefinition[] = rawCalculatorDefinitions.map(withStrictInputs);
 
 export const calculatorMap = Object.fromEntries(calculatorDefinitions.map((calculator) => [calculator.slug, calculator]));

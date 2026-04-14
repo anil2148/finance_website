@@ -950,7 +950,8 @@ export function buildCopilotResponse(request: CopilotRequest): CopilotResponse {
     });
   }
 
-  const missingData = extractMissingData(enrichedRequest.inputs, effectiveMode);
+  const hasVisibleCalculatorState = Boolean(enrichedRequest.pageContext?.calculatorState);
+  const missingData = hasVisibleCalculatorState ? [] : extractMissingData(enrichedRequest.inputs, effectiveMode);
   const confidenceLevel = assessConfidence(enrichedRequest.inputs, effectiveMode);
   const region = enrichedRequest.region ?? 'US';
   const assumptions = buildAssumptions(enrichedRequest.inputs, effectiveMode, region);

@@ -134,7 +134,8 @@ ${metricsSummary}
 
 Critical grounding rules:
 - Use pageContext.structuredValues and pageContext.calculatorState when available.
-- Do NOT ask the user to repeat numbers already in page context.
+- Do NOT ask the user to repeat numbers already in page context, calculator inputs, or calculator outputs.
+- If values are visible in page context, use them directly and move to recommendation/tradeoffs.
 - On low-context pages, acknowledge limited context and avoid pretending page-specific calculations exist.
 
 Respond ONLY with valid JSON (no markdown fences) matching this structure:

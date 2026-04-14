@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { permanentRedirect } from 'next/navigation';
 import { BlogCard } from '@/components/ui/BlogCard';
 import { getPosts } from '@/lib/markdown';
 
@@ -11,9 +12,9 @@ const defaultCategoryJourney = [
 
 function normalizeCategory(value: string) {
   try {
-    return decodeURIComponent(value).trim().toLowerCase();
+    return decodeURIComponent(value).trim().toLowerCase().replace(/\s+/g, '-');
   } catch {
-    return value.trim().toLowerCase();
+    return value.trim().toLowerCase().replace(/\s+/g, '-');
   }
 }
 
@@ -22,17 +23,21 @@ function formatCategoryLabel(category: string) {
 }
 
 export function generateMetadata({ params }: { params: { category: string } }): Metadata {
-  const categoryLabel = formatCategoryLabel(params.category);
+  const normalizedCategory = normalizeCategory(params.category);
+  const categoryLabel = formatCategoryLabel(normalizedCategory);
 
   return {
     title: `${categoryLabel} Guides and Decision Support | FinanceSphere Blog`,
     description: `Browse FinanceSphere ${categoryLabel} guides with practical walkthroughs, calculators, and next-step links.`,
-    alternates: { canonical: `/blog/category/${params.category}` }
+    alternates: { canonical: `/blog/category/${normalizedCategory}` }
   };
 }
 
 export default function BlogCategoryPage({ params }: { params: { category: string } }) {
   const currentCategory = normalizeCategory(params.category);
+  if (params.category !== currentCategory) {
+    permanentRedirect(`/blog/category/${currentCategory}`);
+  }
   const posts = getPosts().filter((post) => normalizeCategory(post.category) === currentCategory);
   const categoryLabel = formatCategoryLabel(params.category);
   const categoryScenario = `A household earning $74K reads ${categoryLabel} advice built around a $1,000 monthly surplus.`;
