@@ -368,6 +368,8 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
   const pageType = inferPageType(pathname);
   const pageTitle = inferPageTitle(pathname, pageType);
   const pageFamily = pathname.split('/').filter(Boolean)[0] ?? 'root';
+  const pathSegments = pathname.split('/').filter(Boolean);
+  const topicKey = pathSegments[pathSegments.length - 1] ?? 'home';
 
   let context: AiPageContext = {
     pageType,
@@ -383,6 +385,8 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
       region,
       pageTitle: title ?? pageTitle,
       pageFamily,
+      topicKey,
+      pathDepth: pathSegments.length,
     },
     suggestedPrompts: defaultSuggestedPrompts(region),
     groundingMessage:

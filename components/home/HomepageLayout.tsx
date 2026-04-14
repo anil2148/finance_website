@@ -80,7 +80,7 @@ const goalCards = [
 const tools = [
   {
     title: 'Step 1 (primary): Start a decision',
-    desc: 'Begin in AI decision mode and route into the right calculator with your real numbers.',
+    desc: 'Begin in AI decision mode and route into the right calculator.',
     href: '/ai-money-copilot'
   },
   {
@@ -261,7 +261,7 @@ export function HomepageLayout() {
                 className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
             </div>
-            <p className="text-xs text-blue-200">1) Start a decision → 2) Run the recommended calculator → 3) Follow the next-step guide.</p>
+            <p className="text-xs text-blue-200">1) Start a decision → 2) Run the recommended calculator → 3) Choose and execute your next step.</p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
@@ -386,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Practical flow: quantify the scenario, check downside, then shortlist only options that still fit.
+          Three-part workflow used across calculators, guides, and comparisons.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (

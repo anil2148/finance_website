@@ -85,7 +85,7 @@ const specializedCalculatorConfigs: Record<string, {
     introBody: 'Use this calculator to test whether the payment is sustainable in both normal and bad-month scenarios before you request preapproval.',
     audience: 'Home buyers and refinancers comparing payment safety, not just qualification.',
     decision: 'Choose home budget, term, and rate scenario that remain manageable after taxes, insurance, and PMI.',
-    aiLabel: 'Explain this mortgage result',
+    aiLabel: 'Ask AI about this result (use my numbers)',
     aiPrompts: ['Explain this payment using my current numbers', 'What changes if rates increase by 1%?', 'What is a safer target monthly housing cost?'],
     aiGroundingMessage: 'I’m using your current mortgage inputs and outputs from this page.'
   },
@@ -95,7 +95,7 @@ const specializedCalculatorConfigs: Record<string, {
     introBody: 'This page helps you decide whether a snowball approach creates enough momentum while still reducing interest at a realistic monthly pace.',
     audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
     decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
-    aiLabel: 'Use my debt snowball numbers',
+    aiLabel: 'Use my current snowball numbers',
     aiPrompts: ['Which balance should I focus on first from this result?', 'How much faster if I add $100 more each month?', 'How should I recover after one missed payment month?'],
     aiGroundingMessage: 'I’m using your current debt snowball inputs and payoff outputs from this page.'
   }
@@ -176,7 +176,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
   const csvRows = result.summary.map((item) => ({
     label: item.label,
-    value: item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`
+    value: item.currency
+      ? formatCurrency(Number.isFinite(item.value) ? item.value : 0)
+      : `${(Number.isFinite(item.value) ? item.value : 0).toFixed(2)}${item.suffix ?? ''}`
   }));
   const calculatorPathways: Record<string, { guide: { href: string; label: string }; compare: { href: string; label: string }; mistakes: string[] }> = {
     'mortgage-calculator': {
@@ -223,20 +225,22 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const mortgageNarrative = useMemo(() => {
     if (slug !== 'mortgage-calculator') return null;
 
-    const principalAndInterest = summaryByLabel.get('Monthly P&I Payment')?.value;
-    const totalMonthlyCost = summaryByLabel.get('Estimated Total Monthly Cost')?.value;
-    const totalInterest = summaryByLabel.get('Total Interest')?.value;
+    const principalAndInterest = summaryByLabel.get('Monthly P&I Payment')?.value ?? null;
+    const totalMonthlyCost = summaryByLabel.get('Estimated Total Monthly Cost')?.value ?? null;
+    const totalInterest = summaryByLabel.get('Total Interest')?.value ?? null;
     const mortgagePrincipal = result.breakdown.find((row) => row.label === 'Mortgage Principal')?.amount;
-    const payoffText = result.breakdown.find((row) => row.label === 'Estimated Payoff')?.value ?? `${inputs.years} years`;
+    const payoffYears = Number.parseFloat(result.breakdown.find((row) => row.label === 'Estimated Payoff')?.value ?? '');
+    const payoffText = Number.isFinite(payoffYears) ? `${payoffYears.toFixed(1)} years` : `${inputs.years} years`;
     const projectionEnd = result.projection.at(-1);
-    const totalPaid = result.breakdown.find((row) => row.label === 'Total Paid (P&I)')?.amount;
+    const totalPaid = result.breakdown.find((row) => row.label === 'Total Paid (P&I)')?.amount ?? null;
 
     const requiredNumbers = [principalAndInterest, totalMonthlyCost, totalInterest, mortgagePrincipal, totalPaid];
     const isValid = requiredNumbers.every(
       (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0
     );
+    const hasCoreMortgageValues = isValid && (principalAndInterest as number) > 0 && (totalMonthlyCost as number) > 0;
 
-    if (!isValid || !projectionEnd) {
+    if (!hasCoreMortgageValues || !projectionEnd) {
       return {
         isReady: false,
         whatItMeans:
@@ -251,12 +255,13 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     const safePrincipal = mortgagePrincipal as number;
     const safeTotalInterest = totalInterest as number;
     const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
-    const safeInterestShare = Number.isFinite(interestShare) ? interestShare : 0;
+    const safeInterestShare = Number.isFinite(interestShare) ? interestShare : null;
     const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
+    const interestShareText = safeInterestShare === null ? 'n/a' : `${safeInterestShare.toFixed(1)}%`;
 
     return {
       isReady: true,
-      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest as number)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost as number)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${safeInterestShare.toFixed(1)}% of principal) over ${payoffText}.`,
+      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest as number)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost as number)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${interestShareText} of principal) over ${payoffText}.`,
       realWorldImpact: [
         `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
         `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid as number)}.`,
@@ -331,10 +336,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
         </div>
       ) : null}
-      {/* Sharing: encourage backlinks and distribution for calculator/tool pages. */}
-      <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
+      {/* Sharing: keep visible, but avoid crowding specialized calculator intros. */}
+      {!specializedConfig ? <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} /> : null}
 
-      {showGuide && (
+      {showGuide && !specializedConfig && (
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-100" role="status">
           <p className="font-semibold">{guideMessage.title}</p>
           <p>{guideMessage.body}</p>
@@ -435,6 +440,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </section>
         </div>
       </div>
+
+      {specializedConfig ? <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} /> : null}
 
       <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
         <div>
