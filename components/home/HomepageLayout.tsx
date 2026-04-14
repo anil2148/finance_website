@@ -80,17 +80,17 @@ const goalCards = [
 const tools = [
   {
     title: 'Step 1 (primary): Start a decision',
-    desc: 'Begin in AI decision mode, then move straight into the right calculator with your real numbers.',
+    desc: 'Begin in AI decision mode and route into the right calculator with your real numbers.',
     href: '/ai-money-copilot'
   },
   {
     title: 'Step 2: Validate with guides',
-    desc: 'Get step-by-step explainers on credit cards, savings rates, loan terms, and tax basics.',
+    desc: 'Use focused explainers to validate assumptions and avoid common mistakes.',
     href: '/blog'
   },
   {
     title: 'Step 3: Compare final options',
-    desc: 'Review APR/APY, fees, bonuses, and key pros/cons side-by-side in minutes.',
+    desc: 'Compare APR/APY, fees, and constraints once your baseline numbers are clear.',
     href: '/comparison'
   }
 ];
@@ -386,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Use one operating sequence: run a baseline scenario, test downside assumptions, then use comparison pages only for options that still fit.
+          Practical flow: quantify the scenario, check downside, then shortlist only options that still fit.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
@@ -482,55 +482,6 @@ export function HomepageLayout() {
               <Link href={faq.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">{faq.label}</Link>
             </article>
           ))}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="why-trust-us">
-        <h2 id="why-trust-us" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Trust details and disclosures</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Built by <strong className="text-slate-800 dark:text-slate-200">{author.name}</strong>
-          {author.yearsOfExperience ? <span>, {author.yearsOfExperience}+ years in consumer finance systems and personal finance research</span> : null}
-          {author.credentials && author.credentials.length > 0 ? (
-            <span className="ml-1">
-              ({author.credentials.join(', ')})
-            </span>
-          ) : null}.
-        </p>
-        {author.methodology ? (
-          <p className="mt-2 text-xs text-slate-500 dark:text-slate-400 italic">&ldquo;{author.methodology}&rdquo;</p>
-        ) : null}
-        <div className="mt-4 grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
-            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Decision-first methodology</p>
-            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Every article starts from the common mistake, not a product pitch. We explain what goes wrong before explaining what to do.</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
-            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Transparent about conflicts</p>
-            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Affiliate relationships are clearly disclosed. Partners cannot buy rankings, suppress risk notes, or remove limitations from any page. <Link href="/affiliate-disclosure" className="font-medium text-blue-600 hover:underline dark:text-blue-400">See full disclosure</Link>.</p>
-          </div>
-          <div className="rounded-xl border border-slate-100 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800">
-            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Calculator-backed content</p>
-            <p className="mt-1 text-xs text-slate-600 dark:text-slate-400">Every guide links to a calculator so you can apply the advice to your specific numbers before closing the tab.</p>
-          </div>
-        </div>
-        {author.expertise && author.expertise.length > 0 ? (
-          <div className="mt-4 border-t border-slate-100 pt-4 dark:border-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Topics covered</p>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {author.expertise.map((area) => (
-                <span key={area} className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-xs text-slate-600 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-300">
-                  {area}
-                </span>
-              ))}
-            </div>
-          </div>
-        ) : null}
-        <div className="mt-4 flex flex-wrap gap-2 text-xs">
-          <Link href="/about" className="font-medium text-blue-600 hover:underline dark:text-blue-400">About Smita &amp; FinanceSphere</Link>
-          <Link href="/editorial-policy" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Editorial policy</Link>
-          <Link href="/affiliate-disclosure" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Affiliate disclosure</Link>
-          <Link href="/how-we-make-money" className="font-medium text-blue-600 hover:underline dark:text-blue-400">How we make money</Link>
-          <Link href="/financial-disclaimer" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Financial disclaimer</Link>
         </div>
       </section>
 
