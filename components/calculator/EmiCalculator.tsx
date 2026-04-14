@@ -2,7 +2,9 @@
 
 import { useMemo, useState } from 'react';
 import { FinanceLineChart } from '@/components/charts/FinanceLineChart';
+import { AskAIButton } from '@/components/money-copilot/AskAIButton';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
+import type { AiPageContext } from '@/lib/money-copilot/types';
 import { getCurrencySymbol, getLocaleForCurrency } from '@/lib/utils';
 
 type CalculatorType = 'loan' | 'mortgage' | 'compound' | 'retirement' | 'networth';
@@ -185,6 +187,58 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     setLiabilities(25000);
   };
 
+  const aiContext = {
+    intent:
+      type === 'mortgage'
+        ? 'home-affordability-decision'
+        : type === 'compound'
+          ? 'compounding-result-explainer'
+          : 'calculator-result-explainer',
+    groundingMessage: 'I’m using your current calculator inputs and outputs from this page.',
+    calculatorState: {
+      calculatorType: type,
+      inputs: {
+        principal,
+        rate,
+        years,
+        contribution: isCompoundType ? contribution : undefined,
+        assets: type === 'networth' ? assets : undefined,
+        liabilities: type === 'networth' ? liabilities : undefined,
+      },
+      outputs: {
+        headlineValue: result.value,
+        totalPaid: result.totalPaid,
+        totalInterest: result.totalInterest,
+        totalInvested: result.totalInvested,
+        estimatedGains: result.value - result.totalInvested,
+      },
+    },
+    structuredValues: {
+      calculatorTitle: title,
+      calculatorDescription: description,
+      currentResultLabel: isLoanType ? 'Monthly payment / EMI' : isCompoundType ? 'Projected corpus' : 'Net worth',
+      currentResultValue: formatCurrency(result.value),
+    },
+    suggestedPrompts:
+      type === 'mortgage'
+        ? [
+            'Explain if this EMI is safe for my current inputs',
+            'What changes if interest rate increases by 1%?',
+            'How much should I reduce principal for a safer payment?',
+          ]
+        : type === 'compound'
+          ? [
+              'Explain this SIP projection using my current values',
+              `What if I increase monthly contribution by ${currencySymbol}${isIndiaCurrency ? '2,000' : '100'}?`,
+              'How sensitive is this result to lower returns?',
+            ]
+          : [
+              'Explain this result using my current numbers',
+              'Stress-test this result for a bad month',
+              'What is a safer target value for this plan?',
+            ],
+  } satisfies Partial<AiPageContext>;
+
   return (
     <section className="grid gap-4 lg:grid-cols-2">
       <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
@@ -286,6 +340,14 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         )}
         <div className="mt-4">
           <FinanceLineChart data={result.points} dataKey="value" />
+        </div>
+        <div className="mt-4">
+          <AskAIButton
+            label="Ask AI about this result"
+            prefillQuestion={`Explain my current ${title} result using the values on this page.`}
+            aiContext={aiContext}
+            variant="secondary"
+          />
         </div>
       </div>
     </section>
