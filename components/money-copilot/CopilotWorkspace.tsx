@@ -8,6 +8,7 @@
  */
 
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
+import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 import type { ReasoningHistoryEntry } from '@/lib/money-copilot/types';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -168,9 +169,14 @@ function DecisionCard({ entry }: { entry: ReasoningHistoryEntry }) {
 export function CopilotWorkspace() {
   const { state, dispatch } = useCopilot();
   const { history } = state;
+  const pageContext = useAiPageContext({
+    pageType: 'decision-workspace',
+    intent: 'financial-decision-triage',
+    aiMode: 'contextual',
+  });
 
   const handleCardClick = (question: string) => {
-    dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: question, autoSubmit: true } });
+    dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: question, autoSubmit: true, pageContext } });
   };
 
   return (

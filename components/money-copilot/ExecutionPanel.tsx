@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { runPipeline } from '@/lib/money-copilot/pipeline';
 import type { CopilotResponse, PipelineResult, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
+import { serializeAiPageContext } from '@/lib/money-copilot/ai-page-context';
 import {
   calcHomeAffordability,
   calcHomeLoanEMI,
@@ -1459,7 +1460,9 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
           responseMode: 'deep',
           region: state.region,
           mode: 'custom',
-          inputs: {},
+          context: serializeAiPageContext(state.activePageContext),
+          pageContext: state.activePageContext ?? undefined,
+          inputs: state.activePageContext?.calculatorState ?? {},
           scenarios: [],
         }),
       });
@@ -1660,13 +1663,16 @@ function DrawerEmptyState({
   dispatch,
   onSuggestionClick,
   region = 'US',
+  pageContext,
 }: {
   history: ReturnType<typeof useCopilot>['state']['history'];
   dispatch: ReturnType<typeof useCopilot>['dispatch'];
   onSuggestionClick?: (question: string) => void;
   region?: 'US' | 'India';
+  pageContext?: ReturnType<typeof useCopilot>['state']['activePageContext'];
 }) {
   const decisionCards = region === 'India' ? DECISION_CARDS_INDIA : DECISION_CARDS_US;
+  const suggestedPrompts = pageContext?.suggestedPrompts ?? [];
   return (
     <div className="flex flex-col gap-5 px-5 py-6">
       {/* Icon + subtitle */}
@@ -1680,7 +1686,28 @@ function DrawerEmptyState({
         <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
           Pick a topic below or type your situation to get an instant recommendation.
         </p>
+        {pageContext?.groundingMessage ? (
+          <p className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-300">{pageContext.groundingMessage}</p>
+        ) : null}
       </div>
+
+      {suggestedPrompts.length > 0 && (
+        <div>
+          <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">Page suggestions</p>
+          <div className="flex flex-col gap-2">
+            {suggestedPrompts.slice(0, 3).map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => onSuggestionClick?.(prompt)}
+                className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-left text-xs font-medium text-blue-700 transition hover:border-blue-300 hover:bg-blue-100 dark:border-blue-700/50 dark:bg-blue-950/30 dark:text-blue-300"
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* You'll get */}
       <div className="rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3 dark:border-blue-800/30 dark:bg-blue-950/20">
@@ -1712,7 +1739,7 @@ function DrawerEmptyState({
                 if (onSuggestionClick) {
                   onSuggestionClick(card.question);
                 } else {
-                  dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: card.question } });
+                  dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion: card.question, pageContext: pageContext ?? undefined } });
                 }
               }}
               className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-left transition hover:border-blue-300 hover:bg-blue-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-blue-500 dark:hover:bg-blue-950/30"
@@ -1777,7 +1804,7 @@ function DrawerEmptyState({
  */
 export function ExecutionPanel() {
   const { state, dispatch } = useCopilot();
-  const { isExecutionPanelOpen, activeResult, activeQuestion, history, region } = state;
+  const { isExecutionPanelOpen, activeResult, activeQuestion, history, region, activePageContext } = state;
   const formRef = useRef<PanelInputHandle | null>(null);
 
   if (!isExecutionPanelOpen) return null;
@@ -1809,7 +1836,7 @@ export function ExecutionPanel() {
             {activeResult && (
               <button
                 type="button"
-                onClick={() => dispatch({ type: 'OPEN_DRAWER' })}
+                onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext: activePageContext ?? undefined } })}
                 className="rounded-md px-2 py-1 text-[11px] font-semibold text-white/80 ring-1 ring-white/30 transition hover:bg-white/10 hover:text-white"
               >
                 New decision
@@ -1859,7 +1886,7 @@ export function ExecutionPanel() {
               <NextActionsBar
                 question={activeQuestion ?? ''}
                 onPrefill={(text) => formRef.current?.prefill(text)}
-                onNewDecision={() => dispatch({ type: 'OPEN_DRAWER' })}
+                onNewDecision={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext: activePageContext ?? undefined } })}
               />
 
               {/* Decision cards — always visible so users can explore other topics */}
@@ -1907,6 +1934,7 @@ export function ExecutionPanel() {
               history={history}
               dispatch={dispatch}
               region={region ?? 'US'}
+              pageContext={activePageContext}
               onSuggestionClick={(q) => formRef.current?.triggerSubmit(q)}
             />
           )}

@@ -31,6 +31,7 @@ export function buildDefaultState(): CopilotGlobalState {
     isExecutionPanelOpen: false,
     activeResult: null,
     activeQuestion: '',
+    activePageContext: null,
     pendingAutoSubmit: false,
   };
 }
@@ -50,6 +51,7 @@ export function loadPersistedState(): CopilotGlobalState {
       isExecutionPanelOpen: false,
       activeResult: null,
       activeQuestion: '',
+      activePageContext: null,
     };
   } catch {
     return buildDefaultState();
@@ -78,7 +80,7 @@ export type CopilotAction =
   | { type: 'SET_REGION'; payload: 'US' | 'India' }
   | { type: 'SET_RISK_PROFILE'; payload: 'conservative' | 'moderate' | 'aggressive' }
   | { type: 'OPEN_PANEL'; payload: { question: string; result: PipelineResult } }
-  | { type: 'OPEN_DRAWER'; payload?: { prefillQuestion?: string; autoSubmit?: boolean } }
+  | { type: 'OPEN_DRAWER'; payload?: { prefillQuestion?: string; autoSubmit?: boolean; pageContext?: CopilotGlobalState['activePageContext'] } }
   | { type: 'CLOSE_PANEL' }
   | { type: 'ADD_HISTORY_ENTRY'; payload: ReasoningHistoryEntry }
   | { type: 'CLEAR_HISTORY' }
@@ -115,6 +117,7 @@ export function copilotReducer(state: CopilotGlobalState, action: CopilotAction)
         isExecutionPanelOpen: true,
         activeResult: null,
         activeQuestion: action.payload?.prefillQuestion ?? '',
+        activePageContext: action.payload?.pageContext ?? state.activePageContext,
         pendingAutoSubmit: action.payload?.autoSubmit ?? false,
       };
       break;

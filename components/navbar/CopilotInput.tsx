@@ -3,6 +3,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
+import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
+import { serializeAiPageContext } from '@/lib/money-copilot/ai-page-context';
 import { runPipeline } from '@/lib/money-copilot/pipeline';
 import type { CopilotResponse, ReasoningHistoryEntry } from '@/lib/money-copilot/types';
 
@@ -20,6 +22,7 @@ interface CopilotInputProps {
 export function CopilotInput({ className = '', compact = false }: CopilotInputProps) {
   const pathname = usePathname();
   const { state, dispatch } = useCopilot();
+  const pageContext = useAiPageContext();
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -51,7 +54,9 @@ export function CopilotInput({ className = '', compact = false }: CopilotInputPr
             responseMode: 'deep',
             region: state.region,
             mode: 'custom',
-            inputs: {},
+            context: serializeAiPageContext(pageContext),
+            pageContext,
+            inputs: pageContext.calculatorState ?? {},
             scenarios: [],
           }),
         });
@@ -118,7 +123,7 @@ export function CopilotInput({ className = '', compact = false }: CopilotInputPr
         setIsLoading(false);
       }
     },
-    [isLoading, state, dispatch],
+    [isLoading, state, dispatch, pageContext],
   );
 
   const handleKeyDown = useCallback(

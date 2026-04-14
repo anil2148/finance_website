@@ -99,6 +99,11 @@ export interface CopilotRequest {
   responseMode?: 'deep' | 'quick';
   /** Region context for locale-aware salary normalization. Defaults to 'US'. */
   region?: 'US' | 'India';
+  /**
+   * Rich page-level grounding context captured when the assistant is opened
+   * from a contextual entry point (calculator, India tax table, etc.).
+   */
+  pageContext?: AiPageContext;
 }
 
 export interface PageContext {
@@ -209,6 +214,29 @@ export interface CopilotGlobalState {
   isExecutionPanelOpen: boolean;
   activeResult: PipelineResult | null;
   activeQuestion: string;
+  /** Page-level grounding context currently attached to the open drawer/session. */
+  activePageContext: AiPageContext | null;
   /** When true, PanelInputForm will auto-submit activeQuestion on mount. Set by OPEN_DRAWER with autoSubmit:true. */
   pendingAutoSubmit: boolean;
+}
+
+export interface AiPageContext {
+  pageType: string;
+  pageTitle: string;
+  region: 'US' | 'IN';
+  currency: 'USD' | 'INR';
+  intent?: string;
+  pageUrl: string;
+  marketContext?: string;
+  pageFamily?: string;
+  structuredValues?: Record<string, unknown>;
+  calculatorState?: Record<string, unknown>;
+  suggestedPrompts?: string[];
+  /** Small assistant-facing grounding line shown in the first drawer state. */
+  groundingMessage?: string;
+  /**
+   * Controls whether we should render a contextual experience, show generic AI,
+   * or hide AI entry points entirely on low-context pages.
+   */
+  aiMode?: 'contextual' | 'generic' | 'hidden';
 }

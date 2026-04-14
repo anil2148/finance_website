@@ -12,6 +12,7 @@ import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem } from '@/components/navbar/NavItem';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
+import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 
 type NavLink = {
   label: string;
@@ -94,6 +95,7 @@ export function AppNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
   const { dispatch } = useCopilot();
+  const pageContext = useAiPageContext();
 
   // Sync region with path
   useEffect(() => {
@@ -180,7 +182,7 @@ export function AppNavbar() {
             <div className="ml-auto hidden items-center gap-2 lg:flex">
               {/* Primary decision CTA — routes into the AI Copilot drawer */}
               <motion.button
-                onClick={() => dispatch({ type: 'OPEN_DRAWER' })}
+                onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } })}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
                 aria-label={isIndiaContext ? 'Start a decision with AI guidance — EMI, SIP, home loan, tax' : 'Start a decision with AI guidance — mortgage, debt, investing, tax'}
@@ -256,7 +258,7 @@ export function AppNavbar() {
         darkMode={darkMode}
         toggleDarkMode={toggleDarkMode}
         onRegionChange={switchRegion}
-        onStartDecision={() => { setMobileOpen(false); dispatch({ type: 'OPEN_DRAWER' }); }}
+        onStartDecision={() => { setMobileOpen(false); dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } }); }}
       />
     </>
   );

@@ -1,6 +1,8 @@
 'use client';
 
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
+import type { AiPageContext } from '@/lib/money-copilot/types';
+import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 
 interface AskAIButtonProps {
   /** Optional question to pre-fill in the AI panel */
@@ -11,6 +13,8 @@ interface AskAIButtonProps {
   className?: string;
   /** Visual variant */
   variant?: 'primary' | 'secondary' | 'ghost';
+  /** Optional structured page context payload override */
+  aiContext?: Partial<AiPageContext>;
 }
 
 /**
@@ -24,8 +28,10 @@ export function AskAIButton({
   label = 'Ask AI',
   className = '',
   variant = 'secondary',
+  aiContext,
 }: AskAIButtonProps) {
   const { dispatch } = useCopilot();
+  const pageContext = useAiPageContext(aiContext);
 
   const baseClass = 'inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-1';
 
@@ -38,7 +44,7 @@ export function AskAIButton({
   return (
     <button
       type="button"
-      onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion } })}
+      onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { prefillQuestion, pageContext } })}
       className={`${baseClass} ${variantClass} ${className}`}
       aria-label={prefillQuestion ? `Ask AI: ${prefillQuestion}` : 'Open AI Decision Assistant'}
     >
