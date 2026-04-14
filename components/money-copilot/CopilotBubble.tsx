@@ -34,7 +34,7 @@ export function CopilotBubble() {
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
-      <span>{pathname.includes('/learn/') || pathname.includes('/blog/') ? 'Ask AI (general)' : 'Ask AI'}</span>
+      <span>{pathname.includes('/calculators/') ? 'Ask AI about this page' : pathname.includes('/learn/') || pathname.includes('/blog/') ? 'Ask AI (general)' : 'Ask AI'}</span>
     </button>
   );
 }

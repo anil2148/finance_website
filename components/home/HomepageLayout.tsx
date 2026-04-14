@@ -103,8 +103,8 @@ const trustSignals = [
 
 const trustStory = [
   {
-    title: 'Start with your own numbers',
-    text: 'Pick one decision, quantify it with a calculator, and compare options only after you know your baseline.'
+    title: 'Quantify the baseline first',
+    text: 'Run one concrete scenario and lock the baseline output before reading provider rankings or promotional offers.'
   },
   {
     title: 'Pressure-test for bad months',
@@ -384,9 +384,9 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How to move from estimate to action</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Practical flow: quantify the scenario, check downside, then shortlist only options that still fit.
+          Use this flow to avoid fast, low-context decisions and keep only options that hold up under downside checks.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
