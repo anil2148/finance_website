@@ -47,9 +47,38 @@ export function runCalculatorTests() {
   assert.equal(asCurrency(1234), '$1,234', 'Currency formatting should include symbol and separators');
   assert.equal(asPercent(3.456), '3.46%', 'Percentage formatting should round to 2 decimals');
 
-  const mortgageResult = calculateMortgage(baseInputs);
+  const mortgageInputs: BaseCalculatorInputs = {
+    ...baseInputs,
+    homePrice: 450000,
+    downPayment: 90000,
+    propertyTax: 4200,
+    insurance: 1800,
+    pmi: 0,
+  };
+  const mortgageResult = calculateMortgage(mortgageInputs);
   assert.equal(mortgageResult.title, 'Mortgage Projection', 'Mortgage calculator should return the expected title');
   assert.deepEqual(mortgageResult.chartKinds, ['amortization', 'pie', 'bar'], 'Mortgage calculator should return expected chart types');
+  const mortgageSummaryMap = new Map(mortgageResult.summary.map((item) => [item.label, item.value]));
+  const piPayment = mortgageSummaryMap.get('Monthly P&I Payment');
+  const totalCost = mortgageSummaryMap.get('Estimated Total Monthly Cost');
+  const totalInterest = mortgageSummaryMap.get('Total Interest');
+  assert.ok(typeof piPayment === 'number' && Number.isFinite(piPayment) && piPayment > 0, 'Mortgage P&I payment should be finite and positive for valid inputs');
+  assert.ok(
+    typeof totalCost === 'number' &&
+      Number.isFinite(totalCost) &&
+      typeof piPayment === 'number' &&
+      totalCost >= piPayment,
+    'Total monthly cost should be finite and at least the P&I payment'
+  );
+  assert.ok(typeof totalInterest === 'number' && Number.isFinite(totalInterest) && totalInterest > 0, 'Mortgage total interest should be finite and positive for valid inputs');
+  assert.ok(
+    !mortgageResult.summary.some((metric) => Number.isNaN(metric.value)),
+    'Mortgage summary should not contain NaN values'
+  );
+  assert.ok(
+    !mortgageResult.breakdown.some((row) => row.value.includes('NaN')),
+    'Mortgage breakdown should not render NaN text'
+  );
 
   const loanResult = calculateLoan(baseInputs);
   assert.equal(loanResult.title, 'Loan Repayment', 'Loan calculator should return the expected title');

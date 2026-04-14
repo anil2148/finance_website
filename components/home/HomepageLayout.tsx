@@ -79,18 +79,18 @@ const goalCards = [
 
 const tools = [
   {
-    title: 'Step 1 (primary): Start a decision',
-    desc: 'Begin in AI decision mode and route into the right calculator with your real numbers.',
+    title: 'Step 1 (primary): Define the decision',
+    desc: 'Use AI triage to frame the exact choice and route into the right calculator with your numbers.',
     href: '/ai-money-copilot'
   },
   {
-    title: 'Step 2: Validate with guides',
-    desc: 'Use focused explainers to validate assumptions and avoid common mistakes.',
+    title: 'Step 2: Validate assumptions',
+    desc: 'Use focused guides to pressure-test assumptions and catch common errors before committing.',
     href: '/blog'
   },
   {
     title: 'Step 3: Compare final options',
-    desc: 'Compare APR/APY, fees, and constraints once your baseline numbers are clear.',
+    desc: 'Only compare APR/APY, fees, and constraints after the baseline scenario is clear.',
     href: '/comparison'
   }
 ];
@@ -386,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How to move from estimate to action</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Use this flow to avoid fast, low-context decisions and keep only options that hold up under downside checks.
+          Once you have a baseline result, use this sequence to keep only options that survive downside checks.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
