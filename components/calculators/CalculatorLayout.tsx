@@ -207,6 +207,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   };
   const primaryMetric = result.summary[0];
   const baselineValue = primaryMetric?.value ?? 0;
+  const summaryByLabel = useMemo(
+    () => new Map(result.summary.map((item) => [item.label, item])),
+    [result.summary]
+  );
 
   const formattedBreakdown = result.breakdown.map((row) => {
     if (!row.currency || typeof row.amount !== 'number') return row;
@@ -216,8 +220,61 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   // Per-calculator specific insight layer
   const insightInputs = { ...INSIGHT_BASELINE_INPUTS, ...inputs } as BaseCalculatorInputs;
   const insight = getCalculatorInsight(slug, insightInputs, primaryMetric?.label ?? 'result');
+  const mortgageNarrative = useMemo(() => {
+    if (slug !== 'mortgage-calculator') return null;
+
+    const principalAndInterest = summaryByLabel.get('Monthly P&I Payment')?.value;
+    const totalMonthlyCost = summaryByLabel.get('Estimated Total Monthly Cost')?.value;
+    const totalInterest = summaryByLabel.get('Total Interest')?.value;
+    const mortgagePrincipal = result.breakdown.find((row) => row.label === 'Mortgage Principal')?.amount;
+    const payoffText = result.breakdown.find((row) => row.label === 'Estimated Payoff')?.value ?? `${inputs.years} years`;
+    const projectionEnd = result.projection.at(-1);
+    const totalPaid = result.breakdown.find((row) => row.label === 'Total Paid (P&I)')?.amount;
+
+    const requiredNumbers = [principalAndInterest, totalMonthlyCost, totalInterest, mortgagePrincipal, totalPaid];
+    const isValid = requiredNumbers.every(
+      (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0
+    );
+
+    if (!isValid || !projectionEnd) {
+      return {
+        isReady: false,
+        whatItMeans:
+          'Enter a complete mortgage scenario to unlock the interpretation. We only show narrative guidance when all required outputs are valid.',
+        realWorldImpact: [
+          'Summary cards and narrative will populate from one shared result model.',
+          'Once inputs are valid, this section explains the same payment and interest values shown above.',
+        ],
+      };
+    }
+
+    const safePrincipal = mortgagePrincipal as number;
+    const safeTotalInterest = totalInterest as number;
+    const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
+    const safeInterestShare = Number.isFinite(interestShare) ? interestShare : 0;
+    const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
+
+    return {
+      isReady: true,
+      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest as number)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost as number)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${safeInterestShare.toFixed(1)}% of principal) over ${payoffText}.`,
+      realWorldImpact: [
+        `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
+        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid as number)}.`,
+        `Ending projected balance after the modeled term: ${formatCurrency(remainingBalance)}.`,
+      ],
+    };
+  }, [formatCurrency, inputs.years, result.breakdown, result.projection, slug, summaryByLabel]);
+
+  const displayedInsight = mortgageNarrative
+    ? {
+        ...insight,
+        whatItMeans: mortgageNarrative.whatItMeans,
+        realWorldImpact: mortgageNarrative.realWorldImpact,
+      }
+    : insight;
   const aiContext = {
     pageType: 'calculator',
+    pageTitle: definition.title,
     region: currency === 'INR' ? 'IN' : 'US',
     currency: currency === 'INR' ? 'INR' : 'USD',
     intent: 'calculator-result-explainer',
@@ -235,6 +292,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     },
     structuredValues: {
       pageType: 'calculator',
+      pageTitle: definition.title,
+      region: currency === 'INR' ? 'IN' : 'US',
       calculatorTitle: definition.title,
       headlineMetric: primaryMetric?.label ?? 'headline figure',
       headlineValue: primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`,
@@ -267,9 +326,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </div>
         </section>
       ) : null}
-      <div className="sticky top-16 z-20 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-900 shadow-sm dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-        You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
-      </div>
+      {!specializedConfig ? (
+        <div className="sticky top-16 z-20 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-900 shadow-sm dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
+          You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
+        </div>
+      ) : null}
       {/* Sharing: encourage backlinks and distribution for calculator/tool pages. */}
       <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 
@@ -358,13 +419,13 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           {/* Per-calculator specific insight layer */}
           <section className="space-y-4 rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
             <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100">What this result means</h2>
-            <p className="text-sm leading-6 text-blue-900 dark:text-blue-200">{insight.whatItMeans}</p>
+            <p className="text-sm leading-6 text-blue-900 dark:text-blue-200">{displayedInsight.whatItMeans}</p>
           </section>
 
           <section className="space-y-3 rounded-2xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-500/40 dark:bg-indigo-950/30">
             <h2 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100">Real-world impact</h2>
             <ul className="space-y-2 text-sm text-indigo-900 dark:text-indigo-200">
-              {insight.realWorldImpact.map((point) => (
+              {displayedInsight.realWorldImpact.map((point) => (
                 <li key={point} className="flex gap-2">
                   <span className="mt-0.5 shrink-0 text-indigo-500">▸</span>
                   <span>{point}</span>
