@@ -242,6 +242,16 @@ export function HomepageLayout() {
               <AskAIButton
                 label="Start a decision"
                 prefillQuestion="Help me make a smarter financial decision"
+                aiContext={{
+                  pageType: 'homepage',
+                  intent: 'financial-decision-triage',
+                  groundingMessage: 'I’m using the homepage context to route your decision.',
+                  suggestedPrompts: [
+                    'Help me choose the best next financial move',
+                    'Which calculator should I run first?',
+                    'Stress-test my plan before I commit',
+                  ],
+                }}
                 className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
               <Link href="/ai-money-copilot" className="inline-flex items-center rounded-xl border border-cyan-200/60 bg-transparent px-4 py-2 text-sm font-semibold text-cyan-100 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">

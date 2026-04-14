@@ -189,6 +189,28 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
   // Per-calculator specific insight layer
   const insight = getCalculatorInsight(slug, inputs, primaryMetric?.label ?? 'result');
+  const aiContext = {
+    pageType: 'calculator',
+    intent: 'calculator-result-explainer',
+    groundingMessage: 'I’m using your current calculator inputs and outputs.',
+    calculatorState: {
+      slug,
+      inputs,
+      summary: result.summary,
+      projection: result.projection,
+    },
+    structuredValues: {
+      calculatorTitle: definition.title,
+      headlineMetric: primaryMetric?.label ?? 'headline figure',
+      headlineValue: primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`,
+      breakdown: formattedBreakdown,
+    },
+    suggestedPrompts: [
+      'Explain this result',
+      'Stress-test this scenario',
+      'Show safer target values',
+    ],
+  };
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
@@ -250,6 +272,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <AskAIButton
                   label="Ask AI about this result"
                   prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}`}
+                  aiContext={aiContext}
                   variant="secondary"
                 />
                 {savedMessage && <p className="text-xs text-emerald-700 dark:text-emerald-300" role="status">{savedMessage}</p>}
