@@ -53,6 +53,42 @@ export function shouldHideContextualAi(pathname: string): boolean {
   return pathname.includes('/tag/') || pathname.includes('/topic/') || pathname.includes('/blog/tag/');
 }
 
+function isLowContextTagOrTopicPage(pathname: string): boolean {
+  return pathname.includes('/tag/') || pathname.includes('/topic/') || pathname.includes('/blog/tag/');
+}
+
+function isMortgageOrAffordabilityPage(pathname: string): boolean {
+  return (
+    pathname.includes('mortgage-calculator') ||
+    pathname.includes('home-affordability') ||
+    pathname.includes('rent-vs-buy') ||
+    pathname === '/mortgage-calculator' ||
+    pathname === '/in/home-affordability-india' ||
+    pathname === '/in/rent-vs-buy-india'
+  );
+}
+
+function isDtiOrDebtGuidePage(pathname: string): boolean {
+  return (
+    pathname.includes('debt-to-income') ||
+    pathname.includes('/learn/loans') ||
+    pathname === '/loans' ||
+    pathname === '/in/loans'
+  );
+}
+
+function isInvestingHubPage(pathname: string): boolean {
+  return pathname === '/learn/investing' || pathname === '/in/investing';
+}
+
+function isSipOrCompoundCalculatorPage(pathname: string): boolean {
+  return (
+    pathname.includes('/calculators/compound-interest-calculator') ||
+    pathname === '/compound-interest-calculator' ||
+    pathname.includes('/in/calculators/sip-calculator')
+  );
+}
+
 function inferPageTitle(pathname: string, pageType: AiPageType): string {
   if (pathname === '/') return 'FinanceSphere Homepage';
   if (pathname === '/in') return 'FinanceSphere India Homepage';
@@ -69,12 +105,12 @@ function inferPageTitle(pathname: string, pageType: AiPageType): string {
 const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
   {
     // Low-context topic/tag archives should not pretend we have deep grounding.
-    matches: (pathname) => pathname.includes('/tag/') || pathname.includes('/topic/') || pathname.includes('/blog/tag/'),
+    matches: isLowContextTagOrTopicPage,
     build: () => ({
       pageType: 'low-context-page',
       aiMode: 'hidden',
       intent: 'generic-finance-question',
-      groundingMessage: undefined,
+      groundingMessage: 'This is a low-context tag/topic listing page; I only have lightweight navigation context.',
       structuredValues: undefined,
       calculatorState: undefined,
       suggestedPrompts: undefined,
@@ -136,12 +172,7 @@ const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
   },
   {
     // Mortgage + home affordability pages
-    matches: (pathname) =>
-      pathname.includes('mortgage-calculator') ||
-      pathname.includes('home-affordability') ||
-      pathname.includes('rent-vs-buy') ||
-      pathname.includes('mortgage-rate-comparison') ||
-      pathname.includes('/in/home-loan-interest-rates-india'),
+    matches: isMortgageOrAffordabilityPage,
     build: (context) => ({
       pageType: 'home-affordability',
       aiMode: 'contextual',
@@ -181,12 +212,7 @@ const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
   },
   {
     // DTI + debt guides
-    matches: (pathname) =>
-      pathname.includes('debt-to-income') ||
-      pathname.includes('/learn/loans') ||
-      pathname.includes('/loans') ||
-      pathname.includes('/debt-payoff-calculator') ||
-      pathname.includes('/debt-avalanche-calculator'),
+    matches: isDtiOrDebtGuidePage,
     build: () => ({
       pageType: 'dti-debt-guide',
       aiMode: 'contextual',
@@ -201,11 +227,7 @@ const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
   },
   {
     // Investing hub
-    matches: (pathname) =>
-      pathname === '/learn/investing' ||
-      pathname === '/in/investing' ||
-      pathname === '/investing-apps' ||
-      pathname.includes('/best-investment-apps'),
+    matches: isInvestingHubPage,
     build: (context) => ({
       pageType: 'investing-hub',
       aiMode: 'contextual',
@@ -230,12 +252,7 @@ const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
   },
   {
     // SIP + compound calculators
-    matches: (pathname) =>
-      pathname.includes('/calculators/compound-interest-calculator') ||
-      pathname === '/compound-interest-calculator' ||
-      pathname.includes('/in/calculators/sip-calculator') ||
-      pathname.includes('/in/sip-strategy-india') ||
-      pathname.includes('/in/fixed-deposit-vs-sip-india'),
+    matches: isSipOrCompoundCalculatorPage,
     build: (context) => ({
       pageType: context.region === 'IN' ? 'sip-calculator' : 'compound-calculator',
       aiMode: 'contextual',
