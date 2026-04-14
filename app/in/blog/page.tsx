@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { breadcrumbSchema, createPageMetadata, webpageSchema } from '@/lib/seo';
+import { SITE_ORIGIN } from '@/lib/seo-urls';
 import { IndiaAuthorityNote } from '@/components/india/IndiaAuthorityNote';
 import { IndiaBlogHub } from '@/components/india/IndiaBlogHub';
 
@@ -138,7 +139,7 @@ export default function IndiaBlogHubPage() {
       ]),
       {
         '@type': 'CollectionPage',
-        '@id': 'https://financesphere.io/in/blog',
+        '@id': `${SITE_ORIGIN}/in/blog`,
         name: title,
         description,
         mainEntity: {
@@ -147,7 +148,7 @@ export default function IndiaBlogHubPage() {
             '@type': 'ListItem',
             position: index + 1,
             name: guide.title,
-            url: `https://financesphere.io/in/blog/${guide.slug}`
+            url: `${SITE_ORIGIN}/in/blog/${guide.slug}`
           }))
         }
       }
