@@ -114,6 +114,9 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
   const contextSection = request.context
     ? `\nUser financial context (freeform — extract figures automatically):\n${request.context}\n`
     : '';
+  const pageContextSection = request.pageContext
+    ? `\nTyped page context (source of truth; do not ask for values already present):\n${JSON.stringify(request.pageContext, null, 2)}\n`
+    : '';
 
   const regionContext = request.region === 'India'
     ? `Region: India. Use ₹ (INR) currency. Use Indian financial terminology (CTC, in-hand salary, EMI, CIBIL, 80C, EPF, PPF, ELSS, home loan, lakh, crore). Apply Indian tax rules and interest rates.\n`
@@ -122,11 +125,17 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
   return `Decision mode: ${request.mode}
 ${regionContext}User question: ${request.question}
 ${contextSection}
+${pageContextSection}
 Financial inputs provided:
 ${inputsSummary}
 
 Pre-computed key metrics (use these exact numbers in your analysis):
 ${metricsSummary}
+
+Critical grounding rules:
+- Use pageContext.structuredValues and pageContext.calculatorState when available.
+- Do NOT ask the user to repeat numbers already in page context.
+- On low-context pages, acknowledge limited context and avoid pretending page-specific calculations exist.
 
 Respond ONLY with valid JSON (no markdown fences) matching this structure:
 {

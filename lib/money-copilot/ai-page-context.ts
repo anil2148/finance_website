@@ -10,8 +10,15 @@ export function currencyFromRegion(region: 'US' | 'IN'): 'USD' | 'INR' {
 
 interface AiContextBuilder {
   matches: (pathname: string) => boolean;
-  build: (context: AiPageContext) => Partial<AiPageContext>;
+  build: (context: AiPageContext) => AiPageContextOverrides;
 }
+
+type RequiredAiPageContextFields = Pick<
+  AiPageContext,
+  'pageType' | 'pageTitle' | 'pageUrl' | 'region' | 'currency' | 'intent'
+>;
+
+export type AiPageContextOverrides = Partial<AiPageContext> & Partial<RequiredAiPageContextFields>;
 
 function defaultSuggestedPrompts(region: 'US' | 'IN'): string[] {
   if (region === 'IN') {
@@ -319,6 +326,7 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
     pageTitle: title ?? pageType,
     region,
     currency,
+    intent: 'general-financial-guidance',
     pageUrl: pathname,
     marketContext: region === 'IN' ? 'India personal finance context (CTC, EMI, SIP, tax regime, RBI)' : 'US personal finance context (mortgage, DTI, APR, credit score)',
     pageFamily,
@@ -338,7 +346,7 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
   return context;
 }
 
-export function mergeAiPageContext(base: AiPageContext, overrides?: Partial<AiPageContext>): AiPageContext {
+export function mergeAiPageContext(base: AiPageContext, overrides?: AiPageContextOverrides): AiPageContext {
   if (!overrides) return base;
 
   return {
