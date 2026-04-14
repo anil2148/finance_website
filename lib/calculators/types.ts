@@ -1,3 +1,14 @@
+export type CalculatorFieldDefinition<TInputs extends Record<string, number>> = {
+  key: keyof TInputs;
+  label: string;
+  tooltip: string;
+  min: number;
+  max: number;
+  step?: number;
+  prefix?: string;
+  suffix?: string;
+};
+
 export type BaseCalculatorInputs = {
   loanAmount: number;
   homePrice: number;
@@ -12,6 +23,22 @@ export type BaseCalculatorInputs = {
   inflationRate: number;
   expectedReturn: number;
 };
+
+
+export type MortgageCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'loanAmount' | 'homePrice' | 'downPayment' | 'interestRate' | 'years' | 'propertyTax' | 'insurance' | 'pmi'>> &
+  Pick<BaseCalculatorInputs, 'monthlyContribution'>;
+
+export type LoanCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'loanAmount' | 'interestRate' | 'years'>> &
+  Pick<BaseCalculatorInputs, 'monthlyContribution'>;
+
+export type DebtPayoffCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'loanAmount' | 'interestRate' | 'years' | 'monthlyContribution'>> &
+  Pick<BaseCalculatorInputs, 'minimumPayment'>;
+
+export type GrowthCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'loanAmount' | 'years' | 'monthlyContribution' | 'expectedReturn'>> &
+  Pick<BaseCalculatorInputs, 'inflationRate'>;
+
+export type SalaryAfterTaxCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'loanAmount' | 'interestRate'>> &
+  Pick<BaseCalculatorInputs, 'inflationRate'>;
 
 export type ProjectionPoint = {
   month: number;
@@ -49,7 +76,7 @@ export type CalculatorResult = {
   chartKinds: ChartKind[];
 };
 
-export type CalculatorDefinition = {
+export type CalculatorDefinition<TInputs extends Record<string, number> = Record<string, number>> = {
   slug: string;
   title: string;
   description: string;
@@ -57,6 +84,7 @@ export type CalculatorDefinition = {
   seoDescription: string;
   faq: Array<{ question: string; answer: string }>;
   blogLinks: Array<{ title: string; href: string }>;
-  defaultInputs: BaseCalculatorInputs;
-  compute: (inputs: BaseCalculatorInputs) => CalculatorResult;
+  defaultInputs: TInputs;
+  inputSchema?: Array<CalculatorFieldDefinition<TInputs>>;
+  compute: (inputs: TInputs | any) => CalculatorResult;
 };

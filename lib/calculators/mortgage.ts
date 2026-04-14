@@ -1,10 +1,10 @@
 import { buildAmortizationProjection, currencyBreakdown, paymentFromPrincipal } from '@/lib/calculators/engine';
-import { BaseCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
+import { MortgageCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
-export const calculateMortgage = (inputs: BaseCalculatorInputs): CalculatorResult => {
+export const calculateMortgage = (inputs: MortgageCalculatorInputs): CalculatorResult => {
   const principal = inputs.loanAmount > 0 ? inputs.loanAmount : Math.max(0, inputs.homePrice - inputs.downPayment);
   const basePayment = paymentFromPrincipal(principal, inputs.interestRate, inputs.years);
-  const payment = basePayment + inputs.monthlyContribution;
+  const payment = basePayment + (inputs.monthlyContribution ?? 0);
   const projection = buildAmortizationProjection({ ...inputs, loanAmount: principal }, payment);
   const payoffMonths = projection.find((point) => point.balance <= 0)?.month ?? inputs.years * 12;
   const totalInterest = Math.abs(projection.at(-1)?.interestEarned ?? 0);

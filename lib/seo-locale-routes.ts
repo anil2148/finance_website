@@ -26,6 +26,16 @@ const EXCLUDED_EXACT_PATHS = new Set<string>([
   '/legal'
 ]);
 
+
+const LEGACY_CANONICAL_PATHS: Record<string, string> = {
+  '/about-us': '/about',
+  '/mortgage-calculator': '/calculators/mortgage-calculator',
+  '/loan-calculator': '/calculators/loan-calculator',
+  '/compound-interest-calculator': '/calculators/compound-interest-calculator',
+  '/retirement-calculator': '/calculators/retirement-calculator',
+  '/debt-payoff-calculator': '/calculators/debt-payoff-calculator'
+};
+
 const CROSS_REGION_EQUIVALENCE: Record<string, string> = {
   '/': '/in',
   '/blog': '/in/blog',
@@ -65,7 +75,7 @@ function resolveEquivalentPath(pathname: string): { us: string | null; india: st
 }
 
 export function getCanonicalUrl(pathname: string, region?: RegionCode): string {
-  const normalized = normalizePathname(pathname);
+  const normalized = LEGACY_CANONICAL_PATHS[normalizePathname(pathname)] ?? normalizePathname(pathname);
 
   if (!region) return normalized;
   const mapped = resolveEquivalentPath(normalized);

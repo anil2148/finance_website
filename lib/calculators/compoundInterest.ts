@@ -1,7 +1,7 @@
 import { buildInvestmentProjection, currencyBreakdown } from '@/lib/calculators/engine';
-import { BaseCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
+import { GrowthCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
-export const calculateCompoundInterest = (inputs: BaseCalculatorInputs): CalculatorResult => {
+export const calculateCompoundInterest = (inputs: GrowthCalculatorInputs): CalculatorResult => {
   const projection = buildInvestmentProjection(inputs);
   const futureValue = projection.at(-1)?.balance ?? inputs.loanAmount;
   const totalContributions = inputs.loanAmount + inputs.monthlyContribution * inputs.years * 12;

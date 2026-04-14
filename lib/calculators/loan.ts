@@ -1,7 +1,7 @@
 import { buildAmortizationProjection, currencyBreakdown, paymentFromPrincipal } from '@/lib/calculators/engine';
-import { BaseCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
+import { LoanCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
-export const calculateLoan = (inputs: BaseCalculatorInputs): CalculatorResult => {
+export const calculateLoan = (inputs: LoanCalculatorInputs): CalculatorResult => {
   const payment = paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years);
   const projection = buildAmortizationProjection(inputs, payment);
   const totalPaid = payment * inputs.years * 12;

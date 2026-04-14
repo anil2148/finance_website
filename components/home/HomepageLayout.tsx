@@ -254,9 +254,6 @@ export function HomepageLayout() {
                 }}
                 className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
-              <Link href="/ai-money-copilot" className="inline-flex items-center rounded-xl border border-cyan-200/60 bg-transparent px-4 py-2 text-sm font-semibold text-cyan-100 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">
-                Try the AI Job Analyzer →
-              </Link>
             </div>
             <p className="text-xs text-blue-200">
               Prefer a manual path? <Link href="/calculators" className="font-semibold text-cyan-200 hover:underline">Open calculators</Link> or <Link href="/learn/investing" className="font-semibold text-cyan-200 hover:underline">read the investing hub</Link>.
