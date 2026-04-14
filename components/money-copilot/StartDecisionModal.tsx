@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { CopilotResponse, DecisionMode } from '@/lib/money-copilot/types';
+import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 
 interface StartDecisionModalProps {
   open: boolean;
@@ -73,6 +74,11 @@ function StepIndicator({ current }: { current: Step }) {
 export function StartDecisionModal({ open, onClose }: StartDecisionModalProps) {
   const pathname = usePathname();
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
+  const pageContext = useAiPageContext({
+    pageType: 'homepage',
+    intent: 'financial-decision-triage',
+    groundingMessage: 'I’m using the Start a Decision flow inputs and this page context.',
+  });
   const [step, setStep] = useState<Step>('income');
 
   // Step 1 — income
@@ -140,7 +146,19 @@ export function StartDecisionModal({ open, onClose }: StartDecisionModalProps) {
         question: scenarioText.trim(),
         inputs,
         scenarios: [],
-        region: isIndiaContext ? 'India' : 'US'
+        region: isIndiaContext ? 'India' : 'US',
+        pageContext: {
+          ...pageContext,
+          structuredValues: {
+            ...(pageContext.structuredValues ?? {}),
+            startDecisionFlow: {
+              incomePeriod,
+              baselineIncome: baseVal ?? null,
+              comparisonIncome: newVal ?? null,
+              selectedGoal: goal,
+            },
+          },
+        },
       };
       const res = await fetch('/api/money-copilot', {
         method: 'POST',

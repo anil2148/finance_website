@@ -21,21 +21,20 @@ type NavLink = {
 const globalLinks: NavLink[] = [
   { label: 'Home', href: '/' },
   {
-    label: 'Scenarios',
+    label: 'Decisions',
     children: [
       { label: 'Job Offer Analyzer', href: '/ai-money-copilot' },
       { label: 'Mortgage vs Rent', href: '/calculators/mortgage-calculator' },
-      { label: 'Early Retirement Path', href: '/calculators/retirement-calculator' },
       { label: 'Debt Payoff Planner', href: '/calculators/debt-payoff-calculator' }
     ]
   },
   {
-    label: 'Tools',
+    label: 'Calculators',
     children: [
-      { label: 'Debt Payoff Calculator', href: '/calculators/debt-payoff-calculator' },
-      { label: 'Mortgage Planner', href: '/calculators/mortgage-calculator' },
+      { label: 'All Calculators', href: '/calculators' },
+      { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
       { label: 'Investment Growth', href: '/calculators/investment-growth-calculator' },
-      { label: 'Tax Calculator', href: '/calculators/salary-after-tax-calculator' }
+      { label: 'Tax Calculator', href: '/calculators/salary-after-tax-calculator' },
     ]
   },
   {
@@ -50,11 +49,10 @@ const globalLinks: NavLink[] = [
 const indiaLinks: NavLink[] = [
   { label: 'Home', href: '/in' },
   {
-    label: 'Scenarios',
+    label: 'Decisions',
     children: [
       { label: 'Salary Planner (CTC)', href: '/ai-money-copilot' },
       { label: 'Loan vs Investment', href: '/in/calculators/emi-calculator' },
-      { label: 'SIP Growth Simulator', href: '/in/calculators/sip-calculator' },
       { label: 'Tax Optimization', href: '/in/tax' }
     ]
   },

@@ -22,8 +22,7 @@ const LEGACY_ROUTE_REDIRECTS: Record<string, string> = {
   '/compound-interest-calculator': '/calculators/compound-interest-calculator',
   '/retirement-calculator': '/calculators/retirement-calculator',
   '/debt-payoff-calculator': '/calculators/debt-payoff-calculator',
-  '/mortgage-rate-comparison': '/compare/mortgage-rate-comparison',
-  '/tools': '/calculators'
+  '/mortgage-rate-comparison': '/compare/mortgage-rate-comparison'
 };
 
 

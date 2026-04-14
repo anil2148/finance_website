@@ -114,7 +114,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     title: 'First-time walkthrough',
     body: 'Adjust sliders on the left, review summary cards, and then save or export your result below.'
   };
-  const fieldMeta = useMemo(() => CALCULATOR_INPUT_SCHEMAS[slug] ?? definition.inputSchema ?? [], [definition.inputSchema, slug]);
+  const fieldMeta = useMemo(() => CALCULATOR_INPUT_SCHEMAS[slug] ?? [], [slug]);
 
   useEffect(() => {
     const hasSeenGuide = window.localStorage.getItem(`calculator-guide-${slug}`);

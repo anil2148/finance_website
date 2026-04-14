@@ -81,7 +81,7 @@ const tools = [
   {
     title: 'Plan major money moves',
     desc: 'Model home-buying, refinancing, debt payoff, and long-term investing before you commit.',
-    href: '/tools'
+    href: '/calculators'
   },
   {
     title: 'Read practical money guides',
