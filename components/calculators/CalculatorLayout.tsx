@@ -108,6 +108,36 @@ const specializedCalculatorConfigs: Record<string, {
     aiLabel: 'Use my current debt payoff numbers',
     aiPrompts: ['Explain this payoff timeline using my current numbers', 'What if I add $150 extra each month?', 'How much interest can I cut without overcommitting?'],
     aiGroundingMessage: 'I’m using your current debt payoff inputs and outputs from this page.'
+  },
+  'loan-calculator': {
+    eyebrow: 'Loan Decision Page',
+    introTitle: 'Compare loan affordability before you sign',
+    introBody: 'Model monthly payment, payoff timeline, and total interest together so your loan decision is based on full borrowing cost — not just teaser monthly payment.',
+    audience: 'Borrowers comparing personal, auto, or refinancing loan offers.',
+    decision: 'Choose a payment and term that stay affordable while minimizing avoidable interest.',
+    aiLabel: 'Explain this result (use my numbers)',
+    aiPrompts: ['Explain this monthly payment using my current values', 'Show the trade-off between shorter and longer term', 'How much interest can I save with extra monthly payment?'],
+    aiGroundingMessage: 'I’m using your current loan inputs and outputs from this page.'
+  },
+  'compound-interest-calculator': {
+    eyebrow: 'Compounding Decision Page',
+    introTitle: 'Turn monthly contribution choices into long-term outcomes',
+    introBody: 'Use this projection to see how contribution size, return assumptions, and time horizon combine so you can pick a contribution level you can sustain.',
+    audience: 'Savers and investors planning long-term wealth growth.',
+    decision: 'Set a contribution and timeline target that is durable in both normal and lower-income months.',
+    aiLabel: 'Stress-test this scenario (use my numbers)',
+    aiPrompts: ['Explain this projection with my current values', 'What happens if return is 2% lower?', 'How much more if I contribute an extra amount each month?'],
+    aiGroundingMessage: 'I’m using your current compounding inputs and outputs from this page.'
+  },
+  'retirement-calculator': {
+    eyebrow: 'Retirement Decision Page',
+    introTitle: 'Check if your current pace can support retirement goals',
+    introBody: 'Translate contribution and return assumptions into a realistic retirement trajectory, then test whether your pace holds under conservative assumptions.',
+    audience: 'Workers planning retirement readiness and contribution targets.',
+    decision: 'Choose a retirement contribution pace that survives lower-return scenarios.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this retirement projection with my current values', 'What safer return assumption should I test?', 'How much should I increase contributions to improve readiness?'],
+    aiGroundingMessage: 'I’m using your current retirement inputs and outputs from this page.'
   }
 };
 
@@ -158,6 +188,16 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   };
   const fieldMeta = useMemo(() => CALCULATOR_INPUT_SCHEMAS[slug] ?? [], [slug]);
   const specializedConfig = specializedCalculatorConfigs[slug];
+  const activeConfig = specializedConfig ?? {
+    eyebrow: `${definition.title.replace('Calculator', '').trim()} Decision Page`,
+    introTitle: `Use ${definition.title} to make a clearer decision`,
+    introBody: definition.description,
+    audience: 'People evaluating this exact money decision with real numbers.',
+    decision: 'Use the result to choose your safest next step before comparing products.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this result (use my numbers)', 'Stress-test this scenario', 'What is the safer next step?'],
+    aiGroundingMessage: `I’m using your current ${definition.title.toLowerCase()} inputs and outputs from this page.`,
+  };
 
   useEffect(() => {
     const hasSeenGuide = window.localStorage.getItem(`calculator-guide-${slug}`);
@@ -184,7 +224,15 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     window.setTimeout(() => setSavedMessage(''), 2500);
   };
 
-  const csvRows = result.summary.map((item) => ({
+  const sanitizedSummary = useMemo(
+    () =>
+      result.summary.map((item) => ({
+        ...item,
+        value: Number.isFinite(item.value) ? item.value : 0,
+      })),
+    [result.summary]
+  );
+  const csvRows = sanitizedSummary.map((item) => ({
     label: item.label,
     value: item.currency
       ? formatCurrency(Number.isFinite(item.value) ? item.value : 0)
@@ -217,11 +265,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     compare: { href: '/comparison', label: 'Compare options by fee and fit' },
     mistakes: ['Using unrealistic input assumptions.', 'Relying on one scenario only.', 'Skipping eligibility and product-term checks.']
   };
-  const primaryMetric = result.summary[0];
-  const baselineValue = primaryMetric?.value ?? 0;
+  const primaryMetric = sanitizedSummary[0];
+  const baselineValue = Number.isFinite(primaryMetric?.value) ? primaryMetric.value : 0;
   const summaryByLabel = useMemo(
-    () => new Map(result.summary.map((item) => [item.label, item])),
-    [result.summary]
+    () => new Map(sanitizedSummary.map((item) => [item.label, item])),
+    [sanitizedSummary]
   );
   const isValidNumber = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value);
@@ -294,7 +342,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         `Ending projected balance after the modeled term: ${formatCurrency(remainingBalance)}.`,
       ],
     };
-  }, [formatCurrency, inputs.downPayment, inputs.homePrice, inputs.years, result.breakdown, result.projection, slug, summaryByLabel]);
+  }, [formatCurrency, inputs.downPayment, inputs.homePrice, inputs.years, result.projection, slug, summaryByLabel]);
 
   const displayedInsight = mortgageNarrative
     ? {
@@ -309,14 +357,14 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     region: currency === 'INR' ? 'IN' : 'US',
     currency: currency === 'INR' ? 'INR' : 'USD',
     intent: 'calculator-result-explainer',
-    groundingMessage: specializedConfig?.aiGroundingMessage ?? 'I’m using the live values already visible on this page, including calculator inputs and outputs.',
+    groundingMessage: activeConfig.aiGroundingMessage,
     calculatorState: {
       slug,
       inputs,
       outputs: {
         headlineMetric: primaryMetric?.label ?? 'headline figure',
         headlineValue: formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix),
-        summary: result.summary,
+        summary: sanitizedSummary,
         breakdown: formattedBreakdown,
         projection: result.projection
       }
@@ -335,7 +383,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         suffix: field.suffix ?? '',
       })),
     },
-    suggestedPrompts: specializedConfig?.aiPrompts ?? ['Explain this result using the values on this page', 'Stress-test this scenario with my current numbers', 'Show safer target values for this setup'],
+    suggestedPrompts: activeConfig.aiPrompts,
   } satisfies Partial<AiPageContext>;
 
   useSyncAiPageContext(aiContext);
@@ -345,28 +393,22 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       <CalculatorHeader
         title={definition.title}
         description={definition.description}
-        eyebrow={specializedConfig?.eyebrow ?? 'Finance Toolkit'}
-        ctaLabel={specializedConfig ? undefined : 'Explore all calculators'}
+        eyebrow={activeConfig.eyebrow}
+        ctaLabel={undefined}
       />
-      {specializedConfig ? (
+      {activeConfig ? (
         <section className="rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
-          <h2 className="text-xl font-semibold text-blue-900 dark:text-blue-100">{specializedConfig.introTitle}</h2>
-          <p className="mt-2 text-sm text-blue-900 dark:text-blue-200">{specializedConfig.introBody}</p>
+          <h2 className="text-xl font-semibold text-blue-900 dark:text-blue-100">{activeConfig.introTitle}</h2>
+          <p className="mt-2 text-sm text-blue-900 dark:text-blue-200">{activeConfig.introBody}</p>
           <div className="mt-3 grid gap-3 text-sm md:grid-cols-2">
-            <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Who this is for:</span> {specializedConfig.audience}</p>
-            <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Decision this page supports:</span> {specializedConfig.decision}</p>
+            <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Who this is for:</span> {activeConfig.audience}</p>
+            <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Decision this page supports:</span> {activeConfig.decision}</p>
           </div>
         </section>
       ) : null}
-      {!specializedConfig ? (
-        <div className="sticky top-16 z-20 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-900 shadow-sm dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-          You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
-        </div>
-      ) : null}
-      {/* Sharing: keep visible, but avoid crowding specialized calculator intros. */}
-      {!specializedConfig ? <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} /> : null}
+      <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 
-      {showGuide && !specializedConfig && (
+      {showGuide && (
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-100" role="status">
           <p className="font-semibold">{guideMessage.title}</p>
           <p>{guideMessage.body}</p>
@@ -376,19 +418,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         </div>
       )}
 
-      <div className={`grid gap-6 ${specializedConfig ? '' : 'lg:grid-cols-[260px_1fr]'}`}>
-        {!specializedConfig ? (
-          <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Calculator Directory</h2>
-            <div className="grid gap-1 text-sm">
-              {calculatorDefinitions.map((item) => (
-                <Link key={item.slug} href={`/calculators/${item.slug}`} className={`rounded-lg px-2 py-1 text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 ${item.slug === slug ? 'bg-slate-100 font-semibold text-brand dark:bg-slate-800 dark:text-blue-300' : ''}`}>
-                  {item.title}
-                </Link>
-              ))}
-            </div>
-          </aside>
-        ) : null}
+      <div className="grid gap-6">
         <div className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-4 rounded-3xl bg-slate-950 p-4 sm:p-6">
@@ -399,7 +429,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
             <div className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {result.summary.map((item) => (
+                {sanitizedSummary.map((item) => (
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={formatSummaryValue(item.value, item.currency, item.suffix)} />
                 ))}
               </div>
@@ -416,7 +446,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <DownloadPdfButton targetRef={exportRef} calculatorTitle={definition.title} />
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
                 <AskAIButton
-                  label={specializedConfig?.aiLabel ?? 'Ask AI about these numbers'}
+                  label={activeConfig.aiLabel}
                   prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix)}`}
                   aiContext={aiContext}
                   variant="secondary"
@@ -448,6 +478,17 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             </table>
           </div>
 
+          {slug === 'mortgage-calculator' ? (
+            <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
+              <h2 className="text-base font-semibold">Assumptions used in this result</h2>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                <li>Monthly payment includes principal, interest, property tax, home insurance, and PMI.</li>
+                <li>Total paid reflects principal-and-interest cash flow only; taxes, insurance, and PMI remain separate housing costs.</li>
+                <li>All values update directly from your current slider inputs and this table.</li>
+              </ul>
+            </section>
+          ) : null}
+
           {/* Per-calculator specific insight layer */}
           <section className="space-y-4 rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
             <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100">What this result means</h2>
@@ -467,8 +508,6 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </section>
         </div>
       </div>
-
-      {specializedConfig ? <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} /> : null}
 
       <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
         <div>
