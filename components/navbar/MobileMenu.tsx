@@ -245,7 +245,7 @@ export function MobileMenu({
                   <option value="US">United States</option>
                 </select>
                 <p className="mt-2 text-xs font-semibold text-slate-600 dark:text-slate-300">
-                  Current: {currentRegionLabel} ({currentCurrencyLabel})
+                  Current market: {currentRegionLabel} · {currentCurrencyLabel}
                 </p>
               </div>
             </motion.div>

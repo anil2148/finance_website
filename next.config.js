@@ -54,6 +54,7 @@ const nextConfig = {
     ];
 
     return [
+      { source: '/about-us', destination: '/about', permanent: true },
       { source: '/compare/best-credit-cards-2026', destination: '/best-credit-cards-2026', permanent: true },
       { source: '/compare/best-investment-apps', destination: '/best-investment-apps', permanent: true },
       { source: '/compare/best-savings-accounts-usa', destination: '/best-savings-accounts-usa', permanent: true },

@@ -7,6 +7,7 @@ import { NewsletterForm } from '@/components/NewsletterForm';
 import { createPageMetadata } from '@/lib/seo';
 import { AdUnit } from '@/components/ui/AdUnit';
 import { AD_SLOTS } from '@/lib/adSlots';
+import { slugifyTag } from '@/lib/tagSlug';
 
 export const revalidate = 3600;
 
@@ -194,7 +195,7 @@ export default function BlogPage() {
 
       <div className="flex flex-wrap gap-2 text-xs">
         {tags.map((tag) => (
-          <Link key={tag} href={`/blog/tag/${tag}`} className="rounded-full border border-slate-200 px-3 py-1 text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+          <Link key={tag} href={`/blog/tag/${slugifyTag(tag)}`} className="rounded-full border border-slate-200 px-3 py-1 text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
             #{tag.replace(/-/g, ' ')}
           </Link>
         ))}
