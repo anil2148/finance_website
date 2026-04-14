@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
@@ -109,11 +109,11 @@ export function AppNavbar() {
   }, []);
 
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
-  const links = isIndiaContext ? indiaLinks : globalLinks;
+  const links = useMemo(() => (isIndiaContext ? indiaLinks : globalLinks), [isIndiaContext]);
   const currentRegionLabel = isIndiaContext ? 'India' : 'US';
   const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
 
-  const switchRegion = (nextRegion: 'India' | 'US') => {
+  const switchRegion = useCallback((nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);
     const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
     setPreferredRegionCookie(regionCookieValue);
@@ -122,9 +122,9 @@ export function AppNavbar() {
       const redirectUrl = `/api/region?region=${regionCookieValue}&next=${encodeURIComponent(nextPath)}`;
       window.location.assign(redirectUrl);
     }
-  };
+  }, [pathname, setCountry]);
 
-  const activeCheck = (href: string) => isActive(pathname, href);
+  const activeCheck = useCallback((href: string) => isActive(pathname, href), [pathname]);
 
   return (
     <>
