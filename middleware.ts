@@ -14,6 +14,17 @@ const PRIMARY_HOST = 'www.financesphere.io';
 // PRIMARY_HOST itself is excluded here; its HTTP→HTTPS redirect is handled explicitly below.
 const NON_WWW_HOSTS = new Set(['financesphere.io']);
 
+const LEGACY_ROUTE_REDIRECTS: Record<string, string> = {
+  '/about-us': '/about',
+  '/about-us/': '/about',
+  '/mortgage-calculator': '/calculators/mortgage-calculator',
+  '/loan-calculator': '/calculators/loan-calculator',
+  '/compound-interest-calculator': '/calculators/compound-interest-calculator',
+  '/retirement-calculator': '/calculators/retirement-calculator',
+  '/debt-payoff-calculator': '/calculators/debt-payoff-calculator'
+};
+
+
 type HomepageRoutingDecision =
   | { action: 'next' }
   | { action: 'redirect'; region: PreferredRegion };
@@ -67,10 +78,21 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 308);
   }
 
-  if (pathname === '/about-us' || pathname === '/about-us/') {
+  const legacyRedirectTarget = LEGACY_ROUTE_REDIRECTS[pathname];
+  if (legacyRedirectTarget) {
     const redirectUrl = nextUrl.clone();
-    redirectUrl.pathname = '/about';
+    redirectUrl.pathname = legacyRedirectTarget;
     return NextResponse.redirect(redirectUrl, 301);
+  }
+
+  if (pathname.startsWith('/tag/') || pathname.startsWith('/topic/')) {
+    const rawTag = pathname.replace(/^\/(?:tag|topic)\//, '').split('/')[0];
+    const canonicalTag = slugifyTag(rawTag);
+    if (canonicalTag) {
+      const redirectUrl = nextUrl.clone();
+      redirectUrl.pathname = `/blog/tag/${canonicalTag}`;
+      return NextResponse.redirect(redirectUrl, 301);
+    }
   }
 
   if (pathname.startsWith('/blog/tag/')) {

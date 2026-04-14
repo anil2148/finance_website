@@ -1,4 +1,4 @@
-import { BaseCalculatorInputs, ProjectionPoint } from '@/lib/calculators/types';
+import { BaseCalculatorInputs, GrowthCalculatorInputs, LoanCalculatorInputs, ProjectionPoint } from '@/lib/calculators/types';
 
 export const toMonthlyRate = (annualRate: number) => annualRate / 100 / 12;
 
@@ -15,7 +15,7 @@ export const paymentFromPrincipal = (principal: number, annualRate: number, year
   return (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
 };
 
-export const buildInvestmentProjection = (inputs: BaseCalculatorInputs, initial = inputs.loanAmount) => {
+export const buildInvestmentProjection = (inputs: GrowthCalculatorInputs, initial = inputs.loanAmount) => {
   const months = Math.max(1, Math.round(inputs.years * 12));
   const monthlyReturn = toMonthlyRate(inputs.expectedReturn);
   const projection: ProjectionPoint[] = [];
@@ -39,7 +39,7 @@ export const buildInvestmentProjection = (inputs: BaseCalculatorInputs, initial 
   return projection;
 };
 
-export const buildAmortizationProjection = (inputs: BaseCalculatorInputs, payment?: number) => {
+export const buildAmortizationProjection = (inputs: LoanCalculatorInputs, payment?: number) => {
   const months = Math.max(1, Math.round(inputs.years * 12));
   const monthlyRate = toMonthlyRate(inputs.interestRate);
   const monthlyPayment = payment ?? paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years);
