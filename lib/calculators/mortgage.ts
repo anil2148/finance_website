@@ -2,7 +2,7 @@ import { buildAmortizationProjection, currencyBreakdown, paymentFromPrincipal } 
 import { MortgageCalculatorInputs, CalculatorResult } from '@/lib/calculators/types';
 
 export const calculateMortgage = (inputs: MortgageCalculatorInputs): CalculatorResult => {
-  const principal = inputs.loanAmount > 0 ? inputs.loanAmount : Math.max(0, inputs.homePrice - inputs.downPayment);
+  const principal = Math.max(0, inputs.homePrice - inputs.downPayment);
   const basePayment = paymentFromPrincipal(principal, inputs.interestRate, inputs.years);
   const payment = basePayment + (inputs.monthlyContribution ?? 0);
   const projection = buildAmortizationProjection({ ...inputs, loanAmount: principal }, payment);

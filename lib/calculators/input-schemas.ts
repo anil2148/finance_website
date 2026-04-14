@@ -15,7 +15,6 @@ export const CALCULATOR_INPUT_SCHEMAS: Record<string, CalculatorFieldMeta[]> = {
   'mortgage-calculator': [
     { key: 'homePrice', label: 'Home Price', tooltip: 'Purchase price of the home you are evaluating.', min: 50000, max: 4000000, step: 1000, prefix: '$' },
     { key: 'downPayment', label: 'Down Payment', tooltip: 'Cash paid upfront to reduce the mortgage principal.', min: 0, max: 1000000, step: 1000, prefix: '$' },
-    { key: 'loanAmount', label: 'Mortgage Principal', tooltip: 'Amount financed after down payment and closing-credit adjustments.', min: 1000, max: 2000000, step: 500, prefix: '$' },
     { key: 'interestRate', label: 'Mortgage APR', tooltip: 'Annual mortgage interest rate used to calculate principal-and-interest payments.', min: 0, max: 35, step: 0.1, suffix: '%' },
     { key: 'years', label: 'Loan Term', tooltip: 'Length of the mortgage repayment period in years.', min: 1, max: 50, step: 1, suffix: 'y' },
     { key: 'propertyTax', label: 'Property Tax (Annual)', tooltip: 'Estimated annual property taxes for this home.', min: 0, max: 30000, step: 50, prefix: '$' },

@@ -1,6 +1,6 @@
 import { normalizePathname, type RegionCode } from '@/lib/seo-urls';
 
-const EXCLUDED_ROUTE_PREFIXES = ['/api', '/admin', '/blog/tag'];
+const EXCLUDED_ROUTE_PREFIXES = ['/api', '/admin', '/blog/tag', '/blog/category'];
 const EXCLUDED_EXACT_PATHS = new Set<string>([
   '/us',
   '/hello',

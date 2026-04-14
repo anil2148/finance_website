@@ -25,7 +25,7 @@ export type BaseCalculatorInputs = {
 };
 
 
-export type MortgageCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'loanAmount' | 'homePrice' | 'downPayment' | 'interestRate' | 'years' | 'propertyTax' | 'insurance' | 'pmi'>> &
+export type MortgageCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'homePrice' | 'downPayment' | 'interestRate' | 'years' | 'propertyTax' | 'insurance' | 'pmi'>> &
   Pick<BaseCalculatorInputs, 'monthlyContribution'>;
 
 export type LoanCalculatorInputs = Required<Pick<BaseCalculatorInputs, 'loanAmount' | 'interestRate' | 'years'>> &
