@@ -44,13 +44,6 @@ const globalLinks: NavLink[] = [
       { label: 'Financial Guides', href: '/learn' },
       { label: 'Strategy Playbooks', href: '/blog' }
     ]
-  },
-  {
-    label: 'Reports',
-    children: [
-      { label: 'Decision History', href: '/ai-money-copilot' },
-      { label: 'Saved Scenarios', href: '/ai-money-copilot' }
-    ]
   }
 ];
 
@@ -79,13 +72,6 @@ const indiaLinks: NavLink[] = [
     children: [
       { label: 'Financial Guides', href: '/in/banking' },
       { label: 'Strategy Playbooks', href: '/in/blog' }
-    ]
-  },
-  {
-    label: 'Reports',
-    children: [
-      { label: 'Decision History', href: '/ai-money-copilot' },
-      { label: 'Saved Scenarios', href: '/ai-money-copilot' }
     ]
   }
 ];
