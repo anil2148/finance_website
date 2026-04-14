@@ -5,6 +5,9 @@ import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, getAuthorIdForCategory } from '
 import { canonicalTopicKey, enhancePost, qualityScore, shouldExcludePost } from '@/lib/blogEnhancer';
 import { shouldDisplayPost } from '@/lib/blogCleanup';
 import { sanitizeBlogSlug } from '@/lib/blogSlug';
+import { normalizeTag, slugifyTag } from '@/lib/tagSlug';
+
+export { normalizeTag, slugifyTag };
 
 const contentDir = path.join(process.cwd(), 'content/blog');
 
@@ -102,39 +105,6 @@ export function getPosts(): BlogPost[] {
 
 export function getPostBySlug(slug: string) {
   return getPosts().find((p) => p.slug === slug);
-}
-
-function decodeUriComponentSafe(value: string) {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-}
-
-function fullyDecodeUriComponent(value: string): string {
-  let decoded = value;
-  let prev = '';
-  let iterations = 0;
-  const MAX_ITERATIONS = 10;
-  while (decoded !== prev && iterations < MAX_ITERATIONS) {
-    prev = decoded;
-    decoded = decodeUriComponentSafe(decoded);
-    iterations++;
-  }
-  return decoded;
-}
-
-export function normalizeTag(tag: string) {
-  return fullyDecodeUriComponent(tag).trim().toLowerCase();
-}
-
-export function slugifyTag(tag: string): string {
-  return normalizeTag(tag)
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
 }
 
 export function getCategories() {

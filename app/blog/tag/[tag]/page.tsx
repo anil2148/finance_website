@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { permanentRedirect } from 'next/navigation';
 import { BlogCard } from '@/components/ui/BlogCard';
-import { getPosts, slugifyTag } from '@/lib/markdown';
+import { getPosts } from '@/lib/markdown';
+import { slugifyTag } from '@/lib/tagSlug';
 
 const defaultTagJourney = [
   { href: '/calculators', label: 'Run a calculator' },
@@ -12,6 +13,15 @@ const defaultTagJourney = [
 
 export function generateMetadata({ params }: { params: { tag: string } }): Metadata {
   const tag = slugifyTag(params.tag);
+  if (!tag) {
+    return {
+      title: 'Blog Tags | FinanceSphere',
+      description: 'Browse FinanceSphere blog topics.',
+      alternates: { canonical: '/blog' },
+      robots: { index: false, follow: true }
+    };
+  }
+
   return {
     title: `#${tag} Guides and Decision Support | FinanceSphere Blog`,
     description: `Browse FinanceSphere guides tagged ${tag} with direct next steps into calculators and comparison frameworks.`,
@@ -22,6 +32,10 @@ export function generateMetadata({ params }: { params: { tag: string } }): Metad
 
 export default function BlogTagPage({ params }: { params: { tag: string } }) {
   const slug = slugifyTag(params.tag);
+
+  if (!slug) {
+    permanentRedirect('/blog');
+  }
 
   if (params.tag !== slug) {
     permanentRedirect(`/blog/tag/${slug}`);

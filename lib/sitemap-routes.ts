@@ -1,9 +1,10 @@
 import fs from 'fs';
 import path from 'path';
 import redirectMap from '@/content/audit/blog-redirect-map.json';
-import { getCategories, getPosts, getTags, slugifyTag } from '@/lib/markdown';
+import { getCategories, getPosts, getTags } from '@/lib/markdown';
 import { getCanonicalUrl, isIndexableRoute } from '@/lib/seo-locale-routes';
 import { shouldIncludeInSitemap, type RouteMeta } from '@/lib/seo/sitemap-filter';
+import { slugifyTag } from '@/lib/tagSlug';
 
 export type SitemapEntry = {
   pathname: string;

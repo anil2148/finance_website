@@ -7,6 +7,7 @@ import {
   PREFERRED_REGION_COOKIE,
   type PreferredRegion
 } from '@/lib/region-preference';
+import { slugifyTag } from '@/lib/tagSlug';
 
 const PRIMARY_HOST = 'www.financesphere.io';
 // Hosts that must always redirect to PRIMARY_HOST regardless of protocol.
@@ -57,6 +58,7 @@ function redirectToRegionHomepage(request: NextRequest, region: PreferredRegion)
 
 export function middleware(request: NextRequest) {
   const { nextUrl, headers } = request;
+  const pathname = nextUrl.pathname;
   const host = headers.get('host')?.toLowerCase() ?? '';
   const forwardedProto = headers.get('x-forwarded-proto')?.toLowerCase() ?? nextUrl.protocol.replace(':', '');
 
@@ -65,8 +67,27 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 308);
   }
 
+  if (pathname === '/about-us' || pathname === '/about-us/') {
+    const redirectUrl = nextUrl.clone();
+    redirectUrl.pathname = '/about';
+    return NextResponse.redirect(redirectUrl, 301);
+  }
+
+  if (pathname.startsWith('/blog/tag/')) {
+    const rawTagSegment = pathname.slice('/blog/tag/'.length);
+    const hasNestedPath = rawTagSegment.includes('/');
+    if (!hasNestedPath && rawTagSegment) {
+      const canonicalTag = slugifyTag(rawTagSegment);
+      if (canonicalTag && rawTagSegment !== canonicalTag) {
+        const redirectUrl = nextUrl.clone();
+        redirectUrl.pathname = `/blog/tag/${canonicalTag}`;
+        return NextResponse.redirect(redirectUrl, 301);
+      }
+    }
+  }
+
   const decision = getHomepageRoutingDecision({
-    pathname: nextUrl.pathname,
+    pathname,
     preferredRegion: parsePreferredRegion(request.cookies.get(PREFERRED_REGION_COOKIE)?.value),
     userAgent: headers.get('user-agent'),
     countryCode: headers.get('x-vercel-ip-country') ?? headers.get('cf-ipcountry')
