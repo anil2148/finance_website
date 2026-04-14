@@ -261,7 +261,7 @@ export function HomepageLayout() {
                 className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
             </div>
-            <p className="text-xs text-blue-200">1) Start a decision → 2) Run the recommended calculator → 3) Follow the next-step guide.</p>
+            <p className="text-xs text-blue-200">1) Start a decision → 2) Run the recommended calculator → 3) Choose and execute your next step.</p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">

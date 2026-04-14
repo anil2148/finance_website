@@ -85,7 +85,7 @@ const specializedCalculatorConfigs: Record<string, {
     introBody: 'Model principal, total monthly housing cost, and lifetime interest together so your home budget is based on cashflow durability — not just approval limits.',
     audience: 'Home buyers and refinancers comparing payment safety, not just qualification.',
     decision: 'Choose home budget, term, and rate scenario that remain manageable after taxes, insurance, and PMI.',
-    aiLabel: 'Use my current mortgage numbers',
+    aiLabel: 'Ask AI about this result (use my numbers)',
     aiPrompts: ['Explain this payment using my current numbers', 'What changes if rates increase by 1%?', 'What is a safer target monthly housing cost?'],
     aiGroundingMessage: 'I’m using your current mortgage inputs and outputs from this page.'
   },
@@ -95,7 +95,7 @@ const specializedCalculatorConfigs: Record<string, {
     introBody: 'Use this payoff view to set a smallest-balance-first sequence, then test whether your monthly payment level is realistic when income or expenses fluctuate.',
     audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
     decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
-    aiLabel: 'Use my debt snowball numbers',
+    aiLabel: 'Use my current snowball numbers',
     aiPrompts: ['Which balance should I focus on first from this result?', 'How much faster if I add $100 more each month?', 'How should I recover after one missed payment month?'],
     aiGroundingMessage: 'I’m using your current debt snowball inputs and payoff outputs from this page.'
   },
@@ -186,7 +186,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
   const csvRows = result.summary.map((item) => ({
     label: item.label,
-    value: item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`
+    value: item.currency
+      ? formatCurrency(Number.isFinite(item.value) ? item.value : 0)
+      : `${(Number.isFinite(item.value) ? item.value : 0).toFixed(2)}${item.suffix ?? ''}`
   }));
   const calculatorPathways: Record<string, { guide: { href: string; label: string }; compare: { href: string; label: string }; mistakes: string[] }> = {
     'mortgage-calculator': {
@@ -272,8 +274,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     const safeTotalMonthlyCost = summaryMetrics.totalMonthlyCost as number;
     const safeTotalInterest = summaryMetrics.totalInterest as number;
     const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
-    const safeInterestShare = Number.isFinite(interestShare) ? interestShare : 0;
-    const remainingBalance = Math.max(0, projectionEnd.balance);
+    const safeInterestShare = Number.isFinite(interestShare) ? interestShare : null;
+    const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
+    const interestShareText = safeInterestShare === null ? 'n/a' : `${safeInterestShare.toFixed(1)}%`;
 
     return {
       isReady: true,
@@ -353,11 +356,10 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           You quantify every financial decision here. Current headline impact: {primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}.
         </div>
       ) : null}
-      {!specializedConfig ? (
-        <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
-      ) : null}
+      {/* Sharing: keep visible, but avoid crowding specialized calculator intros. */}
+      {!specializedConfig ? <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} /> : null}
 
-      {!specializedConfig && showGuide && (
+      {showGuide && !specializedConfig && (
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-100" role="status">
           <p className="font-semibold">{guideMessage.title}</p>
           <p>{guideMessage.body}</p>
@@ -458,6 +460,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </section>
         </div>
       </div>
+
+      {specializedConfig ? <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} /> : null}
 
       <div className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm md:grid-cols-2 dark:border-slate-700 dark:bg-slate-900">
         <div>
