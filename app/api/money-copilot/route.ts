@@ -78,11 +78,19 @@ function buildQuickSystemPrompt(region: 'US' | 'India' = 'US'): string {
 You are in QUICK MODE. Return ONLY valid JSON matching the BubbleResponse format. No markdown fences.`;
 }
 
-function buildQuickUserMessage(question: string, region: 'US' | 'India' = 'US'): string {
+function buildQuickUserMessage(question: string, region: 'US' | 'India' = 'US', pageContext?: AiPageContext): string {
   const defaultAssumption = region === 'India' ? '₹8L India CTC' : '$65K US salary';
+  const contextSection = pageContext
+    ? `
+Known page context (do not ask for values already present):
+${JSON.stringify(pageContext, null, 2)}
+`
+    : '';
   return `User question: ${question}
+${contextSection}
 
 IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., ${defaultAssumption}). Never respond with "I need more information" without first answering.
+If page context includes visible values, use those values directly.
 
 Respond ONLY with valid JSON (no markdown fences):
 {
@@ -143,9 +151,9 @@ async function callGroqForQuick(systemPrompt: string, userMessage: string, model
   return null;
 }
 
-async function callAiForQuick(question: string, region: 'US' | 'India' = 'US'): Promise<BubbleResponse | null> {
+async function callAiForQuick(question: string, region: 'US' | 'India' = 'US', pageContext?: AiPageContext): Promise<BubbleResponse | null> {
   const systemPrompt = buildQuickSystemPrompt(region);
-  const userMessage = buildQuickUserMessage(question, region);
+  const userMessage = buildQuickUserMessage(question, region, pageContext);
 
   if (process.env.GROQ_API_KEY) {
     // Quick mode always uses the fast cheap model
@@ -250,7 +258,8 @@ export async function POST(req: NextRequest) {
 
     // Quick mode: return a compact BubbleResponse for the floating bubble
     if (body.responseMode === 'quick') {
-      const result = await callAiForQuick(rawQuestion, region);
+      const pageContext = sanitizePageContext(body.pageContext);
+      const result = await callAiForQuick(rawQuestion, region, pageContext);
       return NextResponse.json(result ?? buildFallbackQuickResponse(rawQuestion, region));
     }
 

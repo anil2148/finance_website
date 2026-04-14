@@ -25,12 +25,9 @@ const globalLinks: NavLink[] = [
   {
     label: 'Decisions',
     children: [
-      { label: 'Job Offer Analyzer', href: '/ai-money-copilot' },
-      { label: 'Home Affordability', href: '/calculators/mortgage-calculator' },
-      { label: 'Debt Payoff Planner', href: '/calculators/debt-payoff-calculator' },
-      { label: 'Investment Growth', href: '/calculators/investment-growth-calculator' },
-      { label: 'Tax Calculator', href: '/calculators/salary-after-tax-calculator' },
-      { label: 'Retirement Planning', href: '/calculators/retirement-calculator' },
+      { label: 'Start a decision', href: '/ai-money-copilot' },
+      { label: 'Calculators', href: '/calculators' },
+      { label: 'Comparisons', href: '/comparison' }
     ],
   },
   {
@@ -47,11 +44,9 @@ const indiaLinks: NavLink[] = [
   {
     label: 'Decisions',
     children: [
-      { label: 'Salary / CTC Planner', href: '/ai-money-copilot' },
-      { label: 'EMI / Home Loan', href: '/in/calculators/emi-calculator' },
-      { label: 'SIP Growth Simulator', href: '/in/calculators/sip-calculator' },
-      { label: 'Tax Regime Comparison', href: '/in/tax' },
-      { label: 'All Calculators', href: '/in/calculators' },
+      { label: 'Start a decision', href: '/ai-money-copilot' },
+      { label: 'India calculators', href: '/in/calculators' },
+      { label: 'Tax decisions', href: '/in/tax' }
     ],
   },
   {
