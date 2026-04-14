@@ -133,9 +133,9 @@ export const calculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'debt-snowball-calculator',
     title: 'Debt Snowball Calculator',
-    description: 'Simulate a snowball strategy that clears small balances first to build motivation and visible progress.',
-    seoTitle: 'Debt Snowball Calculator: Build Debt Payoff Momentum',
-    seoDescription: 'Simulate debt snowball strategy with charts and payoff timeline insights.',
+    description: 'For borrowers with multiple balances, simulate the debt snowball sequence to build motivation while staying consistent in difficult months.',
+    seoTitle: 'Debt Snowball Calculator (2026): Payoff Order, Timeline, and Interest',
+    seoDescription: 'Model debt snowball payoff order, monthly momentum, and total interest so you can choose a realistic debt reduction plan.',
     faq: [{ question: 'What is debt snowball?', answer: 'It pays smallest debt first while making minimum payments on others.' }],
     blogLinks: [{ title: 'Debt-to-Income Ratio Guide', href: '/blog/debt-to-income-ratio-90-day-plan' }],
     defaultInputs: { ...defaultInputs, loanAmount: 40000, years: 8 },

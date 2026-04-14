@@ -124,7 +124,7 @@ export function AppNavbar() {
 
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
   const links = isIndiaContext ? indiaLinks : globalLinks;
-  const currentRegionLabel = isIndiaContext ? 'India' : 'United States';
+  const currentRegionLabel = isIndiaContext ? 'India' : 'US';
   const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
 
   const switchRegion = (nextRegion: 'India' | 'US') => {
@@ -197,14 +197,14 @@ export function AppNavbar() {
                 onClick={() => dispatch({ type: 'OPEN_DRAWER' })}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                aria-label={isIndiaContext ? 'Ask AI Copilot — EMI, SIP, home loan, tax' : 'Ask AI Copilot — mortgage, debt, investing, tax'}
+                aria-label={isIndiaContext ? 'Ask AI Copilot for decision guidance — EMI, SIP, home loan, tax' : 'Ask AI Copilot for decision guidance — mortgage, debt, investing, tax'}
                 className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-blue-600 bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
                 <span className="hidden whitespace-nowrap xl:inline">Ask AI Copilot</span>
-                <span className="whitespace-nowrap xl:hidden">Copilot</span>
+                <span className="whitespace-nowrap xl:hidden">Ask AI</span>
               </motion.button>
 
               {/* Region selector + currency badge */}

@@ -3,7 +3,6 @@ import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { ChartBarIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { NewsletterForm } from '@/components/NewsletterForm';
-import AuthorBox from '@/components/common/AuthorBox';
 
 const goalCards = [
   {
@@ -328,7 +327,6 @@ export function IndiaHomepageLayout() {
         </div>
       </section>
 
-      <AuthorBox className="mt-0" />
       <NewsletterForm source="india-homepage" className="scroll-mt-24" />
     </section>
   );

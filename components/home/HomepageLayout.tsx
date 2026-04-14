@@ -6,7 +6,6 @@ import {
 } from '@heroicons/react/24/outline';
 import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
-import AuthorBox from '@/components/common/AuthorBox';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 import { AUTHOR_PROFILES, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 import { AskAIButton } from '@/components/money-copilot/AskAIButton';
@@ -139,6 +138,9 @@ const whatGoesWrong = {
 };
 
 const crawlPriorityLinks = [
+  { href: '/blog/debt-to-income-ratio-90-day-plan', label: 'DTI 90-day plan' },
+  { href: '/calculators/debt-snowball-calculator', label: 'Debt Snowball Calculator' },
+  { href: '/learn/investing', label: 'Investing Hub' },
   { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
   { href: '/best-investment-apps', label: 'Best Investment Apps' },
   { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts USA' },
@@ -343,7 +345,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Most finance content tells you what things are. This site is built to help you decide what to do — with real numbers, stress tests, and the failure points that most plans hit before success. If you leave without a clearer next step, something did not work.
+          FinanceSphere is built for decision quality: quantify the trade-off, pressure-test downside, then choose the next move. If a plan fails in a bad month, we want that to be visible before you commit.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
@@ -486,8 +488,6 @@ export function HomepageLayout() {
           <Link href="/financial-disclaimer" className="font-medium text-blue-600 hover:underline dark:text-blue-400">Financial disclaimer</Link>
         </div>
       </section>
-
-      <AuthorBox className="mt-0" />
 
       <NewsletterForm source="homepage" className="scroll-mt-24" />
     </section>

@@ -23,7 +23,7 @@ type HubConfig = {
 const hubs: Record<string, HubConfig> = {
   investing: {
     title: 'Investing Hub',
-    description: 'Build a long-term portfolio with practical asset allocation, fee analysis, and app comparisons.',
+    description: 'Investing Hub for long-horizon savers: build a repeatable portfolio process with contribution rules, fee control, and downside guardrails.',
     updatedAt: 'March 18, 2026',
     microReality: 'If you invest $500/month at 8% for 25 years, the difference between 0.1% and 1.0% in annual fees is roughly $100,000. That is not a rounding error.',
     whatGoesWrong: {
@@ -47,6 +47,7 @@ const hubs: Record<string, HubConfig> = {
     resources: [
       { href: '/blog/beginner-investing-roadmap-year-one-milestones', title: 'Investing for beginners roadmap', description: 'A practical sequence for choosing accounts, funds, and contribution cadence.', tag: 'Start here' },
       { href: '/blog/tax-efficient-investing-account-location-decisions', title: 'Tax-efficient investing moves', description: 'Learn how account location and turnover discipline improve after-tax results.' },
+      { href: '/blog/debt-to-income-ratio-90-day-plan', title: 'Debt-to-income 90-day plan', description: 'If lending approval is near-term, clean up debt pressure before increasing risk assets.' },
       { href: '/best-investment-apps', title: 'Best investment apps comparison', description: 'Compare platforms by fees, account types, and automation support.' }
     ],
     calculators: [
@@ -254,6 +255,11 @@ export default function ClusterHubPage({ params }: { params: { cluster: string }
       <header className="rounded-2xl border border-slate-200 bg-white p-6">
         <h1 className="text-3xl font-bold">{data.title}</h1>
         <p className="mt-2 max-w-3xl text-slate-600">{data.description}</p>
+        {params.cluster === 'investing' ? (
+          <p className="mt-3 text-sm font-medium text-slate-700">
+            Who this is for: households choosing how much to invest monthly without breaking cash-flow resilience in weak months.
+          </p>
+        ) : null}
         {data.microReality && (
           <p className="mt-3 text-sm font-medium italic text-slate-500">{data.microReality}</p>
         )}
