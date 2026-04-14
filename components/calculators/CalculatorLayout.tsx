@@ -79,7 +79,7 @@ type FieldMeta = {
   suffix?: string;
 };
 
-const defaultFieldMeta: Record<keyof BaseCalculatorInputs, FieldMeta> = {
+const baseFieldMeta: Record<keyof BaseCalculatorInputs, FieldMeta> = {
   loanAmount: { key: 'loanAmount', label: 'Loan Amount / Starting Balance', tooltip: 'Starting principal, debt, or investment amount.', min: 1000, max: 2000000, step: 500, prefix: '$' },
   homePrice: { key: 'homePrice', label: 'Home Price', tooltip: 'Property purchase price before down payment.', min: 50000, max: 4000000, step: 1000, prefix: '$' },
   downPayment: { key: 'downPayment', label: 'Down Payment', tooltip: 'Upfront cash paid at purchase to reduce financed principal.', min: 0, max: 1000000, step: 1000, prefix: '$' },
@@ -93,29 +93,6 @@ const defaultFieldMeta: Record<keyof BaseCalculatorInputs, FieldMeta> = {
   inflationRate: { key: 'inflationRate', label: 'Inflation Rate', tooltip: 'Expected annual inflation for purchasing power adjustment.', min: 0, max: 10, step: 0.1, suffix: '%' },
   expectedReturn: { key: 'expectedReturn', label: 'Expected Return', tooltip: 'Projected annual investment return.', min: 0, max: 20, step: 0.1, suffix: '%' }
 };
-
-const fieldKeysBySlug: Record<string, Array<keyof BaseCalculatorInputs>> = {
-  'mortgage-calculator': ['homePrice', 'downPayment', 'loanAmount', 'interestRate', 'years', 'propertyTax', 'insurance', 'pmi', 'monthlyContribution'],
-  'loan-calculator': ['loanAmount', 'interestRate', 'years'],
-  'auto-loan-calculator': ['loanAmount', 'interestRate', 'years'],
-  'student-loan-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
-  'debt-payoff-calculator': ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years'],
-  'debt-snowball-calculator': ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years'],
-  'debt-avalanche-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
-  'credit-card-payoff-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
-  'compound-interest-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
-  'investment-growth-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
-  'retirement-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
-  'fire-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
-  'savings-goal-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
-  'net-worth-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
-  'budget-planner': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
-  'salary-after-tax-calculator': ['loanAmount', 'interestRate', 'inflationRate']
-};
-
-const defaultFieldOrder: Array<keyof BaseCalculatorInputs> = ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years', 'inflationRate', 'expectedReturn'];
-
-const fallbackFieldMeta = defaultFieldOrder.map((fieldKey) => defaultFieldMeta[fieldKey]);
 
 const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculatorInputs, Partial<Omit<FieldMeta, 'key'>>>>> = {
   'mortgage-calculator': {
@@ -141,10 +118,10 @@ const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculat
     years: { label: 'Payoff Target', tooltip: 'Optional target timeline to compare your current payment strategy.' }
   },
   'debt-snowball-calculator': {
-    loanAmount: { label: 'Total Debt Balance', tooltip: 'Combined remaining balance across all debts in your payoff plan.' },
-    interestRate: { label: 'Blended APR', tooltip: 'Average APR across debts while you model the snowball sequence.' },
-    minimumPayment: { label: 'Total Minimum Payment', tooltip: 'Combined monthly minimum payment across all debts in your plan.' },
-    monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Extra payment amount directed to your current snowball target debt.' },
+    loanAmount: { label: 'Combined Debt Balances', tooltip: 'Total outstanding balance across debts included in your snowball plan.' },
+    interestRate: { label: 'Average APR', tooltip: 'Weighted average APR across debts while you target the smallest balance first.' },
+    minimumPayment: { label: 'Combined Minimum Payment', tooltip: 'Total minimum payment due each month across all included debts.' },
+    monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Additional payment rolled into the next debt after each balance is cleared.' },
     years: { label: 'Payoff Target', tooltip: 'Optional payoff horizon to test whether your payment pace is realistic.' }
   },
   'debt-avalanche-calculator': {
@@ -160,10 +137,14 @@ const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculat
     years: { label: 'Payoff Target', tooltip: 'Optional timeline for comparing monthly payment scenarios.' }
   },
   'compound-interest-calculator': {
-    loanAmount: { label: 'Starting Balance', tooltip: 'Amount already invested before new monthly contributions.' }
+    loanAmount: { label: 'Starting Balance', tooltip: 'Amount already invested before new monthly contributions.' },
+    monthlyContribution: { label: 'Monthly Contribution', tooltip: 'Amount you plan to invest every month.' },
+    expectedReturn: { label: 'Expected Return', tooltip: 'Estimated annual return used for long-term projection.' },
+    inflationRate: { label: 'Inflation Rate', tooltip: 'Expected annual inflation used to estimate real purchasing power.' }
   },
   'retirement-calculator': {
     loanAmount: { label: 'Current Savings', tooltip: 'Current value of retirement accounts and long-term investment balances.' },
+    monthlyContribution: { label: 'Monthly Contribution', tooltip: 'Amount you plan to add each month until retirement.' },
     years: { label: 'Years to Retirement', tooltip: 'Years remaining until your planned retirement date.' }
   },
   'fire-calculator': {
@@ -171,7 +152,8 @@ const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculat
     years: { label: 'Years to FI Target', tooltip: 'Years you plan to continue saving before financial independence.' }
   },
   'investment-growth-calculator': {
-    loanAmount: { label: 'Starting Balance', tooltip: 'Amount already invested before monthly additions.' }
+    loanAmount: { label: 'Starting Balance', tooltip: 'Amount already invested before monthly additions.' },
+    monthlyContribution: { label: 'Monthly Contribution', tooltip: 'Amount added to your portfolio each month.' }
   },
   'loan-calculator': {
     loanAmount: { label: 'Loan Principal', tooltip: 'Amount borrowed before any payments are made.' },
@@ -193,6 +175,25 @@ const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculat
     loanAmount: { label: 'Current Savings', tooltip: 'Money already saved toward your target goal.' },
     monthlyContribution: { label: 'Monthly Contribution', tooltip: 'Amount you plan to add each month toward your target.' }
   }
+};
+
+const fieldKeysBySlug: Record<string, Array<keyof BaseCalculatorInputs>> = {
+  'mortgage-calculator': ['homePrice', 'downPayment', 'loanAmount', 'interestRate', 'years', 'propertyTax', 'insurance', 'pmi', 'monthlyContribution'],
+  'loan-calculator': ['loanAmount', 'interestRate', 'years'],
+  'auto-loan-calculator': ['loanAmount', 'interestRate', 'years'],
+  'student-loan-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'debt-payoff-calculator': ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years'],
+  'debt-snowball-calculator': ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years'],
+  'debt-avalanche-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'credit-card-payoff-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'compound-interest-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'investment-growth-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'retirement-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'fire-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'savings-goal-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'net-worth-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'budget-planner': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
+  'salary-after-tax-calculator': ['loanAmount', 'interestRate', 'inflationRate']
 };
 
 export function CalculatorLayout({ slug }: { slug: string }) {
@@ -218,8 +219,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   };
   const fieldMeta = useMemo(() => {
     const fieldKeys = fieldKeysBySlug[slug];
-    if (!fieldKeys) return fallbackFieldMeta;
-    return fieldKeys.map((fieldKey) => ({ ...defaultFieldMeta[fieldKey], ...(fieldMetaOverridesBySlug[slug]?.[fieldKey] ?? {}) }));
+    if (!fieldKeys) return [];
+    return fieldKeys.map((fieldKey) => ({ ...baseFieldMeta[fieldKey], ...(fieldMetaOverridesBySlug[slug]?.[fieldKey] ?? {}) }));
   }, [slug]);
 
   useEffect(() => {
