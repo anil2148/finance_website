@@ -193,6 +193,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       slug,
       inputs,
       outputs: {
+        headlineMetric: primaryMetric?.label ?? 'headline figure',
+        headlineValue: primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`,
         summary: result.summary,
         breakdown: formattedBreakdown,
         projection: result.projection
@@ -204,6 +206,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       headlineMetric: primaryMetric?.label ?? 'headline figure',
       headlineValue: primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`,
       breakdown: formattedBreakdown,
+      topInputs: fieldMeta.slice(0, 4).map((field) => ({
+        label: field.label,
+        value: inputs[field.key] ?? 0,
+        suffix: field.suffix ?? '',
+      })),
     },
     suggestedPrompts: [
       'Explain this result',

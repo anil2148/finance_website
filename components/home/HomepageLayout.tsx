@@ -232,7 +232,7 @@ export function HomepageLayout() {
               FinanceSphere • Interactive personal finance platform
             </p>
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
-              New: AI-assisted decision analysis
+              Primary entry: Start a decision
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
@@ -255,9 +255,7 @@ export function HomepageLayout() {
                 className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
             </div>
-            <p className="text-xs text-blue-200">
-              One primary flow: start with <span className="font-semibold text-cyan-200">Start a decision</span>, then run the recommended calculator and follow the linked guide.
-            </p>
+            <p className="text-xs text-blue-200">1) Start a decision → 2) Run the recommended calculator → 3) Follow the next-step guide.</p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">

@@ -11,7 +11,13 @@ const debtPayoffResult = (
   inputs: BaseCalculatorInputs,
   strategy?: { methodLabel: string }
 ): CalculatorResult => {
-  const requiredPayment = inputs.minimumPayment > 0 ? inputs.minimumPayment : paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years);
+  const estimatedMinimumPayment = Math.max(
+    inputs.loanAmount * 0.02,
+    (inputs.loanAmount * (inputs.interestRate / 100)) / 12
+  );
+  const requiredPayment = inputs.minimumPayment > 0
+    ? inputs.minimumPayment
+    : Math.max(25, estimatedMinimumPayment);
   const payment = requiredPayment + inputs.monthlyContribution;
   const projection = buildAmortizationProjection(inputs, payment);
   const finalMonth = projection.find((point) => point.balance <= 0)?.month ?? projection.length;
@@ -133,7 +139,7 @@ const rawCalculatorDefinitions: CalculatorDefinition[] = [
     seoDescription: 'Estimate card payoff month, total interest, and repayment impact when you raise monthly payments.',
     faq: [{ question: 'Does paying more each month help?', answer: 'Yes. Higher monthly payments reduce principal sooner, which lowers interest and shortens payoff time.' }],
     blogLinks: [{ title: 'Avoid Credit Card Interest', href: '/blog/credit-utilization-statement-cycle-playbook' }],
-    defaultInputs: { ...defaultInputs, loanAmount: 15000, interestRate: 19.9, years: 5 },
+    defaultInputs: { ...defaultInputs, loanAmount: 15000, interestRate: 19.9, years: 5, minimumPayment: 300 },
     compute: (inputs) => debtPayoffResult('Credit Card Payoff Plan', inputs)
   },
   {
@@ -169,7 +175,7 @@ const rawCalculatorDefinitions: CalculatorDefinition[] = [
     seoDescription: 'Model debt avalanche payoff and compare savings across repayment plans.',
     faq: [{ question: 'What is debt avalanche?', answer: 'It focuses extra payments on the highest-interest debt first.' }],
     blogLinks: [{ title: 'Personal Loan vs Credit Card', href: '/blog/personal-loan-comparison-for-bad-month-resilience' }],
-    defaultInputs: { ...defaultInputs, loanAmount: 40000, years: 8 },
+    defaultInputs: { ...defaultInputs, loanAmount: 40000, years: 8, minimumPayment: 900 },
     compute: (inputs) =>
       debtPayoffResult('Debt Avalanche Projection', inputs, {
         methodLabel: 'Avalanche (highest APR first)'
@@ -279,7 +285,7 @@ const rawCalculatorDefinitions: CalculatorDefinition[] = [
     seoDescription: 'Build a debt payoff schedule and compare standard vs accelerated repayment outcomes.',
     faq: [{ question: 'What should I test first in debt payoff planning?', answer: 'Start by increasing your extra monthly payment in small steps and compare how much sooner each option gets you debt-free.' }],
     blogLinks: [{ title: 'Credit Utilization Explained', href: '/blog/credit-utilization-statement-cycle-playbook' }],
-    defaultInputs: { ...defaultInputs, loanAmount: 28000, years: 6 },
+    defaultInputs: { ...defaultInputs, loanAmount: 28000, years: 6, minimumPayment: 600 },
     compute: (inputs) => debtPayoffResult('Debt Payoff Projection', inputs)
   }
 ];

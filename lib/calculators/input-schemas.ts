@@ -56,13 +56,13 @@ export const CALCULATOR_INPUT_SCHEMAS: Record<string, CalculatorFieldMeta[]> = {
   'debt-avalanche-calculator': [
     { key: 'loanAmount', label: 'Total Debt Balance', tooltip: 'Combined remaining balance across all debts in your payoff plan.', min: 1000, max: 2000000, step: 500, prefix: '$' },
     { key: 'interestRate', label: 'Blended APR', tooltip: 'Average APR across debts while prioritizing highest-rate balances first.', min: 0, max: 35, step: 0.1, suffix: '%' },
-    { key: 'years', label: 'Payoff Target', tooltip: 'Optional payoff horizon to test whether your current strategy is on track.', min: 1, max: 50, step: 1, suffix: 'y' },
+    { key: 'minimumPayment', label: 'Combined Minimum Payment', tooltip: 'Total required monthly payment before you add any extra avalanche payment.', min: 0, max: 20000, step: 25, prefix: '$' },
     { key: 'monthlyContribution', label: 'Extra Monthly Payment', tooltip: 'Extra payment amount focused on your highest-rate debt each month.', min: 0, max: 25000, step: 25, prefix: '$' }
   ],
   'credit-card-payoff-calculator': [
     { key: 'loanAmount', label: 'Current Card Balance', tooltip: 'Total revolving credit-card debt included in this payoff plan.', min: 1000, max: 2000000, step: 500, prefix: '$' },
     { key: 'interestRate', label: 'Card APR', tooltip: 'Average annual percentage rate applied to your card balances.', min: 0, max: 35, step: 0.1, suffix: '%' },
-    { key: 'years', label: 'Payoff Target', tooltip: 'Optional timeline for comparing monthly payment scenarios.', min: 1, max: 50, step: 1, suffix: 'y' },
+    { key: 'minimumPayment', label: 'Current Minimum Payment', tooltip: 'Your current required monthly card payment from statements.', min: 0, max: 20000, step: 25, prefix: '$' },
     { key: 'monthlyContribution', label: 'Extra Monthly Payment', tooltip: 'Additional amount paid each month above your card minimum payment.', min: 0, max: 25000, step: 25, prefix: '$' }
   ],
   'salary-after-tax-calculator': [
