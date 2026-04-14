@@ -9,25 +9,30 @@ import { NewsletterForm } from '@/components/NewsletterForm';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 import { AUTHOR_PROFILES, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 import { AskAIButton } from '@/components/money-copilot/AskAIButton';
+import { CalculatorCardPreview } from '@/components/home/CalculatorCardPreview';
 
 const popularCalculators = [
   {
     title: 'Mortgage Calculator',
+    previewType: 'mortgage' as const,
     href: '/calculators/mortgage-calculator',
     description: 'Estimate monthly principal-and-interest payments before you choose a home budget or loan term.'
   },
   {
     title: 'Compound Interest Calculator',
+    previewType: 'compound' as const,
     href: '/calculators/compound-interest-calculator',
     description: 'See how recurring contributions and time compound into long-term growth for future goals.'
   },
   {
     title: 'Debt Payoff Calculator',
+    previewType: 'debt-payoff' as const,
     href: '/calculators/debt-payoff-calculator',
     description: 'Compare payoff timelines and interest cost when you add extra monthly payments.'
   },
   {
     title: 'Debt Snowball Calculator',
+    previewType: 'debt-snowball' as const,
     href: '/calculators/debt-snowball-calculator',
     description: 'Sequence your debts smallest-first, see the momentum effect, and model when each balance clears.'
   }
@@ -98,16 +103,16 @@ const trustSignals = [
 
 const trustStory = [
   {
-    title: 'Built for decisions, not just information',
-    text: 'Most finance content explains what things are. This site is designed to help you decide what to do — with actual numbers, not general advice. If you leave without a clearer next step, something did not work.'
+    title: 'Start with your own numbers',
+    text: 'Pick one decision, quantify it with a calculator, and compare options only after you know your baseline.'
   },
   {
-    title: 'The real risk is behavior, not return',
-    text: 'People stop investing after market drops. They overspend to hit a bonus threshold. They take the 15-year mortgage on paper and discover the payment is too tight in month 14. FinanceSphere surfaces these failure points before you commit, not after.'
+    title: 'Pressure-test for bad months',
+    text: 'A plan that works only in your best month usually fails in real life. Stress-test with downside assumptions first.'
   },
   {
-    title: 'Editorial independence',
-    text: 'Comparison pages are built around real trade-offs: total cost, downside risk, fees, and who each option actually fits. Product ranking is not influenced by affiliate volume or commission rate.'
+    title: 'Choose from transparent trade-offs',
+    text: 'Comparison pages focus on total cost, downside risk, flexibility, and fit — not commission rate.'
   }
 ];
 
@@ -226,6 +231,9 @@ export function HomepageLayout() {
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">
               FinanceSphere • Interactive personal finance platform
             </p>
+            <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+              New: AI-assisted decision analysis
+            </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
               Most financial content explains what things are. This site helps you decide what to do — with actual numbers, stress tests, and what happens when things do not go according to plan.
@@ -236,6 +244,9 @@ export function HomepageLayout() {
                 prefillQuestion="Help me make a smarter financial decision"
                 className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
+              <Link href="/ai-money-copilot" className="inline-flex items-center rounded-xl border border-cyan-200/60 bg-transparent px-4 py-2 text-sm font-semibold text-cyan-100 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300">
+                Try the AI Job Analyzer →
+              </Link>
             </div>
             <p className="text-xs text-blue-200">
               Prefer a manual path? <Link href="/calculators" className="font-semibold text-cyan-200 hover:underline">Open calculators</Link> or <Link href="/learn/investing" className="font-semibold text-cyan-200 hover:underline">read the investing hub</Link>.
@@ -259,12 +270,29 @@ export function HomepageLayout() {
         </div>
       </Card>
 
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="trust-summary">
+        <h2 id="trust-summary" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Why trust FinanceSphere?</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          Built by <strong className="text-slate-800 dark:text-slate-200">{author.name}</strong>
+          {author.yearsOfExperience ? <span>, {author.yearsOfExperience}+ years in consumer finance systems and personal finance research</span> : null}
+          {author.credentials && author.credentials.length > 0 ? (
+            <span className="ml-1">
+              ({author.credentials.join(', ')})
+            </span>
+          ) : null}.
+        </p>
+        {author.methodology ? (
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Methodology: {author.methodology}</p>
+        ) : null}
+        <div className="mt-4 grid gap-3 md:grid-cols-3">
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">Decision-first</div>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">Transparent about conflicts</div>
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">Calculator-backed</div>
+        </div>
+      </section>
+
       <aside className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400" aria-label="Affiliate disclosure notice">
-        <strong className="text-slate-800 dark:text-slate-200">Affiliate &amp; Advertising Disclosure:</strong>{' '}
-        FinanceSphere uses affiliate links to monetize content. When you click on certain links and complete a purchase or sign-up, we may receive a
-        commission from the partner company. These partnerships do not affect our editorial independence — all opinions are based on research,
-        experience, and analysis.{' '}
-        <Link href="/affiliate-disclosure" className="font-medium text-blue-700 hover:underline dark:text-blue-400">Full disclosure →</Link>
+        FinanceSphere may earn affiliate commissions from some partners. <Link href="/affiliate-disclosure" className="font-medium text-blue-700 hover:underline dark:text-blue-400">Full disclosure →</Link>
       </aside>
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
@@ -336,10 +364,18 @@ export function HomepageLayout() {
         </div>
       </section>
 
+      <section className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5 dark:border-blue-900/40 dark:bg-blue-950/20">
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Get a weekly plan that matches your goal</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Pick your goal first, then get weekly action ideas tailored to that path.</p>
+        <div className="mt-4">
+          <NewsletterForm source="homepage" leadMagnet="goal-matched-weekly-plan" />
+        </div>
+      </section>
+
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          FinanceSphere is built for decision quality: quantify the trade-off, pressure-test downside, then choose the next move. If a plan fails in a bad month, we want that to be visible before you commit.
+          Use this sequence: run one calculator, stress-test your downside, then use a comparison page to choose between options that still work.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
@@ -398,15 +434,17 @@ export function HomepageLayout() {
           <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Popular calculators</h2>
           <Link href="/calculators" className="text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">See all calculators</Link>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2">
           {popularCalculators.map((calculator) => (
-            <Link key={calculator.href} href={calculator.href} className="group rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
+            <article key={calculator.href} className="group rounded-xl focus-within:ring-2 focus-within:ring-blue-500">
               <Card className="h-full border-slate-200/80 bg-white/85 shadow-[0_20px_45px_-35px_rgba(15,23,42,0.8)] transition-transform duration-200 group-hover:-translate-y-1 group-hover:shadow-lg">
                 <ChartBarIcon className="h-6 w-6 text-blue-700 dark:text-blue-300" aria-hidden="true" />
                 <h3 className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{calculator.title}</h3>
                 <p className="text-sm leading-6 text-slate-700 dark:text-slate-300">{calculator.description}</p>
+                <CalculatorCardPreview type={calculator.previewType} />
+                <Link href={calculator.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 hover:underline dark:text-blue-300">Open calculator →</Link>
               </Card>
-            </Link>
+            </article>
           ))}
         </div>
       </section>
@@ -435,7 +473,7 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="why-trust-us">
-        <h2 id="why-trust-us" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Why trust FinanceSphere?</h2>
+        <h2 id="why-trust-us" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Trust details and disclosures</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
           Built by <strong className="text-slate-800 dark:text-slate-200">{author.name}</strong>
           {author.yearsOfExperience ? <span>, {author.yearsOfExperience}+ years in consumer finance systems and personal finance research</span> : null}
