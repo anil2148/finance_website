@@ -132,8 +132,19 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
     const inputRows = inputs && typeof inputs === 'object'
       ? Object.entries(inputs as Record<string, unknown>)
           .filter(([, value]) => typeof value === 'number' || typeof value === 'string')
-          .slice(0, 8)
+          .slice(0, 12)
           .map(([key, value]) => `${key}: ${value}`)
+      : [];
+
+    const structuredTopInputs = Array.isArray(request.pageContext?.structuredValues?.topInputs)
+      ? (request.pageContext?.structuredValues?.topInputs as Array<Record<string, unknown>>)
+          .map((row) => {
+            const label = typeof row.label === 'string' ? row.label : null;
+            const value = typeof row.value === 'number' || typeof row.value === 'string' ? String(row.value) : null;
+            const suffix = typeof row.suffix === 'string' ? row.suffix : '';
+            return label && value ? `${label}: ${value}${suffix}` : null;
+          })
+          .filter((row): row is string => Boolean(row))
       : [];
 
     const headlineMetric = outputs && typeof outputs.headlineMetric === 'string' ? outputs.headlineMetric : 'headline result';
@@ -151,10 +162,11 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
       : [];
 
     const inputsLine = inputRows.length > 0 ? `Calculator inputs:\n- ${inputRows.join('\n- ')}` : '';
+    const labeledInputLine = structuredTopInputs.length > 0 ? `\nCalculator labeled inputs:\n- ${structuredTopInputs.join('\n- ')}` : '';
     const headlineLine = outputs && headlineValue ? `${headlineMetric}: ${headlineValue}` : headlineMetric;
     const summaryLine = summaryRows.length > 0 ? `\nCalculator summary rows:\n- ${summaryRows.join('\n- ')}` : '';
     const visibleResultsLine = outputs ? `\nVisible calculator result:\n${headlineLine}${summaryLine}` : '';
-    return `\nCalculator snapshot (authoritative and already visible to user):\n${inputsLine}${visibleResultsLine}\n`;
+    return `\nCalculator snapshot (authoritative and already visible to user):\n${inputsLine}${labeledInputLine}${visibleResultsLine}\n`;
   })();
 
   return `Decision mode: ${request.mode}
@@ -173,6 +185,7 @@ Critical grounding rules:
 - Treat pageType, region, and currency as fixed context for this answer.
 - Do NOT ask the user to repeat numbers already in page context, calculator inputs, or calculator outputs.
 - If calculator snapshot is present, start by explaining what the visible result means, then provide one concrete next action.
+- If calculator snapshot is present, reflect the visible labels/values exactly before proposing changes.
 - If values are visible in page context, use them directly and move to recommendation/tradeoffs.
 - On low-context pages, acknowledge limited context and avoid pretending page-specific calculations exist.
 
