@@ -9,6 +9,7 @@ import type { AiPageContext } from '@/lib/money-copilot/types';
 import { getCurrencySymbol, getLocaleForCurrency } from '@/lib/utils';
 
 type CalculatorType = 'loan' | 'mortgage' | 'compound' | 'retirement' | 'networth';
+type DecisionRegion = 'IN' | 'US';
 
 type GrowthPoint = {
   year: number;
@@ -33,6 +34,14 @@ const scenarioLabels = {
   ]
 } as const;
 
+const CALCULATOR_PAGE_TYPE: Record<CalculatorType, AiPageContext['pageType']> = {
+  mortgage: 'home-affordability',
+  loan: 'calculator',
+  compound: 'sip-calculator',
+  retirement: 'calculator',
+  networth: 'calculator'
+};
+
 function buildLoanProjection(principal: number, monthlyPayment: number, annualRate: number, years: number): GrowthPoint[] {
   const monthlyRate = annualRate / 12 / 100;
   let remaining = principal;
@@ -54,6 +63,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   const { currency, formatCurrency } = usePreferences();
   const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
+  const decisionRegion: DecisionRegion = isIndiaCurrency ? 'IN' : 'US';
 
   const [principal, setPrincipal] = useState(
     type === 'mortgage'
@@ -197,6 +207,9 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   };
 
   const aiContext = {
+    pageType: CALCULATOR_PAGE_TYPE[type],
+    region: decisionRegion,
+    currency: isIndiaCurrency ? 'INR' : 'USD',
     intent:
       type === 'mortgage'
         ? 'home-affordability-decision'
@@ -207,12 +220,17 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     calculatorState: {
       calculatorType: type,
       inputs: {
-        principal,
-        rate,
-        years,
-        contribution: isCompoundType ? contribution : undefined,
-        assets: type === 'networth' ? assets : undefined,
-        liabilities: type === 'networth' ? liabilities : undefined,
+        ...(type === 'networth'
+          ? {
+              assets,
+              liabilities
+            }
+          : {
+              principal,
+              rate,
+              years,
+              ...(isCompoundType ? { contribution } : {})
+            }),
       },
       outputs: {
         headlineValue: result.value,
@@ -223,6 +241,8 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
       },
     },
     structuredValues: {
+      pageRegion: decisionRegion,
+      pageCurrency: isIndiaCurrency ? 'INR' : 'USD',
       calculatorTitle: title,
       calculatorDescription: description,
       currentResultLabel: isLoanType ? 'Monthly payment / EMI' : isCompoundType ? 'Projected corpus' : 'Net worth',

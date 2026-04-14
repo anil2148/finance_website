@@ -256,7 +256,7 @@ export function HomepageLayout() {
               />
             </div>
             <p className="text-xs text-blue-200">
-              Prefer a manual path? <Link href="/calculators" className="font-semibold text-cyan-200 hover:underline">Open calculators</Link> or <Link href="/learn/investing" className="font-semibold text-cyan-200 hover:underline">read the investing hub</Link>.
+              One primary flow: start with <span className="font-semibold text-cyan-200">Start a decision</span>, then run the recommended calculator and follow the linked guide.
             </p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
