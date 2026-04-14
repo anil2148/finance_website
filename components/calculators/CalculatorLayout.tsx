@@ -270,7 +270,15 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     }
 
     const safePrincipal = typeof mortgagePrincipal === 'number' ? mortgagePrincipal : 0;
-    const safeTotalInterest = typeof totalInterest === 'number' ? totalInterest : 0;
+    const safePrincipalAndInterest = isValidNumber(summaryMetrics.principalAndInterest)
+      ? summaryMetrics.principalAndInterest
+      : 0;
+    const safeTotalMonthlyCost = isValidNumber(summaryMetrics.totalMonthlyCost)
+      ? summaryMetrics.totalMonthlyCost
+      : 0;
+    const safeTotalInterest = isValidNumber(summaryMetrics.totalInterest)
+      ? summaryMetrics.totalInterest
+      : 0;
     const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
     const safeInterestShare = Number.isFinite(interestShare) ? interestShare : null;
     const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
@@ -279,7 +287,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
     return {
       isReady: true,
-      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(safePrincipalAndInterest)}, and your estimated total monthly housing cost is ${formatCurrency(safeTotalMonthlyCost)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${safeInterestShare.toFixed(1)}% of principal) over ${payoffYears.toFixed(1)} years.`,
+      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(safePrincipalAndInterest)}, and your estimated total monthly housing cost is ${formatCurrency(safeTotalMonthlyCost)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${interestShareText} of principal) over ${payoffYears.toFixed(1)} years.`,
       realWorldImpact: [
         `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
         `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(safeTotalPaid)}.`,
