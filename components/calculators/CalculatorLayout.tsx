@@ -254,23 +254,24 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       };
     }
 
-    const safePrincipal = mortgagePrincipal;
-    const safeTotalInterest = totalInterest;
+    const safePrincipal = typeof mortgagePrincipal === 'number' ? mortgagePrincipal : 0;
+    const safeTotalInterest = typeof totalInterest === 'number' ? totalInterest : 0;
     const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
     const safeInterestShare = Number.isFinite(interestShare) ? interestShare : null;
     const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
     const interestShareText = safeInterestShare === null ? 'n/a' : `${safeInterestShare.toFixed(1)}%`;
+    const safeTotalPaid = typeof totalPaid === 'number' ? totalPaid : 0;
 
     return {
       isReady: true,
       whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest as number)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost as number)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${interestShareText} of principal) over ${payoffText}.`,
       realWorldImpact: [
         `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
-        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid)}.`,
+        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(safeTotalPaid)}.`,
         `Ending projected balance after the modeled term: ${formatCurrency(remainingBalance)}.`,
       ],
     };
-  }, [formatCurrency, inputs.downPayment, inputs.homePrice, inputs.years, result.projection, slug, summaryByLabel]);
+  }, [formatCurrency, inputs.downPayment, inputs.homePrice, inputs.years, result.breakdown, result.projection, slug, summaryByLabel]);
 
   const displayedInsight = mortgageNarrative
     ? {
