@@ -79,17 +79,17 @@ const goalCards = [
 
 const tools = [
   {
-    title: 'Plan major money moves',
-    desc: 'Model home-buying, refinancing, debt payoff, and long-term investing before you commit.',
-    href: '/calculators'
+    title: 'Primary path: Start a decision',
+    desc: 'Begin in AI decision mode, then move straight into the right calculator with your real numbers.',
+    href: '/ai-money-copilot'
   },
   {
-    title: 'Read practical money guides',
+    title: 'Then read practical money guides',
     desc: 'Get step-by-step explainers on credit cards, savings rates, loan terms, and tax basics.',
     href: '/blog'
   },
   {
-    title: 'Compare real product trade-offs',
+    title: 'Then compare real product trade-offs',
     desc: 'Review APR/APY, fees, bonuses, and key pros/cons side-by-side in minutes.',
     href: '/comparison'
   }
@@ -454,12 +454,12 @@ export function HomepageLayout() {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
+      <section className="grid gap-4 lg:grid-cols-3" aria-label="Homepage decision flow">
         {tools.map((tool) => (
-          <Card key={tool.title} className="rounded-2xl border-slate-200/90 bg-gradient-to-b from-white to-slate-50 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+          <Card key={tool.title} className={`rounded-2xl border-slate-200/90 bg-gradient-to-b from-white to-slate-50 shadow-sm transition hover:-translate-y-1 hover:shadow-md ${tool.href === '/ai-money-copilot' ? 'ring-2 ring-cyan-200 dark:ring-cyan-500/40' : ''}`}>
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{tool.title}</h3>
             <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">{tool.desc}</p>
-            <Link href={tool.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 dark:text-blue-300">Open section →</Link>
+            <Link href={tool.href} className="mt-3 inline-block text-sm font-semibold text-blue-700 dark:text-blue-300">{tool.href === '/ai-money-copilot' ? 'Start now →' : 'Open section →'}</Link>
           </Card>
         ))}
       </section>

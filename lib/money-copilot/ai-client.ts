@@ -125,11 +125,20 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
   const calculatorSnapshot = (() => {
     const calculatorState = request.pageContext?.calculatorState;
     if (!calculatorState || typeof calculatorState !== 'object') return '';
+    const inputs = (calculatorState as { inputs?: unknown }).inputs;
     const outputs = (calculatorState as { outputs?: { headlineMetric?: unknown; headlineValue?: unknown; summary?: unknown } }).outputs;
-    if (!outputs || typeof outputs !== 'object') return '';
-    const headlineMetric = typeof outputs.headlineMetric === 'string' ? outputs.headlineMetric : 'headline result';
-    const headlineValue = typeof outputs.headlineValue === 'string' ? outputs.headlineValue : undefined;
-    const summaryRows = Array.isArray(outputs.summary)
+    if ((!outputs || typeof outputs !== 'object') && (!inputs || typeof inputs !== 'object')) return '';
+
+    const inputRows = inputs && typeof inputs === 'object'
+      ? Object.entries(inputs as Record<string, unknown>)
+          .filter(([, value]) => typeof value === 'number' || typeof value === 'string')
+          .slice(0, 8)
+          .map(([key, value]) => `${key}: ${value}`)
+      : [];
+
+    const headlineMetric = outputs && typeof outputs.headlineMetric === 'string' ? outputs.headlineMetric : 'headline result';
+    const headlineValue = outputs && typeof outputs.headlineValue === 'string' ? outputs.headlineValue : undefined;
+    const summaryRows = Array.isArray(outputs?.summary)
       ? outputs.summary
           .slice(0, 3)
           .map((row) => {
@@ -141,9 +150,11 @@ function buildUserMessage(request: CopilotRequest, existingMetrics: Array<{ labe
           .filter((item): item is string => Boolean(item))
       : [];
 
-    const headlineLine = headlineValue ? `${headlineMetric}: ${headlineValue}` : headlineMetric;
+    const inputsLine = inputRows.length > 0 ? `Calculator inputs:\n- ${inputRows.join('\n- ')}` : '';
+    const headlineLine = outputs && headlineValue ? `${headlineMetric}: ${headlineValue}` : headlineMetric;
     const summaryLine = summaryRows.length > 0 ? `\nCalculator summary rows:\n- ${summaryRows.join('\n- ')}` : '';
-    return `\nCalculator snapshot (authoritative and already visible to user):\n${headlineLine}${summaryLine}\n`;
+    const visibleResultsLine = outputs ? `\nVisible calculator result:\n${headlineLine}${summaryLine}` : '';
+    return `\nCalculator snapshot (authoritative and already visible to user):\n${inputsLine}${visibleResultsLine}\n`;
   })();
 
   return `Decision mode: ${request.mode}
@@ -159,8 +170,9 @@ ${metricsSummary}
 
 Critical grounding rules:
 - Use pageContext.structuredValues and pageContext.calculatorState when available.
+- Treat pageType, region, and currency as fixed context for this answer.
 - Do NOT ask the user to repeat numbers already in page context, calculator inputs, or calculator outputs.
-- If calculator snapshot is present, start by explaining what the visible result means and give a next action.
+- If calculator snapshot is present, start by explaining what the visible result means, then provide one concrete next action.
 - If values are visible in page context, use them directly and move to recommendation/tradeoffs.
 - On low-context pages, acknowledge limited context and avoid pretending page-specific calculations exist.
 

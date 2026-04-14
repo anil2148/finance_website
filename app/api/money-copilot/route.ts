@@ -91,6 +91,7 @@ ${contextSection}
 
 IMPORTANT: Always give a concrete recommendation immediately. Use default assumptions if data is missing (e.g., ${defaultAssumption}). Never respond with "I need more information" without first answering.
 If page context includes visible values, use those values directly.
+Do NOT ask for values that are already present in pageContext. Explain visible calculator outputs first, then give one next action.
 
 Respond ONLY with valid JSON (no markdown fences):
 {

@@ -29,7 +29,8 @@ export function generateMetadata({ params }: { params: { category: string } }): 
   return {
     title: `${categoryLabel} Guides and Decision Support | FinanceSphere Blog`,
     description: `Browse FinanceSphere ${categoryLabel} guides with practical walkthroughs, calculators, and next-step links.`,
-    alternates: { canonical: `/blog/category/${normalizedCategory}` }
+    alternates: { canonical: '/blog' },
+    robots: { index: false, follow: true }
   };
 }
 
