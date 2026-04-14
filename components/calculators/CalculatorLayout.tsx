@@ -80,20 +80,26 @@ type FieldMeta = {
 
 const defaultFieldMeta: Record<keyof BaseCalculatorInputs, FieldMeta> = {
   loanAmount: { key: 'loanAmount', label: 'Loan Amount / Starting Balance', tooltip: 'Starting principal, debt, or investment amount.', min: 1000, max: 2000000, step: 500, prefix: '$' },
+  homePrice: { key: 'homePrice', label: 'Home Price', tooltip: 'Property purchase price before down payment.', min: 50000, max: 4000000, step: 1000, prefix: '$' },
+  downPayment: { key: 'downPayment', label: 'Down Payment', tooltip: 'Upfront cash paid at purchase to reduce financed principal.', min: 0, max: 1000000, step: 1000, prefix: '$' },
   interestRate: { key: 'interestRate', label: 'Interest Rate', tooltip: 'APR for loans or liabilities.', min: 0, max: 35, step: 0.1, suffix: '%' },
+  minimumPayment: { key: 'minimumPayment', label: 'Minimum Payment', tooltip: 'Required monthly payment before any extra amount.', min: 0, max: 20000, step: 25, prefix: '$' },
   monthlyContribution: { key: 'monthlyContribution', label: 'Monthly Contribution', tooltip: 'Extra monthly payment or investment contribution.', min: 0, max: 25000, step: 25, prefix: '$' },
   years: { key: 'years', label: 'Years', tooltip: 'Projection horizon in years.', min: 1, max: 50, step: 1, suffix: 'y' },
+  propertyTax: { key: 'propertyTax', label: 'Property Tax (Annual)', tooltip: 'Estimated yearly property-tax expense.', min: 0, max: 30000, step: 50, prefix: '$' },
+  insurance: { key: 'insurance', label: 'Home Insurance (Annual)', tooltip: 'Estimated yearly homeowners-insurance premium.', min: 0, max: 20000, step: 50, prefix: '$' },
+  pmi: { key: 'pmi', label: 'PMI (Monthly)', tooltip: 'Private mortgage insurance monthly cost, if applicable.', min: 0, max: 2000, step: 10, prefix: '$' },
   inflationRate: { key: 'inflationRate', label: 'Inflation Rate', tooltip: 'Expected annual inflation for purchasing power adjustment.', min: 0, max: 10, step: 0.1, suffix: '%' },
   expectedReturn: { key: 'expectedReturn', label: 'Expected Return', tooltip: 'Projected annual investment return.', min: 0, max: 20, step: 0.1, suffix: '%' }
 };
 
 const fieldKeysBySlug: Record<string, Array<keyof BaseCalculatorInputs>> = {
-  'mortgage-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'mortgage-calculator': ['homePrice', 'downPayment', 'loanAmount', 'interestRate', 'years', 'propertyTax', 'insurance', 'pmi', 'monthlyContribution'],
   'loan-calculator': ['loanAmount', 'interestRate', 'years'],
   'auto-loan-calculator': ['loanAmount', 'interestRate', 'years'],
   'student-loan-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
-  'debt-payoff-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
-  'debt-snowball-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
+  'debt-payoff-calculator': ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years'],
+  'debt-snowball-calculator': ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years'],
   'debt-avalanche-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
   'credit-card-payoff-calculator': ['loanAmount', 'interestRate', 'years', 'monthlyContribution'],
   'compound-interest-calculator': ['loanAmount', 'monthlyContribution', 'years', 'expectedReturn', 'inflationRate'],
@@ -106,14 +112,19 @@ const fieldKeysBySlug: Record<string, Array<keyof BaseCalculatorInputs>> = {
   'salary-after-tax-calculator': ['loanAmount', 'interestRate', 'inflationRate']
 };
 
-const defaultFieldOrder: Array<keyof BaseCalculatorInputs> = ['loanAmount', 'interestRate', 'monthlyContribution', 'years', 'inflationRate', 'expectedReturn'];
+const defaultFieldOrder: Array<keyof BaseCalculatorInputs> = ['loanAmount', 'interestRate', 'minimumPayment', 'monthlyContribution', 'years', 'inflationRate', 'expectedReturn'];
 
 const fallbackFieldMeta = defaultFieldOrder.map((fieldKey) => defaultFieldMeta[fieldKey]);
 
 const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculatorInputs, Partial<Omit<FieldMeta, 'key'>>>>> = {
   'mortgage-calculator': {
+    homePrice: { label: 'Home Price', tooltip: 'Purchase price of the home you are evaluating.' },
+    downPayment: { label: 'Down Payment', tooltip: 'Cash paid upfront to reduce the mortgage principal.' },
     loanAmount: { label: 'Mortgage Principal', tooltip: 'Amount financed after down payment and closing-credit adjustments.' },
     interestRate: { label: 'Mortgage APR', tooltip: 'Annual mortgage interest rate used to calculate principal-and-interest payments.' },
+    propertyTax: { label: 'Property Tax (Annual)', tooltip: 'Estimated annual property taxes for this home.' },
+    insurance: { label: 'Home Insurance (Annual)', tooltip: 'Estimated annual homeowners-insurance premium.' },
+    pmi: { label: 'PMI (Monthly)', tooltip: 'Private mortgage insurance paid monthly until equity requirements are met.' },
     monthlyContribution: { label: 'Extra Monthly Principal', tooltip: 'Additional principal paid each month to reduce payoff time and interest.' },
     years: { label: 'Loan Term', tooltip: 'Length of the mortgage repayment period in years.' }
   },
@@ -124,12 +135,14 @@ const fieldMetaOverridesBySlug: Record<string, Partial<Record<keyof BaseCalculat
   },
   'debt-payoff-calculator': {
     loanAmount: { label: 'Current Debt Balance', tooltip: 'Outstanding debt principal you want to repay.' },
+    minimumPayment: { label: 'Minimum Payment', tooltip: 'Required minimum monthly payment before extra payoff amount.' },
     monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Additional amount paid each month above your minimum payment.' },
     years: { label: 'Payoff Target', tooltip: 'Optional target timeline to compare your current payment strategy.' }
   },
   'debt-snowball-calculator': {
     loanAmount: { label: 'Total Debt Balance', tooltip: 'Combined remaining balance across all debts in your payoff plan.' },
     interestRate: { label: 'Blended APR', tooltip: 'Average APR across debts while you model the snowball sequence.' },
+    minimumPayment: { label: 'Total Minimum Payment', tooltip: 'Combined monthly minimum payment across all debts in your plan.' },
     monthlyContribution: { label: 'Extra Monthly Payment', tooltip: 'Extra payment amount directed to your current snowball target debt.' },
     years: { label: 'Payoff Target', tooltip: 'Optional payoff horizon to test whether your payment pace is realistic.' }
   },

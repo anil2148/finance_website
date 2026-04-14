@@ -6,20 +6,25 @@ import { calculateRetirement } from '@/lib/calculators/retirement';
 import { BaseCalculatorInputs, CalculatorDefinition, CalculatorResult } from '@/lib/calculators/types';
 
 const debtPayoffResult = (title: string, inputs: BaseCalculatorInputs): CalculatorResult => {
-  const payment = paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years) + inputs.monthlyContribution;
+  const requiredPayment = inputs.minimumPayment > 0 ? inputs.minimumPayment : paymentFromPrincipal(inputs.loanAmount, inputs.interestRate, inputs.years);
+  const payment = requiredPayment + inputs.monthlyContribution;
   const projection = buildAmortizationProjection(inputs, payment);
   const finalMonth = projection.find((point) => point.balance <= 0)?.month ?? projection.length;
+  const baselineProjection = buildAmortizationProjection(inputs, requiredPayment);
+  const baselineInterest = Math.abs(baselineProjection.at(-1)?.interestEarned ?? 0);
+  const acceleratedInterest = Math.abs(projection.at(-1)?.interestEarned ?? 0);
 
   return {
     title,
     summary: [
-      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Estimated monthly payment based on your balance, APR, and extra monthly payment plan.' },
+      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Minimum payment plus your extra monthly payment.' },
       { label: 'Payoff Time', value: finalMonth / 12, suffix: ' yrs', helpText: 'Approximate payoff timeline based on current balance, APR, and payment strategy.' },
-      { label: 'Interest Saved', value: inputs.monthlyContribution * 12 * inputs.years * 0.35, currency: true, helpText: 'Directional estimate of interest avoided when you pay above the minimum.' }
+      { label: 'Interest Saved', value: Math.max(0, baselineInterest - acceleratedInterest), currency: true, helpText: 'Estimated interest avoided versus paying only the minimum amount.' }
     ],
     projection,
     breakdown: [
       currencyBreakdown('Debt Balance', inputs.loanAmount),
+      currencyBreakdown('Minimum Payment', requiredPayment),
       currencyBreakdown('Extra Monthly Payment', inputs.monthlyContribution),
       { label: 'Interest Rate', value: `${inputs.interestRate}%` }
     ],
@@ -50,9 +55,15 @@ const growthResult = (title: string, inputs: BaseCalculatorInputs): CalculatorRe
 
 const defaultInputs: BaseCalculatorInputs = {
   loanAmount: 250000,
+  homePrice: 320000,
+  downPayment: 64000,
   interestRate: 6.5,
+  minimumPayment: 0,
   monthlyContribution: 500,
   years: 30,
+  propertyTax: 3600,
+  insurance: 1800,
+  pmi: 0,
   inflationRate: 2.5,
   expectedReturn: 7
 };
