@@ -84,7 +84,7 @@ const rawCalculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'mortgage-calculator',
     title: 'Mortgage Calculator',
-    description: 'Estimate principal-and-interest payments, total interest cost, and amortization pace before buying or refinancing.',
+    description: 'Estimate monthly P&I, full housing payment, total interest, and payoff pace so you can set a safe home budget before preapproval.',
     seoTitle: 'Mortgage Calculator: Payment & Amortization Schedule',
     seoDescription: 'Model monthly mortgage payments, lifetime interest, and payoff progression with an interactive amortization view.',
     faq: [
@@ -156,7 +156,7 @@ const rawCalculatorDefinitions: CalculatorDefinition[] = [
   {
     slug: 'debt-snowball-calculator',
     title: 'Debt Snowball Calculator',
-    description: 'For borrowers with multiple balances, simulate the debt snowball sequence to build motivation while staying consistent in difficult months.',
+    description: 'Model smallest-balance-first payoff order, monthly momentum, and interest trade-offs so you can pick a debt plan you can sustain.',
     seoTitle: 'Debt Snowball Calculator (2026): Payoff Order, Timeline, and Interest',
     seoDescription: 'Model debt snowball payoff order, monthly momentum, and total interest so you can choose a realistic debt reduction plan.',
     faq: [{ question: 'What is debt snowball?', answer: 'It pays smallest debt first while making minimum payments on others.' }],

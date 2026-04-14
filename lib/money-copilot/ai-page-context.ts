@@ -378,6 +378,12 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
     pageUrl: pathname,
     marketContext: region === 'IN' ? 'India personal finance context (CTC, EMI, SIP, tax regime, RBI)' : 'US personal finance context (mortgage, DTI, APR, credit score)',
     pageFamily,
+    structuredValues: {
+      pageType,
+      region,
+      pageTitle: title ?? pageTitle,
+      pageFamily,
+    },
     suggestedPrompts: defaultSuggestedPrompts(region),
     groundingMessage:
       region === 'IN'
