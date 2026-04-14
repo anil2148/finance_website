@@ -98,6 +98,16 @@ const specializedCalculatorConfigs: Record<string, {
     aiLabel: 'Use my current snowball numbers',
     aiPrompts: ['Which balance should I focus on first from this result?', 'How much faster if I add $100 more each month?', 'How should I recover after one missed payment month?'],
     aiGroundingMessage: 'I’m using your current debt snowball inputs and payoff outputs from this page.'
+  },
+  'debt-payoff-calculator': {
+    eyebrow: 'Debt Payoff Decision Page',
+    introTitle: 'Choose a payoff pace you can actually sustain',
+    introBody: 'Use your current balance, APR, and payment capacity to pick a plan that shortens payoff time without breaking your month-to-month cashflow.',
+    audience: 'Borrowers balancing debt reduction speed with real monthly budget limits.',
+    decision: 'Set a monthly payment target that reduces interest while staying durable through variable months.',
+    aiLabel: 'Use my current debt payoff numbers',
+    aiPrompts: ['Explain this payoff timeline using my current numbers', 'What if I add $150 extra each month?', 'How much interest can I cut without overcommitting?'],
+    aiGroundingMessage: 'I’m using your current debt payoff inputs and outputs from this page.'
   }
 };
 
@@ -215,6 +225,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   );
   const isValidNumber = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value);
+  const formatSummaryValue = (value: number, currencyMetric?: boolean, suffix?: string) =>
+    currencyMetric ? formatCurrency(value) : `${value.toFixed(2)}${suffix ?? ''}`;
 
   const formattedBreakdown = result.breakdown.map((row) => {
     if (!row.currency || typeof row.amount !== 'number') return row;
@@ -227,22 +239,25 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const mortgageNarrative = useMemo(() => {
     if (slug !== 'mortgage-calculator') return null;
 
-    const principalAndInterest = summaryByLabel.get('Monthly P&I Payment')?.value ?? null;
-    const totalMonthlyCost = summaryByLabel.get('Estimated Total Monthly Cost')?.value ?? null;
-    const totalInterest = summaryByLabel.get('Total Interest')?.value ?? null;
-    const mortgagePrincipal = result.breakdown.find((row) => row.label === 'Mortgage Principal')?.amount;
-    const payoffYears = Number.parseFloat(result.breakdown.find((row) => row.label === 'Estimated Payoff')?.value ?? '');
-    const payoffText = Number.isFinite(payoffYears) ? `${payoffYears.toFixed(1)} years` : `${inputs.years} years`;
+    const summaryMetrics = {
+      principalAndInterest: summaryByLabel.get('Monthly P&I Payment')?.value,
+      totalMonthlyCost: summaryByLabel.get('Estimated Total Monthly Cost')?.value,
+      totalInterest: summaryByLabel.get('Total Interest')?.value,
+    };
     const projectionEnd = result.projection.at(-1);
-    const totalPaid = result.breakdown.find((row) => row.label === 'Total Paid (P&I)')?.amount ?? null;
+    const payoffPoint = result.projection.find((point) => point.balance <= 0) ?? projectionEnd;
+    const payoffYears = payoffPoint?.year ?? inputs.years;
+    const mortgagePrincipal = Math.max(0, inputs.homePrice - inputs.downPayment);
+    const totalPaid = mortgagePrincipal + (isValidNumber(summaryMetrics.totalInterest) ? summaryMetrics.totalInterest : 0);
 
-    const requiredNumbers = [principalAndInterest, totalMonthlyCost, totalInterest, mortgagePrincipal, totalPaid];
-    const isValid = requiredNumbers.every(
-      (value) => typeof value === 'number' && Number.isFinite(value) && value >= 0
-    );
-    const hasCoreMortgageValues = isValid && (principalAndInterest as number) > 0 && (totalMonthlyCost as number) > 0;
+    const hasValidCoreOutputs =
+      isValidNumber(summaryMetrics.principalAndInterest) &&
+      isValidNumber(summaryMetrics.totalMonthlyCost) &&
+      isValidNumber(summaryMetrics.totalInterest) &&
+      isValidNumber(payoffYears) &&
+      isValidNumber(projectionEnd?.balance);
 
-    if (!hasCoreMortgageValues || !projectionEnd) {
+    if (!hasValidCoreOutputs || !projectionEnd) {
       return {
         isReady: false,
         whatItMeans:
@@ -255,7 +270,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     }
 
     const safePrincipal = mortgagePrincipal;
-    const safeTotalInterest = totalInterest;
+    const safePrincipalAndInterest = summaryMetrics.principalAndInterest as number;
+    const safeTotalMonthlyCost = summaryMetrics.totalMonthlyCost as number;
+    const safeTotalInterest = summaryMetrics.totalInterest as number;
     const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
     const safeInterestShare = Number.isFinite(interestShare) ? interestShare : null;
     const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
@@ -263,7 +280,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
     return {
       isReady: true,
-      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(principalAndInterest as number)}, and your estimated total monthly housing cost is ${formatCurrency(totalMonthlyCost as number)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${interestShareText} of principal) over ${payoffText}.`,
+      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(safePrincipalAndInterest)}, and your estimated total monthly housing cost is ${formatCurrency(safeTotalMonthlyCost)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${safeInterestShare.toFixed(1)}% of principal) over ${payoffYears.toFixed(1)} years.`,
       realWorldImpact: [
         `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
         `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(totalPaid)}.`,
@@ -291,7 +308,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       inputs,
       outputs: {
         headlineMetric: primaryMetric?.label ?? 'headline figure',
-        headlineValue: primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`,
+        headlineValue: formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix),
         summary: result.summary,
         breakdown: formattedBreakdown,
         projection: result.projection
@@ -303,7 +320,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       region: currency === 'INR' ? 'IN' : 'US',
       calculatorTitle: definition.title,
       headlineMetric: primaryMetric?.label ?? 'headline figure',
-      headlineValue: primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`,
+      headlineValue: formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix),
       breakdown: formattedBreakdown,
       topInputs: fieldMeta.slice(0, 4).map((field) => ({
         label: field.label,
@@ -311,7 +328,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         suffix: field.suffix ?? '',
       })),
     },
-    suggestedPrompts: specializedConfig?.aiPrompts ?? ['Explain this result', 'Stress-test this scenario', 'Show safer target values'],
+    suggestedPrompts: specializedConfig?.aiPrompts ?? ['Explain this result using the values on this page', 'Stress-test this scenario with my current numbers', 'Show safer target values for this setup'],
   } satisfies Partial<AiPageContext>;
 
   useSyncAiPageContext(aiContext);
@@ -376,7 +393,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             <div className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {result.summary.map((item) => (
-                  <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={item.currency ? formatCurrency(item.value) : `${item.value.toFixed(2)}${item.suffix ?? ''}`} />
+                  <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={formatSummaryValue(item.value, item.currency, item.suffix)} />
                 ))}
               </div>
 
@@ -393,7 +410,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
                 <AskAIButton
                   label={specializedConfig?.aiLabel ?? 'Ask AI about these numbers'}
-                  prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${primaryMetric?.currency ? formatCurrency(baselineValue) : `${baselineValue.toFixed(2)}${primaryMetric?.suffix ?? ''}`}`}
+                  prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix)}`}
                   aiContext={aiContext}
                   variant="secondary"
                 />
