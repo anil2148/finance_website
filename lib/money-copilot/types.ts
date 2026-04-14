@@ -221,11 +221,11 @@ export interface CopilotGlobalState {
 }
 
 export interface AiPageContext {
-  pageType: string;
+  pageType: AiPageType;
   pageTitle: string;
   region: 'US' | 'IN';
   currency: 'USD' | 'INR';
-  intent?: string;
+  intent?: AiPageIntent;
   pageUrl: string;
   marketContext?: string;
   pageFamily?: string;
@@ -240,3 +240,42 @@ export interface AiPageContext {
    */
   aiMode?: 'contextual' | 'generic' | 'hidden';
 }
+
+export type AiPageType =
+  | 'homepage'
+  | 'job-offer-analyzer'
+  | 'home-affordability'
+  | 'debt-snowball-calculator'
+  | 'dti-debt-guide'
+  | 'investing-hub'
+  | 'sip-calculator'
+  | 'compound-calculator'
+  | 'india-tax-page'
+  | 'india-home-loan-comparison'
+  | 'low-context-page'
+  | 'about-page'
+  | 'calculator'
+  | 'comparison'
+  | 'guide'
+  | 'blog'
+  | 'topic'
+  | 'india-tax-hub'
+  | 'india-home-loan-rates'
+  | 'india-page'
+  | 'decision-page'
+  | 'decision-workspace';
+
+export type AiPageIntent =
+  | 'financial-decision-triage'
+  | 'job-offer-comparison'
+  | 'home-affordability-decision'
+  | 'debt-payoff-prioritization'
+  | 'debt-capacity-and-dti'
+  | 'investing-plan-setup'
+  | 'compounding-result-explainer'
+  | 'tax-regime-comparison'
+  | 'home-loan-lender-comparison'
+  | 'platform-trust-and-methodology'
+  | 'calculator-result-explainer'
+  | 'generic-finance-question'
+  | 'general-financial-guidance';

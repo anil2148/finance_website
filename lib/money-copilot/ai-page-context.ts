@@ -1,4 +1,4 @@
-import type { AiPageContext } from '@/lib/money-copilot/types';
+import type { AiPageContext, AiPageType } from '@/lib/money-copilot/types';
 
 export function regionFromPath(pathname: string): 'US' | 'IN' {
   return pathname === '/in' || pathname.startsWith('/in/') ? 'IN' : 'US';
@@ -36,13 +36,13 @@ function defaultSuggestedPrompts(region: 'US' | 'IN'): string[] {
   ];
 }
 
-function inferPageType(pathname: string): string {
+function inferPageType(pathname: string): AiPageType {
   if (pathname === '/' || pathname === '/in') return 'homepage';
   if (pathname.includes('/calculators/')) return 'calculator';
   if (pathname.includes('/compare/')) return 'comparison';
   if (pathname.includes('/learn/')) return 'guide';
   if (pathname.includes('/blog/')) return 'blog';
-  if (pathname.includes('/tag/') || pathname.includes('/topic/')) return 'topic';
+  if (pathname.includes('/tag/') || pathname.includes('/topic/') || pathname.includes('/blog/tag/')) return 'topic';
   if (pathname === '/in/tax') return 'india-tax-hub';
   if (pathname === '/in/home-loan-interest-rates-india') return 'india-home-loan-rates';
   if (pathname.startsWith('/in/')) return 'india-page';
@@ -50,7 +50,20 @@ function inferPageType(pathname: string): string {
 }
 
 export function shouldHideContextualAi(pathname: string): boolean {
-  return pathname.includes('/tag/') || pathname.includes('/topic/');
+  return pathname.includes('/tag/') || pathname.includes('/topic/') || pathname.includes('/blog/tag/');
+}
+
+function inferPageTitle(pathname: string, pageType: AiPageType): string {
+  if (pathname === '/') return 'FinanceSphere Homepage';
+  if (pathname === '/in') return 'FinanceSphere India Homepage';
+  if (pathname === '/ai-money-copilot') return 'AI Job Offer Analyzer';
+  if (pathname === '/about' || pathname === '/about-us') return 'About FinanceSphere';
+
+  const lastSegment = pathname.split('/').filter(Boolean).pop();
+  if (!lastSegment) return pageType;
+  return lastSegment
+    .replace(/-/g, ' ')
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
 const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
@@ -235,6 +248,9 @@ const AI_CONTEXT_BUILDERS: AiContextBuilder[] = [
     // India tax pages
     matches: (pathname) =>
       pathname === '/in/tax' ||
+      pathname === '/in/tax-slabs' ||
+      pathname === '/in/tax-slabs-2026-india' ||
+      pathname === '/in/tax-saving-strategies' ||
       pathname.includes('/in/tax-') ||
       pathname.includes('/in/old-vs-new-tax-regime') ||
       pathname.includes('/in/80c'),
@@ -319,11 +335,12 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
   const region = regionFromPath(pathname);
   const currency = currencyFromRegion(region);
   const pageType = inferPageType(pathname);
+  const pageTitle = inferPageTitle(pathname, pageType);
   const pageFamily = pathname.split('/').filter(Boolean)[0] ?? 'root';
 
   let context: AiPageContext = {
     pageType,
-    pageTitle: title ?? pageType,
+    pageTitle: title ?? pageTitle,
     region,
     currency,
     intent: 'general-financial-guidance',
