@@ -13,7 +13,7 @@ const debtPayoffResult = (title: string, inputs: BaseCalculatorInputs): Calculat
   return {
     title,
     summary: [
-      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Estimated required payment including your extra monthly debt contribution.' },
+      { label: 'Monthly Payment', value: payment, currency: true, helpText: 'Estimated monthly payment based on your balance, APR, and extra monthly payment plan.' },
       { label: 'Payoff Time', value: finalMonth / 12, suffix: ' yrs', helpText: 'Approximate payoff timeline based on current balance, APR, and payment strategy.' },
       { label: 'Interest Saved', value: inputs.monthlyContribution * 12 * inputs.years * 0.35, currency: true, helpText: 'Directional estimate of interest avoided when you pay above the minimum.' }
     ],
