@@ -60,6 +60,7 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 }
 
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
+  const safeNumber = (value: number, fallback = 0) => (Number.isFinite(value) ? value : fallback);
   const { currency, formatCurrency } = usePreferences();
   const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
@@ -80,7 +81,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
   const result = useMemo(() => {
     if (type === 'networth') {
-      const value = assets - liabilities;
+      const value = safeNumber(assets) - safeNumber(liabilities);
       return {
         value,
         totalPaid: 0,
@@ -94,21 +95,25 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
       };
     }
 
-    const months = Math.max(1, years * 12);
-    const monthlyRate = rate / 12 / 100;
+    const safePrincipal = Math.max(0, safeNumber(principal));
+    const safeRate = Math.max(0, safeNumber(rate));
+    const safeYears = Math.max(1, safeNumber(years, 1));
+    const safeContribution = Math.max(0, safeNumber(contribution));
+    const months = Math.max(1, safeYears * 12);
+    const monthlyRate = safeRate / 12 / 100;
 
     if (type === 'loan' || type === 'mortgage') {
       const emi =
         monthlyRate === 0
-          ? principal / months
-          : (principal * monthlyRate * (1 + monthlyRate) ** months) / ((1 + monthlyRate) ** months - 1);
+          ? safePrincipal / months
+          : (safePrincipal * monthlyRate * (1 + monthlyRate) ** months) / ((1 + monthlyRate) ** months - 1);
 
       return {
         value: emi,
         totalPaid: emi * months,
-        totalInterest: emi * months - principal,
-        totalInvested: principal,
-        points: buildLoanProjection(principal, emi, rate, years).map((point) => ({
+        totalInterest: Math.max(0, emi * months - safePrincipal),
+        totalInvested: safePrincipal,
+        points: buildLoanProjection(safePrincipal, emi, safeRate, safeYears).map((point) => ({
           name: `Year ${point.year}`,
           value: point.value
         }))
@@ -116,10 +121,10 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     }
 
     const points: Array<{ name: string; value: number }> = [];
-    let futureValue = principal;
+    let futureValue = safePrincipal;
 
-    for (let y = 1; y <= years; y++) {
-      futureValue = futureValue * (1 + rate / 100) + contribution * 12;
+    for (let y = 1; y <= safeYears; y++) {
+      futureValue = futureValue * (1 + safeRate / 100) + safeContribution * 12;
       points.push({ name: `Year ${y}`, value: Number(futureValue.toFixed(0)) });
     }
 
@@ -127,7 +132,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
       value: points.at(-1)?.value ?? 0,
       totalPaid: 0,
       totalInterest: 0,
-      totalInvested: principal + contribution * months,
+      totalInvested: safePrincipal + safeContribution * months,
       points
     };
   }, [assets, contribution, liabilities, principal, rate, type, years]);
@@ -216,7 +221,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         : type === 'compound'
           ? 'compounding-result-explainer'
           : 'calculator-result-explainer',
-    groundingMessage: 'I’m using your current calculator inputs and outputs from this page.',
+    groundingMessage: `I’m using your current ${title.toLowerCase()} inputs and outputs from this page.`,
     calculatorState: {
       calculatorType: type,
       inputs: {
@@ -263,7 +268,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
             ]
           : [
               'Explain this result using my current numbers',
-              'Stress-test this result for a bad month',
+              'Stress-test this scenario using my current numbers',
               'What is a safer target value for this plan?',
             ],
   } satisfies Partial<AiPageContext>;
@@ -374,7 +379,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         </div>
         <div className="mt-4">
           <AskAIButton
-            label="Ask AI about this result"
+            label="Ask AI about this result (use my numbers)"
             prefillQuestion={`Explain my current ${title} result using the values on this page.`}
             aiContext={aiContext}
             variant="secondary"

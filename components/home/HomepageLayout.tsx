@@ -384,9 +384,9 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Execution sequence</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Promise: get to a decision you can defend in normal months and stressed months, using one transparent sequence.
+          Use one sequence each time: lock a baseline number, run a downside scenario, then choose only from options that still hold up.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (

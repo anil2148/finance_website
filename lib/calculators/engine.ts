@@ -5,14 +5,16 @@ export const toMonthlyRate = (annualRate: number) => annualRate / 100 / 12;
 export const clampNumber = (value: number, min = 0) => Math.max(min, value);
 
 export const paymentFromPrincipal = (principal: number, annualRate: number, years: number) => {
-  const months = Math.max(1, Math.round(years * 12));
-  const monthlyRate = toMonthlyRate(annualRate);
+  const safePrincipal = Number.isFinite(principal) ? Math.max(0, principal) : 0;
+  const safeAnnualRate = Number.isFinite(annualRate) ? Math.max(0, annualRate) : 0;
+  const months = Number.isFinite(years) ? Math.max(1, Math.round(years * 12)) : 12;
+  const monthlyRate = toMonthlyRate(safeAnnualRate);
 
   if (monthlyRate === 0) {
-    return principal / months;
+    return safePrincipal / months;
   }
 
-  return (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
+  return (safePrincipal * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
 };
 
 export const buildInvestmentProjection = (inputs: GrowthCalculatorInputs, initial = inputs.loanAmount) => {
@@ -77,7 +79,7 @@ export const asCurrency = (value: number) =>
     style: 'currency',
     currency: 'USD',
     maximumFractionDigits: 0
-  }).format(value);
+  }).format(Number.isFinite(value) ? value : 0);
 
 export const currencyBreakdown = (label: string, amount: number) => ({
   label,
