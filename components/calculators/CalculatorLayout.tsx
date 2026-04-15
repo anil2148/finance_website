@@ -87,7 +87,6 @@ const specializedCalculatorConfigs: Record<string, {
     audience: 'Home buyers and refinancers comparing payment safety, not just qualification.',
     decision: 'Choose a home budget, term, and rate path that remains manageable after tax, insurance, and PMI assumptions.',
     firstAction: 'Set Home Price + Down Payment, then verify Monthly P&I against Estimated Total Monthly Cost.',
-    firstActionHint: 'Use both values together before comparing lenders.',
     aiLabel: 'Ask AI about this result (use my numbers)',
     aiPrompts: ['Explain this result', 'Stress-test this scenario', 'What is a safer all-in monthly housing cost target?'],
     aiGroundingMessage: 'I’m using your current mortgage inputs and outputs from this page.'
