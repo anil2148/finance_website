@@ -188,6 +188,36 @@ const specializedCalculatorConfigs: Record<string, {
     aiLabel: 'Ask AI about this result (use my numbers)',
     aiPrompts: ['Explain this payoff result with my current numbers', 'How much interest do I save by adding $100 monthly?', 'What is the safer payoff target for bad months?'],
     aiGroundingMessage: 'I’m using your current credit-card payoff inputs and outputs from this page.'
+  },
+  'debt-avalanche-calculator': {
+    eyebrow: 'Debt Interest-Reduction Page',
+    introTitle: 'Minimize interest drag with an avalanche sequence',
+    introBody: 'Use this view to focus extra payment on your highest-rate balance first, so each payment cuts future interest as quickly as possible.',
+    audience: 'Borrowers prioritizing lowest total interest over quick early wins.',
+    decision: 'Set an avalanche payment pace you can sustain through variable-expense months.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this avalanche result using my current numbers', 'How much interest do I save if I add $100 monthly?', 'What is a safer payment target for bad months?'],
+    aiGroundingMessage: 'I’m using your current debt avalanche inputs and outputs from this page.'
+  },
+  'budget-planner': {
+    eyebrow: 'Cashflow Decision Page',
+    introTitle: 'Translate monthly cashflow into a practical plan',
+    introBody: 'Model your current monthly surplus and contribution assumptions so you can choose a spending/saving split that remains realistic each month.',
+    audience: 'Households trying to rebalance spending, debt, and savings without overcommitting.',
+    decision: 'Choose a monthly allocation that still works in lower-income or higher-expense months.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this budget projection with my current values', 'Stress-test this budget for one bad month', 'What is a safer monthly contribution target?'],
+    aiGroundingMessage: 'I’m using your current budget-planner inputs and outputs from this page.'
+  },
+  'salary-after-tax-calculator': {
+    eyebrow: 'Take-Home Planning Page',
+    introTitle: 'Convert gross salary into usable monthly cashflow',
+    introBody: 'Use this estimate to understand how much annual income is available after taxes, then size savings and debt plans from realistic take-home pay.',
+    audience: 'Workers comparing compensation, savings plans, or debt commitments.',
+    decision: 'Set contribution and spending targets using estimated net pay, not gross income.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this take-home estimate with my current values', 'What tax-rate sensitivity should I test next?', 'How should I split this monthly take-home between goals?'],
+    aiGroundingMessage: 'I’m using your current salary-after-tax inputs and outputs from this page.'
   }
 };
 
@@ -213,6 +243,50 @@ function buildStrictCalculatorInputs(defaultInputs: BaseCalculatorInputs, slug: 
     acc[field.key] = defaultInputs[field.key] ?? 0;
     return acc;
   }, {} as BaseCalculatorInputs);
+}
+
+function buildAssumptionLabels(
+  slug: string,
+  inputs: BaseCalculatorInputs,
+  formatCurrency: (value: number) => string
+): string[] {
+  const generic = [
+    'Every result card, breakdown row, and narrative section on this page updates from the same current calculator inputs.'
+  ];
+
+  if (slug === 'mortgage-calculator') {
+    return [
+      `Monthly P&I Payment includes principal and interest only (loan amount, rate, and term).`,
+      `Estimated Total Monthly Cost includes Monthly P&I${inputs.monthlyContribution > 0 ? ` + extra principal (${formatCurrency(inputs.monthlyContribution)})` : ''} + property tax + home insurance + PMI.`,
+      'Total Paid (P&I) and Total Interest cover principal-and-interest cashflows only; taxes, insurance, and PMI are shown separately.'
+    ];
+  }
+
+  if (slug.includes('loan') || slug.includes('debt') || slug.includes('credit-card')) {
+    return [
+      'Monthly payment and payoff timeline are based on current principal, APR, and term assumptions.',
+      `Any extra monthly payment input is treated as additional principal reduction each month.`,
+      'Payoff timing and interest totals are estimates; lender fees, penalties, and compounding conventions can change exact outcomes.'
+    ];
+  }
+
+  if (slug.includes('compound') || slug.includes('retirement') || slug.includes('investment') || slug.includes('fire') || slug.includes('savings-goal')) {
+    return [
+      'Growth projections assume a constant annual return and fixed monthly contribution.',
+      'Real Return is shown as expected return minus inflation to reflect purchasing-power impact.',
+      'Actual market returns vary by year; use conservative and stress scenarios before committing to a contribution target.'
+    ];
+  }
+
+  if (slug === 'salary-after-tax-calculator') {
+    return [
+      'After-tax salary uses your effective tax-rate input as a planning assumption.',
+      'Monthly take-home is annual after-tax salary divided by 12.',
+      'This is an estimate for planning decisions and does not replace payroll or tax filing calculations.'
+    ];
+  }
+
+  return generic;
 }
 
 export function CalculatorLayout({ slug }: { slug: string }) {
@@ -283,8 +357,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       })),
     [result.summary]
   );
-  const formatSummaryValue = (value: number, currencyMetric?: boolean, suffix?: string) =>
-    currencyMetric ? formatCurrency(value) : `${value.toFixed(2)}${suffix ?? ''}`;
+  const formatSummaryValue = useCallback(
+    (value: number, currencyMetric?: boolean, suffix?: string) =>
+      currencyMetric ? formatCurrency(value) : `${value.toFixed(2)}${suffix ?? ''}`,
+    [formatCurrency]
+  );
   const formatSummaryDisplay = (value: number, isValid: boolean, currencyMetric?: boolean, suffix?: string) =>
     isValid ? formatSummaryValue(value, currencyMetric, suffix) : '—';
   const csvRows = sanitizedSummary.map((item) => ({
@@ -330,9 +407,15 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     if (!row.currency || typeof row.amount !== 'number') return row;
     return { ...row, value: formatCurrency(row.amount) };
   });
-
   // Per-calculator specific insight layer
-  const insightInputs = { ...INSIGHT_BASELINE_INPUTS, ...inputs } as BaseCalculatorInputs;
+  const insightInputs = useMemo(
+    () => ({ ...INSIGHT_BASELINE_INPUTS, ...inputs } as BaseCalculatorInputs),
+    [inputs]
+  );
+  const assumptionLabels = useMemo(
+    () => buildAssumptionLabels(slug, insightInputs, formatCurrency),
+    [formatCurrency, insightInputs, slug]
+  );
   const insight = getCalculatorInsight(slug, insightInputs, primaryMetric?.label ?? 'result');
   const resultNarrative = useMemo(() => {
     if (sanitizedSummary.length === 0) {
@@ -515,23 +598,15 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             </table>
           </div>
 
-          {slug === 'mortgage-calculator' ? (
-            <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
-              <h2 className="text-base font-semibold">Assumptions used in this result</h2>
-              <ul className="mt-2 list-disc space-y-1 pl-5">
-                <li>
-                  Monthly P&I Payment = principal and interest only.
-                </li>
-                <li>
-                  Estimated Total Monthly Cost = Monthly P&I Payment
-                  {inputs.monthlyContribution > 0 ? ` + extra principal (${formatCurrency(inputs.monthlyContribution)})` : ''}
-                  {' '}+ property tax + home insurance + PMI.
-                </li>
-                <li>Total Paid (P&I) excludes tax, insurance, and PMI cash outflows by design; those are shown separately in this page.</li>
-                <li>All values above come from the same current inputs, with defensive validation to prevent undefined or non-numeric outputs.</li>
-              </ul>
-            </section>
-          ) : null}
+          <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
+            <h2 className="text-base font-semibold">Assumptions used in this result</h2>
+            <ul className="mt-2 list-disc space-y-1 pl-5">
+              {assumptionLabels.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+              <li>Defensive guards are applied before rendering output values, so invalid inputs do not show NaN or undefined values.</li>
+            </ul>
+          </section>
 
           {/* Per-calculator specific insight layer */}
           <section className="space-y-4 rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
