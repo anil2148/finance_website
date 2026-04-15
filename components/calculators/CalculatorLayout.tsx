@@ -83,10 +83,10 @@ const specializedCalculatorConfigs: Record<string, {
 }> = {
   'mortgage-calculator': {
     eyebrow: 'Mortgage Decision Page',
-    introTitle: 'Decide a safe payment range before lender preapproval',
-    introBody: 'Model principal, total monthly housing cost, and lifetime interest together so your home budget is based on cashflow durability — not just approval limits.',
+    introTitle: 'Set your safe housing payment before talking to lenders',
+    introBody: 'Use this page to separate principal-and-interest from all-in housing cost so your budget is grounded in monthly durability, not approval maximums.',
     audience: 'Home buyers and refinancers comparing payment safety, not just qualification.',
-    decision: 'Choose home budget, term, and rate scenario that remain manageable after taxes, insurance, and PMI.',
+    decision: 'Choose a home budget, term, and rate path that remains manageable after tax, insurance, and PMI assumptions.',
     firstAction: 'Set Home Price + Down Payment, then verify Monthly P&I against Estimated Total Monthly Cost.',
     firstActionHint: 'Use both values together before comparing lenders.',
     aiLabel: 'Ask AI about this result (use my numbers)',
@@ -95,8 +95,8 @@ const specializedCalculatorConfigs: Record<string, {
   },
   'debt-snowball-calculator': {
     eyebrow: 'Debt Payoff Strategy Page',
-    introTitle: 'Build a snowball plan that survives real life months',
-    introBody: 'Use this payoff view to set a smallest-balance-first sequence, then test whether your monthly payment level is realistic when income or expenses fluctuate.',
+    introTitle: 'Build a snowball payoff sequence you can keep running',
+    introBody: 'Use this page to set a smallest-balance-first order and confirm your monthly payment pace is still realistic in lower-cashflow months.',
     audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
     decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
     firstAction: 'Enter combined balances and minimum payment, then set one realistic extra monthly payment.',
@@ -127,8 +127,8 @@ const specializedCalculatorConfigs: Record<string, {
   },
   'compound-interest-calculator': {
     eyebrow: 'Compounding Decision Page',
-    introTitle: 'Turn monthly contribution choices into long-term outcomes',
-    introBody: 'Use this projection to see how contribution size, return assumptions, and time horizon combine so you can pick a contribution level you can sustain.',
+    introTitle: 'Choose a contribution pace that compounds without breaking cashflow',
+    introBody: 'Use this page to turn contribution size, return assumptions, and timeline into a realistic long-term range you can sustain.',
     audience: 'Savers and investors planning long-term wealth growth.',
     decision: 'Set a contribution and timeline target that is durable in both normal and lower-income months.',
     firstAction: 'Set your starting balance and monthly contribution first, then run one lower-return stress test.',
@@ -266,7 +266,7 @@ function buildAssumptionLabels(
     return [
       `Monthly P&I Payment includes principal and interest only (loan amount, rate, and term).`,
       `Estimated Total Monthly Cost includes Monthly P&I${inputs.monthlyContribution > 0 ? ` + Extra Monthly Principal (${formatCurrency(inputs.monthlyContribution)})` : ''} + property tax + home insurance + PMI.`,
-      'Total Paid (P&I) and Total Interest track principal-and-interest cashflows only; taxes, insurance, and PMI are shown separately as monthly housing-cost assumptions.'
+      'Total Paid (P&I) and Total Interest (P&I) track principal-and-interest cashflows only; taxes, insurance, and PMI are shown separately as monthly housing-cost assumptions.'
     ];
   }
 
@@ -473,6 +473,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         slug === 'mortgage-calculator'
           ? 'Monthly P&I covers principal + interest only. Estimated Total Monthly Cost adds property tax, insurance, PMI, and any extra principal exactly as shown in the result cards.'
           : 'Use the exact result cards above as the source of truth before choosing your next step.',
+        slug === 'mortgage-calculator'
+          ? 'Total Interest (P&I) and Total Paid (P&I) exclude property tax, homeowners insurance, and PMI by design so P&I cashflow stays explicit.'
+          : 'Use the exact result cards above as the source of truth before choosing your next step.',
       ],
     };
   }, [formatCurrency, formatSummaryValue, result.projection, sanitizedSummary, slug]);
@@ -613,6 +616,18 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                   prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${formatSummaryDisplay(baselineValue, Boolean(primaryMetric?.isValid), primaryMetric?.currency, primaryMetric?.suffix)}`}
                   aiContext={aiContext}
                   variant="secondary"
+                />
+                <AskAIButton
+                  label="Explain this result"
+                  prefillQuestion={`Explain this ${definition.title} result with my current inputs and outputs`}
+                  aiContext={aiContext}
+                  variant="ghost"
+                />
+                <AskAIButton
+                  label="Stress-test this scenario"
+                  prefillQuestion={`Stress-test this ${definition.title} scenario using my current numbers`}
+                  aiContext={aiContext}
+                  variant="ghost"
                 />
                 {savedMessage && <p className="text-xs text-emerald-700 dark:text-emerald-300" role="status">{savedMessage}</p>}
               </div>

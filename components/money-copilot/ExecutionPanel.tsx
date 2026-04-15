@@ -1689,6 +1689,13 @@ function DrawerEmptyState({
         {pageContext?.groundingMessage ? (
           <p className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-300">Context loaded: {pageContext.groundingMessage}</p>
         ) : null}
+        {pageContext ? (
+          <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+            Using pageType: <span className="font-semibold">{pageContext.pageType}</span> · region:{' '}
+            <span className="font-semibold">{pageContext.region}</span> · currency:{' '}
+            <span className="font-semibold">{pageContext.currency}</span>
+          </p>
+        ) : null}
       </div>
 
       {suggestedPrompts.length > 0 && (
