@@ -3,8 +3,8 @@ import Link from 'next/link';
 export function CalculatorHeader({
   title,
   description,
-  eyebrow = 'Finance Toolkit',
-  ctaLabel = 'Explore all calculators',
+  eyebrow = 'FinanceSphere Decision System',
+  ctaLabel = 'See all calculators',
   ctaHref = '/calculators',
 }: {
   title: string;

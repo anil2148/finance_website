@@ -96,7 +96,7 @@ const specializedCalculatorConfigs: Record<string, {
     audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
     decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
     aiLabel: 'Ask AI about this result (use my numbers)',
-    aiPrompts: ['Which balance should I focus on first from this result?', 'How much faster if I add $100 more each month?', 'How should I recover after one missed payment month?'],
+    aiPrompts: ['Explain this result using my current numbers', 'How much faster if I add $100 more each month?', 'How should I recover after one missed payment month?'],
     aiGroundingMessage: 'I’m using your current debt snowball inputs and payoff outputs from this page.'
   },
   'debt-payoff-calculator': {
@@ -138,6 +138,56 @@ const specializedCalculatorConfigs: Record<string, {
     aiLabel: 'Ask AI about this result (use my numbers)',
     aiPrompts: ['Explain this retirement projection with my current values', 'What safer return assumption should I test?', 'How much should I increase contributions to improve readiness?'],
     aiGroundingMessage: 'I’m using your current retirement inputs and outputs from this page.'
+  },
+  'auto-loan-calculator': {
+    eyebrow: 'Auto Loan Decision Page',
+    introTitle: 'Set a car payment that stays safe after insurance and maintenance',
+    introBody: 'Model principal, APR, and term together so your car decision is based on full financing cost, not only dealership monthly payment framing.',
+    audience: 'Car buyers comparing financing terms before signing at the dealership.',
+    decision: 'Pick a loan term and payment that stay manageable after total car ownership costs.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this auto-loan result with my current numbers', 'What if I shorten the term by one year?', 'How much interest do I avoid with extra monthly payment?'],
+    aiGroundingMessage: 'I’m using your current auto loan inputs and outputs from this page.'
+  },
+  'student-loan-calculator': {
+    eyebrow: 'Student Loan Decision Page',
+    introTitle: 'Balance faster payoff with monthly cashflow stability',
+    introBody: 'Use this to test how payment changes affect payoff speed and total interest so you can choose a plan you can maintain without relapsing into missed payments.',
+    audience: 'Borrowers managing student debt while balancing rent, savings, and career transitions.',
+    decision: 'Choose a repayment pace that lowers interest while remaining sustainable month to month.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this student-loan payoff result', 'How much faster if I add an extra monthly payment?', 'What is a safer payment target if income changes?'],
+    aiGroundingMessage: 'I’m using your current student loan inputs and outputs from this page.'
+  },
+  'investment-growth-calculator': {
+    eyebrow: 'Investment Growth Decision Page',
+    introTitle: 'Convert contribution choices into a realistic long-term range',
+    introBody: 'Model contributions, return assumptions, and horizon together so you can pick an investing pace that remains consistent during both strong and weak markets.',
+    audience: 'Investors planning long-run growth with monthly contributions.',
+    decision: 'Set contribution targets that remain realistic in volatile periods.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this projection with my current numbers', 'Stress-test this scenario with 2% lower returns', 'What contribution increase has the biggest impact?'],
+    aiGroundingMessage: 'I’m using your current investment-growth inputs and outputs from this page.'
+  },
+  'savings-goal-calculator': {
+    eyebrow: 'Savings Goal Decision Page',
+    introTitle: 'Choose a monthly savings target you can actually sustain',
+    introBody: 'Use your target amount, timeline, and expected return to confirm whether your current contribution plan reaches the goal on schedule.',
+    audience: 'People planning down payments, emergency funds, or near-term milestone goals.',
+    decision: 'Set a realistic monthly contribution and timeline before committing.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this savings-goal result with my current inputs', 'How much should I increase my monthly contribution?', 'What changes if I extend the timeline by one year?'],
+    aiGroundingMessage: 'I’m using your current savings-goal inputs and outputs from this page.'
+  },
+  'credit-card-payoff-calculator': {
+    eyebrow: 'Credit Card Payoff Decision Page',
+    introTitle: 'Stop revolving-interest drag with a clear payoff path',
+    introBody: 'Use current balance, APR, and monthly payment capacity to compare payoff speed and interest cost before choosing a card payoff plan.',
+    audience: 'Cardholders trying to eliminate high-interest revolving balances.',
+    decision: 'Choose a monthly payoff amount that consistently reduces principal.',
+    aiLabel: 'Ask AI about this result (use my numbers)',
+    aiPrompts: ['Explain this payoff result with my current numbers', 'How much interest do I save by adding $100 monthly?', 'What is the safer payoff target for bad months?'],
+    aiGroundingMessage: 'I’m using your current credit-card payoff inputs and outputs from this page.'
   }
 };
 
@@ -195,7 +245,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     audience: 'People evaluating this exact money decision with real numbers.',
     decision: 'Use the result to choose your safest next step before comparing products.',
     aiLabel: 'Ask AI about this result (use my numbers)',
-    aiPrompts: ['Explain this result (use my numbers)', 'Stress-test this scenario', 'What is the safer next step?'],
+    aiPrompts: ['Explain this result using my current numbers', 'Stress-test this scenario with my current numbers', 'What is the safer next step from this result?'],
     aiGroundingMessage: `I’m using your current ${definition.title.toLowerCase()} inputs and outputs from this page.`,
   };
 
@@ -228,15 +278,18 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     () =>
       result.summary.map((item) => ({
         ...item,
+        isValid: Number.isFinite(item.value),
         value: Number.isFinite(item.value) ? item.value : 0,
       })),
     [result.summary]
   );
+  const formatSummaryValue = (value: number, currencyMetric?: boolean, suffix?: string) =>
+    currencyMetric ? formatCurrency(value) : `${value.toFixed(2)}${suffix ?? ''}`;
+  const formatSummaryDisplay = (value: number, isValid: boolean, currencyMetric?: boolean, suffix?: string) =>
+    isValid ? formatSummaryValue(value, currencyMetric, suffix) : '—';
   const csvRows = sanitizedSummary.map((item) => ({
     label: item.label,
-    value: item.currency
-      ? formatCurrency(Number.isFinite(item.value) ? item.value : 0)
-      : `${(Number.isFinite(item.value) ? item.value : 0).toFixed(2)}${item.suffix ?? ''}`
+    value: formatSummaryDisplay(item.value, item.isValid, item.currency, item.suffix)
   }));
   const calculatorPathways: Record<string, { guide: { href: string; label: string }; compare: { href: string; label: string }; mistakes: string[] }> = {
     'mortgage-calculator': {
@@ -265,11 +318,14 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     compare: { href: '/comparison', label: 'Compare options by fee and fit' },
     mistakes: ['Using unrealistic input assumptions.', 'Relying on one scenario only.', 'Skipping eligibility and product-term checks.']
   };
-  const primaryMetric = sanitizedSummary[0];
-  const baselineValue = Number.isFinite(primaryMetric?.value) ? primaryMetric.value : 0;
-  const formatSummaryValue = useCallback((value: number, currencyMetric?: boolean, suffix?: string) =>
-    currencyMetric ? formatCurrency(value) : `${value.toFixed(2)}${suffix ?? ''}`, [formatCurrency]);
-
+  const primaryMetric = sanitizedSummary.find((item) => item.isValid) ?? sanitizedSummary[0];
+  const baselineValue = primaryMetric?.isValid ? primaryMetric.value : 0;
+  const summaryByLabel = useMemo(
+    () => new Map(sanitizedSummary.map((item) => [item.label, item])),
+    [sanitizedSummary]
+  );
+  const isValidNumber = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isFinite(value);
   const formattedBreakdown = result.breakdown.map((row) => {
     if (!row.currency || typeof row.amount !== 'number') return row;
     return { ...row, value: formatCurrency(row.amount) };
@@ -334,7 +390,12 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       inputs,
       outputs: {
         headlineMetric: primaryMetric?.label ?? 'headline figure',
-        headlineValue: formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix),
+        headlineValue: formatSummaryDisplay(
+          baselineValue,
+          Boolean(primaryMetric?.isValid),
+          primaryMetric?.currency,
+          primaryMetric?.suffix
+        ),
         summary: sanitizedSummary,
         breakdown: formattedBreakdown,
         projection: result.projection
@@ -346,7 +407,12 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       region: currency === 'INR' ? 'IN' : 'US',
       calculatorTitle: definition.title,
       headlineMetric: primaryMetric?.label ?? 'headline figure',
-      headlineValue: formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix),
+      headlineValue: formatSummaryDisplay(
+        baselineValue,
+        Boolean(primaryMetric?.isValid),
+        primaryMetric?.currency,
+        primaryMetric?.suffix
+      ),
       breakdown: formattedBreakdown,
       topInputs: fieldMeta.slice(0, 4).map((field) => ({
         label: field.label,
@@ -401,7 +467,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             <div className="space-y-6">
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {sanitizedSummary.map((item) => (
-                  <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={formatSummaryValue(item.value, item.currency, item.suffix)} />
+                  <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={formatSummaryDisplay(item.value, item.isValid, item.currency, item.suffix)} />
                 ))}
               </div>
 
@@ -418,7 +484,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                 <ExportCsvButton rows={csvRows} calculatorTitle={definition.title} />
                 <AskAIButton
                   label={activeConfig.aiLabel}
-                  prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${formatSummaryValue(baselineValue, primaryMetric?.currency, primaryMetric?.suffix)}`}
+                  prefillQuestion={`Help me understand my ${definition.title} result: ${primaryMetric?.label ?? 'headline figure'} is ${formatSummaryDisplay(baselineValue, Boolean(primaryMetric?.isValid), primaryMetric?.currency, primaryMetric?.suffix)}`}
                   aiContext={aiContext}
                   variant="secondary"
                 />
@@ -453,9 +519,16 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900 dark:border-emerald-500/40 dark:bg-emerald-950/30 dark:text-emerald-100">
               <h2 className="text-base font-semibold">Assumptions used in this result</h2>
               <ul className="mt-2 list-disc space-y-1 pl-5">
-                <li>Monthly payment includes principal, interest, property tax, home insurance, and PMI.</li>
-                <li>Total paid reflects principal-and-interest cash flow only; taxes, insurance, and PMI remain separate housing costs.</li>
-                <li>All values update directly from your current slider inputs and this table.</li>
+                <li>
+                  Monthly P&I Payment = principal and interest only.
+                </li>
+                <li>
+                  Estimated Total Monthly Cost = Monthly P&I Payment
+                  {inputs.monthlyContribution > 0 ? ` + extra principal (${formatCurrency(inputs.monthlyContribution)})` : ''}
+                  {' '}+ property tax + home insurance + PMI.
+                </li>
+                <li>Total Paid (P&I) excludes tax, insurance, and PMI cash outflows by design; those are shown separately in this page.</li>
+                <li>All values above come from the same current inputs, with defensive validation to prevent undefined or non-numeric outputs.</li>
               </ul>
             </section>
           ) : null}

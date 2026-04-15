@@ -64,6 +64,7 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 }
 
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
+  const safeNumber = (value: number, fallback = 0) => (Number.isFinite(value) ? value : fallback);
   const { currency, formatCurrency } = usePreferences();
   const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
@@ -91,7 +92,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     const safeLiabilities = Math.max(0, toSafeNumber(liabilities, 0));
 
     if (type === 'networth') {
-      const value = safeAssets - safeLiabilities;
+      const value = safeNumber(assets) - safeNumber(liabilities);
       return {
         value,
         totalPaid: 0,
@@ -105,6 +106,10 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
       };
     }
 
+    const safePrincipal = Math.max(0, safeNumber(principal));
+    const safeRate = Math.max(0, safeNumber(rate));
+    const safeYears = Math.max(1, safeNumber(years, 1));
+    const safeContribution = Math.max(0, safeNumber(contribution));
     const months = Math.max(1, safeYears * 12);
     const monthlyRate = safeRate / 12 / 100;
 
@@ -113,16 +118,13 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         monthlyRate === 0
           ? safePrincipal / months
           : (safePrincipal * monthlyRate * (1 + monthlyRate) ** months) / ((1 + monthlyRate) ** months - 1);
-      const safeEmi = Number.isFinite(emi) ? emi : 0;
-      const safeTotalPaid = safeEmi * months;
-      const safeTotalInterest = safeTotalPaid - safePrincipal;
 
       return {
-        value: safeEmi,
-        totalPaid: safeTotalPaid,
-        totalInterest: safeTotalInterest,
+        value: emi,
+        totalPaid: emi * months,
+        totalInterest: Math.max(0, emi * months - safePrincipal),
         totalInvested: safePrincipal,
-        points: buildLoanProjection(safePrincipal, safeEmi, safeRate, safeYears).map((point) => ({
+        points: buildLoanProjection(safePrincipal, emi, safeRate, safeYears).map((point) => ({
           name: `Year ${point.year}`,
           value: point.value
         }))
@@ -230,7 +232,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         : type === 'compound'
           ? 'compounding-result-explainer'
           : 'calculator-result-explainer',
-    groundingMessage: `I’m using your current ${title} inputs and outputs from this page.`,
+    groundingMessage: `I’m using your current ${title.toLowerCase()} inputs and outputs from this page.`,
     calculatorState: {
       calculatorType: type,
       inputs: {
@@ -276,8 +278,8 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
               'Stress-test this scenario',
             ]
           : [
-              'Explain this result (use my numbers)',
-              'Stress-test this result for a bad month',
+              'Explain this result using my current numbers',
+              'Stress-test this scenario using my current numbers',
               'What is a safer target value for this plan?',
             ],
   } satisfies Partial<AiPageContext>;
