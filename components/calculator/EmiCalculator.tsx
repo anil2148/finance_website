@@ -16,6 +16,10 @@ type GrowthPoint = {
   value: number;
 };
 
+function toSafeNumber(value: number, fallback = 0): number {
+  return Number.isFinite(value) ? value : fallback;
+}
+
 const scenarioLabels = {
   mortgage: [
     { label: 'Conservative', principal: 3500000, rate: 8.2, years: 20 },
@@ -79,36 +83,46 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
   const [liabilities, setLiabilities] = useState(25000);
 
   const result = useMemo(() => {
+    const safePrincipal = Math.max(0, toSafeNumber(principal, 0));
+    const safeRate = Math.max(0, toSafeNumber(rate, 0));
+    const safeYears = Math.max(1, toSafeNumber(years, 1));
+    const safeContribution = Math.max(0, toSafeNumber(contribution, 0));
+    const safeAssets = Math.max(0, toSafeNumber(assets, 0));
+    const safeLiabilities = Math.max(0, toSafeNumber(liabilities, 0));
+
     if (type === 'networth') {
-      const value = assets - liabilities;
+      const value = safeAssets - safeLiabilities;
       return {
         value,
         totalPaid: 0,
         totalInterest: 0,
         totalInvested: 0,
         points: [
-          { name: 'Assets', value: assets },
-          { name: 'Liabilities', value: liabilities },
+          { name: 'Assets', value: safeAssets },
+          { name: 'Liabilities', value: safeLiabilities },
           { name: 'Net Worth', value }
         ]
       };
     }
 
-    const months = Math.max(1, years * 12);
-    const monthlyRate = rate / 12 / 100;
+    const months = Math.max(1, safeYears * 12);
+    const monthlyRate = safeRate / 12 / 100;
 
     if (type === 'loan' || type === 'mortgage') {
       const emi =
         monthlyRate === 0
-          ? principal / months
-          : (principal * monthlyRate * (1 + monthlyRate) ** months) / ((1 + monthlyRate) ** months - 1);
+          ? safePrincipal / months
+          : (safePrincipal * monthlyRate * (1 + monthlyRate) ** months) / ((1 + monthlyRate) ** months - 1);
+      const safeEmi = Number.isFinite(emi) ? emi : 0;
+      const safeTotalPaid = safeEmi * months;
+      const safeTotalInterest = safeTotalPaid - safePrincipal;
 
       return {
-        value: emi,
-        totalPaid: emi * months,
-        totalInterest: emi * months - principal,
-        totalInvested: principal,
-        points: buildLoanProjection(principal, emi, rate, years).map((point) => ({
+        value: safeEmi,
+        totalPaid: safeTotalPaid,
+        totalInterest: safeTotalInterest,
+        totalInvested: safePrincipal,
+        points: buildLoanProjection(safePrincipal, safeEmi, safeRate, safeYears).map((point) => ({
           name: `Year ${point.year}`,
           value: point.value
         }))
@@ -116,10 +130,10 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     }
 
     const points: Array<{ name: string; value: number }> = [];
-    let futureValue = principal;
+    let futureValue = safePrincipal;
 
-    for (let y = 1; y <= years; y++) {
-      futureValue = futureValue * (1 + rate / 100) + contribution * 12;
+    for (let y = 1; y <= safeYears; y++) {
+      futureValue = futureValue * (1 + safeRate / 100) + safeContribution * 12;
       points.push({ name: `Year ${y}`, value: Number(futureValue.toFixed(0)) });
     }
 
@@ -127,7 +141,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
       value: points.at(-1)?.value ?? 0,
       totalPaid: 0,
       totalInterest: 0,
-      totalInvested: principal + contribution * months,
+      totalInvested: safePrincipal + safeContribution * months,
       points
     };
   }, [assets, contribution, liabilities, principal, rate, type, years]);
@@ -216,7 +230,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         : type === 'compound'
           ? 'compounding-result-explainer'
           : 'calculator-result-explainer',
-    groundingMessage: 'I’m using your current calculator inputs and outputs from this page.',
+    groundingMessage: `I’m using your current ${title} inputs and outputs from this page.`,
     calculatorState: {
       calculatorType: type,
       inputs: {
@@ -251,18 +265,18 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     suggestedPrompts:
       type === 'mortgage'
         ? [
-            'Explain if this EMI is safe for my current inputs',
+            'Ask AI about this result (use my numbers)',
             'What changes if interest rate increases by 1%?',
             'How much should I reduce principal for a safer payment?',
           ]
         : type === 'compound'
           ? [
-              'Explain this SIP projection using my current values',
+              'Explain this result (use my numbers)',
               `What if I increase monthly contribution by ${currencySymbol}${isIndiaCurrency ? '2,000' : '100'}?`,
-              'How sensitive is this result to lower returns?',
+              'Stress-test this scenario',
             ]
           : [
-              'Explain this result using my current numbers',
+              'Explain this result (use my numbers)',
               'Stress-test this result for a bad month',
               'What is a safer target value for this plan?',
             ],
@@ -344,16 +358,16 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
 
       <div className="rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-700 dark:bg-slate-900">
         <p className="text-sm text-slate-500 dark:text-slate-400">Result</p>
-        <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(result.value)}</p>
+        <p className="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(toSafeNumber(result.value, 0))}</p>
         {isLoanType && (
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
             <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/60">
               <p className="text-slate-500 dark:text-slate-400">Total payable</p>
-              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(result.totalPaid)}</p>
+              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(toSafeNumber(result.totalPaid, 0))}</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/60">
               <p className="text-slate-500 dark:text-slate-400">Interest cost</p>
-              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(result.totalInterest)}</p>
+              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(toSafeNumber(result.totalInterest, 0))}</p>
             </div>
           </div>
         )}
@@ -361,11 +375,11 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
             <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/60">
               <p className="text-slate-500 dark:text-slate-400">Total invested</p>
-              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(result.totalInvested)}</p>
+              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(toSafeNumber(result.totalInvested, 0))}</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/60">
               <p className="text-slate-500 dark:text-slate-400">Estimated gains</p>
-              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(result.value - result.totalInvested)}</p>
+              <p className="mt-1 font-semibold text-slate-900 dark:text-slate-100">{formatCurrency(toSafeNumber(result.value - result.totalInvested, 0))}</p>
             </div>
           </div>
         )}
@@ -374,11 +388,18 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         </div>
         <div className="mt-4">
           <AskAIButton
-            label="Ask AI about this result"
+            label="Ask AI about this result (use my numbers)"
             prefillQuestion={`Explain my current ${title} result using the values on this page.`}
             aiContext={aiContext}
             variant="secondary"
           />
+        </div>
+        <div className="mt-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900 dark:border-blue-500/40 dark:bg-blue-950/30 dark:text-blue-100">
+          {isLoanType
+            ? 'Assumption: monthly payment reflects principal and interest only; taxes, insurance, and fees are separate unless explicitly modeled.'
+            : isCompoundType
+              ? 'Assumption: projection uses a constant annual return and monthly contribution; real-world returns will vary.'
+              : 'Assumption: net worth equals assets minus liabilities using your current values.'}
         </div>
       </div>
     </section>
