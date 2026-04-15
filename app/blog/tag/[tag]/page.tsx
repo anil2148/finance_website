@@ -11,20 +11,30 @@ const defaultTagJourney = [
   { href: '/help', label: 'Get help choosing next step' }
 ];
 
+function getTagPosts(tag: string) {
+  const slug = slugifyTag(tag);
+  if (!slug) return { slug: '', posts: [] as ReturnType<typeof getPosts> };
+  return {
+    slug,
+    posts: getPosts().filter((post) => post.tags.some((item) => slugifyTag(item) === slug))
+  };
+}
+
 export function generateMetadata({ params }: { params: { tag: string } }): Metadata {
-  const tag = slugifyTag(params.tag);
-  const safeTag = tag || 'finance';
+  const { slug, posts } = getTagPosts(params.tag);
+  const safeTag = slug || 'finance';
+  const hasPosts = posts.length > 0;
+
   return {
     title: `#${safeTag} Guides and Decision Support | FinanceSphere Blog`,
     description: `Browse FinanceSphere guides tagged ${safeTag} with direct next steps into calculators and comparison frameworks.`,
-    // SEO cleanup: de-index tag archives and canonicalize all variants to the main blog index.
-    alternates: { canonical: '/blog' },
-    robots: { index: false, follow: true }
+    alternates: { canonical: hasPosts ? `/blog/tag/${safeTag}` : '/blog' },
+    robots: { index: hasPosts, follow: true }
   };
 }
 
 export default function BlogTagPage({ params }: { params: { tag: string } }) {
-  const slug = slugifyTag(params.tag);
+  const { slug, posts } = getTagPosts(params.tag);
 
   if (!slug) {
     permanentRedirect('/blog');
@@ -35,7 +45,6 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
   }
 
   const currentSlug = slug;
-  const posts = getPosts().filter((post) => post.tags.some((tag) => slugifyTag(tag) === currentSlug));
   const lifeStageLine =
     currentSlug === 'retirement' || currentSlug === 'retirement-planning'
       ? 'If you are within 10 years of retirement, downside protection often matters more than max upside.'
@@ -46,6 +55,12 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
       <header className="rounded-2xl border border-slate-200 bg-white p-5">
         <h1 className="text-2xl font-bold">Tag: #{currentSlug.replace(/-/g, ' ')}</h1>
         <p className="mt-2 text-slate-600">This page groups articles around one decision theme. Use it to compare conflicting approaches, not just collect tips.</p>
+        {posts.length > 0 && posts.length < 3 ? (
+          <p className="mt-2 text-sm text-slate-600">
+            This tag currently has a focused set of foundational guides.
+            Read these first, then use calculators and comparisons to validate your next move.
+          </p>
+        ) : null}
         <p className="mt-2 text-sm italic text-slate-500">{lifeStageLine}</p>
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
           {defaultTagJourney.map((item) => (
@@ -69,32 +84,6 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
               <li>Run the matching calculator with your own numbers.</li>
               <li>Use a comparison framework before opening, switching, or applying.</li>
             </ol>
-          </section>
-          <section className="rounded-2xl border border-slate-200 bg-white p-5">
-            <h2 className="text-lg font-semibold text-slate-900">Best for / Not ideal for</h2>
-            <div className="mt-3 grid gap-4 md:grid-cols-2 text-sm">
-              <div>
-                <p className="font-semibold text-blue-700">Best for</p>
-                <ul className="mt-1 list-disc pl-5 text-slate-700">
-                  <li>Readers comparing two options in the same week</li>
-                  <li>People willing to run numbers before making a switch</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-semibold text-slate-500">Not ideal for</p>
-                <ul className="mt-1 list-disc pl-5 text-slate-700">
-                  <li>Anyone looking for one-click universal advice</li>
-                  <li>High-stakes decisions without confirming live product terms</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-          <section className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5">
-            <h2 className="text-lg font-semibold text-slate-900">What people get wrong</h2>
-            <p className="mt-2 text-sm text-slate-700">Scenario: You read three posts under #{currentSlug.replace(/-/g, ' ')}, combine all recommendations, and apply them at once.</p>
-            <p className="mt-1 text-sm text-slate-700">Failure: The stack is too aggressive for your monthly cash flow.</p>
-            <p className="mt-1 text-sm text-slate-700">Consequence: You abandon everything after one difficult month.</p>
-            <p className="mt-3 text-sm text-slate-700"><span className="font-semibold text-blue-700">If this tag decision affects debt payments</span> → test downside first. <span className="font-semibold text-blue-700">If it affects long-term investing only</span> → test consistency over 12 months.</p>
           </section>
         </>
       ) : (

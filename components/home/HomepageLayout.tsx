@@ -375,13 +375,6 @@ export function HomepageLayout() {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-blue-100 bg-blue-50/50 p-5 dark:border-blue-900/40 dark:bg-blue-950/20">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Get a weekly plan that matches your goal</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Pick your goal first, then get weekly action ideas tailored to that path.</p>
-        <div className="mt-4">
-          <NewsletterForm source="homepage" leadMagnet="goal-matched-weekly-plan" />
-        </div>
-      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
