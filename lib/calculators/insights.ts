@@ -92,7 +92,7 @@ export function getMortgageInsight(inputs: BaseCalculatorInputs): CalculatorInsi
   const stressIncrease = stressMonthly - basePayment;
 
   return {
-    whatItMeans: `Your monthly principal-and-interest payment is ${fmt(basePayment)}, and your estimated total housing payment is ${fmt(totalHousing)} after adding taxes, insurance, and PMI inputs. Over approximately ${(payoffMonths / 12).toFixed(1)} years, this scenario produces about ${fmt(totalInterest)} in interest (${interestPct}% of the ${fmt(principal)} mortgage principal).`,
+    whatItMeans: `Monthly P&I (principal + interest only) is ${fmt(basePayment)}. Estimated Total Monthly Cost is ${fmt(totalHousing)}, which adds property tax, insurance, PMI, and any extra principal input. Over approximately ${(payoffMonths / 12).toFixed(1)} years, this scenario produces about ${fmt(totalInterest)} in interest (${interestPct}% of the ${fmt(principal)} mortgage principal).`,
     realWorldImpact: [
       `Projected principal-and-interest paid across the modeled payoff timeline: ${fmt(totalPaid)}.`,
       `If you add ${fmt(extraPayment, false)}/month in extra principal, you could save roughly ${fmt(interestSaved)} in interest and pay off the mortgage ${yearsSaved > 0 ? `about ${yearsSaved} year${yearsSaved > 1 ? 's' : ''}` : 'several months'} earlier.`,
