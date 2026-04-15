@@ -79,18 +79,18 @@ const goalCards = [
 
 const tools = [
   {
-    title: 'Step 1: Start with one decision',
-    desc: 'Use AI triage to identify the exact choice you need to make this month.',
+    title: 'Step 1: Pick the decision',
+    desc: 'Use AI triage to identify the one financial choice that matters most this month.',
     href: '/ai-money-copilot'
   },
   {
-    title: 'Step 2: Validate your baseline',
-    desc: 'Run one calculator baseline and test a downside case before acting.',
+    title: 'Step 2: Run the baseline',
+    desc: 'Run the matching calculator and capture your current baseline output.',
     href: '/blog'
   },
   {
-    title: 'Step 3: Execute with confidence',
-    desc: 'Compare options by total cost, flexibility, and fit only after the baseline is clear.',
+    title: 'Step 3: Pressure-test and execute',
+    desc: 'Stress-test one downside month, then compare products by total cost and fit.',
     href: '/comparison'
   }
 ];
@@ -103,16 +103,16 @@ const trustSignals = [
 
 const trustStory = [
   {
-    title: '1) Capture your baseline output',
-    text: 'Run one scenario and save the baseline number before opening any ranking or offer page.'
+    title: 'Baseline first',
+    text: 'Run one concrete scenario and lock the baseline output before reading provider rankings or promotional offers.'
   },
   {
-    title: '2) Stress-test downside months',
-    text: 'Test a bad-month case before acting. A plan that survives stress is more useful than one that only works on good months.'
+    title: 'Stress-test downside',
+    text: 'A plan that only works in your best month usually fails in real life. Test one bad-month scenario before you commit.'
   },
   {
-    title: '3) Execute with clear trade-offs',
-    text: 'Then compare options by total cost, downside risk, and flexibility — not by promotion strength.'
+    title: 'Compare with trade-offs',
+    text: 'Comparison pages prioritize total cost, downside risk, flexibility, and fit — not commission rate.'
   }
 ];
 
@@ -120,7 +120,7 @@ const homepageMistake = {
   label: 'Common first move',
   mistake: 'Comparing products before running the numbers for your own situation.',
   why: 'The best credit card, savings account, or mortgage offer on a comparison site may be wrong for your income stability, debt profile, or timeline — even if the rate looks right.',
-  fix: 'Run a calculator first. The number tells you which comparison page to read next — and which options to skip entirely.'
+  fix: 'Run the matching calculator first, then open one comparison page with your baseline already defined.'
 };
 
 const whatGoesWrong = {
@@ -386,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Three-step process: baseline first, downside test second, action third.
+          One process, three moves: baseline, downside stress-test, then comparison.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
@@ -403,7 +403,8 @@ export function HomepageLayout() {
       </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-rose-100 bg-rose-50/40 p-5 dark:border-rose-900/40 dark:bg-rose-950/10">
-        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Common comparison mistake to avoid</h2>
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Before you compare products: one common mistake</h2>
+        <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">Use this as a pre-comparison guardrail, not a second workflow.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           <div className="rounded-xl border border-rose-200 bg-white p-3 dark:border-rose-800/40 dark:bg-slate-900">
             <p className="font-semibold text-rose-700 dark:text-rose-400">Common move</p>

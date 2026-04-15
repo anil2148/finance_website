@@ -89,7 +89,7 @@ const rawCalculatorDefinitions: CalculatorDefinition[] = [
     seoDescription: 'Model monthly mortgage payments, lifetime interest, and payoff progression with an interactive amortization view.',
     faq: [
       { question: 'How is mortgage payment calculated?', answer: 'We use the fixed-rate amortization formula: payment is based on loan amount, APR, and term with monthly compounding.' },
-      { question: 'Does this include taxes and insurance?', answer: 'Estimated Total Monthly Cost includes Monthly P&I, extra principal if entered, property tax, homeowners insurance, and PMI. Monthly P&I and Total Paid (Principal + Interest) intentionally cover principal-and-interest cashflows only so assumptions stay explicit.' }
+      { question: 'Does this include taxes and insurance?', answer: 'Estimated Total Monthly Cost includes Monthly P&I, property tax, homeowners insurance, and PMI. Monthly P&I, Total Interest (P&I), and Total Paid (P&I) intentionally cover principal-and-interest cashflows only so assumptions stay explicit.' }
     ],
     blogLinks: [
       { title: 'Mortgage Preapproval Checklist', href: '/blog/mortgage-preapproval-checklist-underwriting' },
