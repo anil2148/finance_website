@@ -79,18 +79,18 @@ const goalCards = [
 
 const tools = [
   {
-    title: 'Action 1: Define the decision',
-    desc: 'Use AI triage to frame the exact choice and route into one calculator with your numbers.',
+    title: 'Step 1: Start with one decision',
+    desc: 'Use AI triage to identify the exact choice you need to make this month.',
     href: '/ai-money-copilot'
   },
   {
-    title: 'Action 2: Validate assumptions',
-    desc: 'Use focused guides to pressure-test risks and catch common errors before committing.',
+    title: 'Step 2: Validate your baseline',
+    desc: 'Run one calculator baseline and test a downside case before acting.',
     href: '/blog'
   },
   {
-    title: 'Action 3: Compare final options',
-    desc: 'Compare APR/APY, fees, and constraints only after your baseline scenario is clear.',
+    title: 'Step 3: Execute with confidence',
+    desc: 'Compare options by total cost, flexibility, and fit only after the baseline is clear.',
     href: '/comparison'
   }
 ];
@@ -386,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Every decision page follows one structure: result first, risk check second, next action third.
+          The system is simple: quantify your baseline, pressure-test downside risk, then choose the next concrete action.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (

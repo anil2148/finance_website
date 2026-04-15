@@ -261,21 +261,39 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     suggestedPrompts:
       type === 'mortgage'
         ? [
-            'Ask AI about this result (use my numbers)',
-            'What changes if interest rate increases by 1%?',
-            'How much should I reduce principal for a safer payment?',
+            'Explain this result using my current numbers',
+            'Stress-test this scenario if interest rate rises 1%',
+            'What is a safer principal target for this payment?',
           ]
         : type === 'compound'
           ? [
-              'Explain this result (use my numbers)',
-              `What if I increase monthly contribution by ${currencySymbol}${isIndiaCurrency ? '2,000' : '100'}?`,
-              'Stress-test this scenario',
-            ]
-          : [
               'Explain this result using my current numbers',
-              'Stress-test this scenario using my current numbers',
-              'What is a safer target value for this plan?',
-            ],
+              'Stress-test this scenario with lower return assumptions',
+              `What changes if I increase monthly contribution by ${currencySymbol}${isIndiaCurrency ? '2,000' : '100'}?`,
+            ]
+          : type === 'loan'
+            ? [
+                'Explain this EMI result using my current numbers',
+                'Stress-test this scenario for one bad month',
+                'What is a safer EMI target for this balance?',
+              ]
+            : type === 'networth'
+              ? [
+                  'Explain this net-worth result using my current values',
+                  'Stress-test this scenario if liabilities rise',
+                  'What is the best next step to improve this result?',
+                ]
+              : type === 'retirement'
+                ? [
+                    'Explain this retirement result using my current numbers',
+                    'Stress-test this scenario with lower long-term returns',
+                    'What monthly contribution is safer for this target?',
+                  ]
+                : [
+                    'Explain this result using my current numbers',
+                    'Stress-test this scenario using my current numbers',
+                    'What is the safer next step from this result?',
+                  ],
   } satisfies Partial<AiPageContext>;
 
   useSyncAiPageContext(aiContext);

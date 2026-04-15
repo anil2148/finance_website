@@ -289,6 +289,14 @@ function buildAssumptionLabels(
   return generic;
 }
 
+function isGrowthCalculator(slug: string): boolean {
+  return slug.includes('compound') || slug.includes('retirement') || slug.includes('investment') || slug.includes('fire') || slug.includes('savings-goal');
+}
+
+function isDebtStyleCalculator(slug: string): boolean {
+  return slug.includes('loan') || slug.includes('debt') || slug.includes('credit-card') || slug === 'mortgage-calculator';
+}
+
 export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
   const [inputs, setInputs] = useState(() => buildStrictCalculatorInputs(definition.defaultInputs as BaseCalculatorInputs, slug));
@@ -429,10 +437,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     const headline = sanitizedSummary[0];
     const supporting = sanitizedSummary.slice(1, 3);
     const projectionEnd = result.projection.at(-1);
-    const payoffPoint = result.projection.find((point) => point.balance <= 0) ?? projectionEnd;
+    const payoffPoint = result.projection.find((point) => point.balance <= 0);
     const payoffYears = payoffPoint?.year;
     const hasPayoffTerm = typeof payoffYears === 'number' && Number.isFinite(payoffYears) && payoffYears > 0;
     const safeBalance = Math.max(0, projectionEnd?.balance ?? 0);
+    const modeledYears = Math.max(0, projectionEnd?.year ?? 0);
 
     const headlineLabel = headline?.label ?? 'Primary result';
     const headlineValue = headline ? formatSummaryValue(headline.value, headline.currency, headline.suffix) : formatCurrency(0);
@@ -445,10 +454,14 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         ? `${headlineLabel} is ${headlineValue}. Supporting outputs from the same calculation: ${supportLine}.`
         : `${headlineLabel} is ${headlineValue}.`,
       realWorldImpact: [
-        hasPayoffTerm
-          ? `At current assumptions, the modeled timeline reaches payoff around ${payoffYears.toFixed(1)} years.`
-          : 'Use this output as the baseline before changing one variable at a time for stress tests.',
-        `Projected ending balance from this same model: ${formatCurrency(safeBalance)}.`,
+        isDebtStyleCalculator(slug) && hasPayoffTerm
+          ? `At current assumptions, this payoff model reaches a zero balance around ${payoffYears.toFixed(1)} years.`
+          : isGrowthCalculator(slug)
+            ? `This projection runs for ${modeledYears.toFixed(1)} years using your current contribution and return assumptions.`
+            : 'Use this output as the baseline before changing one variable at a time for stress tests.',
+        isGrowthCalculator(slug)
+          ? `Projected ending value from this same model: ${formatCurrency(safeBalance)}.`
+          : `Projected ending balance from this same model: ${formatCurrency(safeBalance)}.`,
         slug === 'mortgage-calculator'
           ? 'Monthly housing cost includes principal, interest, property tax, insurance, and PMI exactly as shown in the result cards.'
           : 'Use the exact result cards above as the source of truth before choosing your next step.',
@@ -461,6 +474,23 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     whatItMeans: resultNarrative.whatItMeans,
     realWorldImpact: resultNarrative.realWorldImpact,
   };
+  const dynamicFaq = useMemo(() => {
+    if (slug !== 'mortgage-calculator') return definition.faq;
+    const includesExtraPrincipal = (inputs.monthlyContribution ?? 0) > 0;
+    return [
+      definition.faq[0],
+      {
+        question: 'Exactly what is included in Estimated Total Monthly Cost?',
+        answer: includesExtraPrincipal
+          ? `It includes Monthly P&I, your extra principal payment (${formatCurrency(inputs.monthlyContribution ?? 0)}), property tax, homeowners insurance, and PMI.`
+          : 'It includes Monthly P&I, property tax, homeowners insurance, and PMI.'
+      },
+      {
+        question: 'Why is Total Paid (P&I) different from total housing cost?',
+        answer: 'Total Paid (P&I) only tracks principal-and-interest cashflows. Taxes, insurance, and PMI are listed separately so assumptions remain explicit.'
+      }
+    ].filter(Boolean) as Array<{ question: string; answer: string }>;
+  }, [definition.faq, formatCurrency, inputs.monthlyContribution, slug]);
   const aiContext = {
     pageType: 'calculator',
     pageTitle: definition.title,
@@ -632,7 +662,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         <div>
           <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Frequently Asked Questions</h2>
           <ul className="mt-3 space-y-3 text-sm text-slate-700 dark:text-slate-300">
-            {definition.faq.map((item) => (
+            {dynamicFaq.map((item) => (
               <li key={item.question}>
                 <p className="font-medium text-slate-900 dark:text-white">{item.question}</p>
                 <p>{item.answer}</p>
