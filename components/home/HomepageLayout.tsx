@@ -103,16 +103,16 @@ const trustSignals = [
 
 const trustStory = [
   {
-    title: 'Step 1: Set a baseline with your numbers',
-    text: 'Run one concrete scenario and lock the baseline output before reading provider rankings or promotional offers.'
+    title: '1) Capture your baseline output',
+    text: 'Run one scenario and save the baseline number before opening any ranking or offer page.'
   },
   {
-    title: 'Step 2: Stress-test a downside month',
-    text: 'A plan that only works in your best month usually fails in real life. Test one bad-month scenario before you commit.'
+    title: '2) Stress-test downside months',
+    text: 'Test a bad-month case before acting. A plan that survives stress is more useful than one that only works on good months.'
   },
   {
-    title: 'Step 3: Compare options by trade-off',
-    text: 'Comparison pages prioritize total cost, downside risk, flexibility, and fit — not commission rate.'
+    title: '3) Execute with clear trade-offs',
+    text: 'Then compare options by total cost, downside risk, and flexibility — not by promotion strength.'
   }
 ];
 
@@ -386,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          One workflow, three moves: baseline first, downside stress-test second, then compare final options.
+          Three-step process: baseline first, downside test second, action third.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
@@ -403,7 +403,7 @@ export function HomepageLayout() {
       </HumanJudgmentCallout>
 
       <section className="rounded-2xl border border-rose-100 bg-rose-50/40 p-5 dark:border-rose-900/40 dark:bg-rose-950/10">
-        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Before you compare products: one common mistake</h2>
+        <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Common comparison mistake to avoid</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           <div className="rounded-xl border border-rose-200 bg-white p-3 dark:border-rose-800/40 dark:bg-slate-900">
             <p className="font-semibold text-rose-700 dark:text-rose-400">Common move</p>

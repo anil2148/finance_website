@@ -29,10 +29,10 @@ export const calculateMortgage = (inputs: MortgageCalculatorInputs): CalculatorR
   return {
     title: 'Mortgage Projection',
     summary: [
-      { label: 'Monthly P&I Payment', value: basePayment, currency: true, helpText: 'Baseline principal-and-interest payment from your loan amount, APR, and term.' },
+      { label: 'Monthly P&I Payment', value: basePayment, currency: true, helpText: 'Principal-and-interest only payment from loan amount, APR, and term (excludes tax, insurance, PMI, and extra principal).' },
       { label: 'Extra Monthly Principal', value: safeExtraPrincipal, currency: true, helpText: 'Optional extra principal added monthly to reduce payoff time and total interest.' },
-      { label: 'Estimated Total Monthly Cost', value: totalMonthlyHousing, currency: true, helpText: `Monthly P&I${safeExtraPrincipal > 0 ? ' + Extra Monthly Principal' : ''} + property tax + home insurance + PMI.` },
-      { label: 'Total Interest', value: totalInterest, currency: true, helpText: 'Total financing cost over the payoff timeline.' },
+      { label: 'Estimated Total Monthly Cost', value: totalMonthlyHousing, currency: true, helpText: 'Monthly P&I + extra principal (if entered) + property tax + home insurance + PMI.' },
+      { label: 'Total Interest', value: totalInterest, currency: true, helpText: 'Total interest paid across principal-and-interest cashflows only (tax, insurance, and PMI excluded).' },
     ],
     projection,
     breakdown: [
@@ -45,7 +45,7 @@ export const calculateMortgage = (inputs: MortgageCalculatorInputs): CalculatorR
       { label: 'Interest Rate', value: `${safeInterestRate}%` },
       { label: 'Loan Term', value: `${safeYears} years` },
       { label: 'Estimated Payoff', value: `${(payoffMonths / 12).toFixed(1)} years` },
-      currencyBreakdown('Total Paid (P&I)', totalPaid)
+      currencyBreakdown('Total Paid (Principal + Interest)', totalPaid)
     ],
     chartKinds: ['amortization', 'pie', 'bar']
   };
