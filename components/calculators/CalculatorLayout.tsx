@@ -487,8 +487,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       {
         question: 'Exactly what is included in Estimated Total Monthly Cost?',
         answer: includesExtraPrincipal
-          ? `It includes Monthly P&I, your extra principal payment (${formatCurrency(inputs.monthlyContribution ?? 0)}), property tax, homeowners insurance, and PMI.`
-          : 'It includes Monthly P&I, property tax, homeowners insurance, and PMI.'
+          ? `It includes Monthly P&I (principal + interest), your Extra Monthly Principal payment (${formatCurrency(inputs.monthlyContribution ?? 0)}), property tax, homeowners insurance, and PMI.`
+          : 'It includes Monthly P&I (principal + interest), property tax, homeowners insurance, and PMI.'
       },
       {
         question: 'Why is Total Paid (Principal + Interest) different from total housing cost?',
@@ -759,6 +759,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           ))}
         </ul>
       </section>
+      <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
+
       <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 
       <AdUnit slot={AD_SLOTS.CALCULATOR} format="auto" className="my-2" />

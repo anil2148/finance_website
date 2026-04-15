@@ -14,6 +14,11 @@ export function CopilotBubble() {
   const pathname = usePathname();
   const { state, dispatch } = useCopilot();
   const pageContext = useAiPageContext();
+  const contextualLabel = pathname.includes('/calculators/')
+    ? 'Explain this result'
+    : pathname.includes('/learn/') || pathname.includes('/blog/') || pathname.includes('/compare/')
+      ? 'Ask AI about this page'
+      : 'Ask AI';
 
   if (state.isExecutionPanelOpen || pageContext.aiMode === 'hidden') return null;
 
@@ -34,7 +39,7 @@ export function CopilotBubble() {
       >
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
       </svg>
-      <span>{pathname.includes('/learn/') || pathname.includes('/blog/') ? 'Ask AI about this page' : 'Ask AI'}</span>
+      <span>{contextualLabel}</span>
     </button>
   );
 }

@@ -1687,7 +1687,7 @@ function DrawerEmptyState({
           Pick a topic below or type your situation to get an instant recommendation.
         </p>
         {pageContext?.groundingMessage ? (
-          <p className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-300">{pageContext.groundingMessage}</p>
+          <p className="mt-2 text-xs font-medium text-blue-600 dark:text-blue-300">Context loaded: {pageContext.groundingMessage}</p>
         ) : null}
       </div>
 
