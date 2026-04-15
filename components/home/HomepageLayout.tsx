@@ -236,7 +236,7 @@ export function HomepageLayout() {
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
-              Start with your real numbers, validate downside risk, then choose the option that remains safe under pressure.
+              Start with your numbers, prove the downside case, then commit only to options that still work in bad months.
             </p>
             <div className="flex flex-wrap gap-3">
               <AskAIButton
@@ -261,7 +261,7 @@ export function HomepageLayout() {
                 className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
               />
             </div>
-            <p className="text-xs text-blue-200">1) Start a decision → 2) Run the recommended calculator → 3) Choose and execute your next step.</p>
+            <p className="text-xs text-blue-200">Decision flow: triage with AI → run one calculator baseline → execute one concrete next step.</p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
@@ -307,8 +307,8 @@ export function HomepageLayout() {
       </aside>
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Decision proof paths</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Each path adds new value: baseline result first, then the most relevant guide or comparison.</p>
+        <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Proof paths by decision type</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Use these as direct playbooks: first run the matching calculator, then review one guide or comparison tied to that output.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -325,8 +325,8 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="segment-plans">
-        <h2 id="segment-plans" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Find the path that matches your situation</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Income stability, existing debt, and how close you are to a major purchase all change what the right move is — before any product comparison.</p>
+        <h2 id="segment-plans" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Start from your constraint, not product hype</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Pick the track that matches your income pattern and current obligations before reading any ranking page.</p>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
           {userSegments.map((segment) => (
             <article key={segment.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -384,9 +384,9 @@ export function HomepageLayout() {
       </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Execution sequence</h2>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          Use one sequence each time: lock a baseline number, run a downside scenario, then choose only from options that still hold up.
+          Every decision page follows one structure: result first, risk check second, next action third.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
