@@ -7,7 +7,6 @@ export type RouteMeta = {
 };
 
 const EXCLUDED_PREFIXES = [
-  '/blog/tag/',
   '/auth',
   '/dashboard',
   '/internal',
