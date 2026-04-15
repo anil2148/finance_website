@@ -64,7 +64,6 @@ function buildLoanProjection(principal: number, monthlyPayment: number, annualRa
 }
 
 export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
-  const safeNumber = (value: number, fallback = 0) => (Number.isFinite(value) ? value : fallback);
   const { currency, formatCurrency } = usePreferences();
   const isIndiaCurrency = currency === 'INR';
   const currencySymbol = getCurrencySymbol(currency, getLocaleForCurrency(currency));
@@ -92,7 +91,7 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
     const safeLiabilities = Math.max(0, toSafeNumber(liabilities, 0));
 
     if (type === 'networth') {
-      const value = safeNumber(assets) - safeNumber(liabilities);
+      const value = safeAssets - safeLiabilities;
       return {
         value,
         totalPaid: 0,
@@ -105,11 +104,6 @@ export function EmiCalculator({ type = 'loan' }: { type?: CalculatorType }) {
         ]
       };
     }
-
-    const safePrincipal = Math.max(0, safeNumber(principal));
-    const safeRate = Math.max(0, safeNumber(rate));
-    const safeYears = Math.max(1, safeNumber(years, 1));
-    const safeContribution = Math.max(0, safeNumber(contribution));
     const months = Math.max(1, safeYears * 12);
     const monthlyRate = safeRate / 12 / 100;
 
