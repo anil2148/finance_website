@@ -236,7 +236,7 @@ export function HomepageLayout() {
             </p>
             <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
             <p className="max-w-xl text-blue-100/95">
-              Run the decision with your numbers first, stress-test it, then choose the product or strategy that still works when life gets messy.
+              Start with your real numbers, validate downside risk, then choose the option that remains safe under pressure.
             </p>
             <div className="flex flex-wrap gap-3">
               <AskAIButton
@@ -275,8 +275,8 @@ export function HomepageLayout() {
                 className="object-cover"
               />
             </div>
-            <h2 className="text-xl font-semibold">Test before you commit</h2>
-            <p className="text-sm text-cyan-100">Run your scenario in a good month and a bad month. If only one works, rethink the plan before you move money.</p>
+            <h2 className="text-xl font-semibold">Proof before commitment</h2>
+            <p className="text-sm text-cyan-100">Each decision flow turns one input set into a concrete result, risk check, and next action.</p>
           </div>
         </div>
       </Card>
@@ -307,8 +307,8 @@ export function HomepageLayout() {
       </aside>
 
       <section aria-labelledby="what-to-do-first" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-        <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Proof by decision type</h2>
-        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Each path starts with one calculator result, then moves to the most relevant comparison or guide.</p>
+        <h2 id="what-to-do-first" className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Decision proof paths</h2>
+        <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Each path adds new value: baseline result first, then the most relevant guide or comparison.</p>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {goalCards.map((goal) => (
             <article key={goal.title} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
