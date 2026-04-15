@@ -31,7 +31,7 @@ export const calculateMortgage = (inputs: MortgageCalculatorInputs): CalculatorR
     summary: [
       { label: 'Monthly P&I Payment', value: basePayment, currency: true, helpText: 'Baseline principal-and-interest payment from your loan amount, APR, and term.' },
       { label: 'Extra Monthly Principal', value: safeExtraPrincipal, currency: true, helpText: 'Optional extra principal added monthly to reduce payoff time and total interest.' },
-      { label: 'Estimated Total Monthly Cost', value: totalMonthlyHousing, currency: true, helpText: 'P&I plus property tax, home insurance, and PMI inputs.' },
+      { label: 'Estimated Total Monthly Cost', value: totalMonthlyHousing, currency: true, helpText: `Monthly P&I${safeExtraPrincipal > 0 ? ' + Extra Monthly Principal' : ''} + property tax + home insurance + PMI.` },
       { label: 'Total Interest', value: totalInterest, currency: true, helpText: 'Total financing cost over the payoff timeline.' },
     ],
     projection,

@@ -103,16 +103,16 @@ const trustSignals = [
 
 const trustStory = [
   {
-    title: 'Quantify the baseline first',
+    title: 'Step 1: Set a baseline with your numbers',
     text: 'Run one concrete scenario and lock the baseline output before reading provider rankings or promotional offers.'
   },
   {
-    title: 'Pressure-test for bad months',
-    text: 'A plan that works only in your best month usually fails in real life. Stress-test with downside assumptions first.'
+    title: 'Step 2: Stress-test a downside month',
+    text: 'A plan that only works in your best month usually fails in real life. Test one bad-month scenario before you commit.'
   },
   {
-    title: 'Choose from transparent trade-offs',
-    text: 'Comparison pages focus on total cost, downside risk, flexibility, and fit — not commission rate.'
+    title: 'Step 3: Compare options by trade-off',
+    text: 'Comparison pages prioritize total cost, downside risk, flexibility, and fit — not commission rate.'
   }
 ];
 
@@ -386,7 +386,7 @@ export function HomepageLayout() {
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">How FinanceSphere works</h2>
         <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-          The system is simple: quantify your baseline, pressure-test downside risk, then choose the next concrete action.
+          One workflow, three moves: baseline first, downside stress-test second, then compare final options.
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
           {trustStory.map((item) => (
