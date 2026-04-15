@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { LazyVisible } from '@/components/common/LazyVisible';
 import { CalculatorHeader } from '@/components/calculators/CalculatorHeader';
 import { InputSlider } from '@/components/calculators/InputSlider';
@@ -334,73 +334,50 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   // Per-calculator specific insight layer
   const insightInputs = { ...INSIGHT_BASELINE_INPUTS, ...inputs } as BaseCalculatorInputs;
   const insight = getCalculatorInsight(slug, insightInputs, primaryMetric?.label ?? 'result');
-  const mortgageNarrative = useMemo(() => {
-    if (slug !== 'mortgage-calculator') return null;
-
-    const summaryMetrics = {
-      principalAndInterest: summaryByLabel.get('Monthly P&I Payment')?.value,
-      totalMonthlyCost: summaryByLabel.get('Estimated Total Monthly Cost')?.value,
-      totalInterest: summaryByLabel.get('Total Interest')?.value,
-    };
-    const projectionEnd = result.projection.at(-1);
-    const payoffPoint = result.projection.find((point) => point.balance <= 0) ?? projectionEnd;
-    const payoffYears = payoffPoint?.year ?? inputs.years;
-    const mortgagePrincipal = Math.max(0, inputs.homePrice - inputs.downPayment);
-    const totalPaid = mortgagePrincipal + (isValidNumber(summaryMetrics.totalInterest) ? summaryMetrics.totalInterest : 0);
-
-    const hasValidCoreOutputs =
-      isValidNumber(summaryMetrics.principalAndInterest) &&
-      isValidNumber(summaryMetrics.totalMonthlyCost) &&
-      isValidNumber(summaryMetrics.totalInterest) &&
-      isValidNumber(payoffYears) &&
-      isValidNumber(projectionEnd?.balance);
-
-    if (!hasValidCoreOutputs || !projectionEnd) {
+  const resultNarrative = useMemo(() => {
+    if (sanitizedSummary.length === 0) {
       return {
-        isReady: false,
         whatItMeans:
-          'Enter a complete mortgage scenario to unlock the interpretation. We only show narrative guidance when all required outputs are valid.',
-        realWorldImpact: [
-          'Summary cards and narrative will populate from one shared result model.',
-          'Once inputs are valid, this section explains the same payment and interest values shown above.',
-        ],
+          'Enter complete values to generate a full explanation. We only show narrative guidance once a valid result is available.',
+        realWorldImpact: ['The summary cards, table, and narrative all update from the same result output model.']
       };
     }
 
-    const safePrincipal = typeof mortgagePrincipal === 'number' ? mortgagePrincipal : 0;
-    const safePrincipalAndInterest = isValidNumber(summaryMetrics.principalAndInterest)
-      ? summaryMetrics.principalAndInterest
-      : 0;
-    const safeTotalMonthlyCost = isValidNumber(summaryMetrics.totalMonthlyCost)
-      ? summaryMetrics.totalMonthlyCost
-      : 0;
-    const safeTotalInterest = isValidNumber(summaryMetrics.totalInterest)
-      ? summaryMetrics.totalInterest
-      : 0;
-    const interestShare = safePrincipal > 0 ? (safeTotalInterest / safePrincipal) * 100 : 0;
-    const safeInterestShare = Number.isFinite(interestShare) ? interestShare : null;
-    const remainingBalance = Math.max(0, projectionEnd.balance ?? 0);
-    const interestShareText = safeInterestShare === null ? 'n/a' : `${safeInterestShare.toFixed(1)}%`;
-    const safeTotalPaid = typeof totalPaid === 'number' ? totalPaid : 0;
+    const headline = sanitizedSummary[0];
+    const supporting = sanitizedSummary.slice(1, 3);
+    const projectionEnd = result.projection.at(-1);
+    const payoffPoint = result.projection.find((point) => point.balance <= 0) ?? projectionEnd;
+    const payoffYears = payoffPoint?.year;
+    const hasPayoffTerm = typeof payoffYears === 'number' && Number.isFinite(payoffYears) && payoffYears > 0;
+    const safeBalance = Math.max(0, projectionEnd?.balance ?? 0);
+
+    const headlineLabel = headline?.label ?? 'Primary result';
+    const headlineValue = headline ? formatSummaryValue(headline.value, headline.currency, headline.suffix) : formatCurrency(0);
+    const supportLine = supporting
+      .map((item) => `${item.label}: ${formatSummaryValue(item.value, item.currency, item.suffix)}`)
+      .join('; ');
 
     return {
-      isReady: true,
-      whatItMeans: `Your principal-and-interest payment is ${formatCurrency(safePrincipalAndInterest)}, and your estimated total monthly housing cost is ${formatCurrency(safeTotalMonthlyCost)}. This scenario pays about ${formatCurrency(safeTotalInterest)} in interest (${interestShareText} of principal) over ${payoffYears.toFixed(1)} years.`,
+      whatItMeans: supportLine
+        ? `${headlineLabel} is ${headlineValue}. Supporting outputs from the same calculation: ${supportLine}.`
+        : `${headlineLabel} is ${headlineValue}.`,
       realWorldImpact: [
-        `Mortgage principal in this scenario: ${formatCurrency(safePrincipal)}.`,
-        `Total principal-and-interest paid across the modeled payoff timeline: ${formatCurrency(safeTotalPaid)}.`,
-        `Ending projected balance after the modeled term: ${formatCurrency(remainingBalance)}.`,
+        hasPayoffTerm
+          ? `At current assumptions, the modeled timeline reaches payoff around ${payoffYears.toFixed(1)} years.`
+          : 'Use this output as the baseline before changing one variable at a time for stress tests.',
+        `Projected ending balance from this same model: ${formatCurrency(safeBalance)}.`,
+        slug === 'mortgage-calculator'
+          ? 'Monthly housing cost includes principal, interest, property tax, insurance, and PMI exactly as shown in the result cards.'
+          : 'Use the exact result cards above as the source of truth before choosing your next step.',
       ],
     };
-  }, [formatCurrency, inputs.downPayment, inputs.homePrice, inputs.years, result.projection, slug, summaryByLabel]);
+  }, [formatCurrency, formatSummaryValue, result.projection, sanitizedSummary, slug]);
 
-  const displayedInsight = mortgageNarrative
-    ? {
-        ...insight,
-        whatItMeans: mortgageNarrative.whatItMeans,
-        realWorldImpact: mortgageNarrative.realWorldImpact,
-      }
-    : insight;
+  const displayedInsight = {
+    ...insight,
+    whatItMeans: resultNarrative.whatItMeans,
+    realWorldImpact: resultNarrative.realWorldImpact,
+  };
   const aiContext = {
     pageType: 'calculator',
     pageTitle: definition.title,
