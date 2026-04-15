@@ -76,7 +76,6 @@ const specializedCalculatorConfigs: Record<string, {
   audience: string;
   decision: string;
   firstAction?: string;
-  firstActionHint?: string;
   aiLabel: string;
   aiPrompts: string[];
   aiGroundingMessage: string;
@@ -90,7 +89,7 @@ const specializedCalculatorConfigs: Record<string, {
     firstAction: 'Set Home Price + Down Payment, then verify Monthly P&I against Estimated Total Monthly Cost.',
     firstActionHint: 'Use both values together before comparing lenders.',
     aiLabel: 'Ask AI about this result (use my numbers)',
-    aiPrompts: ['Explain this payment using my current numbers', 'What changes if rates increase by 1%?', 'What is a safer target monthly housing cost?'],
+    aiPrompts: ['Explain this result', 'Stress-test this scenario', 'What is a safer all-in monthly housing cost target?'],
     aiGroundingMessage: 'I’m using your current mortgage inputs and outputs from this page.'
   },
   'debt-snowball-calculator': {
@@ -99,10 +98,9 @@ const specializedCalculatorConfigs: Record<string, {
     introBody: 'Use this page to set a smallest-balance-first order and confirm your monthly payment pace is still realistic in lower-cashflow months.',
     audience: 'Borrowers managing multiple balances who need a consistent payoff sequence.',
     decision: 'Choose the payoff order and monthly payment level you can sustain through inconsistent months.',
-    firstAction: 'Enter combined balances and minimum payment, then set one realistic extra monthly payment.',
-    firstActionHint: 'Start with a payment level that survives a lower-income month.',
+    firstAction: 'Set your combined minimum payment and extra monthly payment first, then check payoff time and interest impact.',
     aiLabel: 'Ask AI about this result (use my numbers)',
-    aiPrompts: ['Explain this result using my current numbers', 'How much faster if I add $100 more each month?', 'How should I recover after one missed payment month?'],
+    aiPrompts: ['Explain this result', 'Stress-test this scenario', 'How should I recover after one missed payment month?'],
     aiGroundingMessage: 'I’m using your current debt snowball inputs and payoff outputs from this page.'
   },
   'debt-payoff-calculator': {
@@ -131,10 +129,9 @@ const specializedCalculatorConfigs: Record<string, {
     introBody: 'Use this page to turn contribution size, return assumptions, and timeline into a realistic long-term range you can sustain.',
     audience: 'Savers and investors planning long-term wealth growth.',
     decision: 'Set a contribution and timeline target that is durable in both normal and lower-income months.',
-    firstAction: 'Set your starting balance and monthly contribution first, then run one lower-return stress test.',
-    firstActionHint: 'Use the conservative outcome as your planning anchor.',
+    firstAction: 'Set your monthly contribution first, then test return and timeline assumptions one variable at a time.',
     aiLabel: 'Ask AI about this result (use my numbers)',
-    aiPrompts: ['Explain this projection with my current values', 'What happens if return is 2% lower?', 'How much more if I contribute an extra amount each month?'],
+    aiPrompts: ['Explain this result', 'Stress-test this scenario', 'How much more if I contribute an extra amount each month?'],
     aiGroundingMessage: 'I’m using your current compounding inputs and outputs from this page.'
   },
   'retirement-calculator': {
@@ -334,6 +331,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     introBody: definition.description,
     audience: 'People evaluating this exact money decision with real numbers.',
     decision: 'Use the result to choose your safest next step before comparing products.',
+    firstAction: 'Enter your current numbers first, then validate the first result card before adjusting assumptions.',
     aiLabel: 'Ask AI about this result (use my numbers)',
     aiPrompts: ['Explain this result using my current numbers', 'Stress-test this scenario with my current numbers', 'What is the safer next step from this result?'],
     aiGroundingMessage: `I’m using your current ${definition.title.toLowerCase()} inputs and outputs from this page.`,
@@ -471,7 +469,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           ? `Projected ending value from this same model: ${formatCurrency(safeBalance)}.`
           : `Projected ending balance from this same model: ${formatCurrency(safeBalance)}.`,
         slug === 'mortgage-calculator'
-          ? 'Monthly P&I covers principal + interest only. Estimated Total Monthly Cost adds property tax, insurance, PMI, and any extra principal exactly as shown in the result cards.'
+          ? 'Estimated Total Monthly Cost includes Monthly P&I, extra principal (if entered), property tax, insurance, and PMI exactly as shown in the result cards.'
           : 'Use the exact result cards above as the source of truth before choosing your next step.',
         slug === 'mortgage-calculator'
           ? 'Total Interest (P&I) and Total Paid (P&I) exclude property tax, homeowners insurance, and PMI by design so P&I cashflow stays explicit.'
@@ -497,8 +495,8 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           : 'It includes Monthly P&I (principal + interest), property tax, homeowners insurance, and PMI.'
       },
       {
-        question: 'Why is Total Paid (P&I) different from total housing cost?',
-        answer: 'Total Paid (P&I) tracks principal-and-interest cashflows only over the modeled payoff timeline. Taxes, insurance, and PMI are listed separately in monthly housing-cost assumptions.'
+        question: 'Why is Total Paid (Principal + Interest) different from total housing cost?',
+        answer: 'Total Paid (Principal + Interest) only tracks principal-and-interest cashflows. Taxes, insurance, and PMI are listed separately so assumptions remain explicit.'
       }
     ].filter(Boolean) as Array<{ question: string; answer: string }>;
   }, [definition.faq, formatCurrency, inputs.monthlyContribution, slug]);
@@ -565,12 +563,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Who this is for:</span> {activeConfig.audience}</p>
             <p className="rounded-xl border border-blue-200 bg-white p-3 text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200"><span className="font-semibold text-slate-900 dark:text-slate-100">Decision this page supports:</span> {activeConfig.decision}</p>
           </div>
-          {activeConfig.firstAction ? (
-            <p className="mt-3 rounded-xl border border-blue-200 bg-white p-3 text-sm text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200">
-              <span className="font-semibold text-slate-900 dark:text-slate-100">First action:</span> {activeConfig.firstAction}
-              {activeConfig.firstActionHint ? <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">{activeConfig.firstActionHint}</span> : null}
-            </p>
-          ) : null}
+          <p className="mt-3 rounded-xl border border-blue-200 bg-white p-3 text-sm text-slate-700 dark:border-blue-500/30 dark:bg-slate-900 dark:text-slate-200">
+            <span className="font-semibold text-slate-900 dark:text-slate-100">First action:</span> {activeConfig.firstAction}
+          </p>
         </section>
       ) : null}
 
@@ -780,6 +775,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           ))}
         </ul>
       </section>
+      <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 
       <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 

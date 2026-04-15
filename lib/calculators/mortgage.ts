@@ -45,7 +45,7 @@ export const calculateMortgage = (inputs: MortgageCalculatorInputs): CalculatorR
       { label: 'Interest Rate', value: `${safeInterestRate}%` },
       { label: 'Loan Term', value: `${safeYears} years` },
       { label: 'Estimated Payoff', value: `${(payoffMonths / 12).toFixed(1)} years` },
-      currencyBreakdown('Total Paid (P&I)', totalPaid)
+      currencyBreakdown('Total Paid (Principal + Interest)', totalPaid)
     ],
     chartKinds: ['amortization', 'pie', 'bar']
   };

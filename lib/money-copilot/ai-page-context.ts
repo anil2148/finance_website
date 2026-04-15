@@ -23,14 +23,14 @@ export type AiPageContextOverrides = Partial<AiPageContext> & Partial<RequiredAi
 function defaultSuggestedPrompts(region: 'US' | 'IN'): string[] {
   if (region === 'IN') {
     return [
-      'Explain this result using my current India numbers',
+      'Explain this result',
       'Stress-test this plan if rates rise by 1%',
-      'What is the safer monthly target for this scenario?',
+      'What is a safer monthly target for this scenario?',
     ];
   }
 
   return [
-    'Explain this result with my current numbers',
+    'Explain this result',
     'Stress-test this plan in a bad month',
     'What safer target should I use?',
   ];
@@ -448,8 +448,8 @@ export function buildBaseAiPageContext(pathname: string, title?: string): AiPage
     suggestedPrompts: defaultSuggestedPrompts(region),
     groundingMessage:
       region === 'IN'
-        ? 'I’m using the values shown on this India page, plus page title and region context.'
-        : 'I’m using the values shown on this page, plus page title and region context.',
+        ? `I’m using the values shown on this India page (${title ?? pageTitle}), plus page title and region context.`
+        : `I’m using the values shown on this page (${title ?? pageTitle}), plus page title and region context.`,
     aiMode: shouldHideContextualAi(pathname) ? 'hidden' : 'generic',
   };
 
