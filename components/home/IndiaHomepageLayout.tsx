@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Card } from '@/components/ui/card';
 import { ChartBarIcon, ShieldCheckIcon } from '@heroicons/react/24/outline';
 import { NewsletterForm } from '@/components/NewsletterForm';
+import { HeroDecisionRunner } from '@/components/home/HeroDecisionRunner';
 
 const goalCards = [
   {
@@ -167,6 +168,13 @@ export function IndiaHomepageLayout() {
             <p className="max-w-xl text-blue-100/95">
               India-specific scenarios for every major money decision: SIP vs FD, PPF vs ELSS, home loan affordability, and tax regime choice — grounded in real salary bands and cashflow realities.
             </p>
+            <HeroDecisionRunner
+              className="mt-4"
+              id="india-hero-question"
+              inputClassName="w-full rounded-xl border border-white/35 bg-white/10 px-3 py-2 text-sm text-white placeholder:text-blue-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300"
+              buttonClassName="rounded-xl bg-cyan-300 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-60"
+              cardClassName="border-white/35 bg-slate-900/60"
+            />
             <div className="flex flex-wrap gap-3" aria-label="India hero actions">
               {heroActions.map((action) => (
                 <Link
