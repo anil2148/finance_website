@@ -37,6 +37,7 @@ export function AICopilotPreview() {
   const [hasResponse, setHasResponse] = useState(true);
   const [isTyping, setIsTyping] = useState(false);
   const [expandedInsight, setExpandedInsight] = useState<string | null>(null);
+  const [downPayment, setDownPayment] = useState(20);
 
   const riskScore = 72;
 
@@ -45,6 +46,12 @@ export function AICopilotPreview() {
     if (riskScore >= 40) return 'Moderate risk';
     return 'Low risk';
   }, [riskScore]);
+
+  const adjustedMonthlyImpact = useMemo(() => {
+    const baseline = 3420;
+    const downPaymentDelta = (downPayment - 20) * 36;
+    return baseline - downPaymentDelta;
+  }, [downPayment]);
 
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -138,6 +145,27 @@ export function AICopilotPreview() {
                 ))}
               </ul>
 
+              <div className="mt-3 rounded-lg border border-slate-200 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
+                <label htmlFor="down-payment-slider" className="flex items-center justify-between gap-3 text-xs font-semibold">
+                  <span>Stress-test down payment</span>
+                  <span>{downPayment}%</span>
+                </label>
+                <input
+                  id="down-payment-slider"
+                  type="range"
+                  min={5}
+                  max={35}
+                  step={1}
+                  value={downPayment}
+                  onChange={(event) => setDownPayment(Number(event.target.value))}
+                  className="mt-2 w-full accent-blue-600"
+                  aria-label="Adjust down payment"
+                />
+                <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">
+                  Estimated monthly housing cost at this down payment: <span className="font-semibold">${adjustedMonthlyImpact.toLocaleString()}/mo</span>
+                </p>
+              </div>
+
               <div className="mt-3 space-y-2">
                 {insights.map((insight) => {
                   const isExpanded = expandedInsight === insight.id;
@@ -175,6 +203,26 @@ export function AICopilotPreview() {
             <p className="mt-2 text-sm">Mortgage: $2,430</p>
             <p className="text-sm">Taxes/insurance: $640</p>
             <p className="text-sm">Maintenance: $350</p>
+            <div className="mt-3 space-y-2" aria-label="Cost composition graph">
+              <div>
+                <div className="mb-1 flex justify-between text-xs">
+                  <span>Mortgage</span>
+                  <span>71%</span>
+                </div>
+                <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700">
+                  <div className="h-2 rounded-full bg-blue-600" style={{ width: '71%' }} />
+                </div>
+              </div>
+              <div>
+                <div className="mb-1 flex justify-between text-xs">
+                  <span>Tax + insurance</span>
+                  <span>19%</span>
+                </div>
+                <div className="h-2 rounded-full bg-slate-100 dark:bg-slate-700">
+                  <div className="h-2 rounded-full bg-cyan-500" style={{ width: '19%' }} />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/40">
             <h3 className="text-sm font-semibold">Risk alert</h3>
