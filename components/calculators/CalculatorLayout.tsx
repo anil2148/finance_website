@@ -330,6 +330,32 @@ function getRiskLevel(slug: string, baselineValue: number, worstValue: number): 
   return 'LOW';
 }
 
+const INPUT_PERSISTENCE_KEY = 'calculator-cross-page-inputs-v1';
+
+type FlowStep = {
+  title: string;
+  description: string;
+  matches: (fieldKey: keyof BaseCalculatorInputs) => boolean;
+};
+
+const FLOW_STEPS: FlowStep[] = [
+  {
+    title: 'Step 1 → Set your baseline',
+    description: 'Add your main amount and core assumptions so we can establish your starting scenario.',
+    matches: (key) => key === 'loanAmount' || key === 'homePrice' || key === 'downPayment' || key === 'interestRate' || key === 'expectedReturn',
+  },
+  {
+    title: 'Step 2 → Add monthly reality',
+    description: 'Add the monthly payment/contribution inputs that determine whether this plan is durable month to month.',
+    matches: (key) => key === 'minimumPayment' || key === 'monthlyContribution' || key === 'propertyTax' || key === 'insurance' || key === 'pmi',
+  },
+  {
+    title: 'Step 3 → Stress test timeline',
+    description: 'Set timeline and inflation assumptions, then compare baseline vs downside before deciding.',
+    matches: (key) => key === 'years' || key === 'inflationRate',
+  },
+];
+
 export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
   const [inputs, setInputs] = useState(() => buildStrictCalculatorInputs(definition.defaultInputs as BaseCalculatorInputs, slug));
@@ -350,6 +376,30 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     setHasRunCalculator(false);
     setHasSeenResult(false);
   }, [definition, slug]);
+
+  useEffect(() => {
+    const raw = window.localStorage.getItem(INPUT_PERSISTENCE_KEY);
+    if (!raw) return;
+
+    try {
+      const parsed = JSON.parse(raw) as Partial<BaseCalculatorInputs>;
+      setInputs((prev) => {
+        const merged = { ...prev };
+        for (const [key, value] of Object.entries(parsed)) {
+          if (typeof value === 'number' && Number.isFinite(value) && key in prev) {
+            merged[key as keyof BaseCalculatorInputs] = value;
+          }
+        }
+        return merged;
+      });
+    } catch {
+      // Ignore malformed storage payloads.
+    }
+  }, [slug]);
+
+  useEffect(() => {
+    window.localStorage.setItem(INPUT_PERSISTENCE_KEY, JSON.stringify(inputs));
+  }, [inputs]);
 
   useEffect(() => {
     if (!resultRef.current || hasSeenResult) {
@@ -382,6 +432,15 @@ export function CalculatorLayout({ slug }: { slug: string }) {
     body: 'Adjust sliders on the left, review summary cards, and then save or export your result below.'
   };
   const fieldMeta = useMemo(() => CALCULATOR_INPUT_SCHEMAS[slug] ?? [], [slug]);
+  const fieldsByStep = useMemo(
+    () =>
+      FLOW_STEPS.map((step) => fieldMeta.filter((field) => step.matches(field.key))),
+    [fieldMeta]
+  );
+  const activeStepFields = fieldsByStep[activeStep - 1] ?? [];
+  const fallbackFields = fieldMeta.filter((field) => !fieldsByStep.some((group) => group.some((grouped) => grouped.key === field.key)));
+  const displayedFields = activeStep === 3 ? [...activeStepFields, ...fallbackFields] : activeStepFields;
+  const stepLabels = FLOW_STEPS.map((step) => step.title);
   const specializedConfig = specializedCalculatorConfigs[slug];
   const activeConfig = specializedConfig ?? {
     eyebrow: `${definition.title.replace('Calculator', '').trim()} Decision Page`,
@@ -657,6 +716,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
         <div className="space-y-6">
           <section className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Guided flow</p>
+            <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">{FLOW_STEPS[activeStep - 1]?.description}</p>
             <div className="mt-3 grid gap-2 md:grid-cols-3">
               {stepLabels.map((label, index) => {
                 const stepNumber = index + 1;
@@ -676,7 +736,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </section>
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-4 rounded-3xl bg-slate-950 p-4 sm:p-6">
-              {fieldMeta.map((field) => (
+              {displayedFields.map((field) => (
                 <InputSlider
                   key={field.key}
                   label={field.label}
@@ -715,6 +775,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={formatSummaryDisplay(item.value, item.isValid, item.currency, item.suffix)} />
                 ))}
               </div>
+              <p className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                Based on your inputs, this baseline shows how your current plan performs before stress conditions are applied.
+              </p>
 
               <div className="flex flex-wrap items-center gap-3">
                 <button
@@ -786,6 +849,35 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           <section className="space-y-4 rounded-2xl border border-blue-200 bg-blue-50 p-5 dark:border-blue-500/40 dark:bg-blue-950/30">
             <h2 className="text-lg font-semibold text-blue-900 dark:text-blue-100">What this result means</h2>
             <p className="text-sm leading-6 text-blue-900 dark:text-blue-200">{displayedInsight.whatItMeans}</p>
+          </section>
+
+          <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Decision engine output</h2>
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">1. Baseline result</p>
+                <p className="mt-2 text-sm text-slate-800 dark:text-slate-100">Based on your inputs: {decisionInsight}</p>
+              </div>
+              <div className={`rounded-xl border p-3 ${riskTone}`}>
+                <p className="text-xs font-semibold uppercase tracking-wide">2. Risk level</p>
+                <p className="mt-2 text-sm font-semibold">{riskLevel} · {decisionSummary}</p>
+                <p className="mt-1 text-xs">Color coding: green = resilient, yellow = caution, red = high downside risk.</p>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">3. Recommendation</p>
+                <p className="mt-2 text-sm text-slate-800 dark:text-slate-100">{decisionRecommendation}</p>
+              </div>
+            </div>
+          </section>
+
+          <section className="space-y-3 rounded-2xl border border-rose-200 bg-rose-50 p-5 dark:border-rose-500/40 dark:bg-rose-950/20">
+            <h2 className="text-lg font-semibold text-rose-900 dark:text-rose-100">Worst-case scenario (+1% rates and lower monthly buffer)</h2>
+            <p className="text-sm text-rose-900 dark:text-rose-200">
+              Based on your inputs, if borrowing costs rise and monthly flexibility drops, your primary outcome shifts from{' '}
+              <span className="font-semibold">{formatSummaryDisplay(baselineValue, Boolean(primaryMetric?.isValid), primaryMetric?.currency, primaryMetric?.suffix)}</span>{' '}
+              to{' '}
+              <span className="font-semibold">{formatSummaryDisplay(worstBaselineValue, true, worstPrimaryMetric?.currency, worstPrimaryMetric?.suffix)}</span>.
+            </p>
           </section>
 
           <section className="space-y-3 rounded-2xl border border-indigo-200 bg-indigo-50 p-5 dark:border-indigo-500/40 dark:bg-indigo-950/30">
