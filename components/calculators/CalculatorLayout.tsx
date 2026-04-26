@@ -302,10 +302,39 @@ function isDebtStyleCalculator(slug: string): boolean {
   return slug.includes('loan') || slug.includes('debt') || slug.includes('credit-card') || slug === 'mortgage-calculator';
 }
 
+type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH';
+
+function buildWorstCaseInputs(baseInputs: BaseCalculatorInputs): BaseCalculatorInputs {
+  return {
+    ...baseInputs,
+    interestRate: Math.max(0, (baseInputs.interestRate ?? 0) + 1),
+    monthlyContribution: Math.max(0, Math.round((baseInputs.monthlyContribution ?? 0) * 0.8)),
+    minimumPayment: Math.max(0, Math.round((baseInputs.minimumPayment ?? 0) * 0.9)),
+    expectedReturn: Math.max(0, (baseInputs.expectedReturn ?? 0) - 1),
+  };
+}
+
+function getRiskLevel(slug: string, baselineValue: number, worstValue: number): RiskLevel {
+  if (!Number.isFinite(baselineValue) || !Number.isFinite(worstValue)) return 'HIGH';
+
+  if (isGrowthCalculator(slug)) {
+    const decline = baselineValue > 0 ? (baselineValue - worstValue) / baselineValue : 1;
+    if (decline >= 0.2) return 'HIGH';
+    if (decline >= 0.1) return 'MEDIUM';
+    return 'LOW';
+  }
+
+  const increase = baselineValue > 0 ? (worstValue - baselineValue) / baselineValue : 1;
+  if (increase >= 0.15) return 'HIGH';
+  if (increase >= 0.07) return 'MEDIUM';
+  return 'LOW';
+}
+
 export function CalculatorLayout({ slug }: { slug: string }) {
   const definition = calculatorMap[slug];
   const [inputs, setInputs] = useState(() => buildStrictCalculatorInputs(definition.defaultInputs as BaseCalculatorInputs, slug));
   const { currency, formatCurrency } = usePreferences();
+  const [activeStep, setActiveStep] = useState(1);
 
   const [showGuide, setShowGuide] = useState(false);
   const [hasRunCalculator, setHasRunCalculator] = useState(false);
@@ -342,6 +371,11 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   }, [hasSeenResult]);
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
+  const worstCaseInputs = useMemo(
+    () => buildWorstCaseInputs({ ...INSIGHT_BASELINE_INPUTS, ...inputs } as BaseCalculatorInputs),
+    [inputs]
+  );
+  const worstCaseResult = useMemo(() => definition.compute(worstCaseInputs), [definition, worstCaseInputs]);
   const relatedCalculators = calculatorDefinitions.filter((item) => item.slug !== slug).slice(0, 3);
   const guideMessage = guideMessageBySlug[slug] ?? {
     title: 'First-time walkthrough',
@@ -435,6 +469,21 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   };
   const primaryMetric = sanitizedSummary.find((item) => item.isValid) ?? sanitizedSummary[0];
   const baselineValue = primaryMetric?.isValid ? primaryMetric.value : 0;
+  const worstPrimaryMetric = worstCaseResult.summary.find((item) => Number.isFinite(item.value)) ?? worstCaseResult.summary[0];
+  const worstBaselineValue = Number.isFinite(worstPrimaryMetric?.value) ? worstPrimaryMetric.value : 0;
+  const riskLevel = getRiskLevel(slug, baselineValue, worstBaselineValue);
+  const riskTone = riskLevel === 'LOW' ? 'text-emerald-700 bg-emerald-100 border-emerald-300' : riskLevel === 'MEDIUM' ? 'text-amber-700 bg-amber-100 border-amber-300' : 'text-rose-700 bg-rose-100 border-rose-300';
+  const decisionSummary = riskLevel === 'LOW' ? 'Safe' : riskLevel === 'MEDIUM' ? 'Risky' : 'Unsustainable';
+  const decisionInsight = riskLevel === 'LOW'
+    ? 'You are on a resilient path if you maintain this pace.'
+    : riskLevel === 'MEDIUM'
+      ? 'You are near your limit and should tighten assumptions before committing.'
+      : 'You are over-leveraged for this setup under stress conditions.';
+  const decisionRecommendation = riskLevel === 'LOW'
+    ? 'Keep this plan and compare offers to lower fees/rates for additional safety.'
+    : riskLevel === 'MEDIUM'
+      ? 'Reduce target size or extend timeline slightly to create monthly breathing room.'
+      : 'Reduce home price/loan size or raise down payment/extra payment capacity before moving forward.';
   const summaryByLabel = useMemo(
     () => new Map(sanitizedSummary.map((item) => [item.label, item])),
     [sanitizedSummary]
@@ -606,6 +655,25 @@ export function CalculatorLayout({ slug }: { slug: string }) {
 
       <div className="grid gap-6">
         <div className="space-y-6">
+          <section className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Guided flow</p>
+            <div className="mt-3 grid gap-2 md:grid-cols-3">
+              {stepLabels.map((label, index) => {
+                const stepNumber = index + 1;
+                const isActive = activeStep === stepNumber;
+                return (
+                  <button
+                    key={label}
+                    type="button"
+                    onClick={() => setActiveStep(stepNumber)}
+                    className={`rounded-xl border px-3 py-2 text-left text-sm transition ${isActive ? 'border-blue-600 bg-blue-50 text-blue-800 dark:border-blue-400 dark:bg-blue-950/40 dark:text-blue-100' : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-4 rounded-3xl bg-slate-950 p-4 sm:p-6">
               {fieldMeta.map((field) => (
@@ -631,6 +699,14 @@ export function CalculatorLayout({ slug }: { slug: string }) {
                   }
                 />
               ))}
+              <div className="flex gap-2">
+                <button type="button" disabled={activeStep === 1} onClick={() => setActiveStep((prev) => Math.max(1, prev - 1))} className="rounded-lg border border-slate-600 px-3 py-1 text-xs font-semibold text-slate-200 disabled:opacity-40">
+                  Back
+                </button>
+                <button type="button" disabled={activeStep === 3} onClick={() => setActiveStep((prev) => Math.min(3, prev + 1))} className="rounded-lg bg-cyan-500 px-3 py-1 text-xs font-semibold text-slate-900 disabled:opacity-40">
+                  Continue
+                </button>
+              </div>
             </div>
 
             <div className="space-y-6">
@@ -810,6 +886,9 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </Link>
           <Link href={pathway.compare.href} className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-2 font-semibold text-slate-900 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100">
             {pathway.compare.label}
+          </Link>
+          <Link href={pathway.compare.href} className="rounded-lg bg-blue-700 px-3 py-2 font-semibold text-white hover:bg-blue-800">
+            Compare best options for YOUR scenario
           </Link>
         </div>
       </section>
