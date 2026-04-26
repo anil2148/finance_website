@@ -1,39 +1,17 @@
 import type { Metadata } from 'next';
-import { AdUnit } from '@/components/ui/AdUnit';
-import { AD_SLOTS } from '@/lib/adSlots';
+import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
   alternates: {
+    canonical: absoluteUrl('/'),
     languages: {
-      'en-US': '/',
-      'en-IN': '/in'
+      'en-US': absoluteUrl('/?region=us'),
+      'en-IN': absoluteUrl('/?region=in'),
+      'x-default': absoluteUrl('/')
     }
-  },
-  other: {
-    country: 'IN',
-    currency: 'INR'
   }
 };
 
 export default function IndiaLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'DefinedRegion',
-            name: 'India',
-            addressCountry: 'IN',
-            currency: 'INR'
-          })
-        }}
-      />
-      <div className="india-content editorial-content">
-        {children}
-        <AdUnit slot={AD_SLOTS.INDIA} format="auto" className="my-4" />
-      </div>
-    </>
-  );
+  return <>{children}</>;
 }

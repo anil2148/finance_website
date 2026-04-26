@@ -1,26 +1,26 @@
 import type { Metadata } from 'next';
-import { IndiaHomepageLayout } from '@/components/home/IndiaHomepageLayout';
+import { HomepageLayout } from '@/components/home/HomepageLayout';
 import { absoluteUrl, breadcrumbSchema, webpageSchema } from '@/lib/seo';
 
-const title = 'FinanceSphere India | SIP, EMI, Tax-Saving, and Money Decision Guides';
+const title = 'Make Smarter Money Decisions with Real Numbers | FinanceSphere';
 const description =
-  'FinanceSphere India helps you plan SIP investing, compare FD vs SIP, evaluate PPF vs ELSS, and estimate home loan EMI with practical ₹-based scenarios.';
+  'FinanceSphere helps you run calculators, compare products, and execute practical money decisions with region-specific defaults.';
 
 export const metadata: Metadata = {
   title,
   description,
   alternates: {
-    canonical: absoluteUrl('/in'),
+    canonical: absoluteUrl('/'),
     languages: {
-      'en-US': '/',
-      'en-IN': '/in',
-      'x-default': '/'
+      'en-US': absoluteUrl('/?region=us'),
+      'en-IN': absoluteUrl('/?region=in'),
+      'x-default': absoluteUrl('/')
     }
   },
   openGraph: {
     title,
     description,
-    url: absoluteUrl('/in'),
+    url: absoluteUrl('/'),
     type: 'website',
     locale: 'en_IN'
   },
@@ -36,13 +36,13 @@ export default function IndiaHomePage() {
     '@context': 'https://schema.org',
     '@graph': [
       webpageSchema({
-        pathname: '/in',
+        pathname: '/',
         name: title,
         description
       }),
       breadcrumbSchema([
         { name: 'Home', item: '/' },
-        { name: 'India', item: '/in' }
+        { name: 'India', item: '/?region=in' }
       ])
     ]
   };
@@ -50,7 +50,7 @@ export default function IndiaHomePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <IndiaHomepageLayout />
+      <HomepageLayout />
     </>
   );
 }

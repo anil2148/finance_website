@@ -12,9 +12,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: absoluteUrl('/'),
     languages: {
-      'en-US': '/',
-      'en-IN': '/in',
-      'x-default': '/'
+      'en-US': absoluteUrl('/?region=us'),
+      'en-IN': absoluteUrl('/?region=in'),
+      'x-default': absoluteUrl('/')
     }
   },
   openGraph: {

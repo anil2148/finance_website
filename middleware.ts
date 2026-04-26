@@ -100,6 +100,22 @@ export function middleware(request: NextRequest) {
   const host = headers.get('host')?.toLowerCase() ?? '';
   const forwardedProto = headers.get('x-forwarded-proto')?.toLowerCase() ?? nextUrl.protocol.replace(':', '');
 
+
+  const requestedRegion = parsePreferredRegion(nextUrl.searchParams.get('region'));
+  if (requestedRegion) {
+    const cleanUrl = new URL(request.url);
+    cleanUrl.searchParams.delete('region');
+    const response = NextResponse.redirect(cleanUrl, 307);
+    response.cookies.set(PREFERRED_REGION_COOKIE, requestedRegion, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      sameSite: 'lax',
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production'
+    });
+    return response;
+  }
+
   const canonicalPathname = getCanonicalPathname(pathname);
   const shouldCanonicalizeOrigin = NON_PRIMARY_HOSTS.has(host) || host !== PRIMARY_HOST || forwardedProto !== 'https';
   const shouldCanonicalizePath = canonicalPathname !== pathname;

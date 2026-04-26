@@ -6,12 +6,13 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
-import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
+import { getCountryForPath, getCountryAwarePath, getCountrySwitchPath } from '@/lib/preferences';
 import { setPreferredRegionCookie } from '@/lib/region-preference';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem } from '@/components/navbar/NavItem';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
+import { useRegion } from '@/components/providers/RegionProvider';
 import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 
 type NavLink = {
@@ -25,13 +26,6 @@ const globalLinks: NavLink[] = [
   { label: 'Calculators', href: '/calculators' },
   { label: 'AI Copilot', href: '/ai-money-copilot' },
   { label: 'Learn', href: '/learn' }
-];
-
-const indiaLinks: NavLink[] = [
-  { label: 'Decisions', href: '/in/loans' },
-  { label: 'Calculators', href: '/in/calculators' },
-  { label: 'AI Copilot', href: '/ai-money-copilot' },
-  { label: 'Learn', href: '/in/banking' }
 ];
 
 function isActive(pathname: string, href: string) {
@@ -65,6 +59,7 @@ export function AppNavbar() {
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
+  const { region } = useRegion();
   const { dispatch } = useCopilot();
   const pageContext = useAiPageContext();
 
@@ -82,9 +77,9 @@ export function AppNavbar() {
   }, []);
 
   const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
-  const links = useMemo(() => (isIndiaContext ? indiaLinks : globalLinks), [isIndiaContext]);
-  const currentRegionLabel = isIndiaContext ? 'India' : 'US';
-  const currentCurrencyLabel = isIndiaContext ? 'INR' : 'USD';
+  const links = useMemo(() => globalLinks.map((link) => ({ ...link, href: link.href ? getCountryAwarePath(link.href, country) : link.href })), [country]);
+  const currentRegionLabel = region === 'in' ? 'India' : 'US';
+  const currentCurrencyLabel = region === 'in' ? 'INR' : 'USD';
 
   const switchRegion = useCallback((nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);

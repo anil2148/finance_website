@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { FormEvent, useMemo, useState } from 'react';
 import type { CopilotResponse } from '@/lib/money-copilot/types';
+import { useRegion } from '@/components/providers/RegionProvider';
 
 type StreamState = 'idle' | 'loading' | 'streaming' | 'done' | 'error';
 
@@ -31,6 +32,7 @@ export function HeroDecisionRunner({
   cardClassName?: string;
   id?: string;
 }) {
+  const { region } = useRegion();
   const [question, setQuestion] = useState('');
   const [streamState, setStreamState] = useState<StreamState>('idle');
   const [result, setResult] = useState<CopilotResponse | null>(null);
@@ -54,11 +56,11 @@ export function HeroDecisionRunner({
     setStreamingText('');
 
     try {
-      const region = window.location.pathname.startsWith('/in') ? 'India' : 'US';
+      const detectedRegion = region === 'in' ? 'India' : 'US';
       const response = await fetch('/api/money-copilot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: prompt, context: '', scenarios: [], region }),
+        body: JSON.stringify({ question: prompt, context: '', scenarios: [], region: detectedRegion }),
         signal: AbortSignal.timeout(60_000)
       });
       if (!response.ok) throw new Error('Request failed');
