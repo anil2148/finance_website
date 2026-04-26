@@ -16,6 +16,7 @@ const ignoredFiles = new Set([
   'public/angular_16_plus.html',
   'public/docker_kubernetes_guide.html'
 ]);
+const knownLearnClusters = new Set(['budgeting', 'credit-cards', 'investing', 'loans', 'passive-income', 'strategy-playbooks']);
 
 function walk(dir) {
   const out = [];
@@ -88,12 +89,16 @@ function normalizeInternalPath(href) {
 function isKnownRoute(pathname, knownRoutes) {
   if (knownRoutes.has(pathname)) return true;
 
+  if (pathname.startsWith('/learn/')) {
+    const segment = pathname.slice('/learn/'.length).split('/')[0];
+    return Boolean(segment) && knownLearnClusters.has(segment);
+  }
+
   return (
     pathname.startsWith('/blog/') ||
     pathname.startsWith('/go/') ||
     pathname.startsWith('/blog/category/') ||
     pathname.startsWith('/blog/tag/') ||
-    pathname.startsWith('/learn/') ||
     pathname.startsWith('/compare/credit-cards-for/') ||
     pathname.startsWith('/newsletter/confirm/')
   );
