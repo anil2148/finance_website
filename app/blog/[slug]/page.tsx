@@ -4,6 +4,7 @@ import { notFound, redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getHeadings, getPostBySlug, getPosts } from '@/lib/markdown';
 import { InteractiveArticleContent } from '@/components/blog/InteractiveArticleContent';
+import { DecisionFunnelTemplate } from '@/components/blog/DecisionFunnelTemplate';
 import { absoluteUrl, articleSchema, breadcrumbSchema, webpageSchema } from '@/lib/seo';
 import { SocialShareButtons } from '@/components/ui/SocialShareButtons';
 import { ArticleTrustPanel } from '@/components/blog/ArticleTrustPanel';
@@ -343,7 +344,16 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
         </ul>
       </section>
 
-      <InteractiveArticleContent content={post.content} />
+      <DecisionFunnelTemplate
+        calculatorHref={calculatorSupportLinks[0]?.href ?? '/calculators'}
+        calculatorLabel={calculatorSupportLinks[0]?.label ?? 'Finance calculators'}
+      />
+
+      <InteractiveArticleContent
+        content={post.content}
+        calculatorHref={calculatorSupportLinks[0]?.href ?? '/calculators'}
+        calculatorLabel={calculatorSupportLinks[0]?.label ?? 'Finance calculators'}
+      />
 
       <AdUnit slot={AD_SLOTS.BLOG_POST_TOP} format="auto" className="my-2" />
 
@@ -367,8 +377,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       </section>
 
       <section className="rounded-2xl border border-blue-200 bg-white p-5 dark:border-blue-500/40 dark:bg-slate-900">
-        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Get the decision checklist</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Use this form to receive structured weekly decision playbooks tied to calculators and scenario analysis.</p>
+        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Get a weekly plan based on your situation</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Tell us your decision focus and we will send a personalized weekly action plan with the exact calculator + scenario flow.</p>
         <NewsletterForm source="blog" leadMagnet="7-day-money-reset-checklist" className="mt-4 max-w-2xl border-2 border-blue-100" />
       </section>
 
@@ -454,8 +464,8 @@ export default function BlogArticlePage({ params }: { params: { slug: string } }
       <AdUnit slot={AD_SLOTS.BLOG_POST_BOTTOM} format="auto" className="my-2" />
 
       <section className="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/40">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Where to go next</h2>
-        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Complete one decision loop: read the guide, run the numbers, then compare options before committing.</p>
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Get a weekly plan based on your situation</h2>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Pick your next move now: run one scenario, compare one option, then commit to one action before you leave this page.</p>
         <div className="mt-3 grid gap-3 text-sm md:grid-cols-3">
           <article className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
             <h3 className="font-semibold text-slate-900 dark:text-slate-100">Go deeper</h3>
