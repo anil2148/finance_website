@@ -15,7 +15,7 @@ export function DecisionDashboardPreview() {
       <h2 id="decision-dashboard-title" className="text-xl font-semibold">Decision dashboard</h2>
       <div className="mt-4 grid gap-4 lg:grid-cols-4">
         <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700 lg:col-span-2">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Active decisions</h3>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Saved decisions</h3>
           <ul className="mt-2 space-y-2">
             {activeDecisions.map((decision) => (
               <li key={decision.title} className="rounded-lg bg-slate-50 p-3 text-sm dark:bg-slate-800">
@@ -33,7 +33,7 @@ export function DecisionDashboardPreview() {
         </article>
 
         <article className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Recommended actions</h3>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Suggested next actions</h3>
           <ul className="mt-2 list-disc space-y-1 pl-4 text-xs text-slate-600 dark:text-slate-300">
             <li>Build 3-month emergency reserve</li>
             <li>Cap housing cost at 33% income</li>
@@ -42,8 +42,8 @@ export function DecisionDashboardPreview() {
         </article>
       </div>
 
-      <article className="mt-4 rounded-xl border border-slate-200 p-4 dark:border-slate-700" aria-label="Saved scenarios chart">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Saved scenarios</h3>
+      <article className="mt-4 rounded-xl border border-slate-200 p-4 dark:border-slate-700" aria-label="Scenario comparisons chart">
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Scenario comparisons</h3>
         <div className="mt-3 space-y-2">
           {savedScenarios.map((scenario) => (
             <div key={scenario.name}>
