@@ -69,7 +69,7 @@ export default function CreditCardsPage() {
         <div className="flex flex-wrap gap-2 text-sm">
           <Link href="/best-credit-cards-2026" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Open full comparison framework</Link>
           <Link href="/calculators/credit-card-payoff-calculator" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">Run payoff calculator</Link>
-          <Link href="/blog/credit-card-apr-2026-what-your-rate-costs" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">APR cost guide</Link>
+          <Link href="/blog/credit-card-apr-what-it-actually-costs" className="rounded-full border border-slate-300 px-3 py-1 font-medium text-slate-700 hover:border-blue-300 hover:text-blue-700">APR cost guide</Link>
         </div>
       </header>
 
