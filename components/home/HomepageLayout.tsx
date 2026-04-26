@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
+import { useRegion } from '@/components/providers/RegionProvider';
+import { REGION_FINANCE_CONTEXT } from '@/lib/region-finance-context';
 
 type DecisionKey = 'debt' | 'home' | 'invest' | 'retire';
 
@@ -99,24 +101,8 @@ const behavioralInsights = [
 ];
 
 export function HomepageLayout() {
-  const [selectedDecision, setSelectedDecision] = useState<DecisionKey>('home');
-  const [showWeeklyPlanCta, setShowWeeklyPlanCta] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const scrollTop = window.scrollY;
-      const totalScrollable = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalScrollable <= 0) return;
-      const progress = scrollTop / totalScrollable;
-      setShowWeeklyPlanCta(progress >= 0.5);
-    };
-
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  const preview = useMemo(() => previewByDecision[selectedDecision], [selectedDecision]);
+  const { region } = useRegion();
+  const financeContext = REGION_FINANCE_CONTEXT[region];
 
   return (
     <section className="space-y-8 pb-24" aria-label="FinanceSphere homepage">
@@ -162,11 +148,41 @@ export function HomepageLayout() {
         ))}
       </section>
 
-      <section className="rounded-2xl border border-cyan-200 bg-cyan-50/70 p-5 dark:border-cyan-800/60 dark:bg-cyan-950/30" aria-live="polite" aria-label="Live output preview">
-        <p className="text-xs font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">Live output preview</p>
-        <p className="mt-2 text-lg font-semibold text-slate-900 dark:text-slate-50">{preview.output} <span className="text-rose-600 dark:text-rose-300">→ {preview.risk}</span></p>
-        <p className="mt-1 text-sm text-slate-700 dark:text-slate-200">{preview.action}</p>
-        <Link href="/comparison" className="mt-4 inline-flex text-sm font-semibold text-cyan-700 hover:text-cyan-600 dark:text-cyan-300">Run this stress test →</Link>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-label="Regional money context">
+        <h2 className="text-xl font-semibold">Regional assumptions driving your results</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-4 text-sm">
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Currency</p>
+            <p className="mt-1 font-semibold">{financeContext.currencySymbol} localized defaults</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Interest rates</p>
+            <p className="mt-1 font-semibold">{financeContext.interestRateRange}</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax assumptions</p>
+            <p className="mt-1 font-semibold">{financeContext.taxAssumption}</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Priority products</p>
+            <p className="mt-1 font-semibold">{financeContext.primaryProducts.join(' • ')}</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-3" aria-label="Decision platform highlights">
+        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Cards over walls of text</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Decision cards summarize cost, downside, and next action in one view.</p>
+        </article>
+        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Graphs and sliders</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Scenario bars and risk sliders make trade-offs obvious in seconds.</p>
+        </article>
+        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Fast loading</h2>
+          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Heavy calculator previews are lazy loaded to help keep LCP under 2.5s.</p>
+        </article>
       </section>
 
       <section className="space-y-3" aria-label="Decision paths">
