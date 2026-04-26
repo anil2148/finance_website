@@ -10,13 +10,10 @@ import {
 import { slugifyTag } from '@/lib/tagSlug';
 
 const PRIMARY_HOST = 'www.financesphere.io';
-// Hosts that must always redirect to PRIMARY_HOST regardless of protocol.
-// PRIMARY_HOST itself is excluded here; its HTTP→HTTPS redirect is handled explicitly below.
-const NON_WWW_HOSTS = new Set(['financesphere.io']);
+const NON_PRIMARY_HOSTS = new Set(['financesphere.io']);
 
 const LEGACY_ROUTE_REDIRECTS: Record<string, string> = {
   '/about-us': '/about',
-  '/about-us/': '/about',
   '/mortgage-calculator': '/calculators/mortgage-calculator',
   '/loan-calculator': '/calculators/loan-calculator',
   '/compound-interest-calculator': '/calculators/compound-interest-calculator',
@@ -24,7 +21,6 @@ const LEGACY_ROUTE_REDIRECTS: Record<string, string> = {
   '/debt-payoff-calculator': '/calculators/debt-payoff-calculator',
   '/mortgage-rate-comparison': '/compare/mortgage-rate-comparison'
 };
-
 
 type HomepageRoutingDecision =
   | { action: 'next' }
@@ -38,34 +34,64 @@ type HomepageRoutingInput = {
 };
 
 export function getHomepageRoutingDecision({ pathname, preferredRegion, userAgent, countryCode }: HomepageRoutingInput): HomepageRoutingDecision {
-  if (pathname !== '/') {
-    return { action: 'next' };
-  }
-
-  if (preferredRegion === 'in') {
-    return { action: 'redirect', region: 'in' };
-  }
-
-  if (preferredRegion === 'us') {
-    return { action: 'next' };
-  }
-
-  if (isBotUserAgent(userAgent)) {
-    return { action: 'next' };
-  }
+  if (pathname !== '/') return { action: 'next' };
+  if (preferredRegion === 'in') return { action: 'redirect', region: 'in' };
+  if (preferredRegion === 'us') return { action: 'next' };
+  if (isBotUserAgent(userAgent)) return { action: 'next' };
 
   const detectedRegion = detectRegionFromCountry(countryCode);
-  if (detectedRegion === 'in') {
-    return { action: 'redirect', region: 'in' };
-  }
+  if (detectedRegion === 'in') return { action: 'redirect', region: 'in' };
 
   return { action: 'next' };
 }
 
-function redirectToRegionHomepage(request: NextRequest, region: PreferredRegion) {
-  const url = request.nextUrl.clone();
-  url.pathname = region === 'in' ? '/in' : '/';
-  return NextResponse.redirect(url, 307);
+function normalizePathname(pathname: string): string {
+  if (pathname !== '/' && pathname.endsWith('/')) {
+    return pathname.replace(/\/+$/, '') || '/';
+  }
+  return pathname;
+}
+
+function getCanonicalPathname(pathname: string): string {
+  let nextPath = normalizePathname(pathname);
+
+  const legacyRedirectTarget = LEGACY_ROUTE_REDIRECTS[nextPath];
+  if (legacyRedirectTarget) {
+    nextPath = legacyRedirectTarget;
+  }
+
+  if (nextPath.startsWith('/blog/category/')) {
+    const rawCategory = nextPath.slice('/blog/category/'.length);
+    if (rawCategory && !rawCategory.includes('/')) {
+      const canonicalTag = slugifyTag(rawCategory);
+      if (canonicalTag) return `/blog/tag/${canonicalTag}`;
+    }
+  }
+
+  if (nextPath.startsWith('/tag/') || nextPath.startsWith('/topic/')) {
+    const rawTag = nextPath.replace(/^\/(?:tag|topic)\//, '').split('/')[0];
+    const canonicalTag = slugifyTag(rawTag);
+    if (canonicalTag) return `/blog/tag/${canonicalTag}`;
+  }
+
+  if (nextPath.startsWith('/blog/tag/')) {
+    const rawTagSegment = nextPath.slice('/blog/tag/'.length);
+    const hasNestedPath = rawTagSegment.includes('/');
+    if (!hasNestedPath && rawTagSegment) {
+      const canonicalTag = slugifyTag(rawTagSegment);
+      if (canonicalTag) return `/blog/tag/${canonicalTag}`;
+    }
+  }
+
+  return nextPath;
+}
+
+function redirectToCanonical(request: NextRequest, pathname: string, permanent = true) {
+  const redirectUrl = new URL(request.url);
+  redirectUrl.protocol = 'https:';
+  redirectUrl.host = PRIMARY_HOST;
+  redirectUrl.pathname = pathname;
+  return NextResponse.redirect(redirectUrl, permanent ? 308 : 307);
 }
 
 export function middleware(request: NextRequest) {
@@ -74,39 +100,12 @@ export function middleware(request: NextRequest) {
   const host = headers.get('host')?.toLowerCase() ?? '';
   const forwardedProto = headers.get('x-forwarded-proto')?.toLowerCase() ?? nextUrl.protocol.replace(':', '');
 
-  if (NON_WWW_HOSTS.has(host) || (host === PRIMARY_HOST && forwardedProto !== 'https')) {
-    const redirectUrl = new URL(nextUrl.pathname + nextUrl.search, `https://${PRIMARY_HOST}`);
-    return NextResponse.redirect(redirectUrl, 308);
-  }
+  const canonicalPathname = getCanonicalPathname(pathname);
+  const shouldCanonicalizeOrigin = NON_PRIMARY_HOSTS.has(host) || host !== PRIMARY_HOST || forwardedProto !== 'https';
+  const shouldCanonicalizePath = canonicalPathname !== pathname;
 
-  const legacyRedirectTarget = LEGACY_ROUTE_REDIRECTS[pathname];
-  if (legacyRedirectTarget) {
-    const redirectUrl = nextUrl.clone();
-    redirectUrl.pathname = legacyRedirectTarget;
-    return NextResponse.redirect(redirectUrl, 301);
-  }
-
-  if (pathname.startsWith('/tag/') || pathname.startsWith('/topic/')) {
-    const rawTag = pathname.replace(/^\/(?:tag|topic)\//, '').split('/')[0];
-    const canonicalTag = slugifyTag(rawTag);
-    if (canonicalTag) {
-      const redirectUrl = nextUrl.clone();
-      redirectUrl.pathname = `/blog/tag/${canonicalTag}`;
-      return NextResponse.redirect(redirectUrl, 301);
-    }
-  }
-
-  if (pathname.startsWith('/blog/tag/')) {
-    const rawTagSegment = pathname.slice('/blog/tag/'.length);
-    const hasNestedPath = rawTagSegment.includes('/');
-    if (!hasNestedPath && rawTagSegment) {
-      const canonicalTag = slugifyTag(rawTagSegment);
-      if (canonicalTag && rawTagSegment !== canonicalTag) {
-        const redirectUrl = nextUrl.clone();
-        redirectUrl.pathname = `/blog/tag/${canonicalTag}`;
-        return NextResponse.redirect(redirectUrl, 301);
-      }
-    }
+  if (shouldCanonicalizeOrigin || shouldCanonicalizePath) {
+    return redirectToCanonical(request, canonicalPathname, true);
   }
 
   const decision = getHomepageRoutingDecision({
@@ -117,7 +116,7 @@ export function middleware(request: NextRequest) {
   });
 
   if (decision.action === 'redirect') {
-    return redirectToRegionHomepage(request, decision.region);
+    return redirectToCanonical(request, decision.region === 'in' ? '/in' : '/', false);
   }
 
   return NextResponse.next();

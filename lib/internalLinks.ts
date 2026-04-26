@@ -1,3 +1,4 @@
+import { toCanonicalInternalHref } from '@/lib/seo-urls';
 export type RelatedLink = { label: string; href: string; type: 'article' | 'calculator' | 'comparison' | 'hub' };
 
 const categoryLinks: Record<string, RelatedLink[]> = {
@@ -78,13 +79,17 @@ const fallbackByKeyword: Array<{ keyword: string; key: keyof typeof categoryLink
   { keyword: 'tax', key: 'investing' }
 ];
 
+function canonicalizeLinks(links: RelatedLink[]) {
+  return links.map((link) => ({ ...link, href: toCanonicalInternalHref(link.href) }));
+}
+
 export function getRelatedLinks(category: string) {
-  if (categoryLinks[category]) return categoryLinks[category];
+  if (categoryLinks[category]) return canonicalizeLinks(categoryLinks[category]);
 
   const normalized = category.toLowerCase();
   const fallback = fallbackByKeyword.find((item) => normalized.includes(item.keyword));
 
-  return fallback ? categoryLinks[fallback.key] : categoryLinks.budgeting;
+  return canonicalizeLinks(fallback ? categoryLinks[fallback.key] : categoryLinks.budgeting);
 }
 
 export function getClusterForCategory(category: string) {
@@ -125,5 +130,5 @@ export function getDiversifiedMoneyLinks(cluster: string) {
     ]
   };
 
-  return options[cluster] ?? options.budgeting;
+  return canonicalizeLinks(options[cluster] ?? options.budgeting);
 }

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import redirectMap from '@/content/audit/blog-redirect-map.json';
-import { getCategories, getPosts, getTags } from '@/lib/markdown';
+import { getPosts, getTags } from '@/lib/markdown';
 import { getCanonicalUrl, isIndexableRoute } from '@/lib/seo-locale-routes';
 import { shouldIncludeInSitemap, type RouteMeta } from '@/lib/seo/sitemap-filter';
 
@@ -137,16 +137,6 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
     }))
     .filter((entry) => isSitemapEligible(entry.pathname, entry.meta));
 
-  const blogCategoryEntries = getCategories()
-    .map((category) => ({
-      pathname: `/blog/category/${category}`,
-      lastModified: BUILD_TIMESTAMP,
-      meta: {
-        seoQuality: 'weak' as const
-      }
-    }))
-    .filter((entry) => isSitemapEligible(entry.pathname, entry.meta));
-
   const learnEntries = LEARN_CLUSTERS
     .map((cluster) => ({
       pathname: `/learn/${cluster}`,
@@ -173,7 +163,6 @@ function getDynamicIndexableRoutes(): SitemapEntry[] {
 
   return [
     ...blogPostEntries,
-    ...blogCategoryEntries,
     ...blogTagEntries,
     ...learnEntries,
     ...regionEntries,
