@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { InlineScenarioModule } from '@/components/blog/InlineScenarioModule';
 
 type Section = {
   id: string;
@@ -125,12 +126,20 @@ function parseLinkCluster(paragraph: string) {
   return linkMatches.map((match) => ({ label: match[1], href: match[2] }));
 }
 
-export function InteractiveArticleContent({ content }: { content: string }) {
+export function InteractiveArticleContent({
+  content,
+  calculatorHref,
+  calculatorLabel
+}: {
+  content: string;
+  calculatorHref: string;
+  calculatorLabel: string;
+}) {
   const sections = useMemo(() => parseSections(content), [content]);
 
   return (
     <div className="article-prose space-y-10">
-      {sections.map((section) => {
+      {sections.map((section, sectionIndex) => {
         const paragraphBuffer: string[] = [];
         const elements: JSX.Element[] = [];
         let pendingAnchorId: string | null = null;
@@ -412,15 +421,19 @@ export function InteractiveArticleContent({ content }: { content: string }) {
 
         flushParagraph();
 
+        const shouldInsertInteraction = (sectionIndex + 1) % 2 === 0 && sectionIndex !== sections.length - 1;
+
         return (
-          <section
-            key={section.id}
-            id={section.id}
-            className="scroll-mt-24 space-y-6 rounded-xl border border-neutral-200 bg-white p-5 sm:p-6 dark:border-neutral-700 dark:bg-neutral-900"
-          >
-            <h2 className="text-2xl font-semibold leading-tight text-neutral-900 dark:text-neutral-100">{section.title}</h2>
-            <div className={isFaqSection ? 'faq-block space-y-4' : 'space-y-5 [&_a]:font-medium'}>{elements}</div>
-          </section>
+          <div key={`${section.id}-wrap`} className="space-y-6">
+            <section
+              id={section.id}
+              className="scroll-mt-24 space-y-6 rounded-xl border border-neutral-200 bg-white p-5 sm:p-6 dark:border-neutral-700 dark:bg-neutral-900"
+            >
+              <h2 className="text-2xl font-semibold leading-tight text-neutral-900 dark:text-neutral-100">{section.title}</h2>
+              <div className={isFaqSection ? 'faq-block space-y-4' : 'space-y-5 [&_a]:font-medium'}>{elements}</div>
+            </section>
+            {shouldInsertInteraction ? <InlineScenarioModule calculatorHref={calculatorHref} calculatorLabel={calculatorLabel} /> : null}
+          </div>
         );
       })}
     </div>
