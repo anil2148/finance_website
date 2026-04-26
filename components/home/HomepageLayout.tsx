@@ -42,8 +42,8 @@ export function HomepageLayout() {
         <div className="mt-3 flex flex-wrap gap-2 text-sm">
           <Link href="/comparison" className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-800">Decisions</Link>
           <Link href="/calculators" className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-800">Calculators</Link>
-          <Link href="/learn" className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-800">Learn</Link>
           <Link href="/ai-money-copilot" className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-800">AI Copilot</Link>
+          <Link href="/learn" className="rounded-full border border-slate-300 px-3 py-1 font-medium hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-800">Learn</Link>
         </div>
       </section>
 
