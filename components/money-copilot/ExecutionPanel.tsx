@@ -1392,13 +1392,22 @@ interface PanelInputHandle {
   prefill: (text: string) => void;
 }
 
+type StreamingPhase = 'idle' | 'thinking' | 'streaming' | 'done' | 'error';
+
 const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputFormInner(_, ref) {
   const pathname = usePathname();
   const { state, dispatch } = useCopilot();
   const [query, setQuery] = useState(state.activeQuestion ?? '');
   const [isLoading, setIsLoading] = useState(false);
+  const [phase, setPhase] = useState<StreamingPhase>('idle');
+  const [streamedText, setStreamedText] = useState('');
+  const [showCursor, setShowCursor] = useState(false);
   const [error, setError] = useState('');
+  const [previewQuestion, setPreviewQuestion] = useState('');
+  const [previewResult, setPreviewResult] = useState<PipelineResult | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const wordQueueRef = useRef<string[]>([]);
+  const wordPumpRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Sync region from pathname
   const pathRegion: 'US' | 'India' =
@@ -1444,17 +1453,61 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.activeQuestion]);
 
+  const stopWordPump = useCallback(() => {
+    if (wordPumpRef.current) {
+      clearInterval(wordPumpRef.current);
+      wordPumpRef.current = null;
+    }
+  }, []);
+
+  const queueWords = useCallback((chunk: string) => {
+    const tokens = chunk.split(/(\s+)/).filter(Boolean);
+    wordQueueRef.current.push(...tokens);
+    if (!wordPumpRef.current) {
+      wordPumpRef.current = setInterval(() => {
+        const next = wordQueueRef.current.shift();
+        if (next === undefined) {
+          stopWordPump();
+          return;
+        }
+        setStreamedText((prev) => prev + next);
+      }, 32);
+    }
+  }, [stopWordPump]);
+
+  const waitForWordQueueToDrain = useCallback(async () => {
+    while (wordQueueRef.current.length > 0) {
+      await new Promise((resolve) => setTimeout(resolve, 40));
+    }
+    await new Promise((resolve) => setTimeout(resolve, 40));
+  }, []);
+
   const handleSubmit = useCallback(async (text: string) => {
     const q = text.trim();
     if (!q || isLoading) return;
 
     setIsLoading(true);
     setError('');
+    setPreviewResult(null);
+    setPreviewQuestion(q);
+    setStreamedText('');
+    setShowCursor(false);
+    setPhase('thinking');
+    stopWordPump();
+    wordQueueRef.current = [];
+
+    const abortController = new AbortController();
+    const timeoutId = setTimeout(() => abortController.abort(), 15000);
+    const thinkingTimer = setTimeout(() => {
+      setPhase('streaming');
+      setShowCursor(true);
+    }, 800);
 
     try {
       const res = await fetch('/api/money-copilot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: abortController.signal,
         body: JSON.stringify({
           question: q,
           responseMode: 'deep',
@@ -1490,6 +1543,9 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
             if (raw === '[DONE]') break;
             try {
               const ev = JSON.parse(raw) as { type: string; payload?: CopilotResponse };
+              if (ev.type === 'chunk' && typeof (ev as { content?: string }).content === 'string') {
+                queueWords((ev as { content?: string }).content ?? '');
+              }
               if ((ev.type === 'narrative' || ev.type === 'base') && ev.payload) {
                 copilotResponse = ev.payload;
               }
@@ -1501,6 +1557,8 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
       }
 
       if (!copilotResponse) throw new Error('No response received from analysis engine');
+
+      await waitForWordQueueToDrain();
 
       const pipelineResult = runPipeline(
         q, copilotResponse, state.region, state.riskProfile, state.sessionId, state.history,
@@ -1514,14 +1572,25 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
         timestamp: pipelineResult.timestamp,
       };
       dispatch({ type: 'ADD_HISTORY_ENTRY', payload: historyEntry });
-      dispatch({ type: 'OPEN_PANEL', payload: { question: q, result: pipelineResult } });
+      setPreviewResult(pipelineResult);
+      setPhase('done');
+      setShowCursor(false);
       setQuery('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Analysis failed. Please try again.');
+      setPhase('error');
+      setShowCursor(false);
+      setError(
+        err instanceof Error && err.name === 'AbortError'
+          ? 'The AI took too long — try a shorter question or reload.'
+          : 'The AI took too long — try a shorter question or reload.'
+      );
     } finally {
+      clearTimeout(timeoutId);
+      clearTimeout(thinkingTimer);
+      stopWordPump();
       setIsLoading(false);
     }
-  }, [isLoading, state, dispatch]);
+  }, [isLoading, state, dispatch, queueWords, stopWordPump, waitForWordQueueToDrain]);
 
   // Always-current ref to handleSubmit so the imperative handle never goes stale.
   const handleSubmitRef = useRef(handleSubmit);
@@ -1538,6 +1607,11 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
       requestAnimationFrame(() => { inputRef.current?.focus(); });
     },
   }), []);
+
+
+  useEffect(() => () => {
+    stopWordPump();
+  }, [stopWordPump]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') { e.preventDefault(); void handleSubmit(query); }
@@ -1579,9 +1653,75 @@ const PanelInputForm = forwardRef<PanelInputHandle, object>(function PanelInputF
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           )}
-          <span>{isLoading ? 'Analyzing…' : 'Ask'}</span>
+          <span>{phase === 'thinking' ? 'Thinking…' : isLoading ? 'Analyzing…' : 'Ask'}</span>
         </button>
       </div>
+
+      {(phase === 'streaming' || phase === 'done' || phase === 'error') && (
+        <div className="mt-3 animate-in fade-in duration-300">
+          {(phase === 'streaming' || phase === 'done') && (
+            <div className="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200">
+              <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400">Result preview</p>
+              <p className="leading-relaxed">
+                {streamedText || 'Thinking through your decision…'}
+                {showCursor && <span className="ml-0.5 inline-block animate-pulse font-semibold text-blue-500">|</span>}
+              </p>
+            </div>
+          )}
+
+          {phase === 'error' && (
+            <div className="rounded-lg border border-rose-300 bg-rose-50 px-3 py-2.5 text-sm text-rose-700 dark:border-rose-700/60 dark:bg-rose-950/30 dark:text-rose-300">
+              <p>{error || 'The AI took too long — try a shorter question or reload.'}</p>
+              <button
+                type="button"
+                onClick={() => void handleSubmit(query || previewQuestion)}
+                className="mt-2 rounded-md border border-rose-300 px-2.5 py-1 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:border-rose-700/60 dark:text-rose-300 dark:hover:bg-rose-950/40"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {phase === 'done' && previewResult && (
+            <div className="mt-2.5 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => dispatch({ type: 'OPEN_PANEL', payload: { question: previewQuestion, result: previewResult } })}
+                className="rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700"
+              >
+                Save this decision
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setQuery(`Refine with my specific numbers: ${previewQuestion}`);
+                  setPhase('idle');
+                  setStreamedText('');
+                  requestAnimationFrame(() => inputRef.current?.focus());
+                }}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                Refine with my numbers
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPhase('idle');
+                  setStreamedText('');
+                  setPreviewResult(null);
+                  setPreviewQuestion('');
+                  setError('');
+                  setQuery('');
+                  requestAnimationFrame(() => inputRef.current?.focus());
+                }}
+                className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:border-blue-300 hover:text-blue-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+              >
+                Start a new question
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 });
