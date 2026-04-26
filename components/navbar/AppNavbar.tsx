@@ -5,226 +5,148 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { usePreferences } from '@/components/providers/PreferenceProvider';
-import { getCountryForPath, getCountryAwarePath, getCountrySwitchPath } from '@/lib/preferences';
+import { getCountryForPath, getCountrySwitchPath, type AppCountry } from '@/lib/preferences';
 import { setPreferredRegionCookie } from '@/lib/region-preference';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
-import { NavItem } from '@/components/navbar/NavItem';
+import { NavItem, type NavLink } from '@/components/navbar/NavItem';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
-import { useRegion } from '@/components/providers/RegionProvider';
 import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 
-type NavLink = {
-  label: string;
-  href?: string;
-  children?: Array<{ label: string; href: string }>;
-};
-
-const globalLinks: NavLink[] = [
-  { label: 'Decisions', href: '/comparison' },
-  { label: 'Calculators', href: '/calculators' },
-  { label: 'AI Copilot', href: '/ai-money-copilot' },
-  { label: 'Learn', href: '/learn' }
-];
+const MARKET_STORAGE_KEY = 'fs_market';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-// Hamburger animation variants
-const hamTop = { closed: { rotate: 0, translateY: 0 }, open: { rotate: 45, translateY: 6 } };
-const hamMid = { closed: { opacity: 1 }, open: { opacity: 0 } };
-const hamBot = { closed: { rotate: 0, translateY: 0 }, open: { rotate: -45, translateY: -6 } };
+function getMarketPath(path: string, country: AppCountry): string {
+  if (country !== 'India') return path;
+  if (path === '/calculators') return '/in/calculators';
+  if (path === '/comparison') return '/in/loans';
+  if (path === '/learn') return '/in/banking';
+  return path;
+}
 
-const logoVariants = {
-  hidden: { opacity: 0, x: -20 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: 'easeOut' } },
-};
-
-/**
- * AppNavbar — enterprise-grade 3-section navigation for FinanceSphere.
- *
- * Layout:
- *   LEFT   — Logo + primary nav items (Home, Decisions, Learn)
- *   CENTER — AI Copilot command bar (visually dominant, flex-1)
- *   RIGHT  — Start a Decision CTA · Region selector · Currency badge · Theme toggle
- *
- * Mobile: hamburger collapses LEFT+RIGHT; Copilot input expands full-width below the header bar.
- */
 export function AppNavbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const [scrolled, setScrolled] = useState(false);
-  const { country, darkMode, setCountry, toggleDarkMode } = usePreferences();
-  const { region } = useRegion();
+  const [country, setCountry] = useState<AppCountry>(() => {
+    if (typeof window === 'undefined') return getCountryForPath(pathname);
+    const persisted = window.localStorage.getItem(MARKET_STORAGE_KEY);
+    if (persisted === 'in') return 'India';
+    return getCountryForPath(pathname);
+  });
+
   const { dispatch } = useCopilot();
   const pageContext = useAiPageContext();
 
-  // Sync region with path
   useEffect(() => {
-    const pathCountry = getCountryForPath(pathname);
-    if (pathCountry !== country) setCountry(pathCountry);
-  }, [country, pathname, setCountry]);
+    const nextCountry = getCountryForPath(pathname);
+    setCountry(nextCountry);
+    window.localStorage.setItem(MARKET_STORAGE_KEY, nextCountry === 'India' ? 'in' : 'us');
+  }, [pathname]);
 
-  // Scroll shadow
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
+  const links = useMemo<NavLink[]>(() => {
+    const decisionsPath = getMarketPath('/comparison', country);
+    const calculatorsPath = getMarketPath('/calculators', country);
+    const learnPath = getMarketPath('/learn', country);
 
-  const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
-  const links = useMemo(() => globalLinks.map((link) => ({ ...link, href: link.href ? getCountryAwarePath(link.href, country) : link.href })), [country]);
-  const currentRegionLabel = region === 'in' ? 'India' : 'US';
-  const currentCurrencyLabel = region === 'in' ? 'INR' : 'USD';
+    return [
+      {
+        label: 'Decisions',
+        href: decisionsPath,
+        children: [
+          { label: 'Start a decision', href: decisionsPath },
+          { label: 'Calculators', href: calculatorsPath },
+          { label: 'Comparisons', href: decisionsPath }
+        ]
+      },
+      { label: 'Calculators', href: calculatorsPath },
+      {
+        label: 'Learn',
+        href: learnPath,
+        children: [
+          { label: 'Financial Guides', href: learnPath },
+          { label: 'Strategy Playbooks', href: learnPath }
+        ]
+      },
+      { label: 'AI Copilot', href: '/ai-money-copilot' }
+    ];
+  }, [country]);
 
-  const switchRegion = useCallback((nextRegion: 'India' | 'US') => {
-    const nextPath = getCountrySwitchPath(pathname, nextRegion);
-    const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
-    setPreferredRegionCookie(regionCookieValue);
-    setCountry(nextRegion);
-    if (nextPath !== pathname) {
-      const redirectUrl = `/api/region?region=${regionCookieValue}&next=${encodeURIComponent(nextPath)}`;
-      window.location.assign(redirectUrl);
-    }
-  }, [pathname, setCountry]);
+  const switchRegion = useCallback(
+    (nextRegion: 'India' | 'US') => {
+      const nextPath = getCountrySwitchPath(pathname, nextRegion);
+      const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
+      window.localStorage.setItem(MARKET_STORAGE_KEY, regionCookieValue);
+      setPreferredRegionCookie(regionCookieValue);
+      if (nextPath !== pathname) {
+        window.location.assign(`/api/region?region=${regionCookieValue}&next=${encodeURIComponent(nextPath)}`);
+      }
+    },
+    [pathname]
+  );
 
   const activeCheck = useCallback((href: string) => isActive(pathname, href), [pathname]);
+  const isIndiaContext = country === 'India';
 
   return (
     <>
-      <motion.header
-        className="sticky top-0 z-30 border-b"
-        animate={{
-          backgroundColor: scrolled ? 'rgba(255,255,255,0.97)' : 'rgba(255,255,255,0.92)',
-          borderColor: scrolled ? 'rgba(148,163,184,0.6)' : 'rgba(148,163,184,0.4)',
-          boxShadow: scrolled
-            ? '0 4px 24px -4px rgba(15,23,42,0.12), 0 1px 4px -1px rgba(15,23,42,0.06)'
-            : '0 1px 2px 0 rgba(15,23,42,0.04)',
-          backdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)',
-        }}
-        transition={{ duration: 0.25, ease: 'easeOut' }}
-        style={{ WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)' }}
-      >
-        <nav
-          className={`mx-auto max-w-7xl px-4 transition-[padding] duration-200 ${scrolled ? 'py-1' : 'py-1.5'}`}
-          role="navigation"
-          aria-label="Primary"
-        >
-          {/* ── Main row: LEFT | CENTER | RIGHT ── */}
-          <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur dark:border-slate-700 dark:bg-slate-950/95">
+        <nav className="mx-auto max-w-7xl px-4 py-2" role="navigation" aria-label="Primary">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
+              <Link href={isIndiaContext ? '/in' : '/'} className="inline-flex items-center" aria-label="FinanceSphere home">
+                <Image src="/images/financesphere-logo.svg" alt="FinanceSphere logo" width={190} height={48} priority className="h-12 w-auto" />
+              </Link>
 
-            {/* ── LEFT: Logo + Nav items ── */}
-            <div className="flex shrink-0 items-center gap-2">
-              <motion.div variants={logoVariants} initial="hidden" animate="visible">
-                <Link
-                  href={isIndiaContext ? '/in' : '/'}
-                  className="inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70"
-                  aria-label="FinanceSphere home"
-                >
-                  <Image
-                    src="/images/financesphere-logo.svg"
-                    alt="FinanceSphere logo"
-                    width={200}
-                    height={52}
-                    priority
-                    className={`w-auto transition-[height] duration-200 ${scrolled ? 'h-12' : 'h-14'}`}
-                  />
-                </Link>
-              </motion.div>
-
-              {/* Primary nav items — desktop only */}
-              <ul className="hidden items-center gap-0.5 lg:flex" role="menubar">
+              <ul className="hidden items-center gap-0.5 md:flex" role="menubar">
                 {links.map((item, i) => (
                   <NavItem key={item.label} item={item} isActive={activeCheck} index={i} />
                 ))}
               </ul>
             </div>
 
-            {/* ── RIGHT: Static controls — desktop only ── */}
-            <div className="ml-auto hidden items-center gap-2 lg:flex">
-              {/* Primary decision CTA — routes into the AI Copilot drawer */}
+            <div className="hidden items-center gap-2 md:flex">
+              <RegionSelector isIndiaContext={isIndiaContext} onRegionChange={switchRegion} />
               <motion.button
                 onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } })}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                aria-label={isIndiaContext ? 'Start a decision with AI guidance — EMI, SIP, home loan, tax' : 'Start a decision with AI guidance — mortgage, debt, investing, tax'}
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-blue-600 bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/70"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-blue-600 bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                <span className="whitespace-nowrap">Start a decision</span>
-              </motion.button>
-
-              {/* Region selector + currency badge */}
-              <RegionSelector
-                isIndiaContext={isIndiaContext}
-                currentRegionLabel={currentRegionLabel}
-                currentCurrencyLabel={currentCurrencyLabel}
-                onRegionChange={switchRegion}
-              />
-
-              {/* Theme toggle */}
-              <motion.button
-                onClick={toggleDarkMode}
-                className="rounded-lg border border-slate-300 p-1.5 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800"
-                aria-label="Toggle dark mode"
-                whileTap={{ scale: 0.9 }}
-                whileHover={{ scale: 1.08 }}
-              >
-                {darkMode ? (
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
-                  </svg>
-                ) : (
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-                  </svg>
-                )}
+                Start a decision
               </motion.button>
             </div>
 
-            {/* ── MOBILE: Hamburger ── */}
-            <div className="ml-auto flex items-center gap-2 lg:hidden">
-              <motion.button
-                className="rounded-xl border border-slate-300 p-2 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/70 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800"
-                onClick={() => setMobileOpen((prev) => !prev)}
-                aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-                aria-expanded={mobileOpen}
-                animate={mobileOpen ? 'open' : 'closed'}
-                whileTap={{ scale: 0.92 }}
-              >
-                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round">
-                  <motion.line x1="2" y1="5" x2="18" y2="5" variants={hamTop} transition={{ duration: 0.22 }} />
-                  <motion.line x1="2" y1="10" x2="18" y2="10" variants={hamMid} transition={{ duration: 0.15 }} />
-                  <motion.line x1="2" y1="15" x2="18" y2="15" variants={hamBot} transition={{ duration: 0.22 }} />
-                </svg>
-              </motion.button>
-            </div>
+            <button
+              className="rounded-xl border border-slate-300 p-2 text-slate-700 transition hover:bg-slate-100 dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800 md:hidden"
+              onClick={() => setMobileOpen((prev) => !prev)}
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={mobileOpen}
+            >
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round">
+                <line x1="2" y1="5" x2="18" y2="5" />
+                <line x1="2" y1="10" x2="18" y2="10" />
+                <line x1="2" y1="15" x2="18" y2="15" />
+              </svg>
+            </button>
           </div>
         </nav>
-      </motion.header>
+      </header>
 
-      {/* Mobile slide-in drawer */}
       <MobileMenu
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
         links={links}
-        pathname={pathname}
         isActive={activeCheck}
-        isIndiaContext={isIndiaContext}
         expandedGroup={expandedGroup}
-        setExpandedGroup={(g) => setExpandedGroup(g)}
-        currentRegionLabel={currentRegionLabel}
-        currentCurrencyLabel={currentCurrencyLabel}
-        darkMode={darkMode}
-        toggleDarkMode={toggleDarkMode}
+        setExpandedGroup={setExpandedGroup}
+        isIndiaContext={isIndiaContext}
         onRegionChange={switchRegion}
-        onStartDecision={() => { setMobileOpen(false); dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } }); }}
+        onStartDecision={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } })}
       />
     </>
   );
