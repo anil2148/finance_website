@@ -6,6 +6,7 @@ import { AppNavbar } from '@/components/navbar/AppNavbar';
 import { Footer } from '@/components/footer/Footer';
 import { PageTransition } from '@/components/ui/PageTransition';
 import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
+import { RegionProvider } from '@/components/providers/RegionProvider';
 import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
 import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
@@ -30,9 +31,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
     languages: {
-      'en-US': '/',
-      'en-IN': '/in',
-      'x-default': '/'
+      'en-US': absoluteUrl('/?region=us'),
+      'en-IN': absoluteUrl('/?region=in'),
+      'x-default': absoluteUrl('/')
     }
   },
   icons: {
@@ -96,19 +97,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <CookieConsentBanner gaMeasurementId={gaMeasurementId} gtmId={gtmId} />
 
-        <PreferenceProvider>
-          <ErrorMonitoring />
-          <CopilotProvider>
-            <AppNavbar />
-            <main className="editorial-content mx-auto min-h-screen max-w-7xl px-4 py-8">
-              <Breadcrumbs />
-              <PageTransition>{children}</PageTransition>
-            </main>
-            <Footer />
-            <ExecutionPanel />
-            <CopilotBubble />
-          </CopilotProvider>
-        </PreferenceProvider>
+        <RegionProvider>
+          <PreferenceProvider>
+            <ErrorMonitoring />
+            <CopilotProvider>
+              <AppNavbar />
+              <main className="editorial-content mx-auto min-h-screen max-w-7xl px-4 py-8">
+                <Breadcrumbs />
+                <PageTransition>{children}</PageTransition>
+              </main>
+              <Footer />
+              <ExecutionPanel />
+              <CopilotBubble />
+            </CopilotProvider>
+          </PreferenceProvider>
+        </RegionProvider>
 
         <Analytics />
         <SpeedInsights />
