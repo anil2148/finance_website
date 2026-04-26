@@ -3,8 +3,6 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
-import { useRegion } from '@/components/providers/RegionProvider';
-import { REGION_FINANCE_CONTEXT } from '@/lib/region-finance-context';
 
 type DecisionKey = 'debt' | 'home' | 'invest' | 'retire';
 
@@ -17,47 +15,47 @@ const decisionSelector = [
 
 const previewByDecision: Record<DecisionKey, { output: string; risk: string; action: string }> = {
   debt: {
-    output: "You're paying 31% APR equivalent on revolving balances",
-    risk: 'Risk: HIGH',
-    action: 'Focus action: Avalanche payoff + emergency floor'
+    output: "You're spending 26% of monthly cash flow on high-interest debt → Risk: HIGH",
+    risk: 'Priority: Stop interest bleed first',
+    action: 'Next step: Run your debt payoff scenario'
   },
   home: {
-    output: "You're spending 42% of income on housing",
-    risk: 'Risk: HIGH',
-    action: 'Focus action: Lower price target before approval'
+    output: "You're spending 42% of income on housing → Risk: HIGH",
+    risk: 'Priority: Keep fixed costs flexible',
+    action: 'Next step: Stress test affordability before buying'
   },
   invest: {
-    output: "You're investing 8% monthly while cash buffer covers 0.7 months",
-    risk: 'Risk: MEDIUM',
-    action: 'Focus action: Build cash runway first, then automate'
+    output: "You invest monthly, but your cash buffer covers 0.7 months → Risk: MEDIUM",
+    risk: 'Priority: Improve downside resilience',
+    action: 'Next step: Test contribution level under bad months'
   },
   retire: {
-    output: "Your plan succeeds only if returns stay above 10%",
-    risk: 'Risk: HIGH',
-    action: 'Focus action: Stress test with lower-return assumptions'
+    output: 'Your retirement plan only works with high-return assumptions → Risk: HIGH',
+    risk: 'Priority: De-risk assumptions now',
+    action: 'Next step: Run a lower-return retirement stress test'
   }
 };
 
 const stepCards = [
   {
-    icon: '①',
-    title: 'Enter your numbers',
-    detail: 'Income, costs, balances, and timeline.',
-    cta: 'Input numbers',
+    icon: '🧮',
+    title: 'Step 1: Enter your numbers',
+    detail: 'Use your real income, costs, and balances.',
+    cta: 'Enter numbers',
     href: '/calculators'
   },
   {
-    icon: '②',
-    title: 'See worst-case scenario',
-    detail: 'Run the downside before you commit.',
+    icon: '⚠️',
+    title: 'Step 2: See worst-case scenario',
+    detail: 'Run downside conditions before committing.',
     cta: 'Stress test now',
     href: '/comparison'
   },
   {
-    icon: '③',
-    title: 'Get a clear action',
-    detail: 'Pick one next move with trade-offs visible.',
-    cta: 'Choose next step',
+    icon: '✅',
+    title: 'Step 3: Get a clear action',
+    detail: 'Pick the next move with trade-offs visible.',
+    cta: 'Get clear action',
     href: '/ai-money-copilot'
   }
 ];
@@ -65,22 +63,22 @@ const stepCards = [
 const decisionPathCards = [
   {
     title: 'Pay off debt faster',
-    outcome: 'See payoff date shifts as rates or monthly payment change.',
+    outcome: 'Lower interest drag and shorten payoff timeline.',
     href: '/debt-payoff-calculator'
   },
   {
     title: 'Buy a home safely',
-    outcome: 'Test payment shock across rates, taxes, and insurance.',
+    outcome: 'Check if payment still works in rate and income shocks.',
     href: '/mortgage-calculator'
   },
   {
     title: 'Invest monthly with confidence',
-    outcome: 'Compare conservative vs optimistic outcomes side-by-side.',
+    outcome: 'Balance growth with liquidity for bad months.',
     href: '/investment-growth-calculator'
   },
   {
     title: 'Plan retirement under pressure',
-    outcome: 'Stress test inflation and sequence-of-returns risk.',
+    outcome: 'Validate long-term viability under conservative returns.',
     href: '/retirement-calculator'
   }
 ];
@@ -91,18 +89,37 @@ const behavioralInsights = [
     consequence: 'Use your lowest income month instead.'
   },
   {
-    insight: 'Debt feels manageable until variable rates jump',
-    consequence: 'Model rate spikes before consolidating.'
+    insight: 'Debt feels fine until variable rates reset',
+    consequence: 'Model higher APR before choosing payment strategy.'
   },
   {
-    insight: 'Big goals break when cash buffers are ignored',
-    consequence: 'Protect one month of expenses before stretching risk.'
+    insight: 'Optimistic projections create false safety',
+    consequence: 'Decide using stress-case outcomes, not best-case charts.'
   }
 ];
 
 export function HomepageLayout() {
-  const { region } = useRegion();
-  const financeContext = REGION_FINANCE_CONTEXT[region];
+  const [selectedDecision, setSelectedDecision] = useState<DecisionKey>('home');
+  const [showWeeklyPlanCta, setShowWeeklyPlanCta] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const doc = document.documentElement;
+      const scrollable = doc.scrollHeight - window.innerHeight;
+      if (scrollable <= 0) return;
+      const ratio = window.scrollY / scrollable;
+      if (ratio >= 0.5) {
+        setShowWeeklyPlanCta(true);
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const selectedPreview = useMemo(() => previewByDecision[selectedDecision], [selectedDecision]);
 
   return (
     <section className="space-y-8 pb-24" aria-label="FinanceSphere homepage">
@@ -148,41 +165,18 @@ export function HomepageLayout() {
         ))}
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-label="Regional money context">
-        <h2 className="text-xl font-semibold">Regional assumptions driving your results</h2>
-        <div className="mt-3 grid gap-3 md:grid-cols-4 text-sm">
-          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Currency</p>
-            <p className="mt-1 font-semibold">{financeContext.currencySymbol} localized defaults</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Interest rates</p>
-            <p className="mt-1 font-semibold">{financeContext.interestRateRange}</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax assumptions</p>
-            <p className="mt-1 font-semibold">{financeContext.taxAssumption}</p>
-          </article>
-          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Priority products</p>
-            <p className="mt-1 font-semibold">{financeContext.primaryProducts.join(' • ')}</p>
-          </article>
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-label="Live output preview">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-semibold">Live output preview</h2>
+          <Link href={decisionSelector.find((item) => item.key === selectedDecision)?.href ?? '/comparison'} className="text-sm font-semibold text-cyan-700 hover:text-cyan-600 dark:text-cyan-300">
+            Run this scenario →
+          </Link>
         </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-3" aria-label="Decision platform highlights">
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Cards over walls of text</h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Decision cards summarize cost, downside, and next action in one view.</p>
-        </article>
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Graphs and sliders</h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Scenario bars and risk sliders make trade-offs obvious in seconds.</p>
-        </article>
-        <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Fast loading</h2>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Heavy calculator previews are lazy loaded to help keep LCP under 2.5s.</p>
-        </article>
+        <div className="mt-4 rounded-xl border border-cyan-200 bg-cyan-50 p-4 dark:border-cyan-700 dark:bg-cyan-900/20">
+          <p className="text-base font-semibold text-slate-900 dark:text-slate-50">{selectedPreview.output}</p>
+          <p className="mt-2 text-sm font-semibold text-amber-700 dark:text-amber-300">{selectedPreview.risk}</p>
+          <p className="mt-1 text-sm text-slate-700 dark:text-slate-200">{selectedPreview.action}</p>
+        </div>
       </section>
 
       <section className="space-y-3" aria-label="Decision paths">
@@ -204,7 +198,7 @@ export function HomepageLayout() {
           {behavioralInsights.map((item) => (
             <article key={item.insight} className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
               <p className="font-semibold text-slate-900 dark:text-slate-50">{item.insight}</p>
-              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{item.consequence}</p>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">→ {item.consequence}</p>
               <Link href="/learn" className="mt-3 inline-flex text-xs font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">Apply insight →</Link>
             </article>
           ))}
@@ -214,22 +208,25 @@ export function HomepageLayout() {
       <section className="grid gap-4 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900 md:grid-cols-3" aria-label="Trust block">
         <article>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Founder credibility</h2>
-          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Built by analysts and operators focused on practical personal-finance decisions.</p>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Built by finance operators and analysts focused on practical decision quality.</p>
+          <Link href="/about" className="mt-3 inline-flex text-xs font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">Meet the team →</Link>
         </article>
         <article>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Method</h2>
-          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Decision-first workflow: numbers first, downside next, recommendation last.</p>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Method (decision-first)</h2>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Every tool follows: numbers first, worst-case second, action third.</p>
+          <Link href="/comparison" className="mt-3 inline-flex text-xs font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">See the method →</Link>
         </article>
         <article>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Transparency</h2>
-          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Assumptions are visible so you can adjust inputs and verify every output.</p>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">Assumptions are visible so you can validate and adjust every recommendation.</p>
+          <Link href="/help" className="mt-3 inline-flex text-xs font-semibold uppercase tracking-wide text-cyan-700 dark:text-cyan-300">Review assumptions →</Link>
         </article>
       </section>
 
       {showWeeklyPlanCta && (
         <section className="rounded-2xl border border-cyan-300 bg-cyan-100 p-6 text-center shadow-sm dark:border-cyan-700 dark:bg-cyan-900/30" aria-label="Weekly plan call to action">
           <h2 className="text-2xl font-bold">Get a weekly plan based on YOUR numbers</h2>
-          <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">Tell us your current decision and receive one practical action each week.</p>
+          <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">Pick your decision path and get one practical weekly action.</p>
           <Link
             href="/ai-money-copilot"
             onClick={() => trackEvent({ event: 'cta_click', category: 'homepage_scroll', label: 'weekly_plan_after_50_percent' })}
