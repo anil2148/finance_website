@@ -7,6 +7,7 @@ const blogDir = path.join(root, 'content/blog');
 const redirectMap = JSON.parse(fs.readFileSync(path.join(root, 'content/audit/blog-redirect-map.json'), 'utf8'));
 const financialProducts = JSON.parse(fs.readFileSync(path.join(root, 'data/financial-products.json'), 'utf8'));
 const sitemapPath = path.join(root, 'public/sitemap.xml');
+const reportOutputPath = path.join(root, 'content/audit/internal-link-404-report.json');
 
 const codeExtensions = new Set(['.ts', '.tsx', '.js', '.mjs', '.md', '.mdx', '.json']);
 const ignoredDirs = new Set(['.git', '.next', 'node_modules']);
@@ -65,16 +66,27 @@ function getInternalLinks(file, source) {
   const links = [];
   const hrefRegex = /href\s*[:=]\s*(?:"([^"]+)"|'([^']+)'|`([^`]+)`)/g;
   const markdownRegex = /\]\((\/[^)\s]+)\)/g;
+  const absoluteMarkdownRegex = /\]\((https?:\/\/(?:www\.)?financesphere\.io\/[^)\s]+)\)/gi;
 
   let match;
   while ((match = hrefRegex.exec(source))) {
     const value = match[1] || match[2] || match[3];
     if (value?.startsWith('/')) links.push(value);
+    if (/^https?:\/\/(?:www\.)?financesphere\.io\//i.test(value ?? '')) {
+      const pathname = new URL(value).pathname;
+      links.push(pathname);
+    }
   }
 
   while ((match = markdownRegex.exec(source))) {
     const value = match[1];
     if (value?.startsWith('/')) links.push(value);
+  }
+
+  while ((match = absoluteMarkdownRegex.exec(source))) {
+    const value = match[1];
+    const pathname = new URL(value).pathname;
+    links.push(pathname);
   }
 
   return links.map((href) => ({ file, href }));
@@ -121,6 +133,20 @@ function hasRedirectLoop(entries) {
   return false;
 }
 
+function classifyLinkType(file) {
+  if (file.includes('/navbar/') || file.includes('Navbar') || file.includes('MobileMenu')) return 'nav';
+  if (file.includes('/footer/') || file.includes('Footer')) return 'footer';
+  if (file.includes('content/blog/') || file.includes('/blog/')) return 'blog';
+  if (file.includes('sitemap')) return 'internal routing';
+  if (file.includes('CTA') || file.includes('Hero') || file.includes('Decision')) return 'CTA';
+  return 'internal routing';
+}
+
+function classifySeverity(linkType, sourceFile) {
+  if (linkType === 'nav' || sourceFile === 'app/page.tsx' || sourceFile.includes('Homepage')) return 'high';
+  return 'medium';
+}
+
 const staticRoutes = new Set(getAppStaticRoutes());
 const liveBlogSlugs = new Set(getLiveBlogSlugs());
 const redirectSources = new Set(redirectMap.map((entry) => entry.source));
@@ -140,6 +166,7 @@ const placeholderPatterns = [
 
 const placeholderIssues = [];
 const linkIssues = [];
+const structuredIssues = [];
 
 for (const file of allFiles) {
   const fullPath = path.join(root, file);
@@ -158,6 +185,14 @@ for (const file of allFiles) {
 
     if (!isKnownRoute(normalized, staticRoutes)) {
       linkIssues.push(`${file} -> ${href} (missing route)`);
+      const linkType = classifyLinkType(file);
+      structuredIssues.push({
+        broken_url: normalized,
+        source_page_where_link_exists: file,
+        link_type: linkType,
+        severity: classifySeverity(linkType, file),
+        root_cause: 'missing-route'
+      });
       continue;
     }
 
@@ -260,6 +295,14 @@ if (sitemapErrors.length > 0) {
   console.error('FAIL: sitemap validation failed');
   for (const issue of sitemapErrors.slice(0, 80)) console.error(` - ${issue}`);
   process.exitCode = 1;
+}
+
+fs.writeFileSync(reportOutputPath, JSON.stringify(structuredIssues, null, 2));
+if (structuredIssues.length > 0) {
+  console.error(`FAIL: wrote structured broken-link report to ${path.relative(root, reportOutputPath)}`);
+  process.exitCode = 1;
+} else {
+  console.log(`PASS: no 404 internal links found. report: ${path.relative(root, reportOutputPath)}`);
 }
 
 if (!process.exitCode) {
