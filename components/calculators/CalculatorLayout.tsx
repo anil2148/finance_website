@@ -23,6 +23,7 @@ import { AD_SLOTS } from '@/lib/adSlots';
 import { AskAIButton } from '@/components/money-copilot/AskAIButton';
 import { useSyncAiPageContext } from '@/components/money-copilot/useAiPageContext';
 import type { AiPageContext } from '@/lib/money-copilot/types';
+import { PersonalizedPlanFunnel } from '@/components/calculators/PersonalizedPlanFunnel';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -307,14 +308,38 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const { currency, formatCurrency } = usePreferences();
 
   const [showGuide, setShowGuide] = useState(false);
+  const [hasRunCalculator, setHasRunCalculator] = useState(false);
+  const [hasSeenResult, setHasSeenResult] = useState(false);
   const [savedMessage, setSavedMessage] = useState('');
   const exportRef = useRef<HTMLElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
   const currencyLocale = getLocaleForCurrency(currency);
   const currencySymbol = getCurrencySymbol(currency, currencyLocale);
 
   useEffect(() => {
     setInputs(buildStrictCalculatorInputs(definition.defaultInputs as BaseCalculatorInputs, slug));
+    setHasRunCalculator(false);
+    setHasSeenResult(false);
   }, [definition, slug]);
+
+  useEffect(() => {
+    if (!resultRef.current || hasSeenResult) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setHasSeenResult(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(resultRef.current);
+    return () => observer.disconnect();
+  }, [hasSeenResult]);
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
   const relatedCalculators = calculatorDefinitions.filter((item) => item.slug !== slug).slice(0, 3);
@@ -545,6 +570,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   } satisfies Partial<AiPageContext>;
 
   useSyncAiPageContext(aiContext);
+  const shouldShowPersonalizedFunnel = hasRunCalculator || hasSeenResult;
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
@@ -583,12 +609,32 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-4 rounded-3xl bg-slate-950 p-4 sm:p-6">
               {fieldMeta.map((field) => (
-                <InputSlider key={field.key} label={field.label} tooltip={field.tooltip} value={inputs[field.key] ?? 0} min={field.min} max={field.max} step={field.step} prefix={resolveCurrencyPrefix(field.prefix, currencySymbol)} suffix={field.suffix} locale={currencyLocale} onChange={(value) => setInputs((prev) => ({ ...prev, [field.key]: value }))} />
+                <InputSlider
+                  key={field.key}
+                  label={field.label}
+                  tooltip={field.tooltip}
+                  value={inputs[field.key] ?? 0}
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  prefix={resolveCurrencyPrefix(field.prefix, currencySymbol)}
+                  suffix={field.suffix}
+                  locale={currencyLocale}
+                  onChange={(value) =>
+                    setInputs((prev) => {
+                      const hasChanged = (prev[field.key] ?? 0) !== value;
+                      if (hasChanged) {
+                        setHasRunCalculator(true);
+                      }
+                      return { ...prev, [field.key]: value };
+                    })
+                  }
+                />
               ))}
             </div>
 
             <div className="space-y-6">
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div ref={resultRef} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {sanitizedSummary.map((item) => (
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={formatSummaryDisplay(item.value, item.isValid, item.currency, item.suffix)} />
                 ))}
@@ -677,6 +723,19 @@ export function CalculatorLayout({ slug }: { slug: string }) {
               ))}
             </ul>
           </section>
+
+          {shouldShowPersonalizedFunnel ? (
+            <PersonalizedPlanFunnel
+              source={`calculator:${slug}`}
+              headlineMetric={primaryMetric?.label ?? 'Primary metric'}
+              headlineValue={formatSummaryDisplay(
+                baselineValue,
+                Boolean(primaryMetric?.isValid),
+                primaryMetric?.currency,
+                primaryMetric?.suffix
+              )}
+            />
+          ) : null}
         </div>
       </div>
 
