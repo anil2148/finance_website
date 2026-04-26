@@ -34,7 +34,7 @@ export function InputSlider({ label, tooltip, value, min, max, step = 1, onChang
             role="tooltip"
             className="pointer-events-none absolute right-0 top-full z-20 mt-2 hidden w-64 rounded-lg border border-slate-600 bg-slate-950 p-2 text-left text-xs leading-relaxed text-slate-100 shadow-xl group-hover:block group-focus-within:block"
           >
-            {tooltip}
+            <span className="font-semibold text-cyan-300">Why it matters:</span> {tooltip}
           </span>
         </span>
       </div>
