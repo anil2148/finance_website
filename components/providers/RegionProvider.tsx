@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { getRegionFromPath, REGION_CONFIG, type RegionCode } from '@/lib/region-config';
 import { PREFERRED_REGION_COOKIE, parsePreferredRegion, setPreferredRegionCookie } from '@/lib/region-preference';
 
@@ -27,18 +27,17 @@ function readCookieRegion(): RegionCode | null {
 
 export function RegionProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [region, setRegionState] = useState<RegionCode>(getRegionFromPath(pathname));
 
   useEffect(() => {
-    const fromQuery = parsePreferredRegion(searchParams.get('region'));
+    const fromQuery = parsePreferredRegion(new URLSearchParams(window.location.search).get('region'));
     const fromStorage = parsePreferredRegion(localStorage.getItem(STORAGE_KEY));
     const fromCookie = readCookieRegion();
     const fromPath = getRegionFromPath(pathname);
     const nextRegion = fromQuery ?? fromCookie ?? fromStorage ?? fromPath;
 
     setRegionState(nextRegion);
-  }, [pathname, searchParams]);
+  }, [pathname]);
 
   const setRegion = (nextRegion: RegionCode) => {
     setRegionState(nextRegion);
