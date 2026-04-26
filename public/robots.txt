@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
+Disallow: /blog/category/
+Disallow: /*?*
 
 Sitemap: https://www.financesphere.io/sitemap.xml
