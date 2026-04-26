@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card } from '@/components/ui/card';
+import { CalculatorDirectory } from '@/components/calculators/CalculatorDirectory';
 import { calculatorDefinitions } from '@/lib/calculators/registry';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -49,6 +49,28 @@ const decisionTracks = [
     guide: { href: '/learn/investing', label: 'Read investing framework' }
   }
 ];
+
+
+type CalculatorCategory = 'borrowing' | 'savings' | 'investing-retirement' | 'debt-payoff' | 'tax-income';
+
+const calculatorCategoryBySlug: Record<string, CalculatorCategory> = {
+  'mortgage-calculator': 'borrowing',
+  'loan-calculator': 'borrowing',
+  'auto-loan-calculator': 'borrowing',
+  'student-loan-calculator': 'borrowing',
+  'savings-goal-calculator': 'savings',
+  'compound-interest-calculator': 'savings',
+  'budget-planner': 'savings',
+  'investment-growth-calculator': 'investing-retirement',
+  'retirement-calculator': 'investing-retirement',
+  'fire-calculator': 'investing-retirement',
+  'net-worth-calculator': 'investing-retirement',
+  'credit-card-payoff-calculator': 'debt-payoff',
+  'debt-snowball-calculator': 'debt-payoff',
+  'debt-avalanche-calculator': 'debt-payoff',
+  'debt-payoff-calculator': 'debt-payoff',
+  'salary-after-tax-calculator': 'tax-income'
+};
 
 const scenarioChecks = [
   {
@@ -126,16 +148,14 @@ export default function CalculatorsPage() {
         </div>
       </section>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {calculatorDefinitions.map((tool) => (
-          <Link key={tool.slug} href={`/calculators/${tool.slug}`}>
-            <Card className="h-full rounded-2xl transition hover:-translate-y-1 hover:shadow-md">
-              <h2 className="text-lg font-semibold">{tool.title}</h2>
-              <p className="text-sm text-slate-600">{tool.description}</p>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      <CalculatorDirectory
+        calculators={calculatorDefinitions.map((tool) => ({
+          slug: tool.slug,
+          title: tool.title,
+          description: tool.description,
+          category: calculatorCategoryBySlug[tool.slug] ?? 'savings'
+        }))}
+      />
 
       <section className="grid gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 md:grid-cols-3">
         <article>
