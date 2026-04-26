@@ -25,11 +25,11 @@ export const metadata: Metadata = {
   title: siteTitle,
   description: siteDescription,
   alternates: {
-    canonical: '/',
+    canonical: '/us',
     languages: {
-      'en-US': absoluteUrl('/?region=us'),
-      'en-IN': absoluteUrl('/?region=in'),
-      'x-default': absoluteUrl('/')
+      'en-US': absoluteUrl('/us'),
+      'en-IN': absoluteUrl('/in'),
+      'x-default': absoluteUrl('/us')
     }
   },
   icons: {

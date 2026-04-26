@@ -2,82 +2,62 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { getCountrySwitchPath } from '@/lib/preferences';
 import { useRegion } from '@/components/providers/RegionProvider';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem, type NavLink } from '@/components/navbar/NavItem';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
+import { withRegionPrefix, type RegionCode } from '@/lib/region-config';
 
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function getMarketPath(path: string, country: 'US' | 'India'): string {
-  if (country !== 'India') return path;
-  if (path === '/calculators') return '/in/calculators';
-  if (path === '/comparison') return '/in/loans';
-  if (path === '/learn') return '/in/banking';
-  return path;
-}
-
 export function AppNavbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const router = useRouter();
   const { region, setRegion } = useRegion();
-  const isIndiaContext = region === 'IN';
 
   const { dispatch } = useCopilot();
   const pageContext = useAiPageContext();
 
   const links = useMemo<NavLink[]>(() => {
-    const country = isIndiaContext ? 'India' : 'US';
-    const decisionsPath = getMarketPath('/comparison', country);
-    const calculatorsPath = getMarketPath('/calculators', country);
-    const learnPath = getMarketPath('/learn', country);
+    const toRegion = (href: string) => withRegionPrefix(href, region);
 
     return [
       {
         label: 'Decisions',
-        href: decisionsPath,
+        href: toRegion('/comparison'),
         children: [
-          { label: 'Start a decision', href: decisionsPath },
-          { label: 'Calculators', href: calculatorsPath },
-          { label: 'Comparisons', href: decisionsPath }
+          { label: 'Start a decision', href: toRegion('/comparison') },
+          { label: 'Calculators', href: toRegion('/calculators') },
+          { label: 'Comparisons', href: toRegion('/comparison') }
         ]
       },
-      { label: 'Calculators', href: calculatorsPath },
+      { label: 'Calculators', href: toRegion('/calculators') },
       {
         label: 'Learn',
-        href: learnPath,
+        href: toRegion('/learn'),
         children: [
-          { label: 'Financial Guides', href: learnPath },
-          { label: 'Strategy Playbooks', href: learnPath }
+          { label: 'Financial Guides', href: toRegion('/learn') },
+          { label: 'Strategy Playbooks', href: toRegion('/learn') }
         ]
       },
-      { label: 'AI Copilot', href: '/ai-money-copilot' }
+      { label: 'AI Copilot', href: toRegion('/ai-money-copilot') }
     ];
-  }, [isIndiaContext]);
+  }, [region]);
 
   const switchRegion = useCallback(
-    (nextRegion: 'India' | 'US') => {
-      const nextPath = getCountrySwitchPath(pathname, nextRegion);
-      const nextCode = nextRegion === 'India' ? 'IN' : 'US';
-      setRegion(nextCode);
-      localStorage.setItem('region', nextCode);
-      if (nextPath !== pathname) {
-        router.push(nextPath);
-      }
-      router.refresh();
+    (nextRegion: RegionCode) => {
+      setRegion(nextRegion);
     },
-    [pathname, router, setRegion]
+    [setRegion]
   );
 
   const activeCheck = useCallback((href: string) => isActive(pathname, href), [pathname]);
@@ -88,7 +68,7 @@ export function AppNavbar() {
         <nav className="mx-auto max-w-7xl px-4 py-2" role="navigation" aria-label="Primary">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2 md:gap-3">
-              <Link href={isIndiaContext ? '/in' : '/'} className="inline-flex items-center" aria-label="FinanceSphere home">
+              <Link href={withRegionPrefix('/', region)} className="inline-flex items-center" aria-label="FinanceSphere home">
                 <Image src="/images/financesphere-logo.svg" alt="FinanceSphere logo" width={190} height={48} priority className="h-12 w-auto" />
               </Link>
 
@@ -100,7 +80,7 @@ export function AppNavbar() {
             </div>
 
             <div className="hidden items-center gap-2 md:flex">
-              <RegionSelector isIndiaContext={isIndiaContext} onRegionChange={switchRegion} />
+              <RegionSelector region={region} onRegionChange={switchRegion} />
               <motion.button
                 onClick={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } })}
                 whileHover={{ scale: 1.03 }}
@@ -134,8 +114,8 @@ export function AppNavbar() {
         isActive={activeCheck}
         expandedGroup={expandedGroup}
         setExpandedGroup={setExpandedGroup}
-        isIndiaContext={isIndiaContext}
-        onRegionChange={switchRegion}
+        isIndiaContext={region === 'IN'}
+        onRegionChange={(next) => switchRegion(next === 'India' ? 'IN' : 'US')}
         onStartDecision={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } })}
       />
     </>

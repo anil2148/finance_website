@@ -3,11 +3,11 @@ import { absoluteUrl } from '@/lib/seo';
 
 export const metadata: Metadata = {
   alternates: {
-    canonical: absoluteUrl('/'),
+    canonical: absoluteUrl('/in'),
     languages: {
-      'en-US': absoluteUrl('/?region=us'),
-      'en-IN': absoluteUrl('/?region=in'),
-      'x-default': absoluteUrl('/')
+      'en-US': absoluteUrl('/us'),
+      'en-IN': absoluteUrl('/in'),
+      'x-default': absoluteUrl('/us')
     }
   }
 };

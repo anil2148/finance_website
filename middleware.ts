@@ -2,25 +2,14 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import {
   detectRegionFromCountry,
-  isBotUserAgent,
   parsePreferredRegion,
   PREFERRED_REGION_COOKIE,
-  type PreferredRegion
+  type PreferredRegion,
+  getPreferredRegionCookieValue
 } from '@/lib/region-preference';
+import { DEFAULT_REGION, getRegionFromPath, stripRegionPrefix, withRegionPrefix } from '@/lib/region-config';
 import { slugifyTag } from '@/lib/tagSlug';
 
-const PRIMARY_HOST = 'www.financesphere.io';
-const NON_PRIMARY_HOSTS = new Set(['financesphere.io']);
-
-const LEGACY_ROUTE_REDIRECTS: Record<string, string> = {
-  '/about-us': '/about',
-  '/mortgage-calculator': '/calculators/mortgage-calculator',
-  '/loan-calculator': '/calculators/loan-calculator',
-  '/compound-interest-calculator': '/calculators/compound-interest-calculator',
-  '/retirement-calculator': '/calculators/retirement-calculator',
-  '/debt-payoff-calculator': '/calculators/debt-payoff-calculator',
-  '/mortgage-rate-comparison': '/compare/mortgage-rate-comparison'
-};
 
 type HomepageRoutingDecision =
   | { action: 'next' }
@@ -33,17 +22,21 @@ type HomepageRoutingInput = {
   countryCode: string | null;
 };
 
-export function getHomepageRoutingDecision({ pathname, preferredRegion, userAgent, countryCode }: HomepageRoutingInput): HomepageRoutingDecision {
+export function getHomepageRoutingDecision({ pathname, preferredRegion, countryCode }: HomepageRoutingInput): HomepageRoutingDecision {
   if (pathname !== '/') return { action: 'next' };
-  if (preferredRegion === 'IN') return { action: 'redirect', region: 'IN' };
-  if (preferredRegion === 'US') return { action: 'next' };
-  if (isBotUserAgent(userAgent)) return { action: 'next' };
-
-  const detectedRegion = detectRegionFromCountry(countryCode);
-  if (detectedRegion === 'IN') return { action: 'redirect', region: 'IN' };
-
-  return { action: 'next' };
+  const resolved = preferredRegion ?? detectRegionFromCountry(countryCode);
+  return resolved === 'US' ? { action: 'next' } : { action: 'redirect', region: resolved };
 }
+
+const LEGACY_ROUTE_REDIRECTS: Record<string, string> = {
+  '/about-us': '/about',
+  '/mortgage-calculator': '/calculators/mortgage-calculator',
+  '/loan-calculator': '/calculators/loan-calculator',
+  '/compound-interest-calculator': '/calculators/compound-interest-calculator',
+  '/retirement-calculator': '/calculators/retirement-calculator',
+  '/debt-payoff-calculator': '/calculators/debt-payoff-calculator',
+  '/mortgage-rate-comparison': '/compare/mortgage-rate-comparison'
+};
 
 function normalizePathname(pathname: string): string {
   if (pathname !== '/' && pathname.endsWith('/')) {
@@ -68,45 +61,31 @@ function getCanonicalPathname(pathname: string): string {
     }
   }
 
-  if (nextPath.startsWith('/tag/') || nextPath.startsWith('/topic/')) {
-    const rawTag = nextPath.replace(/^\/(?:tag|topic)\//, '').split('/')[0];
-    const canonicalTag = slugifyTag(rawTag);
-    if (canonicalTag) return `/blog/tag/${canonicalTag}`;
-  }
-
-  if (nextPath.startsWith('/blog/tag/')) {
-    const rawTagSegment = nextPath.slice('/blog/tag/'.length);
-    const hasNestedPath = rawTagSegment.includes('/');
-    if (!hasNestedPath && rawTagSegment) {
-      const canonicalTag = slugifyTag(rawTagSegment);
-      if (canonicalTag) return `/blog/tag/${canonicalTag}`;
-    }
-  }
-
   return nextPath;
 }
 
-function redirectToCanonical(request: NextRequest, pathname: string, permanent = true) {
-  const redirectUrl = new URL(request.url);
-  redirectUrl.protocol = 'https:';
-  redirectUrl.host = PRIMARY_HOST;
-  redirectUrl.pathname = pathname;
-  return NextResponse.redirect(redirectUrl, permanent ? 308 : 307);
+function getPreferredRegion(request: NextRequest): PreferredRegion {
+  const cookieRegion = parsePreferredRegion(request.cookies.get(PREFERRED_REGION_COOKIE)?.value);
+  if (cookieRegion) return cookieRegion;
+
+  const pathRegion = getRegionFromPath(request.nextUrl.pathname);
+  if (pathRegion) return pathRegion;
+
+  return detectRegionFromCountry(request.headers.get('x-vercel-ip-country') ?? request.headers.get('cf-ipcountry'));
 }
 
 export function middleware(request: NextRequest) {
-  const { nextUrl, headers } = request;
-  const pathname = nextUrl.pathname;
-  const host = headers.get('host')?.toLowerCase() ?? '';
-  const forwardedProto = headers.get('x-forwarded-proto')?.toLowerCase() ?? nextUrl.protocol.replace(':', '');
-
-
+  const { nextUrl } = request;
   const requestedRegion = parsePreferredRegion(nextUrl.searchParams.get('region'));
+
   if (requestedRegion) {
+    const targetPath = withRegionPrefix(nextUrl.pathname, requestedRegion);
     const cleanUrl = new URL(request.url);
+    cleanUrl.pathname = targetPath;
     cleanUrl.searchParams.delete('region');
+
     const response = NextResponse.redirect(cleanUrl, 307);
-    response.cookies.set(PREFERRED_REGION_COOKIE, requestedRegion === 'IN' ? 'in' : 'us', {
+    response.cookies.set(PREFERRED_REGION_COOKIE, getPreferredRegionCookieValue(requestedRegion), {
       path: '/',
       maxAge: 60 * 60 * 24 * 365,
       sameSite: 'lax',
@@ -116,26 +95,32 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  const canonicalPathname = getCanonicalPathname(pathname);
-  const shouldCanonicalizeOrigin = NON_PRIMARY_HOSTS.has(host) || host !== PRIMARY_HOST || forwardedProto !== 'https';
-  const shouldCanonicalizePath = canonicalPathname !== pathname;
+  const canonicalRawPathname = getCanonicalPathname(nextUrl.pathname);
+  const preferredRegion = getPreferredRegion(request);
+  const canonicalPathname = withRegionPrefix(stripRegionPrefix(canonicalRawPathname), preferredRegion);
 
-  if (shouldCanonicalizeOrigin || shouldCanonicalizePath) {
-    return redirectToCanonical(request, canonicalPathname, true);
+  if (canonicalPathname !== nextUrl.pathname) {
+    const redirectUrl = new URL(request.url);
+    redirectUrl.pathname = canonicalPathname;
+    return NextResponse.redirect(redirectUrl, 307);
   }
 
-  const decision = getHomepageRoutingDecision({
-    pathname,
-    preferredRegion: parsePreferredRegion(request.cookies.get(PREFERRED_REGION_COOKIE)?.value),
-    userAgent: headers.get('user-agent'),
-    countryCode: headers.get('x-vercel-ip-country') ?? headers.get('cf-ipcountry')
+  const response = NextResponse.next();
+  response.cookies.set(PREFERRED_REGION_COOKIE, getPreferredRegionCookieValue(preferredRegion ?? DEFAULT_REGION), {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: 'lax',
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production'
   });
 
-  if (decision.action === 'redirect') {
-    return redirectToCanonical(request, decision.region === 'IN' ? '/in' : '/', false);
+  if (preferredRegion === 'US' || preferredRegion === 'EU') {
+    const rewriteUrl = nextUrl.clone();
+    rewriteUrl.pathname = stripRegionPrefix(nextUrl.pathname);
+    return NextResponse.rewrite(rewriteUrl, response);
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {
