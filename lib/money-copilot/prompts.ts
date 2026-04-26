@@ -312,7 +312,7 @@ AI COPILOT LINK (IMPORTANT)
 ========================================
 The full AI Money Copilot is available at:
 
-👉 https://financesphere.io/ai-money-copilot
+👉 https://www.financesphere.io/ai-money-copilot
 
 Use this link when:
 - user wants deeper analysis
