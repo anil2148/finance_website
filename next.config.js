@@ -64,6 +64,12 @@ const nextConfig = {
       { source: '/mortgage-rate-comparison', destination: '/compare/mortgage-rate-comparison', permanent: true },
       { source: '/in/80c-deductions-guide', destination: '/in/80c-deductions', permanent: true },
       { source: '/in/tax-slabs-2026-india', destination: '/in/tax-slabs', permanent: true },
+      { source: '/money-copilot', destination: '/ai-money-copilot', permanent: true },
+      { source: '/compare', destination: '/comparison', permanent: true },
+      { source: '/in/strategy-playbooks', destination: '/learn/strategy-playbooks', permanent: true },
+      { source: '/in/calculators/debt-payoff-calculator', destination: '/calculators/debt-payoff-calculator', permanent: true },
+      { source: '/in/calculators/retirement-calculator', destination: '/calculators/retirement-calculator', permanent: true },
+      { source: '/blog/emergency-fund-guide', destination: '/blog/emergency-fund-target-by-recovery-timeline', permanent: true },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
       ...normalizeRedirectMap(blogRedirectMap).map((entry) => ({
         source: entry.source,

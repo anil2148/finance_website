@@ -628,7 +628,7 @@ const secondaryCalculatorByArchetype: Record<TopicBlueprint['archetype'], { labe
 const relatedBlogsByArchetype: Record<TopicBlueprint['archetype'], Array<{ label: string; href: string }>> = {
   investing: [
     { label: '401(k) contribution rate targets', href: '/blog/401k-contribution-rate-sustainable-target-2026' },
-    { label: 'Dollar-cost averaging playbook', href: '/blog/dollar-cost-averaging-guide' }
+    { label: 'Dollar-cost averaging playbook', href: '/blog/beginner-investing-roadmap-year-one-milestones' }
   ],
   loans: [
     { label: 'Debt-to-income 90-day plan', href: '/blog/debt-to-income-ratio-90-day-plan' },
@@ -644,7 +644,7 @@ const relatedBlogsByArchetype: Record<TopicBlueprint['archetype'], Array<{ label
   ],
   'credit-cards': [
     { label: 'Credit utilization statement-cycle playbook', href: '/blog/credit-utilization-statement-cycle-playbook' },
-    { label: 'APR cost-to-carry breakdown', href: '/blog/credit-card-apr-2026-cost-to-carry-balance' }
+    { label: 'APR cost-to-carry breakdown', href: '/blog/credit-card-apr-what-it-actually-costs' }
   ],
   tax: [
     { label: 'Roth vs Traditional 401(k) decision guide', href: '/blog/roth-vs-traditional-401k-decision-guide' },

@@ -35,7 +35,7 @@ const decisionTracks = [
       { href: '/calculators/net-worth-calculator', label: 'Net Worth Calculator' }
     ],
     compare: { href: '/best-savings-accounts-usa', label: 'Compare savings account frameworks' },
-    guide: { href: '/blog/emergency-fund-guide', label: 'Read emergency fund guide' }
+    guide: { href: '/blog/emergency-fund-target-by-recovery-timeline', label: 'Read emergency fund guide' }
   },
   {
     title: 'Investing and retirement',

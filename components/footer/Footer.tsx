@@ -9,9 +9,9 @@ const footerColumns = {
     {
       heading: 'Tools',
       links: [
-        { href: '/money-copilot', label: 'AI Copilot' },
+        { href: '/ai-money-copilot', label: 'AI Copilot' },
         { href: '/calculators', label: 'Calculators' },
-        { href: '/compare', label: 'Comparisons' },
+        { href: '/comparison', label: 'Comparisons' },
         { href: '/credit-cards', label: 'Credit Cards' }
       ]
     },
@@ -48,9 +48,9 @@ const footerColumns = {
     {
       heading: 'Tools',
       links: [
-        { href: '/money-copilot', label: 'AI Copilot' },
+        { href: '/ai-money-copilot', label: 'AI Copilot' },
         { href: '/in/calculators', label: 'Calculators' },
-        { href: '/compare', label: 'Comparisons' },
+        { href: '/comparison', label: 'Comparisons' },
         { href: '/in/best-credit-cards-india', label: 'Credit Cards' }
       ]
     },
@@ -58,7 +58,7 @@ const footerColumns = {
       heading: 'Learn',
       links: [
         { href: '/in/blog', label: 'Financial Guides' },
-        { href: '/in/strategy-playbooks', label: 'Strategy Playbooks' },
+        { href: '/learn/strategy-playbooks', label: 'Strategy Playbooks' },
         { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
         { href: '/best-investment-apps', label: 'Best Investment Apps' }
       ]
@@ -68,8 +68,8 @@ const footerColumns = {
       links: [
         { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' },
         { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' },
-        { href: '/in/calculators/debt-payoff-calculator', label: 'Debt Payoff Calculator' },
-        { href: '/in/calculators/retirement-calculator', label: 'Retirement Calculator' }
+        { href: '/calculators/debt-payoff-calculator', label: 'Debt Payoff Calculator' },
+        { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' }
       ]
     },
     {
