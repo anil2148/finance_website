@@ -13,6 +13,7 @@ type NewsletterApiResponse =
   | {
       success: true;
       message?: string;
+      alreadySubscribed?: boolean;
     }
   | {
       success: false;
@@ -33,9 +34,13 @@ const INCOME_OPTIONS = ['Under $3,000', '$3,000-$6,000', '$6,000-$10,000', '$10,
 
 const CHALLENGE_OPTIONS = ['High monthly debt payments', 'Inconsistent income', 'Not sure what to prioritize first', 'I start plans but do not stick with them'];
 
-function getPreviewRecommendation(goal: string, challenge: string) {
+function getPreviewRecommendation(goal: string, challenge: string, incomeRange: string) {
   if (challenge.toLowerCase().includes('debt')) {
     return 'You should prioritize debt payoff over investing right now.';
+  }
+
+  if (incomeRange.toLowerCase().includes('under')) {
+    return 'You should prioritize a tighter debt + cash-buffer plan before adding new investing commitments.';
   }
 
   if (challenge.toLowerCase().includes('inconsistent')) {
@@ -62,7 +67,7 @@ export function PersonalizedPlanFunnel({ source, headlineMetric, headlineValue }
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [message, setMessage] = useState('');
 
-  const recommendation = useMemo(() => getPreviewRecommendation(goal, challenge), [goal, challenge]);
+  const recommendation = useMemo(() => getPreviewRecommendation(goal, challenge, incomeRange), [goal, challenge, incomeRange]);
 
   const submitEmail = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -89,7 +94,13 @@ export function PersonalizedPlanFunnel({ source, headlineMetric, headlineValue }
           email: normalizedEmail,
           source,
           persona: `${goal} | ${incomeRange}`,
-          leadMagnet: `personalized-weekly-plan:${challenge}`
+          leadMagnet: `personalized-weekly-plan:${challenge}`,
+          funnelInputs: {
+            goal,
+            incomeRange,
+            challenge,
+            recommendation
+          }
         })
       });
 
@@ -113,7 +124,7 @@ export function PersonalizedPlanFunnel({ source, headlineMetric, headlineValue }
 
   return (
     <section className="rounded-2xl border border-indigo-200 bg-indigo-50 p-6 dark:border-indigo-500/40 dark:bg-indigo-950/30">
-      <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-200">Personalized funnel</p>
+      <p className="text-xs font-semibold uppercase tracking-wide text-indigo-700 dark:text-indigo-200">Personalized funnel (result-triggered)</p>
       <h2 className="mt-2 text-xl font-semibold text-slate-900 dark:text-slate-100">Get a weekly plan based on YOUR numbers</h2>
       <p className="mt-2 text-sm text-slate-700 dark:text-slate-300">This is not a generic newsletter. Your weekly plan is generated from your calculator outcome and your stated priorities.</p>
 
@@ -159,6 +170,7 @@ export function PersonalizedPlanFunnel({ source, headlineMetric, headlineValue }
         <div className="mt-4 space-y-3 rounded-xl border border-indigo-200 bg-white p-4 text-sm dark:border-indigo-500/30 dark:bg-slate-900">
           <p className="font-semibold text-slate-900 dark:text-slate-100">Based on your inputs:</p>
           <p className="text-slate-700 dark:text-slate-200">{recommendation}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-300">Example: &quot;Based on your inputs: You should prioritize debt payoff over investing&quot;.</p>
           <p className="text-slate-600 dark:text-slate-300">
             Current calculator signal: <span className="font-medium">{headlineMetric}</span> = <span className="font-medium">{headlineValue}</span>
           </p>

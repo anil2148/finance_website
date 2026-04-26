@@ -1,6 +1,20 @@
 import Link from 'next/link';
 
-export default function PersonalizedDashboardPage() {
+type PersonalizedDashboardPageProps = {
+  searchParams?: {
+    source?: string;
+    goal?: string;
+    income?: string;
+    challenge?: string;
+  };
+};
+
+export default function PersonalizedDashboardPage({ searchParams }: PersonalizedDashboardPageProps) {
+  const goal = searchParams?.goal ?? 'your goal';
+  const income = searchParams?.income ?? 'your income range';
+  const challenge = searchParams?.challenge ?? 'your biggest challenge';
+  const source = searchParams?.source ?? 'calculator';
+
   return (
     <main className="mx-auto max-w-3xl space-y-4 px-4 py-12">
       <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-300">FinanceSphere dashboard</p>
@@ -8,6 +22,15 @@ export default function PersonalizedDashboardPage() {
       <p className="text-sm text-slate-700 dark:text-slate-300">
         We saved your funnel inputs and will use them to tailor weekly plans to your goals, income range, and biggest challenge.
       </p>
+      <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+        <p className="font-semibold text-slate-900 dark:text-slate-100">Your captured context</p>
+        <ul className="mt-2 list-disc space-y-1 pl-5">
+          <li>Source: {source}</li>
+          <li>Goal: {goal}</li>
+          <li>Monthly income range: {income}</li>
+          <li>Biggest challenge: {challenge}</li>
+        </ul>
+      </div>
       <div className="rounded-xl border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900 dark:border-indigo-500/40 dark:bg-indigo-950/30 dark:text-indigo-200">
         <p className="font-semibold">What to expect each week</p>
         <ul className="mt-2 list-disc space-y-1 pl-5">

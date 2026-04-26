@@ -8,6 +8,12 @@ type NewsletterPayload = {
   source?: string;
   persona?: string;
   leadMagnet?: string;
+  funnelInputs?: {
+    goal?: string;
+    incomeRange?: string;
+    challenge?: string;
+    recommendation?: string;
+  };
 };
 
 type ErrorCode =
@@ -101,6 +107,10 @@ export async function POST(request: Request) {
     const source = payload.source ?? 'unknown';
     const persona = payload.persona ?? 'unspecified';
     const leadMagnet = payload.leadMagnet ?? 'none';
+    const funnelGoal = payload.funnelInputs?.goal ?? 'unspecified';
+    const funnelIncomeRange = payload.funnelInputs?.incomeRange ?? 'unspecified';
+    const funnelChallenge = payload.funnelInputs?.challenge ?? 'unspecified';
+    const funnelRecommendation = payload.funnelInputs?.recommendation ?? 'unspecified';
 
     let alreadySubscribed = false;
 
@@ -124,6 +134,10 @@ export async function POST(request: Request) {
         source,
         persona,
         lead_magnet: leadMagnet,
+        funnel_goal: funnelGoal,
+        funnel_income_range: funnelIncomeRange,
+        funnel_challenge: funnelChallenge,
+        funnel_recommendation: funnelRecommendation,
         timestamp: new Date().toISOString()
       });
     } catch (error) {
@@ -140,8 +154,8 @@ export async function POST(request: Request) {
       success: true,
       alreadySubscribed,
       message: alreadySubscribed
-        ? "You're already subscribed. We'll keep sending future guides and updates."
-        : "You're subscribed. Check your inbox for future guides and updates."
+        ? "You're already subscribed. We'll keep sending your personalized weekly plan."
+        : "You're subscribed. Check your inbox for your personalized weekly plan."
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
