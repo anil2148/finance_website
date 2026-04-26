@@ -6,6 +6,10 @@ export type NewsletterSignupLog = {
   source: string;
   persona: string;
   lead_magnet: string;
+  funnel_goal?: string;
+  funnel_income_range?: string;
+  funnel_challenge?: string;
+  funnel_recommendation?: string;
   timestamp: string;
 };
 
