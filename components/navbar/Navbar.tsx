@@ -223,10 +223,10 @@ export function Navbar() {
         onClose={() => setOpen(false)}
         links={links}
         isActive={activeCheck}
-        isIndiaContext={isIndiaContext}
+        region={isIndiaContext ? 'IN' : 'US'}
         expandedGroup={expandedGroup}
         setExpandedGroup={(g) => setExpandedGroup(g)}
-        onRegionChange={switchRegion}
+        onRegionChange={(nextRegion) => switchRegion(nextRegion === 'IN' ? 'India' : 'US')}
         onStartDecision={() => setDecisionModalOpen(true)}
       />
 

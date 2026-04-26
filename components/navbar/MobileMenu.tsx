@@ -6,16 +6,17 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
 import type { NavLink } from '@/components/navbar/NavItem';
+import type { RegionCode } from '@/lib/region-config';
 
 interface MobileMenuProps {
   open: boolean;
   onClose: () => void;
   links: NavLink[];
   isActive: (href: string) => boolean;
-  isIndiaContext: boolean;
+  region: RegionCode;
   expandedGroup: string | null;
   setExpandedGroup: (group: string | null) => void;
-  onRegionChange: (region: 'India' | 'US') => void;
+  onRegionChange: (region: RegionCode) => void;
   onStartDecision?: () => void;
 }
 
@@ -24,7 +25,7 @@ export function MobileMenu({
   onClose,
   links,
   isActive,
-  isIndiaContext,
+  region,
   expandedGroup,
   setExpandedGroup,
   onRegionChange,
@@ -101,8 +102,8 @@ export function MobileMenu({
               ))}
 
               <li>
-                <RegionSelector mobile isIndiaContext={isIndiaContext} onRegionChange={(region) => {
-                  onRegionChange(region);
+                <RegionSelector mobile region={region} onRegionChange={(nextRegion) => {
+                  onRegionChange(nextRegion);
                   onClose();
                 }} />
               </li>
