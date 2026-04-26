@@ -114,8 +114,8 @@ export function AppNavbar() {
         isActive={activeCheck}
         expandedGroup={expandedGroup}
         setExpandedGroup={setExpandedGroup}
-        isIndiaContext={region === 'IN'}
-        onRegionChange={(next) => switchRegion(next === 'India' ? 'IN' : 'US')}
+        region={region}
+        onRegionChange={switchRegion}
         onStartDecision={() => dispatch({ type: 'OPEN_DRAWER', payload: { pageContext } })}
       />
     </>
