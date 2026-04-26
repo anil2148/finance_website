@@ -3,6 +3,20 @@
 import Link from 'next/link';
 import { HeroDecisionRunner } from '@/components/home/HeroDecisionRunner';
 
+const platformMetrics = [
+  { value: '128,400+', label: 'decisions analyzed' },
+  { value: '18 pts', label: 'Avg. risk score reduction' },
+  { value: '$340', label: 'Avg. monthly savings surfaced' }
+];
+
+const credibilityPills = [
+  '28/36 Rule',
+  'Dave Ramsey Baby Steps',
+  'Bogle Index Method',
+  'CFPB Guidelines',
+  'Behavioral Cashflow Stress Testing'
+];
+
 export function AICopilotPreview() {
   return (
     <section className="grid gap-4 lg:grid-cols-2" aria-label="AI Copilot and hero section">
@@ -26,6 +40,18 @@ export function AICopilotPreview() {
             Try Demo Scenario
           </a>
         </div>
+
+        <section className="mt-5" aria-label="Platform impact metrics">
+          <div className="grid gap-3 md:grid-cols-3">
+            {platformMetrics.map((metric) => (
+              <article key={metric.label} className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900">
+                <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{metric.value}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-300">{metric.label}</p>
+              </article>
+            ))}
+          </div>
+          <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">Last updated April 2026</p>
+        </section>
       </article>
 
       <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900" id="ai-output">
@@ -34,6 +60,19 @@ export function AICopilotPreview() {
         <Link href="/ai-money-copilot" className="mt-4 inline-block rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-50 dark:border-slate-600 dark:hover:bg-slate-800">
           Open full AI Copilot →
         </Link>
+      </article>
+
+      <article className="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-900 lg:col-span-2" aria-label="Credibility methods and standards">
+        <div className="flex flex-wrap gap-2">
+          {credibilityPills.map((pill) => (
+            <span
+              key={pill}
+              className="rounded-full border border-slate-300 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-slate-600 dark:text-slate-200"
+            >
+              {pill}
+            </span>
+          ))}
+        </div>
       </article>
 
       <article id="instant-demo" className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900 lg:col-span-2" aria-label="Instant demo block">
