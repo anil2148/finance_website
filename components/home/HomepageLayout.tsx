@@ -8,8 +8,13 @@ import { SocialProofSection } from '@/components/home/SocialProofSection';
 import { HomeCalculatorsSection } from '@/components/home/HomeCalculatorsSection';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { trackEvent } from '@/lib/analytics';
+import { useRegion } from '@/components/providers/RegionProvider';
+import { REGION_FINANCE_CONTEXT } from '@/lib/region-finance-context';
 
 export function HomepageLayout() {
+  const { region } = useRegion();
+  const financeContext = REGION_FINANCE_CONTEXT[region];
+
   return (
     <section className="space-y-6 pb-24" aria-label="FinanceSphere homepage">
       <AICopilotPreview />
@@ -19,6 +24,28 @@ export function HomepageLayout() {
       <DecisionDashboardPreview />
 
       <HomeCalculatorsSection />
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-label="Regional money context">
+        <h2 className="text-xl font-semibold">Regional assumptions driving your results</h2>
+        <div className="mt-3 grid gap-3 md:grid-cols-4 text-sm">
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Currency</p>
+            <p className="mt-1 font-semibold">{financeContext.currencySymbol} localized defaults</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Interest rates</p>
+            <p className="mt-1 font-semibold">{financeContext.interestRateRange}</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Tax assumptions</p>
+            <p className="mt-1 font-semibold">{financeContext.taxAssumption}</p>
+          </article>
+          <article className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Priority products</p>
+            <p className="mt-1 font-semibold">{financeContext.primaryProducts.join(' • ')}</p>
+          </article>
+        </div>
+      </section>
 
       <section className="grid gap-4 md:grid-cols-3" aria-label="Decision platform highlights">
         <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">

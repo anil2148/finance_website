@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { HeroDecisionRunner } from '@/components/home/HeroDecisionRunner';
+import { useRegion } from '@/components/providers/RegionProvider';
+import { REGION_FINANCE_CONTEXT } from '@/lib/region-finance-context';
 
 const platformMetrics = [
   { value: '128,400+', label: 'decisions analyzed' },
@@ -18,6 +20,9 @@ const credibilityPills = [
 ];
 
 export function AICopilotPreview() {
+  const { region } = useRegion();
+  const financeContext = REGION_FINANCE_CONTEXT[region];
+
   return (
     <section className="grid gap-4 lg:grid-cols-2" aria-label="AI Copilot and hero section">
       <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -50,7 +55,9 @@ export function AICopilotPreview() {
               </article>
             ))}
           </div>
-          <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">Last updated April 2026</p>
+          <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+            {financeContext.interestRateRange} • {financeContext.taxAssumption}
+          </p>
         </section>
       </article>
 
@@ -80,18 +87,22 @@ export function AICopilotPreview() {
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Instant demo</p>
             <h2 className="mt-2 text-xl font-semibold">Try a scenario in 10 seconds</h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Income: <span className="font-semibold">$6,000/month</span><br />Decision: <span className="font-semibold">Buy house</span></p>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              {financeContext.localizedScenario.incomeLabel}
+              <br />
+              {financeContext.localizedScenario.decisionLabel}
+            </p>
           </div>
           <div className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Monthly cost breakdown</h3>
-            <p className="mt-2 text-sm">Mortgage: $2,430</p>
-            <p className="text-sm">Taxes/insurance: $640</p>
-            <p className="text-sm">Maintenance: $350</p>
+            {financeContext.localizedScenario.monthlyCostLines.map((line) => (
+              <p key={line} className="mt-2 text-sm first:mt-2">{line}</p>
+            ))}
           </div>
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950/40">
             <h3 className="text-sm font-semibold">Risk alert</h3>
-            <p className="mt-1 text-sm">Housing spend crosses safe threshold in downside scenario.</p>
-            <p className="mt-3 text-sm font-semibold text-emerald-700 dark:text-emerald-300">Recommendation: Wait + build reserves first.</p>
+            <p className="mt-1 text-sm">{financeContext.localizedScenario.riskAlert}</p>
+            <p className="mt-3 text-sm font-semibold text-emerald-700 dark:text-emerald-300">Recommendation: {financeContext.localizedScenario.recommendation}</p>
           </div>
         </div>
       </article>

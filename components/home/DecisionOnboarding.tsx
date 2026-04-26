@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { trackEvent } from '@/lib/analytics';
+import { useRegion } from '@/components/providers/RegionProvider';
+import { REGION_FINANCE_CONTEXT } from '@/lib/region-finance-context';
 
-type DecisionGoal = 'Buy home' | 'Pay off debt' | 'Start investing' | 'Compare job offers' | 'Other';
+type DecisionGoal = 'Buy home' | 'Pay off debt' | 'Start investing' | 'Retirement planning' | 'Other';
 type ScenarioRow = {
   label: string;
   monthlyImpact: string;
@@ -33,7 +35,11 @@ const stepMeta = [
   { id: 3, label: 'Recommendation' }
 ] as const;
 
+const goalOptions: DecisionGoal[] = ['Buy home', 'Pay off debt', 'Start investing', 'Retirement planning', 'Other'];
+
 export function DecisionOnboarding() {
+  const { region } = useRegion();
+  const financeContext = REGION_FINANCE_CONTEXT[region];
   const [state, setState] = useState<OnboardingState>(defaultState);
   const [complete, setComplete] = useState(false);
   const [errors, setErrors] = useState<{ income?: string; goal?: string }>({});
@@ -74,8 +80,8 @@ export function DecisionOnboarding() {
 
   const progress = useMemo(() => Math.round((state.step / 3) * 100), [state.step]);
   const monthlyIncome = Number(state.income || 0);
-  const scenarioRows = useMemo(() => buildScenarioRows(state.goal, monthlyIncome), [state.goal, monthlyIncome]);
-  const recommendation = useMemo(() => buildRecommendation(state.goal, monthlyIncome, scenarioRows), [state.goal, monthlyIncome, scenarioRows]);
+  const scenarioRows = useMemo(() => buildScenarioRows(state.goal, monthlyIncome, region), [state.goal, monthlyIncome, region]);
+  const recommendation = useMemo(() => buildRecommendation(state.goal, monthlyIncome, scenarioRows, region), [state.goal, monthlyIncome, scenarioRows, region]);
 
   const nextStep = () => {
     if (state.step === 1) {
@@ -154,15 +160,15 @@ export function DecisionOnboarding() {
         {state.step === 1 ? (
           <div className="grid gap-3 animate-in fade-in duration-300">
             <label className="block">
-              <span className="text-sm font-medium">Monthly income ($)</span>
+              <span className="text-sm font-medium">Monthly income ({financeContext.currencySymbol})</span>
               <input
                 type="number"
                 min={0}
                 value={state.income}
                 onChange={(event) => setState((prev) => ({ ...prev, income: event.target.value }))}
                 className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:border-slate-600 dark:bg-slate-800"
-                placeholder="e.g. 6200"
-                aria-label="Monthly income ($)"
+                placeholder={`e.g. ${financeContext.sampleMonthlyIncome.toLocaleString()}`}
+                aria-label={`Monthly income (${financeContext.currencySymbol})`}
               />
               {errors.income ? <p className="mt-1 text-xs text-rose-600">{errors.income}</p> : null}
             </label>
@@ -176,11 +182,9 @@ export function DecisionOnboarding() {
                 aria-label="Biggest financial decision right now"
               >
                 <option value="">Select one</option>
-                <option>Buy home</option>
-                <option>Pay off debt</option>
-                <option>Start investing</option>
-                <option>Compare job offers</option>
-                <option>Other</option>
+                {goalOptions.map((option) => (
+                  <option key={option}>{option}</option>
+                ))}
               </select>
               {errors.goal ? <p className="mt-1 text-xs text-rose-600">{errors.goal}</p> : null}
             </label>
@@ -190,7 +194,7 @@ export function DecisionOnboarding() {
         {state.step === 2 ? (
           <div className="animate-in fade-in space-y-3 duration-300">
             <p className="text-sm text-slate-600 dark:text-slate-300">
-              Stress test for <span className="font-semibold">{state.goal || 'your decision'}</span> at <span className="font-semibold">${monthlyIncome.toLocaleString()}</span>/month.
+              Stress test for <span className="font-semibold">{state.goal || 'your decision'}</span> at <span className="font-semibold">{financeContext.currencySymbol}{monthlyIncome.toLocaleString()}</span>/month.
             </p>
             {scenarioRows.map((row) => (
               <article key={row.label} className="rounded-xl border border-slate-200 p-4 dark:border-slate-700">
@@ -212,6 +216,9 @@ export function DecisionOnboarding() {
               <span className="rounded-full bg-emerald-700 px-2 py-1 text-xs font-semibold text-white">{recommendation.riskScore}/100 risk</span>
             </div>
             <p className="mt-2 text-sm"><span className="font-semibold">Recommended action:</span> {recommendation.action}</p>
+            <p className="mt-2 text-xs text-emerald-800 dark:text-emerald-200">
+              {financeContext.interestRateRange} • {financeContext.taxAssumption}
+            </p>
             <ul className="mt-3 list-disc space-y-1 pl-4 text-xs">
               {recommendation.nextSteps.map((item) => (
                 <li key={item}>{item}</li>
@@ -245,9 +252,10 @@ export function DecisionOnboarding() {
   );
 }
 
-function buildScenarioRows(goal: DecisionGoal | '', income: number): ScenarioRow[] {
-  const baseIncome = Math.max(income || 0, 2500);
-  const baseRate = goal === 'Buy home' ? 0.33 : goal === 'Pay off debt' ? 0.28 : goal === 'Start investing' ? 0.2 : goal === 'Compare job offers' ? 0.22 : 0.24;
+function buildScenarioRows(goal: DecisionGoal | '', income: number, region: 'US' | 'IN' | 'EU'): ScenarioRow[] {
+  const floorIncome = region === 'IN' ? 40000 : region === 'EU' ? 2000 : 2500;
+  const baseIncome = Math.max(income || 0, floorIncome);
+  const baseRate = goal === 'Buy home' ? 0.33 : goal === 'Pay off debt' ? 0.28 : goal === 'Start investing' ? 0.2 : goal === 'Retirement planning' ? 0.24 : 0.24;
   const worstRate = Math.min(baseRate + 0.12, 0.52);
   const baseAmount = Math.round(baseIncome * baseRate);
   const worstAmount = Math.round(baseIncome * worstRate);
@@ -255,27 +263,34 @@ function buildScenarioRows(goal: DecisionGoal | '', income: number): ScenarioRow
   return [
     {
       label: 'Worst-case',
-      monthlyImpact: `$${worstAmount.toLocaleString()}/month needed for this decision if income drops or costs jump.`,
+      monthlyImpact: `${REGION_FINANCE_CONTEXT[region].currencySymbol}${worstAmount.toLocaleString()}/month needed for this decision if income drops or costs jump.`,
       riskScore: Math.min(95, Math.round(worstRate * 180)),
       note: goal === 'Buy home' ? 'Assumes higher rate and maintenance pressure.' : 'Assumes margin pressure from one unexpected expense.'
     },
     {
       label: 'Base case',
-      monthlyImpact: `$${baseAmount.toLocaleString()}/month needed with today’s assumptions.`,
+      monthlyImpact: `${REGION_FINANCE_CONTEXT[region].currencySymbol}${baseAmount.toLocaleString()}/month needed with today’s assumptions.`,
       riskScore: Math.min(90, Math.round(baseRate * 160)),
       note: 'Use this as your baseline before committing.'
+    },
+    {
+      label: 'Resilient plan',
+      monthlyImpact: `${REGION_FINANCE_CONTEXT[region].currencySymbol}${Math.max(0, Math.round(baseAmount * 0.72)).toLocaleString()}/month after trimming discretionary spend.`,
+      riskScore: Math.max(20, Math.round(baseRate * 120)),
+      note: 'Target this level before locking in a long-term commitment.'
     }
   ];
 }
 
-function buildRecommendation(goal: DecisionGoal | '', income: number, rows: ScenarioRow[]) {
+function buildRecommendation(goal: DecisionGoal | '', income: number, rows: ScenarioRow[], region: 'US' | 'IN' | 'EU') {
   const worst = rows[0];
+  const products = REGION_FINANCE_CONTEXT[region].primaryProducts.join(', ');
   const actionByGoal: Record<DecisionGoal, string> = {
     'Buy home': 'Delay purchase until housing costs stay under one-third of income and buffer is funded.',
-    'Pay off debt': 'Prioritize highest-APR debt first while preserving a minimum cash cushion.',
-    'Start investing': 'Automate a starter contribution and increase monthly after one full budget cycle.',
-    'Compare job offers': 'Pick the offer with stronger after-tax cashflow and lower downside risk.',
-    Other: 'Run one more scenario with a tighter budget before committing.'
+    'Pay off debt': `Prioritize highest-APR debt first, then redirect freed cash toward ${products}.`,
+    'Start investing': `Automate monthly investing and focus on region-fit products like ${products}.`,
+    'Retirement planning': `Build a tax-aware retirement plan using ${products}.`,
+    Other: 'Run one more scenario with a tighter budget before choosing a product.'
   };
 
   return {
@@ -283,8 +298,8 @@ function buildRecommendation(goal: DecisionGoal | '', income: number, rows: Scen
     riskScore: worst?.riskScore ?? 50,
     nextSteps: [
       `Protect at least ${Math.max(1, Math.round((income || 3000) / 2500))} month of essentials in cash.`,
-      'Re-run this stress test with a 10% lower income assumption.',
-      'Review trade-offs in AI Money Copilot before taking action.'
+      `Align your plan with ${REGION_FINANCE_CONTEXT[region].taxAssumption.toLowerCase()}`,
+      `Shortlist ${products} and pick one action this week.`
     ]
   };
 }
