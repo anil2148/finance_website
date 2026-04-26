@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { FAQAccordion, JumpNav, ResourceGrid, TrustBar } from '@/components/hubs/PillarPageSections';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -227,6 +228,50 @@ const hubs: Record<string, HubConfig> = {
       { question: 'Is passive income truly hands-off?', answer: 'Most strategies are semi-passive. They need setup, monitoring, and occasional rebalancing.' },
       { question: 'What is the safest place to start?', answer: 'Usually emergency savings + high-yield savings or short-term CDs before adding market-based income assets.' }
     ]
+  },
+  'strategy-playbooks': {
+    title: 'Strategy Playbooks Hub',
+    description: 'Scenario-based financial playbooks for people who need one practical move now, not generic theory.',
+    updatedAt: 'April 26, 2026',
+    microReality: 'Most expensive mistakes happen when people compare products before deciding the exact problem they need to solve this month.',
+    whatGoesWrong: {
+      scenario: 'You read three ranking pages, apply for two products, and still feel unclear because each option solves a different problem.',
+      failurePoint: 'The decision sequence is wrong: product-first instead of constraint-first.',
+      consequence: 'You can end up with the wrong tool, added fees, and no measurable improvement in cash-flow resilience.'
+    },
+    bestFor: ['People choosing between two valid paths under real-world constraints', 'Households planning around a 30- to 120-day decision window', 'Anyone who wants a repeatable checklist before applying, transferring, or committing'],
+    notIdealFor: ['Users looking for personalized investment or tax advice', 'People who have not yet gathered baseline income/debt/cash-flow numbers'],
+    decisionBranch: [
+      { condition: 'If cash flow is tight this month', action: 'Run debt and budget playbooks first, then compare cards or loans only after downside testing.' },
+      { condition: 'If a large decision is within 12 months (home, refinance, major move)', action: 'Use readiness and documentation playbooks before rate-shopping.' },
+      { condition: 'If long-term wealth building is the priority', action: 'Use investing and tax-efficiency playbooks after emergency buffer thresholds are met.' }
+    ],
+    startHere: [
+      'Define the single decision you need to make this month.',
+      'Run one baseline calculator and one downside scenario.',
+      'Use the matching comparison page only after your thresholds are documented.'
+    ],
+    popularDecisions: ['Debt payoff vs investing sequence', 'Savings buffer size before card optimization', 'Mortgage readiness timeline and preapproval sequencing'],
+    resources: [
+      { href: '/blog/debt-to-income-ratio-90-day-plan', title: 'DTI 90-day action plan', description: 'Reduce approval friction with a focused 90-day debt and documentation checklist.', tag: 'Start here' },
+      { href: '/blog/personal-loan-comparison-for-bad-month-resilience', title: 'Bad-month personal loan comparison', description: 'Compare loan options by resilience and downside affordability—not teaser rates.' },
+      { href: '/blog/emergency-fund-target-by-recovery-timeline', title: 'Emergency fund by recovery timeline', description: 'Set reserve targets based on job and income recovery risk instead of generic month counts.' },
+      { href: '/blog/mortgage-preapproval-checklist-underwriting', title: 'Mortgage preapproval checklist', description: 'Prepare documents and DTI thresholds before starting lender outreach.' }
+    ],
+    calculators: [
+      { href: '/calculators/debt-payoff-calculator', label: 'Debt payoff calculator' },
+      { href: '/calculators/net-worth-calculator', label: 'Net worth calculator' },
+      { href: '/calculators/mortgage-calculator', label: 'Mortgage calculator' }
+    ],
+    comparisons: [
+      { href: '/comparison', label: 'Comparison hub' },
+      { href: '/best-credit-cards-2026', label: 'Best credit cards 2026' },
+      { href: '/best-investment-apps', label: 'Best investment apps' }
+    ],
+    faqs: [
+      { question: 'What is a strategy playbook?', answer: 'A strategy playbook is a sequence: baseline number, downside test, then product comparison. It reduces decision noise and expensive reversals.' },
+      { question: 'Do I need every calculator before using this hub?', answer: 'No. Start with one calculator tied to your current constraint, then add more only when the next decision requires it.' }
+    ]
   }
 };
 
@@ -247,7 +292,7 @@ export function generateMetadata({ params }: { params: { cluster: string } }): M
 export default function ClusterHubPage({ params }: { params: { cluster: string } }) {
   const data = hubs[params.cluster];
   if (!data) {
-    return <div className="rounded-xl border bg-white p-5">Cluster not found.</div>;
+    notFound();
   }
 
   return (

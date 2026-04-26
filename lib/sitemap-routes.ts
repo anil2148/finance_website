@@ -16,7 +16,7 @@ const APP_DIR = path.join(process.cwd(), 'app');
 const BLOG_DIR = path.join(process.cwd(), 'content/blog');
 const BUILD_TIMESTAMP = new Date();
 
-const LEARN_CLUSTERS = ['budgeting', 'credit-cards', 'investing', 'loans', 'passive-income'];
+const LEARN_CLUSTERS = ['budgeting', 'credit-cards', 'investing', 'loans', 'passive-income', 'strategy-playbooks'];
 const CREDIT_CARD_REGIONS = ['california', 'texas', 'florida'];
 const INVESTMENT_AUDIENCES = ['beginners', 'students', 'professionals'];
 
