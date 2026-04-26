@@ -35,12 +35,12 @@ type HomepageRoutingInput = {
 
 export function getHomepageRoutingDecision({ pathname, preferredRegion, userAgent, countryCode }: HomepageRoutingInput): HomepageRoutingDecision {
   if (pathname !== '/') return { action: 'next' };
-  if (preferredRegion === 'in') return { action: 'redirect', region: 'in' };
-  if (preferredRegion === 'us') return { action: 'next' };
+  if (preferredRegion === 'IN') return { action: 'redirect', region: 'IN' };
+  if (preferredRegion === 'US') return { action: 'next' };
   if (isBotUserAgent(userAgent)) return { action: 'next' };
 
   const detectedRegion = detectRegionFromCountry(countryCode);
-  if (detectedRegion === 'in') return { action: 'redirect', region: 'in' };
+  if (detectedRegion === 'IN') return { action: 'redirect', region: 'IN' };
 
   return { action: 'next' };
 }
@@ -106,7 +106,7 @@ export function middleware(request: NextRequest) {
     const cleanUrl = new URL(request.url);
     cleanUrl.searchParams.delete('region');
     const response = NextResponse.redirect(cleanUrl, 307);
-    response.cookies.set(PREFERRED_REGION_COOKIE, requestedRegion, {
+    response.cookies.set(PREFERRED_REGION_COOKIE, requestedRegion === 'IN' ? 'in' : 'us', {
       path: '/',
       maxAge: 60 * 60 * 24 * 365,
       sameSite: 'lax',
@@ -132,7 +132,7 @@ export function middleware(request: NextRequest) {
   });
 
   if (decision.action === 'redirect') {
-    return redirectToCanonical(request, decision.region === 'in' ? '/in' : '/', false);
+    return redirectToCanonical(request, decision.region === 'IN' ? '/in' : '/', false);
   }
 
   return NextResponse.next();

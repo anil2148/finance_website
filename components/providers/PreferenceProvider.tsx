@@ -1,11 +1,11 @@
 'use client';
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { usePathname } from 'next/navigation';
 import { fetcher } from '@/lib/api/fetcher';
 import type { ExchangeRateResponse, SupportedCurrency } from '@/lib/api/currency';
 import { getLocaleForCurrency } from '@/lib/utils';
-import { AppCountry, AppCurrency, getCountryForPath, getDefaultCurrencyForCountry, normalizeCountry } from '@/lib/preferences';
+import { AppCountry, AppCurrency, getDefaultCurrencyForCountry } from '@/lib/preferences';
+import { useRegion } from '@/components/providers/RegionProvider';
 
 type PreferenceContextValue = {
   currency: AppCurrency;
@@ -30,38 +30,35 @@ const DEFAULT_RATES: Record<SupportedCurrency, number> = {
 };
 
 export function PreferenceProvider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const inferredCountry = getCountryForPath(pathname);
-  const [country, setCountryState] = useState<AppCountry>(inferredCountry);
+  const { region, setRegion } = useRegion();
+  const country: AppCountry = region === 'IN' ? 'India' : 'US';
+  const currency = getDefaultCurrencyForCountry(country);
   const [darkMode, setDarkMode] = useState(false);
   const [rates, setRates] = useState<Record<SupportedCurrency, number>>(DEFAULT_RATES);
   const [isRatesLoading, setIsRatesLoading] = useState(true);
-  const currency = getDefaultCurrencyForCountry(country);
 
-  const setCountry = useCallback((nextCountry: AppCountry) => {
-    setCountryState(nextCountry);
-  }, []);
-
-  useEffect(() => {
-    setCountryState(inferredCountry);
-  }, [inferredCountry]);
+  const setCountry = useCallback(
+    (nextCountry: AppCountry) => {
+      if (nextCountry === 'India') {
+        setRegion('IN');
+        return;
+      }
+      setRegion('US');
+    },
+    [setRegion]
+  );
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
 
     try {
-      const parsed = JSON.parse(raw) as { country?: string; darkMode?: boolean };
-      const persistedCountry = normalizeCountry(parsed.country);
-      const nextCountry = inferredCountry || persistedCountry;
-
-      setCountryState(nextCountry);
-
+      const parsed = JSON.parse(raw) as { darkMode?: boolean };
       if (typeof parsed.darkMode === 'boolean') setDarkMode(parsed.darkMode);
     } catch {
       // Ignore malformed storage values.
     }
-  }, [inferredCountry]);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ country, darkMode }));
