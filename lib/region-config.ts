@@ -1,6 +1,4 @@
-import type { AppCurrency } from '@/lib/preferences';
-
-export type RegionCode = 'us' | 'in';
+export type RegionCode = 'US' | 'IN';
 
 type TaxRules = {
   model: 'federal-progressive' | 'india-regime';
@@ -11,36 +9,56 @@ export type RegionConfig = {
   code: RegionCode;
   label: string;
   locale: string;
-  currency: AppCurrency;
+  currency: 'USD' | 'INR';
+  symbol: '$' | '₹';
   taxRules: TaxRules;
 };
 
 export const REGION_CONFIG: Record<RegionCode, RegionConfig> = {
-  us: {
-    code: 'us',
+  US: {
+    code: 'US',
     label: 'United States',
     locale: 'en-US',
     currency: 'USD',
+    symbol: '$',
     taxRules: { model: 'federal-progressive', defaultRateHint: 0.24 }
   },
-  in: {
-    code: 'in',
+  IN: {
+    code: 'IN',
     label: 'India',
     locale: 'en-IN',
     currency: 'INR',
+    symbol: '₹',
     taxRules: { model: 'india-regime', defaultRateHint: 0.2 }
   }
 };
 
+export function normalizeRegionCode(region?: string | null): RegionCode {
+  if (!region) return 'US';
+  const normalized = region.trim().toUpperCase();
+  return normalized === 'IN' ? 'IN' : 'US';
+}
+
 export function getRegionFromPath(pathname: string): RegionCode {
-  return pathname === '/in' || pathname.startsWith('/in/') ? 'in' : 'us';
+  return pathname === '/in' || pathname.startsWith('/in/') ? 'IN' : 'US';
+}
+
+export function formatCurrency(value: number, region: RegionCode, maximumFractionDigits = 0): string {
+  return new Intl.NumberFormat(REGION_CONFIG[region].locale, {
+    style: 'currency',
+    currency: REGION_CONFIG[region].currency,
+    maximumFractionDigits
+  }).format(Number.isFinite(value) ? value : 0);
 }
 
 export function formatCurrencyByRegion(value: number, region: RegionCode, maximumFractionDigits = 0): string {
-  const config = REGION_CONFIG[region];
-  return new Intl.NumberFormat(config.locale, {
-    style: 'currency',
-    currency: config.currency,
-    maximumFractionDigits
-  }).format(Number.isFinite(value) ? value : 0);
+  return formatCurrency(value, region, maximumFractionDigits);
+}
+
+export function getPageData<TPage extends string, TData>(
+  page: TPage,
+  region: RegionCode,
+  data: Record<RegionCode, Record<TPage, TData>>
+): TData {
+  return data[region][page];
 }

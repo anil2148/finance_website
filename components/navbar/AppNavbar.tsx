@@ -2,25 +2,23 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useCallback, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { getCountryForPath, getCountrySwitchPath, type AppCountry } from '@/lib/preferences';
-import { setPreferredRegionCookie } from '@/lib/region-preference';
+import { getCountrySwitchPath } from '@/lib/preferences';
+import { useRegion } from '@/components/providers/RegionProvider';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem, type NavLink } from '@/components/navbar/NavItem';
 import { RegionSelector } from '@/components/navbar/RegionSelector';
 import { useCopilot } from '@/components/money-copilot/CopilotProvider';
 import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 
-const MARKET_STORAGE_KEY = 'fs_market';
-
 function isActive(pathname: string, href: string) {
   if (href === '/') return pathname === '/';
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function getMarketPath(path: string, country: AppCountry): string {
+function getMarketPath(path: string, country: 'US' | 'India'): string {
   if (country !== 'India') return path;
   if (path === '/calculators') return '/in/calculators';
   if (path === '/comparison') return '/in/loans';
@@ -32,23 +30,15 @@ export function AppNavbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
-  const [country, setCountry] = useState<AppCountry>(() => {
-    if (typeof window === 'undefined') return getCountryForPath(pathname);
-    const persisted = window.localStorage.getItem(MARKET_STORAGE_KEY);
-    if (persisted === 'in') return 'India';
-    return getCountryForPath(pathname);
-  });
+  const router = useRouter();
+  const { region, setRegion } = useRegion();
+  const isIndiaContext = region === 'IN';
 
   const { dispatch } = useCopilot();
   const pageContext = useAiPageContext();
 
-  useEffect(() => {
-    const nextCountry = getCountryForPath(pathname);
-    setCountry(nextCountry);
-    window.localStorage.setItem(MARKET_STORAGE_KEY, nextCountry === 'India' ? 'in' : 'us');
-  }, [pathname]);
-
   const links = useMemo<NavLink[]>(() => {
+    const country = isIndiaContext ? 'India' : 'US';
     const decisionsPath = getMarketPath('/comparison', country);
     const calculatorsPath = getMarketPath('/calculators', country);
     const learnPath = getMarketPath('/learn', country);
@@ -74,23 +64,23 @@ export function AppNavbar() {
       },
       { label: 'AI Copilot', href: '/ai-money-copilot' }
     ];
-  }, [country]);
+  }, [isIndiaContext]);
 
   const switchRegion = useCallback(
     (nextRegion: 'India' | 'US') => {
       const nextPath = getCountrySwitchPath(pathname, nextRegion);
-      const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
-      window.localStorage.setItem(MARKET_STORAGE_KEY, regionCookieValue);
-      setPreferredRegionCookie(regionCookieValue);
+      const nextCode = nextRegion === 'India' ? 'IN' : 'US';
+      setRegion(nextCode);
+      localStorage.setItem('region', nextCode);
       if (nextPath !== pathname) {
-        window.location.assign(`/api/region?region=${regionCookieValue}&next=${encodeURIComponent(nextPath)}`);
+        router.push(nextPath);
       }
+      router.refresh();
     },
-    [pathname]
+    [pathname, router, setRegion]
   );
 
   const activeCheck = useCallback((href: string) => isActive(pathname, href), [pathname]);
-  const isIndiaContext = country === 'India';
 
   return (
     <>

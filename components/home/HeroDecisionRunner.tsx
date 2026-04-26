@@ -56,7 +56,7 @@ export function HeroDecisionRunner({
     setStreamingText('');
 
     try {
-      const detectedRegion = region === 'in' ? 'India' : 'US';
+      const detectedRegion = region === 'IN' ? 'India' : 'US';
       const response = await fetch('/api/money-copilot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

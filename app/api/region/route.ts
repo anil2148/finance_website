@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { PREFERRED_REGION_COOKIE, parsePreferredRegion } from '@/lib/region-preference';
+import { getPreferredRegionCookieValue, PREFERRED_REGION_COOKIE, parsePreferredRegion } from '@/lib/region-preference';
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
 
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   }
 
   const response = NextResponse.json({ ok: true, region });
-  response.cookies.set(PREFERRED_REGION_COOKIE, region, {
+  response.cookies.set(PREFERRED_REGION_COOKIE, getPreferredRegionCookieValue(region), {
     path: '/',
     maxAge: ONE_YEAR_IN_SECONDS,
     sameSite: 'lax',
@@ -38,7 +38,7 @@ export async function GET(request: Request) {
 
   const redirectUrl = new URL(nextPath, origin);
   const response = NextResponse.redirect(redirectUrl, 307);
-  response.cookies.set(PREFERRED_REGION_COOKIE, region, {
+  response.cookies.set(PREFERRED_REGION_COOKIE, getPreferredRegionCookieValue(region), {
     path: '/',
     maxAge: ONE_YEAR_IN_SECONDS,
     sameSite: 'lax',

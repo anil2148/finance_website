@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { usePreferences } from '@/components/providers/PreferenceProvider';
 import { getCountryForPath, getCountrySwitchPath } from '@/lib/preferences';
-import { setPreferredRegionCookie } from '@/lib/region-preference';
+import { getPreferredRegionCookieValue, setPreferredRegionCookie } from '@/lib/region-preference';
 import { MobileMenu } from '@/components/navbar/MobileMenu';
 import { NavItem } from '@/components/navbar/NavItem';
 import { StartDecisionModal } from '@/components/money-copilot/StartDecisionModal';
@@ -88,8 +88,9 @@ export function Navbar() {
 
   const switchRegion = (nextRegion: 'India' | 'US') => {
     const nextPath = getCountrySwitchPath(pathname, nextRegion);
-    const regionCookieValue = nextRegion === 'India' ? 'in' : 'us';
-    setPreferredRegionCookie(regionCookieValue);
+    const regionCode = nextRegion === 'India' ? 'IN' : 'US';
+    const regionCookieValue = getPreferredRegionCookieValue(regionCode);
+    setPreferredRegionCookie(regionCode);
     setCountry(nextRegion);
     if (nextPath !== pathname) {
       // Route through the API endpoint so the response sets the cookie server-side

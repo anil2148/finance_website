@@ -1,19 +1,26 @@
+import { normalizeRegionCode, type RegionCode } from '@/lib/region-config';
+
 export const PREFERRED_REGION_COOKIE = 'preferredRegion';
 
-export type PreferredRegion = 'us' | 'in';
+export type PreferredRegion = RegionCode;
 
 const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
+
+function toCookieValue(region: RegionCode): 'us' | 'in' {
+  return region === 'IN' ? 'in' : 'us';
+}
 
 export function parsePreferredRegion(value?: string | null): PreferredRegion | null {
   if (!value) return null;
   const normalized = value.toLowerCase();
-  if (normalized === 'us' || normalized === 'in') return normalized;
+  if (normalized === 'us') return 'US';
+  if (normalized === 'in') return 'IN';
   return null;
 }
 
 export function detectRegionFromCountry(countryCode?: string | null): PreferredRegion {
-  if (!countryCode) return 'us';
-  return countryCode.toUpperCase() === 'IN' ? 'in' : 'us';
+  if (!countryCode) return 'US';
+  return normalizeRegionCode(countryCode);
 }
 
 export function isBotUserAgent(userAgent?: string | null): boolean {
@@ -27,5 +34,9 @@ export function isBotUserAgent(userAgent?: string | null): boolean {
 export function setPreferredRegionCookie(region: PreferredRegion) {
   if (typeof document === 'undefined') return;
   const secureFlag = window.location.protocol === 'https:' ? '; Secure' : '';
-  document.cookie = `${PREFERRED_REGION_COOKIE}=${region}; Path=/; Max-Age=${ONE_YEAR_IN_SECONDS}; SameSite=Lax${secureFlag}`;
+  document.cookie = `${PREFERRED_REGION_COOKIE}=${toCookieValue(region)}; Path=/; Max-Age=${ONE_YEAR_IN_SECONDS}; SameSite=Lax${secureFlag}`;
+}
+
+export function getPreferredRegionCookieValue(region: PreferredRegion): 'us' | 'in' {
+  return toCookieValue(region);
 }

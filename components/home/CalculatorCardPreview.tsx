@@ -1,6 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useRegion } from '@/components/providers/RegionProvider';
+import { formatCurrency } from '@/lib/region-config';
 
 type PreviewType = 'mortgage' | 'compound' | 'debt-payoff' | 'debt-snowball';
 
@@ -8,11 +10,8 @@ type CalculatorCardPreviewProps = {
   type: PreviewType;
 };
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(value);
-}
-
 export function CalculatorCardPreview({ type }: CalculatorCardPreviewProps) {
+  const { region } = useRegion();
   const [value, setValue] = useState(() => {
     switch (type) {
       case 'mortgage':
@@ -37,7 +36,7 @@ export function CalculatorCardPreview({ type }: CalculatorCardPreviewProps) {
       return {
         inputLabel: 'Home price',
         outputLabel: 'Estimated monthly P&I',
-        outputValue: formatCurrency(monthlyPayment),
+        outputValue: formatCurrency(monthlyPayment, region),
         assumption: 'Assumes 20% down, 30-year fixed, 6.75% rate. Taxes/insurance excluded.',
         min: 150000,
         max: 1200000,
@@ -52,7 +51,7 @@ export function CalculatorCardPreview({ type }: CalculatorCardPreviewProps) {
       return {
         inputLabel: 'Monthly contribution',
         outputLabel: 'Rough 20-year value',
-        outputValue: formatCurrency(growth),
+        outputValue: formatCurrency(growth, region),
         assumption: 'Assumes 7% annual return with monthly contributions. Illustrative only.',
         min: 50,
         max: 2000,
@@ -84,12 +83,12 @@ export function CalculatorCardPreview({ type }: CalculatorCardPreviewProps) {
       max: 10,
       step: 1
     };
-  }, [type, value]);
+  }, [region, type, value]);
 
   return (
     <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50/80 p-3 dark:border-slate-700 dark:bg-slate-900/60">
       <label className="text-xs font-medium text-slate-700 dark:text-slate-300" htmlFor={`${type}-preview-input`}>
-        {preview.inputLabel}: <span className="font-semibold">{type === 'debt-snowball' ? value : formatCurrency(value)}</span>
+        {preview.inputLabel}: <span className="font-semibold">{type === 'debt-snowball' ? value : formatCurrency(value, region)}</span>
       </label>
       <input
         id={`${type}-preview-input`}

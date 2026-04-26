@@ -2,18 +2,14 @@ import '@/styles/globals.css';
 import type { Metadata, Viewport } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { AppNavbar } from '@/components/navbar/AppNavbar';
-import { Footer } from '@/components/footer/Footer';
-import { PageTransition } from '@/components/ui/PageTransition';
 import { PreferenceProvider } from '@/components/providers/PreferenceProvider';
 import { RegionProvider } from '@/components/providers/RegionProvider';
-import { Breadcrumbs } from '@/components/layout/Breadcrumbs';
-import { ErrorMonitoring } from '@/components/monitoring/ErrorMonitoring';
 import { CookieConsentBanner } from '@/components/cookies/CookieConsentBanner';
-import { CopilotProvider } from '@/components/money-copilot/CopilotProvider';
-import { ExecutionPanel } from '@/components/money-copilot/ExecutionPanel';
-import { CopilotBubble } from '@/components/money-copilot/CopilotBubble';
 import { SITE_ORIGIN, absoluteUrl, organizationSchema, websiteSchema } from '@/lib/seo';
+import { cookies } from 'next/headers';
+import { normalizeRegionCode } from '@/lib/region-config';
+import { PREFERRED_REGION_COOKIE, parsePreferredRegion } from '@/lib/region-preference';
+import { RegionAppFrame } from '@/components/providers/RegionAppFrame';
 
 const siteTitle = 'FinanceSphere | Calculators, Comparisons, and Money Guides';
 const siteDescription =
@@ -80,6 +76,9 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = cookies();
+  const cookieRegion = parsePreferredRegion(cookieStore.get(PREFERRED_REGION_COOKIE)?.value);
+  const initialRegion = cookieRegion ?? normalizeRegionCode(null);
   const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
   const structuredData = {
     '@context': 'https://schema.org',
@@ -97,19 +96,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
         <CookieConsentBanner gaMeasurementId={gaMeasurementId} gtmId={gtmId} />
 
-        <RegionProvider>
+        <RegionProvider initialRegion={initialRegion}>
           <PreferenceProvider>
-            <ErrorMonitoring />
-            <CopilotProvider>
-              <AppNavbar />
-              <main className="editorial-content mx-auto min-h-screen max-w-7xl px-4 py-8">
-                <Breadcrumbs />
-                <PageTransition>{children}</PageTransition>
-              </main>
-              <Footer />
-              <ExecutionPanel />
-              <CopilotBubble />
-            </CopilotProvider>
+            <RegionAppFrame>{children}</RegionAppFrame>
           </PreferenceProvider>
         </RegionProvider>
 
