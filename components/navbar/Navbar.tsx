@@ -19,59 +19,17 @@ type NavLink = {
 };
 
 const globalLinks: NavLink[] = [
-  { label: 'Home', href: '/' },
-  {
-    label: 'Decisions',
-    children: [
-      { label: 'Job Offer Analyzer', href: '/ai-money-copilot' },
-      { label: 'Mortgage vs Rent', href: '/calculators/mortgage-calculator' },
-      { label: 'Debt Payoff Planner', href: '/calculators/debt-payoff-calculator' }
-    ]
-  },
-  {
-    label: 'Calculators',
-    children: [
-      { label: 'All Calculators', href: '/calculators' },
-      { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
-      { label: 'Investment Growth', href: '/calculators/investment-growth-calculator' },
-      { label: 'Tax Calculator', href: '/calculators/salary-after-tax-calculator' },
-    ]
-  },
-  {
-    label: 'Learn',
-    children: [
-      { label: 'Financial Guides', href: '/learn' },
-      { label: 'Strategy Playbooks', href: '/blog' }
-    ]
-  }
+  { label: 'Decisions', href: '/comparison' },
+  { label: 'Calculators', href: '/calculators' },
+  { label: 'Learn', href: '/learn' },
+  { label: 'AI Copilot', href: '/ai-money-copilot' }
 ];
 
 const indiaLinks: NavLink[] = [
-  { label: 'Home', href: '/in' },
-  {
-    label: 'Decisions',
-    children: [
-      { label: 'Salary Planner (CTC)', href: '/ai-money-copilot' },
-      { label: 'Loan vs Investment', href: '/in/calculators/emi-calculator' },
-      { label: 'Tax Optimization', href: '/in/tax' }
-    ]
-  },
-  {
-    label: 'Tools',
-    children: [
-      { label: 'EMI Calculator', href: '/in/calculators/emi-calculator' },
-      { label: 'SIP Calculator', href: '/in/calculators/sip-calculator' },
-      { label: 'Tax Calculator (India)', href: '/in/tax' },
-      { label: 'All Calculators', href: '/in/calculators' }
-    ]
-  },
-  {
-    label: 'Learn',
-    children: [
-      { label: 'Financial Guides', href: '/in/banking' },
-      { label: 'Strategy Playbooks', href: '/in/blog' }
-    ]
-  }
+  { label: 'Decisions', href: '/in/loans' },
+  { label: 'Calculators', href: '/in/calculators' },
+  { label: 'Learn', href: '/in/banking' },
+  { label: 'AI Copilot', href: '/ai-money-copilot' }
 ];
 
 function isActive(pathname: string, href: string) {
