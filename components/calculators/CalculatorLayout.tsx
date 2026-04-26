@@ -23,6 +23,7 @@ import { AD_SLOTS } from '@/lib/adSlots';
 import { AskAIButton } from '@/components/money-copilot/AskAIButton';
 import { useSyncAiPageContext } from '@/components/money-copilot/useAiPageContext';
 import type { AiPageContext } from '@/lib/money-copilot/types';
+import { PersonalizedPlanFunnel } from '@/components/calculators/PersonalizedPlanFunnel';
 
 const ProjectionChart = dynamic(() => import('@/components/calculators/ProjectionChart').then((module) => module.ProjectionChart), {
   ssr: false,
@@ -336,27 +337,38 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   const [activeStep, setActiveStep] = useState(1);
 
   const [showGuide, setShowGuide] = useState(false);
+  const [hasRunCalculator, setHasRunCalculator] = useState(false);
+  const [hasSeenResult, setHasSeenResult] = useState(false);
   const [savedMessage, setSavedMessage] = useState('');
   const exportRef = useRef<HTMLElement>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
   const currencyLocale = getLocaleForCurrency(currency);
   const currencySymbol = getCurrencySymbol(currency, currencyLocale);
 
   useEffect(() => {
     setInputs(buildStrictCalculatorInputs(definition.defaultInputs as BaseCalculatorInputs, slug));
-    const sharedInputs = window.localStorage.getItem('calculator-shared-inputs');
-    if (sharedInputs) {
-      try {
-        const parsed = JSON.parse(sharedInputs) as Partial<BaseCalculatorInputs>;
-        setInputs((prev) => ({ ...prev, ...parsed }));
-      } catch {
-        // Ignore malformed local storage payload.
-      }
-    }
+    setHasRunCalculator(false);
+    setHasSeenResult(false);
   }, [definition, slug]);
 
   useEffect(() => {
-    window.localStorage.setItem('calculator-shared-inputs', JSON.stringify(inputs));
-  }, [inputs]);
+    if (!resultRef.current || hasSeenResult) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setHasSeenResult(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(resultRef.current);
+    return () => observer.disconnect();
+  }, [hasSeenResult]);
 
   const result = useMemo(() => definition.compute(inputs), [definition, inputs]);
   const worstCaseInputs = useMemo(
@@ -607,18 +619,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
   } satisfies Partial<AiPageContext>;
 
   useSyncAiPageContext(aiContext);
-  const totalFields = fieldMeta.length;
-  const chunkSize = Math.max(1, Math.ceil(totalFields / 3));
-  const stepLabels = [
-    'Step 1: Set your baseline',
-    'Step 2: Stress-test assumptions',
-    'Step 3: Review decision output',
-  ];
-  const visibleFields = fieldMeta.filter((_, index) => {
-    if (activeStep === 1) return index < chunkSize;
-    if (activeStep === 2) return index >= chunkSize && index < chunkSize * 2;
-    return index >= chunkSize * 2;
-  });
+  const shouldShowPersonalizedFunnel = hasRunCalculator || hasSeenResult;
 
   return (
     <section className="space-y-8 pb-16" ref={exportRef}>
@@ -675,8 +676,28 @@ export function CalculatorLayout({ slug }: { slug: string }) {
           </section>
           <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
             <div className="space-y-4 rounded-3xl bg-slate-950 p-4 sm:p-6">
-              {visibleFields.map((field) => (
-                <InputSlider key={field.key} label={field.label} tooltip={field.tooltip} value={inputs[field.key] ?? 0} min={field.min} max={field.max} step={field.step} prefix={resolveCurrencyPrefix(field.prefix, currencySymbol)} suffix={field.suffix} locale={currencyLocale} onChange={(value) => setInputs((prev) => ({ ...prev, [field.key]: value }))} />
+              {fieldMeta.map((field) => (
+                <InputSlider
+                  key={field.key}
+                  label={field.label}
+                  tooltip={field.tooltip}
+                  value={inputs[field.key] ?? 0}
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  prefix={resolveCurrencyPrefix(field.prefix, currencySymbol)}
+                  suffix={field.suffix}
+                  locale={currencyLocale}
+                  onChange={(value) =>
+                    setInputs((prev) => {
+                      const hasChanged = (prev[field.key] ?? 0) !== value;
+                      if (hasChanged) {
+                        setHasRunCalculator(true);
+                      }
+                      return { ...prev, [field.key]: value };
+                    })
+                  }
+                />
               ))}
               <div className="flex gap-2">
                 <button type="button" disabled={activeStep === 1} onClick={() => setActiveStep((prev) => Math.max(1, prev - 1))} className="rounded-lg border border-slate-600 px-3 py-1 text-xs font-semibold text-slate-200 disabled:opacity-40">
@@ -689,45 +710,7 @@ export function CalculatorLayout({ slug }: { slug: string }) {
             </div>
 
             <div className="space-y-6">
-              <section className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/60">
-                <p className="text-sm text-slate-700 dark:text-slate-300">Based on your inputs, here is the decision output:</p>
-                <div className="mt-3 grid gap-3 md:grid-cols-3">
-                  <article className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Insight</p>
-                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{decisionInsight}</p>
-                  </article>
-                  <article className={`rounded-xl border p-3 ${riskTone}`}>
-                    <p className="text-xs font-semibold uppercase tracking-wide">Risk level</p>
-                    <p className="mt-2 text-lg font-bold">{riskLevel}</p>
-                  </article>
-                  <article className="rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-700 dark:bg-slate-900">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Recommendation</p>
-                    <p className="mt-2 text-sm font-semibold text-slate-900 dark:text-slate-100">{decisionRecommendation}</p>
-                  </article>
-                </div>
-              </section>
-
-              <section className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-500/40 dark:bg-emerald-950/30">
-                <h2 className="text-base font-semibold text-emerald-900 dark:text-emerald-100">1. Baseline result</h2>
-                <p className="mt-1 text-sm text-emerald-900 dark:text-emerald-200">Your current plan output is {formatSummaryDisplay(baselineValue, Boolean(primaryMetric?.isValid), primaryMetric?.currency, primaryMetric?.suffix)} for {primaryMetric?.label ?? 'the primary metric'}.</p>
-              </section>
-
-              <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-500/40 dark:bg-amber-950/30">
-                <h2 className="text-base font-semibold text-amber-900 dark:text-amber-100">2. Worst-case scenario</h2>
-                <p className="mt-1 text-sm text-amber-900 dark:text-amber-200">
-                  Stress test applied: +1% interest rate, 20% lower monthly contribution capacity, and more conservative returns.
-                </p>
-                <p className="mt-2 text-sm font-semibold text-amber-900 dark:text-amber-100">
-                  Worst-case primary output: {formatSummaryDisplay(worstBaselineValue, true, worstPrimaryMetric?.currency, worstPrimaryMetric?.suffix)} for {worstPrimaryMetric?.label ?? 'the primary metric'}.
-                </p>
-              </section>
-
-              <section className="rounded-2xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-500/40 dark:bg-blue-950/30">
-                <h2 className="text-base font-semibold text-blue-900 dark:text-blue-100">3. Decision summary</h2>
-                <p className="mt-1 text-sm text-blue-900 dark:text-blue-200">Status: <span className="font-bold">{decisionSummary}</span>. Always decide from your worst-case durability, not just baseline comfort.</p>
-              </section>
-
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div ref={resultRef} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {sanitizedSummary.map((item) => (
                   <ResultCard key={item.label} label={item.label} helpText={item.helpText} value={formatSummaryDisplay(item.value, item.isValid, item.currency, item.suffix)} />
                 ))}
@@ -816,6 +799,19 @@ export function CalculatorLayout({ slug }: { slug: string }) {
               ))}
             </ul>
           </section>
+
+          {shouldShowPersonalizedFunnel ? (
+            <PersonalizedPlanFunnel
+              source={`calculator:${slug}`}
+              headlineMetric={primaryMetric?.label ?? 'Primary metric'}
+              headlineValue={formatSummaryDisplay(
+                baselineValue,
+                Boolean(primaryMetric?.isValid),
+                primaryMetric?.currency,
+                primaryMetric?.suffix
+              )}
+            />
+          ) : null}
         </div>
       </div>
 
