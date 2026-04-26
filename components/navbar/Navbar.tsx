@@ -221,15 +221,10 @@ export function Navbar() {
         open={open}
         onClose={() => setOpen(false)}
         links={links}
-        pathname={pathname}
         isActive={activeCheck}
         isIndiaContext={isIndiaContext}
         expandedGroup={expandedGroup}
         setExpandedGroup={(g) => setExpandedGroup(g)}
-        currentRegionLabel={currentRegionLabel}
-        currentCurrencyLabel={currentCurrencyLabel}
-        darkMode={darkMode}
-        toggleDarkMode={toggleDarkMode}
         onRegionChange={switchRegion}
         onStartDecision={() => setDecisionModalOpen(true)}
       />
