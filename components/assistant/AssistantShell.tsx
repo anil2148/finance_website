@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import './../../styles/assistant.css';
 import TitleBar from './TitleBar';
 import Sidebar from './Sidebar';
@@ -226,6 +226,14 @@ export default function AssistantShell() {
     return () => window.removeEventListener('keydown', handle);
   });
 
+  const onSend = useCallback((override?: string) => {
+    const prompt = (override ?? state.inputValue).trim();
+    if (!prompt || state.streaming) return;
+    promptRef.current = prompt;
+    dispatch({ type: 'set', payload: { userPrompt: prompt, inputValue: override ? state.inputValue : '' } });
+    assistant.sendMessage(prompt, state.currentPersona, state.currentTemplate);
+  }, [assistant, state.currentPersona, state.currentTemplate, state.inputValue, state.streaming]);
+
   useEffect(() => {
     if (!state.autoListen || state.streaming) return;
     let cancelled = false;
@@ -249,15 +257,7 @@ export default function AssistantShell() {
     return () => {
       cancelled = true;
     };
-  }, [assistant, startRecording, state.autoListen, state.streaming, stopRecording]);
-
-  const onSend = (override?: string) => {
-    const prompt = (override ?? state.inputValue).trim();
-    if (!prompt || state.streaming) return;
-    promptRef.current = prompt;
-    dispatch({ type: 'set', payload: { userPrompt: prompt, inputValue: override ? state.inputValue : '' } });
-    assistant.sendMessage(prompt, state.currentPersona, state.currentTemplate);
-  };
+  }, [assistant, onSend, startRecording, state.autoListen, state.streaming, stopRecording]);
 
   const onRetry = () => {
     if (!state.userPrompt) return;
