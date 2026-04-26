@@ -21,41 +21,17 @@ type NavLink = {
 };
 
 const globalLinks: NavLink[] = [
-  { label: 'Home', href: '/' },
-  {
-    label: 'Decisions',
-    children: [
-      { label: 'Start a decision', href: '/ai-money-copilot' },
-      { label: 'Calculators', href: '/calculators' },
-      { label: 'Comparisons', href: '/comparison' }
-    ],
-  },
-  {
-    label: 'Learn',
-    children: [
-      { label: 'Financial Guides', href: '/learn' },
-      { label: 'Strategy Playbooks', href: '/blog' },
-    ],
-  }
+  { label: 'Decisions', href: '/comparison' },
+  { label: 'Calculators', href: '/calculators' },
+  { label: 'AI Copilot', href: '/ai-money-copilot' },
+  { label: 'Learn', href: '/learn' }
 ];
 
 const indiaLinks: NavLink[] = [
-  { label: 'Home', href: '/in' },
-  {
-    label: 'Decisions',
-    children: [
-      { label: 'Start a decision', href: '/ai-money-copilot' },
-      { label: 'India calculators', href: '/in/calculators' },
-      { label: 'Tax decisions', href: '/in/tax' }
-    ],
-  },
-  {
-    label: 'Learn',
-    children: [
-      { label: 'Financial Guides', href: '/in/banking' },
-      { label: 'Strategy Playbooks', href: '/in/blog' },
-    ],
-  }
+  { label: 'Decisions', href: '/in/loans' },
+  { label: 'Calculators', href: '/in/calculators' },
+  { label: 'AI Copilot', href: '/ai-money-copilot' },
+  { label: 'Learn', href: '/in/banking' }
 ];
 
 function isActive(pathname: string, href: string) {
