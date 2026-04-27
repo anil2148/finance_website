@@ -9,6 +9,7 @@ import {
 } from '@/lib/region-preference';
 import { DEFAULT_REGION, getRegionFromPath, stripRegionPrefix, withRegionPrefix } from '@/lib/region-config';
 import { slugifyTag } from '@/lib/tagSlug';
+import { assertRegionOwnership } from '@/lib/regionContentMap';
 
 
 type HomepageRoutingDecision =
@@ -64,6 +65,26 @@ function getCanonicalPathname(pathname: string): string {
   return nextPath;
 }
 
+function returnNotFound(): NextResponse {
+  return new NextResponse('Not Found', { status: 404 });
+}
+
+function enforceRegionIsolation(pathname: string): NextResponse | null {
+  if (pathname === '/us' || pathname.startsWith('/us/')) {
+    const contentPath = stripRegionPrefix(pathname);
+    const result = assertRegionOwnership(contentPath, 'US');
+    if (!result.allowed) return returnNotFound();
+  }
+
+  if (pathname === '/india' || pathname.startsWith('/india/')) {
+    const contentPath = stripRegionPrefix(pathname);
+    const result = assertRegionOwnership(contentPath, 'INDIA');
+    if (!result.allowed) return returnNotFound();
+  }
+
+  return null;
+}
+
 function getPreferredRegion(request: NextRequest): PreferredRegion {
   const cookieRegion = parsePreferredRegion(request.cookies.get(PREFERRED_REGION_COOKIE)?.value);
   if (cookieRegion) return cookieRegion;
@@ -83,6 +104,9 @@ export function middleware(request: NextRequest) {
     redirectUrl.pathname = normalizedPathname.replace(/^\/in/, '/india');
     return NextResponse.redirect(redirectUrl, 308);
   }
+
+  const isolationResponse = enforceRegionIsolation(normalizedPathname);
+  if (isolationResponse) return isolationResponse;
 
   const requestedRegion = parsePreferredRegion(nextUrl.searchParams.get('region'));
 

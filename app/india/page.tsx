@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { IndiaHomepageLayout } from '@/components/home/IndiaHomepageLayout';
-import { absoluteUrl, breadcrumbSchema, webpageSchema } from '@/lib/seo';
+import { breadcrumbSchema, webpageSchema } from '@/lib/seo';
+import { buildRegionAlternates } from '@/lib/regionSeo';
 
 const title = 'FinanceSphere India | SIP, ELSS, GST, and Income Tax Planning Guides';
 const description =
@@ -10,14 +11,7 @@ export const metadata: Metadata = {
   title,
   description,
   keywords: ['Ind AS finance guides', 'GST personal finance', 'income tax slabs India', 'SIP and ELSS planning'],
-  alternates: {
-    canonical: absoluteUrl('/india'),
-    languages: {
-      'en-US': absoluteUrl('/us'),
-      'en-IN': absoluteUrl('/india'),
-      'x-default': absoluteUrl('/us')
-    }
-  }
+  alternates: buildRegionAlternates('/', 'INDIA')
 };
 
 export default function IndiaRoutePage() {
