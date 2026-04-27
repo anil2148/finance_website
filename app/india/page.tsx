@@ -1,17 +1,17 @@
 import type { Metadata } from 'next';
-import { HomepageLayout } from '@/components/home/HomepageLayout';
+import { IndiaHomepageLayout } from '@/components/home/IndiaHomepageLayout';
 import { absoluteUrl, breadcrumbSchema, webpageSchema } from '@/lib/seo';
 
-const title = 'FinanceSphere US | 401(k), IRS Taxes, Credit Cards, and Investing Guides';
+const title = 'FinanceSphere India | SIP, ELSS, GST, and Income Tax Planning Guides';
 const description =
-  'US-focused personal finance tools and guides for IRS tax planning, 401(k) contributions, capital gains decisions, and credit optimization.';
+  'India-focused personal finance platform for SIP investing, ELSS vs PPF decisions, GST impacts, income tax slab planning, and EMI stress tests.';
 
 export const metadata: Metadata = {
   title,
   description,
-  keywords: ['US GAAP personal finance', 'IRS tax planning', '401k contribution strategy', 'capital gains tax US'],
+  keywords: ['Ind AS finance guides', 'GST personal finance', 'income tax slabs India', 'SIP and ELSS planning'],
   alternates: {
-    canonical: absoluteUrl('/us'),
+    canonical: absoluteUrl('/india'),
     languages: {
       'en-US': absoluteUrl('/us'),
       'en-IN': absoluteUrl('/india'),
@@ -20,18 +20,18 @@ export const metadata: Metadata = {
   }
 };
 
-export default function UsRoutePage() {
+export default function IndiaRoutePage() {
   const structuredData = {
     '@context': 'https://schema.org',
     '@graph': [
       webpageSchema({
-        pathname: '/us',
+        pathname: '/india',
         name: title,
         description
       }),
       breadcrumbSchema([
-        { name: 'Home', item: '/us' },
-        { name: 'United States', item: '/us' }
+        { name: 'Home', item: '/india' },
+        { name: 'India', item: '/india' }
       ])
     ]
   };
@@ -39,7 +39,7 @@ export default function UsRoutePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <HomepageLayout />
+      <IndiaHomepageLayout />
     </>
   );
 }

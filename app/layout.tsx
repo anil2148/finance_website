@@ -24,14 +24,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: siteTitle,
   description: siteDescription,
-  alternates: {
-    canonical: '/us',
-    languages: {
-      'en-US': absoluteUrl('/us'),
-      'en-IN': absoluteUrl('/in'),
-      'x-default': absoluteUrl('/us')
-    }
-  },
+    alternates: {
+      canonical: '/us',
+      languages: {
+        'en-US': absoluteUrl('/us'),
+        'en-IN': absoluteUrl('/india'),
+        'x-default': absoluteUrl('/us')
+      }
+    },
   icons: {
     icon: [
       { url: '/favicon.png', sizes: '32x32', type: 'image/png' },

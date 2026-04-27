@@ -9,6 +9,7 @@ import { CopilotProvider } from '@/components/money-copilot/CopilotProvider';
 import { ExecutionPanel } from '@/components/money-copilot/ExecutionPanel';
 import { CopilotBubble } from '@/components/money-copilot/CopilotBubble';
 import { useRegion } from '@/components/providers/RegionProvider';
+import { GeoDisclaimer } from '@/components/legal/GeoDisclaimer';
 
 export function RegionAppFrame({ children }: { children: React.ReactNode }) {
   const { region } = useRegion();
@@ -22,6 +23,7 @@ export function RegionAppFrame({ children }: { children: React.ReactNode }) {
           <Breadcrumbs />
           <PageTransition>{children}</PageTransition>
         </main>
+        <GeoDisclaimer />
         <Footer />
         <ExecutionPanel />
         <CopilotBubble />

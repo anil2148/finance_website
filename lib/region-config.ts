@@ -11,7 +11,7 @@ export type RegionConfig = {
   locale: string;
   currency: 'USD' | 'INR' | 'EUR';
   symbol: '$' | '₹' | '€';
-  basePath: '/us' | '/in' | '/eu';
+  basePath: '/us' | '/india' | '/eu';
   taxRules: TaxRules;
 };
 
@@ -31,7 +31,7 @@ export const REGION_CONFIG: Record<RegionCode, RegionConfig> = {
     locale: 'en-IN',
     currency: 'INR',
     symbol: '₹',
-    basePath: '/in',
+    basePath: '/india',
     taxRules: { model: 'india-regime', defaultRateHint: 0.2 }
   },
   EU: {
@@ -56,6 +56,7 @@ export function normalizeRegionCode(region?: string | null): RegionCode {
 }
 
 export function getRegionFromPath(pathname: string): RegionCode {
+  if (pathname === '/india' || pathname.startsWith('/india/')) return 'IN';
   if (pathname === '/in' || pathname.startsWith('/in/')) return 'IN';
   if (pathname === '/eu' || pathname.startsWith('/eu/')) return 'EU';
   if (pathname === '/us' || pathname.startsWith('/us/')) return 'US';
@@ -63,8 +64,9 @@ export function getRegionFromPath(pathname: string): RegionCode {
 }
 
 export function stripRegionPrefix(pathname: string): string {
-  if (pathname === '/us' || pathname === '/in' || pathname === '/eu') return '/';
+  if (pathname === '/us' || pathname === '/india' || pathname === '/in' || pathname === '/eu') return '/';
   if (pathname.startsWith('/us/')) return pathname.slice(3);
+  if (pathname.startsWith('/india/')) return pathname.slice(6);
   if (pathname.startsWith('/in/')) return pathname.slice(3);
   if (pathname.startsWith('/eu/')) return pathname.slice(3);
   return pathname;

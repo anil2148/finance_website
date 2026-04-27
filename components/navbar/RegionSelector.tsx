@@ -10,8 +10,8 @@ interface RegionSelectorProps {
 }
 
 const REGION_OPTIONS: Array<{ value: RegionCode; label: string; flag: string }> = [
-  { value: 'US', label: 'US (USD)', flag: '🇺🇸' },
-  { value: 'IN', label: 'India (INR)', flag: '🇮🇳' },
+  { value: 'US', label: 'US /us (USD)', flag: '🇺🇸' },
+  { value: 'IN', label: 'India /india (INR)', flag: '🇮🇳' },
   { value: 'EU', label: 'Europe (EUR)', flag: '🇪🇺' }
 ];
 
