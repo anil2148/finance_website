@@ -4,6 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { Card } from '@/components/ui/card';
+import { useRegion } from '@/components/providers/RegionProvider';
+import { getTerm } from '@/lib/finance-terminology';
 
 type HelpItem = {
   id: string;
@@ -136,13 +138,37 @@ const quickFaq = [
 
 export function HelpCenterContent() {
   const [query, setQuery] = useState('');
+  const { region } = useRegion();
+  const mortgageTerm = getTerm('mortgage', region);
+  const checkingAccountTerm = getTerm('checking_account', region);
+  const taxBracketTerm = getTerm('tax_bracket', region);
+
+  const localizedTopics = useMemo(
+    () =>
+      helpTopics.map((topic) => ({
+        ...topic,
+        summary: topic.summary
+          .replaceAll('mortgage', mortgageTerm.toLowerCase())
+          .replaceAll('tax brackets', taxBracketTerm.toLowerCase()),
+        steps: topic.steps?.map((step) =>
+          step
+            .replaceAll('mortgage', mortgageTerm.toLowerCase())
+            .replaceAll('checking account', checkingAccountTerm.toLowerCase())
+        ),
+        links: topic.links?.map((link) => ({
+          ...link,
+          label: link.label.replaceAll('Mortgage', mortgageTerm)
+        }))
+      })),
+    [checkingAccountTerm, mortgageTerm, taxBracketTerm]
+  );
 
   const filteredTopics = useMemo(() => {
     const normalized = query.trim().toLowerCase();
 
-    if (!normalized) return helpTopics;
+    if (!normalized) return localizedTopics;
 
-    return helpTopics.filter((topic) => {
+    return localizedTopics.filter((topic) => {
       const searchable = [
         topic.category,
         topic.title,
@@ -155,7 +181,7 @@ export function HelpCenterContent() {
 
       return searchable.includes(normalized);
     });
-  }, [query]);
+  }, [localizedTopics, query]);
 
   return (
     <div className="space-y-8">
@@ -176,7 +202,7 @@ export function HelpCenterContent() {
               id="help-topic-search"
               type="search"
               className="input border-white/20 bg-white/10 text-white placeholder:text-blue-200 focus:border-white"
-              placeholder="Search: mortgage calculator, comparison filters, debt payoff..."
+              placeholder={`Search: ${mortgageTerm.toLowerCase()} calculator, comparison filters, debt payoff...`}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
