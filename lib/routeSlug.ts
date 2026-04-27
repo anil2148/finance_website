@@ -10,6 +10,10 @@ export function decodeRouteSegmentOnce(value: string): string {
   return safeDecodeURIComponent(value);
 }
 
+export function hasResidualUrlEncoding(value: string): boolean {
+  return /%[0-9a-fA-F]{2}/.test(value);
+}
+
 export function normalizeRouteSlug(value: string): string {
   return decodeRouteSegmentOnce(value)
     .trim()
