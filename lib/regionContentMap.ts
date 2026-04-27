@@ -11,6 +11,7 @@ const REGION_CONTENT_MAP: RegionContentEntry[] = [
   { slug: '/', region: 'BOTH_ALLOWED', counterpartSlug: '/' },
   { slug: '/blog', region: 'BOTH_ALLOWED', counterpartSlug: '/blog' },
   { slug: '/blog/:slug', region: 'BOTH_ALLOWED', counterpartSlug: '/blog/:slug', notes: 'Must be terminology-localized per region.' },
+  { slug: '/ai-money-copilot', region: 'BOTH_ALLOWED', notes: 'Global route. Region-prefixed variants must redirect to this path.' },
   { slug: '/calculators', region: 'EXCLUSIVE_US' },
   { slug: '/calculators/:slug', region: 'EXCLUSIVE_US' },
   { slug: '/tax', region: 'EXCLUSIVE_INDIA' },

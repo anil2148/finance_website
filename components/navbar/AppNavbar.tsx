@@ -49,7 +49,7 @@ export function AppNavbar() {
           { label: 'Strategy Playbooks', href: toRegion('/learn') }
         ]
       },
-      { label: 'AI Copilot', href: toRegion('/ai-money-copilot') }
+      { label: 'AI Copilot', href: '/ai-money-copilot' }
     ];
   }, [region]);
 

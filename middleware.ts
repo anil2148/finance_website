@@ -69,6 +69,16 @@ function returnNotFound(): NextResponse {
   return new NextResponse('Not Found', { status: 404 });
 }
 
+function handleGlobalCopilotRedirect(pathname: string, request: NextRequest): NextResponse | null {
+  if (pathname === '/us/ai-money-copilot' || pathname === '/india/ai-money-copilot' || pathname === '/in/ai-money-copilot') {
+    const redirectUrl = new URL(request.url);
+    redirectUrl.pathname = '/ai-money-copilot';
+    return NextResponse.redirect(redirectUrl, 308);
+  }
+
+  return null;
+}
+
 function enforceRegionIsolation(pathname: string): NextResponse | null {
   if (pathname === '/us' || pathname.startsWith('/us/')) {
     const contentPath = stripRegionPrefix(pathname);
@@ -98,6 +108,9 @@ function getPreferredRegion(request: NextRequest): PreferredRegion {
 export function middleware(request: NextRequest) {
   const { nextUrl } = request;
   const normalizedPathname = nextUrl.pathname.replace(/\/+$/, '') || '/';
+
+  const copilotRedirect = handleGlobalCopilotRedirect(normalizedPathname, request);
+  if (copilotRedirect) return copilotRedirect;
 
   if (normalizedPathname === '/in' || normalizedPathname.startsWith('/in/')) {
     const redirectUrl = new URL(request.url);
