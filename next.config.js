@@ -55,6 +55,8 @@ const nextConfig = {
 
     return [
       { source: '/about-us', destination: '/about', permanent: true },
+      { source: '/us/compare', destination: '/us/comparison', permanent: true },
+      { source: '/us/blog/tag', destination: '/us/blog', permanent: true },
       { source: '/compare/best-credit-cards-2026', destination: '/best-credit-cards-2026', permanent: true },
       { source: '/compare/best-investment-apps', destination: '/best-investment-apps', permanent: true },
       { source: '/compare/best-savings-accounts-usa', destination: '/best-savings-accounts-usa', permanent: true },
@@ -70,6 +72,9 @@ const nextConfig = {
       { source: '/in/calculators/debt-payoff-calculator', destination: '/calculators/debt-payoff-calculator', permanent: true },
       { source: '/in/calculators/retirement-calculator', destination: '/calculators/retirement-calculator', permanent: true },
       { source: '/blog/emergency-fund-guide', destination: '/blog/emergency-fund-target-by-recovery-timeline', permanent: true },
+      { source: '/blog/401k-contribution-rate-sustainable-target-2026', destination: '/blog/pre-tax-vs-post-tax-contributions-simple', permanent: true },
+      { source: '/blog/capital-gains-tax-strategy-0-percent-harvesting-2026', destination: '/blog/how-to-stay-in-a-lower-tax-bracket', permanent: true },
+      { source: '/blog/cd-ladder-strategy-2026', destination: '/blog/how-to-choose-a-high-yield-savings-account', permanent: true },
       ...legacyCalculatorRedirects.map((entry) => ({ ...entry, permanent: true })),
       ...normalizeRedirectMap(blogRedirectMap).map((entry) => ({
         source: entry.source,

@@ -627,7 +627,7 @@ const secondaryCalculatorByArchetype: Record<TopicBlueprint['archetype'], { labe
 
 const relatedBlogsByArchetype: Record<TopicBlueprint['archetype'], Array<{ label: string; href: string }>> = {
   investing: [
-    { label: '401(k) contribution rate targets', href: '/blog/401k-contribution-rate-sustainable-target-2026' },
+    { label: 'Pre-tax vs post-tax 401(k) contributions', href: '/blog/pre-tax-vs-post-tax-contributions-simple' },
     { label: 'Dollar-cost averaging playbook', href: '/blog/beginner-investing-roadmap-year-one-milestones' }
   ],
   loans: [
@@ -648,7 +648,7 @@ const relatedBlogsByArchetype: Record<TopicBlueprint['archetype'], Array<{ label
   ],
   tax: [
     { label: 'Roth vs Traditional 401(k) decision guide', href: '/blog/roth-vs-traditional-401k-decision-guide' },
-    { label: '0% capital-gains harvesting rules', href: '/blog/capital-gains-tax-strategy-0-percent-harvesting-2026' }
+    { label: 'Federal tax bracket planning', href: '/blog/2026-federal-tax-brackets-marginal-rate-decisions' }
   ]
 };
 
