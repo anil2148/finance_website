@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { HomepageLayout } from '@/components/home/HomepageLayout';
-import { absoluteUrl, breadcrumbSchema, webpageSchema } from '@/lib/seo';
+import { breadcrumbSchema, webpageSchema } from '@/lib/seo';
+import { buildRegionAlternates } from '@/lib/regionSeo';
 
 const title = 'FinanceSphere US | 401(k), IRS Taxes, Credit Cards, and Investing Guides';
 const description =
@@ -10,14 +11,7 @@ export const metadata: Metadata = {
   title,
   description,
   keywords: ['US GAAP personal finance', 'IRS tax planning', '401k contribution strategy', 'capital gains tax US'],
-  alternates: {
-    canonical: absoluteUrl('/us'),
-    languages: {
-      'en-US': absoluteUrl('/us'),
-      'en-IN': absoluteUrl('/india'),
-      'x-default': absoluteUrl('/us')
-    }
-  }
+  alternates: buildRegionAlternates('/', 'US')
 };
 
 export default function UsRoutePage() {

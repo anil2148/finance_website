@@ -21,6 +21,8 @@ import { sanitizeBlogSlug } from '@/lib/blogSlug';
 import { RegionContentRenderer } from '@/components/RegionContentRenderer';
 import { BLOG_REGION_KEYWORDS, type BlogRegion } from '@/lib/financialTerms';
 import { transformFinancialTerms } from '@/lib/transformFinancialTerms';
+import { buildRegionAlternates } from '@/lib/regionSeo';
+import { enforceTerminologyLock } from '@/lib/terminologyLock';
 
 export const dynamic = 'force-dynamic';
 
@@ -182,22 +184,18 @@ export async function generateBlogMetadata({
   const { post } = resolveBlogPostFromRoute(params.slug);
   if (!post) return {};
   const canonicalPath = `${basePath}/${post.slug}`;
-  const resolvedTitle = region ? transformFinancialTerms(post.seoTitle ?? post.title, region) : post.seoTitle ?? post.title;
-  const resolvedDescription = region ? transformFinancialTerms(post.metaDescription ?? post.description, region) : post.metaDescription ?? post.description;
+  const rawTitle = region ? transformFinancialTerms(post.seoTitle ?? post.title, region) : post.seoTitle ?? post.title;
+  const rawDescription = region ? transformFinancialTerms(post.metaDescription ?? post.description, region) : post.metaDescription ?? post.description;
+  const resolvedTitle = region ? enforceTerminologyLock(rawTitle, region, 'autocorrect') : rawTitle;
+  const resolvedDescription = region ? enforceTerminologyLock(rawDescription, region, 'autocorrect') : rawDescription;
   const keywords = region ? BLOG_REGION_KEYWORDS[region] : undefined;
-  const languageAlternates = region
-    ? {
-        'en-US': absoluteUrl(`/us/blog/${post.slug}`),
-        'en-IN': absoluteUrl(`/india/blog/${post.slug}`),
-        'x-default': absoluteUrl(`/blog/${post.slug}`)
-      }
-    : undefined;
+  const regionAlternates = region ? buildRegionAlternates(`/blog/${post.slug}`, region) : undefined;
 
   return {
     title: resolvedTitle,
     description: resolvedDescription,
     keywords,
-    alternates: { canonical: canonicalPath, languages: languageAlternates },
+    alternates: regionAlternates ?? { canonical: canonicalPath },
     openGraph: { title: resolvedTitle, description: resolvedDescription, type: 'article', url: absoluteUrl(canonicalPath) },
     twitter: { card: 'summary_large_image', title: resolvedTitle, description: resolvedDescription }
   };
