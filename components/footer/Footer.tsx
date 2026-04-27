@@ -3,87 +3,52 @@
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AppLink } from '@/components/ui/AppLink';
+import { getRegion } from '@/lib/region';
+import { withRegionPrefix } from '@/lib/region-config';
 
-const footerColumns = {
-  global: [
-    {
-      heading: 'Tools',
-      links: [
-        { href: '/ai-money-copilot', label: 'AI Copilot' },
-        { href: '/calculators', label: 'Calculators' },
-        { href: '/comparison', label: 'Comparisons' },
-        { href: '/credit-cards', label: 'Credit Cards' }
-      ]
-    },
-    {
-      heading: 'Learn',
-      links: [
-        { href: '/blog', label: 'Financial Guides' },
-        { href: '/learn/strategy-playbooks', label: 'Strategy Playbooks' },
-        { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
-        { href: '/best-investment-apps', label: 'Best Investment Apps' }
-      ]
-    },
-    {
-      heading: 'Popular',
-      links: [
-        { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' },
-        { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' },
-        { href: '/calculators/debt-payoff-calculator', label: 'Debt Payoff Calculator' },
-        { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' }
-      ]
-    },
-    {
-      heading: 'Company',
-      links: [
-        { href: '/about', label: 'About' },
-        { href: '/editorial-policy', label: 'Editorial Policy' },
-        { href: '/how-we-make-money', label: 'How We Make Money' },
-        { href: '/help', label: 'Help Center' },
-        { href: '/contact', label: 'Contact' }
-      ]
-    }
-  ],
-  india: [
-    {
-      heading: 'Tools',
-      links: [
-        { href: '/ai-money-copilot', label: 'AI Copilot' },
-        { href: '/in/calculators', label: 'Calculators' },
-        { href: '/comparison', label: 'Comparisons' },
-        { href: '/in/best-credit-cards-india', label: 'Credit Cards' }
-      ]
-    },
-    {
-      heading: 'Learn',
-      links: [
-        { href: '/in/blog', label: 'Financial Guides' },
-        { href: '/learn/strategy-playbooks', label: 'Strategy Playbooks' },
-        { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
-        { href: '/best-investment-apps', label: 'Best Investment Apps' }
-      ]
-    },
-    {
-      heading: 'Popular',
-      links: [
-        { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' },
-        { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' },
-        { href: '/calculators/debt-payoff-calculator', label: 'Debt Payoff Calculator' },
-        { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' }
-      ]
-    },
-    {
-      heading: 'Company',
-      links: [
-        { href: '/about', label: 'About' },
-        { href: '/editorial-policy', label: 'Editorial Policy' },
-        { href: '/how-we-make-money', label: 'How We Make Money' },
-        { href: '/help', label: 'Help Center' },
-        { href: '/contact', label: 'Contact' }
-      ]
-    }
-  ]
-};
+type FooterLink = { href: string; label: string; global?: boolean };
+
+type FooterColumn = { heading: string; links: FooterLink[] };
+
+const FOOTER_COLUMNS: FooterColumn[] = [
+  {
+    heading: 'Tools',
+    links: [
+      { href: '/ai-money-copilot', label: 'AI Copilot', global: true },
+      { href: '/calculators', label: 'Calculators' },
+      { href: '/comparison', label: 'Comparisons' },
+      { href: '/credit-cards', label: 'Credit Cards' }
+    ]
+  },
+  {
+    heading: 'Learn',
+    links: [
+      { href: '/blog', label: 'Financial Guides' },
+      { href: '/learn/strategy-playbooks', label: 'Strategy Playbooks' },
+      { href: '/best-credit-cards-2026', label: 'Best Credit Cards 2026' },
+      { href: '/best-investment-apps', label: 'Best Investment Apps' }
+    ]
+  },
+  {
+    heading: 'Popular',
+    links: [
+      { href: '/best-savings-accounts-usa', label: 'Best Savings Accounts' },
+      { href: '/compare/mortgage-rate-comparison', label: 'Mortgage Rate Comparison' },
+      { href: '/calculators/debt-payoff-calculator', label: 'Debt Payoff Calculator' },
+      { href: '/calculators/retirement-calculator', label: 'Retirement Calculator' }
+    ]
+  },
+  {
+    heading: 'Company',
+    links: [
+      { href: '/about', label: 'About' },
+      { href: '/editorial-policy', label: 'Editorial Policy' },
+      { href: '/how-we-make-money', label: 'How We Make Money' },
+      { href: '/help', label: 'Help Center' },
+      { href: '/contact', label: 'Contact' }
+    ]
+  }
+];
 
 const legalLinks = [
   { href: '/privacy-policy', label: 'Privacy Policy' },
@@ -93,15 +58,20 @@ const legalLinks = [
   { href: '/financial-disclaimer', label: 'Financial Disclaimer' }
 ];
 
+function toRegionAwareHref(href: string, region: 'us' | 'in', global?: boolean) {
+  if (global || href === '/ai-money-copilot') return '/ai-money-copilot';
+  return withRegionPrefix(href, region === 'in' ? 'IN' : 'US');
+}
+
 export function Footer() {
   const pathname = usePathname();
-  const isIndiaContext = pathname === '/in' || pathname.startsWith('/in/');
-  const columns = isIndiaContext ? footerColumns.india : footerColumns.global;
+  const region = getRegion({ pathname });
+  const homeHref = region === 'in' ? '/in' : '/';
 
   return (
     <footer className="mt-10 border-t border-[0.5px] border-[var(--color-border-tertiary)] bg-white dark:bg-slate-950">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-5">
-        <AppLink href={isIndiaContext ? '/in' : '/'} className="inline-flex items-center" aria-label="FinanceSphere home">
+        <AppLink href={homeHref} className="inline-flex items-center" aria-label="FinanceSphere home">
           <Image src="/images/financesphere-logo.svg" alt="FinanceSphere logo" width={160} height={40} className="h-10 w-auto" />
         </AppLink>
         <p className="hidden text-center text-sm text-slate-600 dark:text-slate-300 md:block">
@@ -135,13 +105,13 @@ export function Footer() {
 
       <div className="border-t border-[0.5px] border-[var(--color-border-tertiary)]">
         <div className="mx-auto grid max-w-7xl grid-cols-2 gap-x-8 gap-y-6 px-4 py-6 md:grid-cols-4">
-          {columns.map((column) => (
+          {FOOTER_COLUMNS.map((column) => (
             <section key={column.heading}>
               <p className="mb-2 text-[11px] uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{column.heading}</p>
               <ul>
                 {column.links.map((link) => (
                   <li key={link.href} className="leading-7">
-                    <AppLink href={link.href} variant="utility" className="text-[13px] leading-7">
+                    <AppLink href={toRegionAwareHref(link.href, region, link.global)} variant="utility" className="text-[13px] leading-7">
                       {link.label}
                     </AppLink>
                   </li>
