@@ -67,6 +67,8 @@ const nextConfig = {
       { source: '/in/80c-deductions-guide', destination: '/in/80c-deductions', permanent: true },
       { source: '/in/tax-slabs-2026-india', destination: '/in/tax-slabs', permanent: true },
       { source: '/money-copilot', destination: '/ai-money-copilot', permanent: true },
+      { source: '/us/ai-money-copilot', destination: '/ai-money-copilot', permanent: true },
+      { source: '/in/ai-money-copilot', destination: '/ai-money-copilot', permanent: true },
       { source: '/compare', destination: '/comparison', permanent: true },
       { source: '/in/strategy-playbooks', destination: '/learn/strategy-playbooks', permanent: true },
       { source: '/in/calculators/debt-payoff-calculator', destination: '/calculators/debt-payoff-calculator', permanent: true },

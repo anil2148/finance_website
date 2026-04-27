@@ -91,3 +91,24 @@ export function assertRegionOwnership(pathname: string, regionPrefix: SupportedR
   const allowed = entry.region === 'INDIA' || entry.region === 'EXCLUSIVE_INDIA' || entry.region === 'BOTH_ALLOWED';
   return allowed ? { allowed: true } : { allowed: false, reason: `${normalized} is US-owned (${entry.region}).` };
 }
+
+
+export type RouteRegionMetadata = {
+  slug: string;
+  region: 'us' | 'in' | 'global';
+};
+
+export function getRouteRegionMetadata(pathname: string): RouteRegionMetadata | null {
+  const entry = resolveRegionContentEntry(pathname);
+  if (!entry) return null;
+
+  if (entry.region === 'EXCLUSIVE_US' || entry.region === 'US') {
+    return { slug: entry.slug, region: 'us' };
+  }
+
+  if (entry.region === 'EXCLUSIVE_INDIA' || entry.region === 'INDIA') {
+    return { slug: entry.slug, region: 'in' };
+  }
+
+  return { slug: entry.slug, region: 'global' };
+}
