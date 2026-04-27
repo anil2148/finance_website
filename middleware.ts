@@ -97,11 +97,10 @@ export function middleware(request: NextRequest) {
 
   const canonicalRawPathname = getCanonicalPathname(nextUrl.pathname);
   const preferredRegion = getPreferredRegion(request);
-  const canonicalPathname = withRegionPrefix(stripRegionPrefix(canonicalRawPathname), preferredRegion);
 
-  if (canonicalPathname !== nextUrl.pathname) {
+  if (canonicalRawPathname !== nextUrl.pathname) {
     const redirectUrl = new URL(request.url);
-    redirectUrl.pathname = canonicalPathname;
+    redirectUrl.pathname = canonicalRawPathname;
     return NextResponse.redirect(redirectUrl, 307);
   }
 
