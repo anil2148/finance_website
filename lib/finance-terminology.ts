@@ -17,7 +17,7 @@ export type FinanceTermKey =
 
 export type FinanceTerminologyMap = Record<FinanceTermKey, string>;
 
-export const terminology: Record<'US' | 'INDIA', TermMap> = {
+export const terminology: Record<'US' | 'INDIA', FinanceTerminologyMap> = {
   US: {
     mortgage: 'Mortgage',
     checking_account: 'Checking Account',
@@ -56,7 +56,7 @@ export function getTerm(key: FinanceTermKey, region?: TerminologyRegion | null):
   return terminology[regionKey][key] ?? key;
 }
 
-export function getFinanceTerms(region: TerminologyRegion): TermMap {
+export function getFinanceTerms(region: TerminologyRegion): FinanceTerminologyMap {
   const regionKey = normalizeTerminologyRegion(region);
   return terminology[regionKey];
 }
