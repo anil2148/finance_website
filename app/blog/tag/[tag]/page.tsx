@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { permanentRedirect } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { BlogCard } from '@/components/ui/BlogCard';
 import { getPosts } from '@/lib/markdown';
 import { slugifyTag } from '@/lib/tagSlug';
+import { isCanonicalRouteSlug } from '@/lib/routeSlug';
 
 const defaultTagJourney = [
   { href: '/calculators', label: 'Run a calculator' },
@@ -36,11 +37,11 @@ export function generateMetadata({ params }: { params: { tag: string } }): Metad
 export default function BlogTagPage({ params }: { params: { tag: string } }) {
   const { slug, posts } = getTagPosts(params.tag);
 
-  if (!slug) {
-    permanentRedirect('/blog');
+  if (!slug || posts.length === 0) {
+    notFound();
   }
 
-  if (params.tag !== slug) {
+  if (!isCanonicalRouteSlug(params.tag, slug)) {
     permanentRedirect(`/blog/tag/${slug}`);
   }
 
@@ -70,33 +71,21 @@ export default function BlogTagPage({ params }: { params: { tag: string } }) {
         </div>
       </header>
 
-      {posts.length > 0 ? (
-        <>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {posts.map((p) => (
-              <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
-            ))}
-          </div>
-          <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <h2 className="text-lg font-semibold text-slate-900">After reading this tag cluster</h2>
-            <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-slate-700">
-              <li>Choose one recommendation you can execute this week.</li>
-              <li>Run the matching calculator with your own numbers.</li>
-              <li>Use a comparison framework before opening, switching, or applying.</li>
-            </ol>
-          </section>
-        </>
-      ) : (
+      <>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {posts.map((p) => (
+            <BlogCard key={p.slug} title={p.title} excerpt={p.description} slug={p.slug} category={p.category} />
+          ))}
+        </div>
         <section className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-          <h2 className="text-lg font-semibold text-slate-900">No published articles under this tag yet</h2>
-          <p className="mt-1 text-sm text-slate-600">Try a nearby category or start with one of our high-impact decision pages below.</p>
-          <div className="mt-3 flex flex-wrap gap-2 text-sm">
-            <Link href="/blog/category/investing" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700">Investing category</Link>
-            <Link href="/blog/category/loans" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700">Loans category</Link>
-            <Link href="/blog/category/savings-accounts" className="rounded-full border border-slate-300 bg-white px-3 py-1 font-medium hover:border-blue-300 hover:text-blue-700">Savings category</Link>
-          </div>
+          <h2 className="text-lg font-semibold text-slate-900">After reading this tag cluster</h2>
+          <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-slate-700">
+            <li>Choose one recommendation you can execute this week.</li>
+            <li>Run the matching calculator with your own numbers.</li>
+            <li>Use a comparison framework before opening, switching, or applying.</li>
+          </ol>
         </section>
-      )}
+      </>
     </section>
   );
 }

@@ -31,14 +31,6 @@ export function normalizePathname(pathname: string): string {
 export function toCanonicalPathname(pathname: string): string {
   const [rawPath] = pathname.split(/[?#]/);
   const normalizedPath = normalizePathname(rawPath);
-
-  if (normalizedPath.startsWith('/blog/category/')) {
-    const category = normalizedPath.slice('/blog/category/'.length);
-    if (category && !category.includes('/')) {
-      return `/blog/tag/${category.toLowerCase().replace(/\s+/g, '-')}`;
-    }
-  }
-
   return LEGACY_PATH_REDIRECTS[normalizedPath] ?? normalizedPath;
 }
 
