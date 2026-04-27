@@ -15,7 +15,7 @@ export type FinanceTermKey =
   | 'tax_framework'
   | 'investment_vehicle';
 
-type TermMap = Record<FinanceTermKey, string>;
+export type FinanceTerminologyMap = Record<FinanceTermKey, string>;
 
 export const terminology: Record<'US' | 'INDIA', TermMap> = {
   US: {

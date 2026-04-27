@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useRegion } from '@/components/providers/RegionProvider';
 import { formatCurrency } from '@/lib/region-config';
+import { getTerm } from '@/lib/finance-terminology';
 
 type PreviewType = 'mortgage' | 'compound' | 'debt-payoff' | 'debt-snowball';
 
@@ -35,9 +36,9 @@ export function CalculatorCardPreview({ type }: CalculatorCardPreviewProps) {
       const monthlyPayment = principal * (monthlyRate * (1 + monthlyRate) ** months) / (((1 + monthlyRate) ** months) - 1);
       return {
         inputLabel: 'Home price',
-        outputLabel: 'Estimated monthly P&I',
+        outputLabel: `Estimated monthly ${getTerm('mortgage', region)} P&I`,
         outputValue: formatCurrency(monthlyPayment, region),
-        assumption: 'Assumes 20% down, 30-year fixed, 6.75% rate. Taxes/insurance excluded.',
+        assumption: 'Assumes 20% down, 30-year fixed, 6.75% rate. Property taxes/insurance excluded.',
         min: 150000,
         max: 1200000,
         step: 10000
