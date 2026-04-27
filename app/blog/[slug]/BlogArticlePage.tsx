@@ -182,6 +182,8 @@ export async function generateBlogMetadata({
   const { post } = resolveBlogPostFromRoute(params.slug);
   if (!post) return {};
   const canonicalPath = `${basePath}/${post.slug}`;
+  const resolvedTitle = region ? transformFinancialTerms(post.seoTitle ?? post.title, region) : post.seoTitle ?? post.title;
+  const resolvedDescription = region ? transformFinancialTerms(post.metaDescription ?? post.description, region) : post.metaDescription ?? post.description;
   const keywords = region ? BLOG_REGION_KEYWORDS[region] : undefined;
   const languageAlternates = region
     ? {
@@ -192,12 +194,12 @@ export async function generateBlogMetadata({
     : undefined;
 
   return {
-    title: region ? transformFinancialTerms(post.seoTitle ?? post.title, region) : post.seoTitle ?? post.title,
-    description: region ? transformFinancialTerms(post.metaDescription ?? post.description, region) : post.metaDescription ?? post.description,
+    title: resolvedTitle,
+    description: resolvedDescription,
     keywords,
     alternates: { canonical: canonicalPath, languages: languageAlternates },
-    openGraph: { title: post.title, description: post.metaDescription ?? post.description, type: 'article', url: absoluteUrl(canonicalPath) },
-    twitter: { card: 'summary_large_image', title: post.title, description: post.metaDescription ?? post.description }
+    openGraph: { title: resolvedTitle, description: resolvedDescription, type: 'article', url: absoluteUrl(canonicalPath) },
+    twitter: { card: 'summary_large_image', title: resolvedTitle, description: resolvedDescription }
   };
 }
 
@@ -496,7 +498,7 @@ export function BlogArticlePage({ params, region = 'US', basePath = '/blog' }: {
             <ul className="grid gap-3 text-sm md:grid-cols-2">
               {relatedPosts.map((related) => (
                 <li key={related.slug}>
-                  <Link href={`/blog/${related.slug}`} className="block rounded-xl border border-gray-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-gray-700 dark:bg-gray-950 dark:hover:border-blue-500/50 dark:hover:bg-blue-900/20">
+                  <Link href={`${basePath}/${related.slug}`} className="block rounded-xl border border-gray-200 bg-white p-4 transition hover:border-blue-200 hover:bg-blue-50/40 dark:border-gray-700 dark:bg-gray-950 dark:hover:border-blue-500/50 dark:hover:bg-blue-900/20">
                     <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">{related.category.replace(/-/g, ' ')}</p>
                     <h3 className="mt-1 text-base font-semibold text-gray-900 dark:text-gray-100">{related.title}</h3>
                     <p className="mt-1 line-clamp-2 text-sm text-gray-600 dark:text-gray-400">{related.description}</p>
@@ -509,7 +511,7 @@ export function BlogArticlePage({ params, region = 'US', basePath = '/blog' }: {
             <ul className="grid gap-2 text-sm md:grid-cols-2">
               {additionalRelatedBlogs.map((related) => (
                 <li key={`fallback-${related.slug}`}>
-                  <Link href={`/blog/${related.slug}`} className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200">
+                  <Link href={`${basePath}/${related.slug}`} className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-gray-700 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200">
                     {related.title}
                   </Link>
                 </li>

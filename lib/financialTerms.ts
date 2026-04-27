@@ -39,10 +39,10 @@ export const financialTermPatterns: Array<{ key: keyof typeof financialTerms; va
   { key: 'mortgage', variants: ['mortgage', 'mortgages', 'home loan', 'home loans'] },
   { key: 'checking_account', variants: ['checking account', 'checking accounts', 'current account', 'current accounts'] },
   { key: 'salary', variants: ['salary', 'salaries', 'wages', 'ctc'] },
-  { key: 'tax_system', variants: ['irs tax system', 'income tax department'] },
+  { key: 'tax_system', variants: ['irs tax system', 'irs', 'income tax department'] },
   { key: 'sales_tax', variants: ['sales tax', 'gst'] },
   { key: 'stocks', variants: ['stocks', 'stock', 'shares', 'share'] },
-  { key: 'retirement_accounts', variants: ['401(k)', 'ira', 'retirement account', 'retirement accounts', 'epf', 'ppf', 'nps'] },
+  { key: 'retirement_accounts', variants: ['401(k)', '401k', 'ira', 'retirement account', 'retirement accounts', 'epf', 'ppf', 'nps'] },
   { key: 'fiscal_year', variants: ['fiscal year', 'financial year'] }
 ];
 
