@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from 'react';
 import type { FinancialCategory } from '@/lib/financialProducts';
+import { useRegion } from '@/components/providers/RegionProvider';
+import { getTerm } from '@/lib/finance-terminology';
 
 type FrameworkOption = {
   id: string;
@@ -287,7 +289,21 @@ const categoryByFrameworkId: Record<string, FinancialCategory> = Object.entries(
 }, {} as Record<string, FinancialCategory>);
 
 export function ComparisonEngine({ defaultCategory = 'all' }: ComparisonEngineProps) {
+  const { region } = useRegion();
+  const mortgageTerm = getTerm('mortgage', region);
+  const checkingAccountTerm = getTerm('checking_account', region);
+  const taxBracketTerm = getTerm('tax_bracket', region);
+  const stocksTerm = getTerm('stocks', region);
+  const revenueTerm = getTerm('revenue', region);
   const [category, setCategory] = useState<FinancialCategory | 'all'>(defaultCategory);
+  const localizeFinancialCopy = (value: string) =>
+    value
+      .replaceAll('Mortgage', mortgageTerm)
+      .replaceAll('mortgage', mortgageTerm.toLowerCase())
+      .replaceAll('checking', checkingAccountTerm.toLowerCase())
+      .replaceAll('tax brackets', taxBracketTerm.toLowerCase())
+      .replaceAll('stocks', stocksTerm.toLowerCase())
+      .replaceAll('revenue', revenueTerm.toLowerCase());
 
   const rows = useMemo(() => {
     if (category === 'all') return Object.values(frameworkByCategory).flat();
@@ -304,7 +320,7 @@ export function ComparisonEngine({ defaultCategory = 'all' }: ComparisonEnginePr
           <option value="credit_card">Credit Cards</option>
           <option value="savings_account">Savings Accounts</option>
           <option value="investment_app">Investment Apps</option>
-          <option value="mortgage_lender">Mortgage Lenders</option>
+          <option value="mortgage_lender">{mortgageTerm} Lenders</option>
           <option value="personal_loan">Personal Loans</option>
         </select>
       </div>
@@ -318,7 +334,7 @@ export function ComparisonEngine({ defaultCategory = 'all' }: ComparisonEnginePr
           <h3 className="text-sm font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-300">Decision guardrails for this category</h3>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
             {guardrails.map((item) => (
-              <li key={item}>{item}</li>
+              <li key={item}>{localizeFinancialCopy(item)}</li>
             ))}
           </ul>
         </section>
@@ -344,20 +360,20 @@ export function ComparisonEngine({ defaultCategory = 'all' }: ComparisonEnginePr
             {rows.map((row) => (
               <tr key={row.id} className="border-t border-slate-200 align-top dark:border-slate-700">
                 <td className="px-3 py-3 font-semibold text-slate-900 dark:text-slate-100">
-                  {row.title}
-                  {category === 'all' ? <p className="mt-1 text-xs font-medium text-blue-700 dark:text-blue-300">{categoryLabel[categoryByFrameworkId[row.id]]}</p> : null}
+                  {localizeFinancialCopy(row.title)}
+                  {category === 'all' ? <p className="mt-1 text-xs font-medium text-blue-700 dark:text-blue-300">{localizeFinancialCopy(categoryLabel[categoryByFrameworkId[row.id]])}</p> : null}
                 </td>
-                <td className="px-3 py-3">{row.bestFor}</td>
-                <td className="px-3 py-3">{row.fees}</td>
+                <td className="px-3 py-3">{localizeFinancialCopy(row.bestFor)}</td>
+                <td className="px-3 py-3">{localizeFinancialCopy(row.fees)}</td>
                 <td className="px-3 py-3">{row.minimums}</td>
-                <td className="px-3 py-3">{row.strengths}</td>
-                <td className="px-3 py-3">{row.limitations}</td>
+                <td className="px-3 py-3">{localizeFinancialCopy(row.strengths)}</td>
+                <td className="px-3 py-3">{localizeFinancialCopy(row.limitations)}</td>
                 <td className="px-3 py-3">{row.easeOfUse}</td>
                 <td className="px-3 py-3">{row.support}</td>
-                <td className="px-3 py-3">{row.riskFit}</td>
+                <td className="px-3 py-3">{localizeFinancialCopy(row.riskFit)}</td>
                 <td className="px-3 py-3">
-                  <p><span className="font-semibold">Choose:</span> {row.chooseWhen}</p>
-                  <p className="mt-2"><span className="font-semibold">Avoid:</span> {row.avoidWhen}</p>
+                  <p><span className="font-semibold">Choose:</span> {localizeFinancialCopy(row.chooseWhen)}</p>
+                  <p className="mt-2"><span className="font-semibold">Avoid:</span> {localizeFinancialCopy(row.avoidWhen)}</p>
                 </td>
               </tr>
             ))}

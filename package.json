@@ -16,7 +16,8 @@
     "test:sitemaps": "node scripts/validate-sitemaps.mjs",
     "test:render-parity": "node scripts/audit-rendering-parity.mjs",
     "generate:india-blog": "node scripts/generate-india-blog.mjs",
-    "validate:seo": "node scripts/validate-seo-canonicals.mjs"
+    "validate:seo": "node scripts/validate-seo-canonicals.mjs",
+    "audit:terminology": "node scripts/audit-financial-terminology.mjs"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",

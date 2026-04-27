@@ -1,5 +1,7 @@
 import type { RegionCode } from '@/lib/region-config';
 
+export type TerminologyRegion = RegionCode | 'INDIA';
+
 export type FinanceTermKey =
   | 'mortgage'
   | 'checking_account'
@@ -15,7 +17,7 @@ export type FinanceTermKey =
 
 export type FinanceTerminologyMap = Record<FinanceTermKey, string>;
 
-export const terminology: Record<'US' | 'INDIA', FinanceTerminologyMap> = {
+export const terminology: Record<'US' | 'INDIA', TermMap> = {
   US: {
     mortgage: 'Mortgage',
     checking_account: 'Checking Account',
@@ -44,16 +46,17 @@ export const terminology: Record<'US' | 'INDIA', FinanceTerminologyMap> = {
   }
 };
 
-function regionToTerminologyRegion(region: RegionCode): 'US' | 'INDIA' {
-  return region === 'IN' ? 'INDIA' : 'US';
+function normalizeTerminologyRegion(region?: TerminologyRegion | null): keyof typeof terminology {
+  if (region === 'IN' || region === 'INDIA') return 'INDIA';
+  return 'US';
 }
 
-export function getTerm(key: FinanceTermKey, region: RegionCode): string {
-  const scopedRegion = regionToTerminologyRegion(region);
-  return terminology[scopedRegion][key] ?? key;
+export function getTerm(key: FinanceTermKey, region?: TerminologyRegion | null): string {
+  const regionKey = normalizeTerminologyRegion(region);
+  return terminology[regionKey][key] ?? key;
 }
 
-export function getFinanceTerms(region: RegionCode): FinanceTerminologyMap {
-  const scopedRegion = regionToTerminologyRegion(region);
-  return terminology[scopedRegion];
+export function getFinanceTerms(region: TerminologyRegion): TermMap {
+  const regionKey = normalizeTerminologyRegion(region);
+  return terminology[regionKey];
 }

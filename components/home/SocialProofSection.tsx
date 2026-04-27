@@ -1,3 +1,8 @@
+'use client';
+
+import { useRegion } from '@/components/providers/RegionProvider';
+import { getTerm } from '@/lib/finance-terminology';
+
 const testimonials = [
   {
     quote: 'I finally saw the true monthly housing cost, not just the mortgage payment.',
@@ -31,6 +36,9 @@ function getHueFromName(name: string) {
 }
 
 export function SocialProofSection() {
+  const { region } = useRegion();
+  const mortgageTerm = getTerm('mortgage', region);
+
   return (
     <section className="grid gap-4" aria-label="Trust building content">
       <article className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
@@ -39,7 +47,7 @@ export function SocialProofSection() {
           {testimonials.map((item) => (
             <blockquote key={item.author} className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-700 dark:bg-slate-800">
               <p className="text-xs tracking-wide text-amber-500" aria-label="5 star rating">★★★★★</p>
-              <p>“{item.quote}”</p>
+              <p>“{item.quote.replace('mortgage', mortgageTerm.toLowerCase())}”</p>
               <footer className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500">
                 <span
                   className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-bold text-white"
