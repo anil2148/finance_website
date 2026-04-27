@@ -38,10 +38,10 @@ export function RegionProvider({ children, initialRegion = DEFAULT_REGION }: { c
   const [region, setRegionState] = useState<RegionCode>(initialRegion);
 
   useEffect(() => {
-    const fromCookie = readCookieRegion();
     const fromPath = getRegionFromPath(pathname);
+    const fromCookie = readCookieRegion();
     const fromStorage = normalizeRegionCode(localStorage.getItem(STORAGE_KEY));
-    const nextRegion = fromCookie ?? fromPath ?? fromStorage ?? DEFAULT_REGION;
+    const nextRegion = fromPath ?? fromCookie ?? fromStorage ?? DEFAULT_REGION;
 
     if (nextRegion !== region) {
       setRegionState(nextRegion);

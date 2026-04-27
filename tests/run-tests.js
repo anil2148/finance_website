@@ -22,6 +22,7 @@ const { runSitemapTests } = require('./sitemap.test.ts');
 const { runFinanceSphereRenderingSeoRegressionTests } = require('./financesphere-rendering-seo-regressions.test.ts');
 const { runSitemapValidationRegressionTests } = require('./sitemap-validation-regression.test.ts');
 const { runRegionUiConsistencyTests } = require('./region-ui-consistency.test.ts');
+const { runTerminologyLocalizationTests } = require('./terminology-localization.test.ts');
 
 runUtilsTests();
 console.log('✅ utils tests passed');
@@ -43,5 +44,8 @@ console.log('✅ sitemap validation regression tests passed');
 
 runRegionUiConsistencyTests();
 console.log('✅ region UI consistency tests passed');
+
+runTerminologyLocalizationTests();
+console.log('✅ terminology localization tests passed');
 
 console.log('🎉 all unit tests passed');
