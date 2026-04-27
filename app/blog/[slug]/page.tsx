@@ -17,6 +17,8 @@ import { AUTHOR_PROFILES, EDITORIAL_REVIEWER_ID, PRIMARY_AUTHOR_ID } from '@/lib
 import { DecisionSupportPanel } from '@/components/common/DecisionSupportPanel';
 import { AdUnit } from '@/components/ui/AdUnit';
 import { AD_SLOTS } from '@/lib/adSlots';
+import { decodeRouteSegmentOnce, hasResidualUrlEncoding } from '@/lib/routeSlug';
+import { sanitizeBlogSlug } from '@/lib/blogSlug';
 
 export const dynamic = 'force-dynamic';
 
@@ -122,12 +124,50 @@ const failureInsightByCategory: Record<string, { title: string; scenario: string
   }
 };
 
+
+function resolveBlogPostFromRoute(rawSlug: string) {
+  const decodedSlug = decodeRouteSegmentOnce(rawSlug);
+
+  if (hasResidualUrlEncoding(decodedSlug)) {
+    console.warn('[blog-route] rejecting suspected double-encoded slug', { rawSlug, decodedSlug });
+    return { post: null, decodedSlug, canonicalSlug: null as string | null };
+  }
+
+  const exactPost = getPostBySlug(decodedSlug);
+  if (exactPost) {
+    return { post: exactPost, decodedSlug, canonicalSlug: exactPost.slug };
+  }
+
+  const normalizedSlug = sanitizeBlogSlug(decodedSlug);
+  const normalizedPost = normalizedSlug ? getPostBySlug(normalizedSlug) : undefined;
+
+  if (!normalizedPost) {
+    console.warn('[blog-route] slug mismatch caused empty data', {
+      rawSlug,
+      decodedSlug,
+      normalizedSlug,
+      availableSlugSample: getPosts()
+        .slice(0, 10)
+        .map((post) => post.slug)
+    });
+    return { post: null, decodedSlug, canonicalSlug: null as string | null };
+  }
+
+  console.info('[blog-route] redirecting non-canonical slug', {
+    rawSlug,
+    decodedSlug,
+    dbSlug: normalizedPost.slug
+  });
+
+  return { post: normalizedPost, decodedSlug, canonicalSlug: normalizedPost.slug };
+}
+
 export function generateStaticParams() {
   return getPosts().map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const post = getPostBySlug(params.slug);
+  const { post } = resolveBlogPostFromRoute(params.slug);
   if (!post) return {};
   const canonicalPath = `/blog/${post.slug}`;
 
@@ -141,9 +181,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default function BlogArticlePage({ params }: { params: { slug: string } }) {
-  const post = getPostBySlug(params.slug);
+  const { post, decodedSlug, canonicalSlug } = resolveBlogPostFromRoute(params.slug);
+
+  if (post && canonicalSlug && decodedSlug !== canonicalSlug) {
+    redirect(`/blog/${canonicalSlug}`);
+  }
+
   if (!post) {
-    const mappedRedirect = redirectForSlug(params.slug);
+    const mappedRedirect = redirectForSlug(decodedSlug);
     if (mappedRedirect?.destination) {
       redirect(mappedRedirect.destination);
     }
