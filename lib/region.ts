@@ -59,15 +59,28 @@ export function getRegion(requestContext?: { pathname?: string; cookieValue?: st
   return toRegion(DEFAULT_REGION);
 }
 
+const GLOBAL_ROUTES = new Set(['/ai-money-copilot']);
+
+function isGlobalRoute(pathname: string): boolean {
+  return pathname === '/ai-money-copilot' || pathname.startsWith('/ai-money-copilot/');
+}
+
 export function setRegion(region: Region): void {
   if (typeof window === 'undefined') return;
 
   const regionCode = fromRegion(region);
   setPreferredRegionCookie(regionCode);
 
-  const nextPath = withRegionPrefix(window.location.pathname, regionCode);
-  if (nextPath !== window.location.pathname) {
-    window.location.assign(nextPath);
+  const { pathname, search, hash } = window.location;
+  const nextPath = isGlobalRoute(pathname) || GLOBAL_ROUTES.has(pathname)
+    ? pathname
+    : withRegionPrefix(pathname, regionCode);
+
+  const nextHref = `${nextPath}${search}${hash}`;
+  const currentHref = `${pathname}${search}${hash}`;
+
+  if (nextHref !== currentHref) {
+    window.location.assign(nextHref);
   }
 }
 
