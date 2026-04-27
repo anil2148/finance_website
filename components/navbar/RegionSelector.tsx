@@ -10,8 +10,8 @@ interface RegionSelectorProps {
 }
 
 const REGION_OPTIONS: Array<{ value: RegionCode; label: string; flag: string }> = [
-  { value: 'US', label: 'US /us (USD)', flag: '🇺🇸' },
-  { value: 'IN', label: 'India /india (INR)', flag: '🇮🇳' }
+  { value: 'US', label: 'United States', flag: '🇺🇸' },
+  { value: 'IN', label: 'India', flag: '🇮🇳' }
 ];
 
 export function RegionSelector({ region, onRegionChange, mobile = false }: RegionSelectorProps) {
@@ -29,7 +29,7 @@ export function RegionSelector({ region, onRegionChange, mobile = false }: Regio
 
   return (
     <div className={`relative ${mobile ? 'w-full' : ''}`}>
-      <label className="sr-only" htmlFor="region-selector">Region</label>
+      <label className="sr-only" htmlFor="region-selector">🌍 Region Selector</label>
       <select
         id="region-selector"
         value={region}
