@@ -16,7 +16,7 @@ export function parsePreferredRegion(value?: string | null): PreferredRegion | n
   if (!value) return null;
   const normalized = value.toLowerCase();
   if (normalized === 'us') return 'US';
-  if (normalized === 'in') return 'IN';
+  if (normalized === 'in' || normalized === 'india') return 'IN';
   if (normalized === 'eu') return 'EU';
   return null;
 }
