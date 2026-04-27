@@ -108,9 +108,9 @@ export function middleware(request: NextRequest) {
   const bareCanonicalPath = stripRegionPrefix(canonicalRawPathname);
   const canonicalPathname = bareCanonicalPath === '/' ? withRegionPrefix('/', preferredRegion) : canonicalRawPathname;
 
-  if (canonicalPathname !== nextUrl.pathname) {
+  if (canonicalRawPathname !== nextUrl.pathname) {
     const redirectUrl = new URL(request.url);
-    redirectUrl.pathname = canonicalPathname;
+    redirectUrl.pathname = canonicalRawPathname;
     return NextResponse.redirect(redirectUrl, 307);
   }
 
