@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
+import { isCanonicalRouteSlug, normalizeRouteSlug } from '@/lib/routeSlug';
 
 const regionCopy: Record<string, { title: string; intro: string; bestFor: string }> = {
   california: {
@@ -25,16 +27,36 @@ export function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: { params: { region: string } }): Metadata {
-  const data = regionCopy[params.region] ?? { title: `Best Credit Cards for ${params.region}`, intro: 'Location-aware credit card comparison.', bestFor: 'Local card shoppers' };
+  const region = normalizeRouteSlug(params.region);
+  const data = regionCopy[region];
+
+  if (!data) {
+    return {
+      title: 'Best Credit Cards by Region | FinanceSphere',
+      description: 'Compare credit cards by APR, annual fee, and reward value.',
+      alternates: { canonical: '/best-credit-cards-2026' },
+      robots: { index: false, follow: true }
+    };
+  }
+
   return {
     title: `${data.title} (2026) | FinanceSphere`,
     description: `${data.intro} Best for: ${data.bestFor}.`,
-    alternates: { canonical: `/compare/credit-cards-for/${params.region}` }
+    alternates: { canonical: `/compare/credit-cards-for/${region}` }
   };
 }
 
 export default function CreditCardsByRegionPage({ params }: { params: { region: string } }) {
-  const data = regionCopy[params.region] ?? { title: `Best Credit Cards for ${params.region}`, intro: 'Use this location-aware comparison to evaluate APR, fees, and rewards structures.', bestFor: 'Regional spend patterns' };
+  const region = normalizeRouteSlug(params.region);
+  const data = regionCopy[region];
+
+  if (!data) {
+    notFound();
+  }
+
+  if (!isCanonicalRouteSlug(params.region, region)) {
+    permanentRedirect(`/compare/credit-cards-for/${region}`);
+  }
 
   return (
     <div className="space-y-6">
@@ -42,9 +64,9 @@ export default function CreditCardsByRegionPage({ params }: { params: { region: 
         pageTitle={data.title}
         intro={`${data.intro} Best for: ${data.bestFor}.`}
         category="credit_card"
-        slug={`credit-cards-for-${params.region}`}
+        slug={`credit-cards-for-${region}`}
         faq={[
-          { question: `Are there state-specific credit card rules in ${params.region}?`, answer: 'Most card terms are national, but taxes and local merchant mix can impact rewards value.' },
+          { question: `Are there state-specific credit card rules in ${region}?`, answer: 'Most card terms are national, but taxes and local merchant mix can impact rewards value.' },
           { question: 'How should I compare cards?', answer: 'Compare annual fee, reward rate in your top categories, intro APR, and redemption flexibility.' }
         ]}
       />
@@ -52,8 +74,8 @@ export default function CreditCardsByRegionPage({ params }: { params: { region: 
       <div className="rounded-xl border bg-white p-4 text-sm">
         <h2 className="font-semibold">Related city and state comparisons</h2>
         <div className="mt-2 flex flex-wrap gap-2">
-          {Object.keys(regionCopy).map((region) => (
-            <Link key={region} href={`/compare/credit-cards-for/${region}`} className="rounded-full border px-3 py-1 hover:bg-slate-50">{region}</Link>
+          {Object.keys(regionCopy).map((regionKey) => (
+            <Link key={regionKey} href={`/compare/credit-cards-for/${regionKey}`} className="rounded-full border px-3 py-1 hover:bg-slate-50">{regionKey}</Link>
           ))}
         </div>
       </div>

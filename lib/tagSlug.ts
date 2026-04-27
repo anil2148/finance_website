@@ -1,28 +1,7 @@
-function decodeUriComponentSafe(value: string) {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-}
-
-function fullyDecodeUriComponent(value: string): string {
-  let decoded = value;
-  let previous = '';
-  let iterations = 0;
-  const maxIterations = 10;
-
-  while (decoded !== previous && iterations < maxIterations) {
-    previous = decoded;
-    decoded = decodeUriComponentSafe(decoded);
-    iterations += 1;
-  }
-
-  return decoded;
-}
+import { decodeRouteSegmentOnce } from '@/lib/routeSlug';
 
 export function normalizeTag(tag: string) {
-  return fullyDecodeUriComponent(tag).trim().toLowerCase();
+  return decodeRouteSegmentOnce(tag).trim().toLowerCase();
 }
 
 export function slugifyTag(tag: string): string {
