@@ -132,6 +132,10 @@ async function buildStockFromFinnhub(symbol: string): Promise<StockMetrics> {
   };
 }
 
+export async function buildLiveStockProfile(symbol: string): Promise<StockMetrics> {
+  return buildStockFromFinnhub(symbol);
+}
+
 async function getSecLatestFiling(symbol: string): Promise<{ form: string; filedDate: string; accessionNumber: string } | null> {
   const userAgent = process.env.SEC_USER_AGENT;
   if (!userAgent) return null;
