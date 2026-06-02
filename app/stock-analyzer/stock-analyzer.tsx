@@ -14,8 +14,22 @@ import {
 } from 'recharts';
 import { DecisionSupportInsights } from '@/components/stocks/decision-support-insights';
 import { InvestmentCommitteeVerdict } from '@/components/stocks/investment-committee-verdict';
+import { LiveIntelligencePanel } from '@/components/stocks/live-intelligence-panel';
 import { StockOutlookInsights } from '@/components/stocks/stock-outlook-insights';
 import { demoStocks, scoreStock, type StockMetrics } from '@/lib/stocks';
+
+const popularSymbols = [
+  { symbol: 'SOFI', name: 'SoFi Technologies' },
+  { symbol: 'AAPL', name: 'Apple' },
+  { symbol: 'MSFT', name: 'Microsoft' },
+  { symbol: 'NVDA', name: 'NVIDIA' },
+  { symbol: 'TSLA', name: 'Tesla' },
+  { symbol: 'AMZN', name: 'Amazon' },
+  { symbol: 'GOOGL', name: 'Alphabet' },
+  { symbol: 'META', name: 'Meta Platforms' },
+  { symbol: 'PLTR', name: 'Palantir' },
+  { symbol: 'AMD', name: 'Advanced Micro Devices' },
+];
 
 const chartData = [
   { month: 'Jan', price: 100, revenue: 70 },
@@ -36,16 +50,43 @@ function currency(value: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 }
 
+function fallbackStock(symbol: string): StockMetrics {
+  const normalized = symbol.toUpperCase();
+  return demoStocks[normalized] || {
+    symbol: normalized,
+    name: normalized,
+    price: 0,
+    changePercent: 0,
+    pe: 30,
+    forwardPe: 30,
+    epsGrowth: 5,
+    revenueGrowth: 5,
+    profitMargin: 10,
+    debtToEquity: 1,
+    roe: 10,
+    dividendYield: 0,
+    analystTarget: 0,
+    rsi: 50,
+    beta: 1,
+  };
+}
+
 export default function StockAnalyzer() {
   const [query, setQuery] = useState('MSFT');
   const [selectedSymbol, setSelectedSymbol] = useState('MSFT');
-  const stock: StockMetrics = demoStocks[selectedSymbol] ?? demoStocks.MSFT;
+  const stock: StockMetrics = fallbackStock(selectedSymbol);
   const score = useMemo(() => scoreStock(stock), [stock]);
-  const upside = ((stock.analystTarget - stock.price) / stock.price) * 100;
+  const upside = stock.price > 0 ? ((stock.analystTarget - stock.price) / stock.price) * 100 : 0;
+  const suggestions = popularSymbols.filter((item) => {
+    const value = query.trim().toUpperCase();
+    return value && (item.symbol.includes(value) || item.name.toUpperCase().includes(value));
+  }).slice(0, 6);
 
-  function analyzeStock() {
-    const symbol = query.trim().toUpperCase();
-    setSelectedSymbol(demoStocks[symbol] ? symbol : 'MSFT');
+  function analyzeStock(symbolOverride?: string) {
+    const symbol = (symbolOverride || query).trim().toUpperCase();
+    if (!symbol) return;
+    setQuery(symbol);
+    setSelectedSymbol(symbol);
   }
 
   return (
@@ -61,36 +102,54 @@ export default function StockAnalyzer() {
               </p>
             </div>
             <div className="rounded-2xl border border-emerald-400/20 bg-black/30 p-5">
-              <label className="text-sm font-medium text-slate-300" htmlFor="symbol">Enter stock symbol</label>
-              <div className="mt-3 flex gap-3">
-                <input
-                  id="symbol"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  onKeyDown={(event) => event.key === 'Enter' && analyzeStock()}
-                  placeholder="AAPL, MSFT, NVDA"
-                  className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none ring-emerald-400 transition focus:ring-2"
-                />
-                <button
-                  onClick={analyzeStock}
-                  className="rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300"
-                >
-                  Analyze
-                </button>
+              <label className="text-sm font-medium text-slate-300" htmlFor="symbol">Search stock symbol</label>
+              <div className="relative mt-3">
+                <div className="flex gap-3">
+                  <input
+                    id="symbol"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value.toUpperCase())}
+                    onKeyDown={(event) => event.key === 'Enter' && analyzeStock()}
+                    placeholder="Search SOFI, AAPL, MSFT, NVDA"
+                    className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none ring-emerald-400 transition focus:ring-2"
+                    autoComplete="off"
+                  />
+                  <button
+                    onClick={() => analyzeStock()}
+                    className="rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300"
+                  >
+                    Analyze
+                  </button>
+                </div>
+                {suggestions.length > 0 && query !== selectedSymbol && (
+                  <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-slate-900 shadow-2xl">
+                    {suggestions.map((item) => (
+                      <button
+                        key={item.symbol}
+                        onClick={() => analyzeStock(item.symbol)}
+                        className="flex w-full items-center justify-between px-4 py-3 text-left text-sm hover:bg-white/10"
+                      >
+                        <span className="font-bold text-white">{item.symbol}</span>
+                        <span className="text-slate-400">{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
-              <p className="mt-3 text-xs text-slate-400">Demo symbols: AAPL, MSFT, NVDA, TSLA. Live data route is ready for FINNHUB_API_KEY.</p>
+              <p className="mt-3 text-xs text-slate-400">Try SOFI, PLTR, AMD, AAPL, MSFT, NVDA, TSLA. Live intelligence loads from the API for any symbol.</p>
             </div>
           </div>
         </div>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-4">
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 lg:col-span-1">
-            <p className="text-sm text-slate-400">Overall score</p>
+            <p className="text-sm text-slate-400">Baseline score</p>
             <div className="mt-3 flex items-end gap-2">
               <span className="text-6xl font-black text-emerald-300">{score.total}</span>
               <span className="pb-2 text-slate-400">/100</span>
             </div>
             <p className="mt-4 rounded-full bg-emerald-400/10 px-4 py-2 text-center font-semibold text-emerald-300">{score.rating}</p>
+            <p className="mt-3 text-xs leading-5 text-slate-400">This baseline updates immediately by symbol. The live panel below fetches Finnhub, SEC, and OpenAI intelligence.</p>
             <div className="mt-6 space-y-4">
               {score.parts.map((part) => (
                 <div key={part.name}>
@@ -119,7 +178,7 @@ export default function StockAnalyzer() {
                 </div>
               </div>
               <div className="rounded-2xl bg-white/5 p-4 text-right">
-                <p className="text-sm text-slate-400">Analyst target</p>
+                <p className="text-sm text-slate-400">Estimated target</p>
                 <p className="text-2xl font-bold">{currency(stock.analystTarget)}</p>
                 <p className={upside >= 0 ? 'text-emerald-300' : 'text-red-300'}>{upside.toFixed(1)}% upside</p>
               </div>
@@ -144,6 +203,8 @@ export default function StockAnalyzer() {
             </div>
           </div>
         </div>
+
+        <LiveIntelligencePanel symbol={selectedSymbol} />
 
         <div className="mt-6 grid gap-6 lg:grid-cols-3">
           <MetricCard label="P/E Ratio" value={stock.pe.toString()} note="Lower can mean cheaper valuation" />
@@ -178,12 +239,8 @@ export default function StockAnalyzer() {
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
             <h3 className="text-xl font-bold">Important disclaimer</h3>
             <div className="mt-4 space-y-4 text-slate-300">
-              <p>
-                FinanceSphere helps users structure decisions with data, but it does not know your full financial situation, time horizon, tax profile, or risk tolerance.
-              </p>
-              <p>
-                Use this tool to identify what to research next: earnings quality, valuation, debt, growth durability, technical setup, and position-sizing risk.
-              </p>
+              <p>FinanceSphere helps users structure decisions with data, but it does not know your full financial situation, time horizon, tax profile, or risk tolerance.</p>
+              <p>Use this tool to identify what to research next: earnings quality, valuation, debt, growth durability, technical setup, and position-sizing risk.</p>
               <p className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-100">
                 Educational information only. This is not financial advice or a recommendation to buy or sell any security.
               </p>
