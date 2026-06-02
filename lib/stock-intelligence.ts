@@ -47,9 +47,43 @@ export type IntelligenceReport = {
 type FinnhubNewsItem = { headline?: string; summary?: string; datetime?: number };
 type FinnhubRecommendation = { buy?: number; hold?: number; sell?: number; strongBuy?: number; strongSell?: number; period?: string };
 type FinnhubInsider = { name?: string; share?: number; change?: number; transactionPrice?: number; transactionDate?: string };
+type FinnhubQuote = { c?: number; dp?: number };
+type FinnhubProfile = { name?: string; ticker?: string };
+type FinnhubMetric = {
+  metric?: {
+    peNormalizedAnnual?: number;
+    peTTM?: number;
+    forwardPE?: number;
+    epsGrowth3Y?: number;
+    revenueGrowth3Y?: number;
+    netProfitMarginTTM?: number;
+    totalDebtToEquityAnnual?: number;
+    roeTTM?: number;
+    dividendYieldIndicatedAnnual?: number;
+    beta?: number;
+    rsi14?: number;
+  };
+};
 
-function getStock(symbol: string) {
-  return demoStocks[symbol.toUpperCase()] || demoStocks.MSFT;
+function fallbackStock(symbol: string): StockMetrics {
+  const normalized = symbol.toUpperCase();
+  return demoStocks[normalized] || {
+    symbol: normalized,
+    name: normalized,
+    price: 0,
+    changePercent: 0,
+    pe: 30,
+    forwardPe: 30,
+    epsGrowth: 5,
+    revenueGrowth: 5,
+    profitMargin: 10,
+    debtToEquity: 1,
+    roe: 10,
+    dividendYield: 0,
+    analystTarget: 0,
+    rsi: 50,
+    beta: 1,
+  };
 }
 
 async function getFinnhubJson<T>(path: string): Promise<T | null> {
@@ -63,6 +97,39 @@ async function getFinnhubJson<T>(path: string): Promise<T | null> {
     console.error('Finnhub request failed', error);
     return null;
   }
+}
+
+async function buildStockFromFinnhub(symbol: string): Promise<StockMetrics> {
+  const normalized = symbol.toUpperCase();
+  const fallback = fallbackStock(normalized);
+  const [quote, profile, metric] = await Promise.all([
+    getFinnhubJson<FinnhubQuote>(`/quote?symbol=${normalized}`),
+    getFinnhubJson<FinnhubProfile>(`/stock/profile2?symbol=${normalized}`),
+    getFinnhubJson<FinnhubMetric>(`/stock/metric?symbol=${normalized}&metric=all`),
+  ]);
+  const metrics = metric?.metric || {};
+  const price = Number(quote?.c || fallback.price || 0);
+  const forwardPe = Number(metrics.forwardPE || fallback.forwardPe || metrics.peTTM || 30);
+  const pe = Number(metrics.peTTM || metrics.peNormalizedAnnual || fallback.pe || forwardPe);
+  const analystTarget = fallback.analystTarget && fallback.analystTarget > 0 ? fallback.analystTarget : price > 0 ? price * 1.08 : 0;
+
+  return {
+    symbol: normalized,
+    name: profile?.name || fallback.name || normalized,
+    price,
+    changePercent: Number(quote?.dp || fallback.changePercent || 0),
+    pe,
+    forwardPe,
+    epsGrowth: Number(metrics.epsGrowth3Y || fallback.epsGrowth || 5),
+    revenueGrowth: Number(metrics.revenueGrowth3Y || fallback.revenueGrowth || 5),
+    profitMargin: Number(metrics.netProfitMarginTTM || fallback.profitMargin || 10),
+    debtToEquity: Number(metrics.totalDebtToEquityAnnual || fallback.debtToEquity || 1),
+    roe: Number(metrics.roeTTM || fallback.roe || 10),
+    dividendYield: Number(metrics.dividendYieldIndicatedAnnual || fallback.dividendYield || 0),
+    analystTarget,
+    rsi: Number(metrics.rsi14 || fallback.rsi || 50),
+    beta: Number(metrics.beta || fallback.beta || 1),
+  };
 }
 
 async function getSecLatestFiling(symbol: string): Promise<{ form: string; filedDate: string; accessionNumber: string } | null> {
@@ -102,10 +169,7 @@ async function generateAiSummary(reportSeed: string): Promise<string | undefined
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
@@ -126,8 +190,8 @@ async function generateAiSummary(reportSeed: string): Promise<string | undefined
 }
 
 export async function buildLiveStockIntelligenceReport(symbol: string): Promise<IntelligenceReport> {
-  const base = buildStockIntelligenceReport(symbol);
-  const stock = base.stock;
+  const stock = await buildStockFromFinnhub(symbol);
+  const base = buildStockIntelligenceReport(stock.symbol, stock);
   const from = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString().slice(0, 10);
   const to = new Date().toISOString().slice(0, 10);
 
@@ -139,6 +203,7 @@ export async function buildLiveStockIntelligenceReport(symbol: string): Promise<
   ]);
 
   const dataSources = ['FinanceSphere scoring model'];
+  if (stock.price > 0) dataSources.push('Finnhub quote and metrics');
   if (news?.length) dataSources.push('Finnhub company news');
   if (recommendations?.length) dataSources.push('Finnhub analyst recommendations');
   if (insider?.data?.length) dataSources.push('Finnhub insider transactions');
@@ -161,11 +226,13 @@ export async function buildLiveStockIntelligenceReport(symbol: string): Promise<
   const negativeHits = negativeWords.filter((word) => newsText.includes(word)).length;
   const newsSentiment = positiveHits > negativeHits ? 'Positive' : negativeHits > positiveHits ? 'Negative' : 'Neutral';
 
-  const aiSummary = await generateAiSummary(`Analyze ${stock.symbol} for educational decision support. Score: ${base.score.total}/100. Rating: ${base.score.rating}. Price: ${stock.price}. Forward PE: ${stock.forwardPe}. EPS growth: ${stock.epsGrowth}%. Revenue growth: ${stock.revenueGrowth}%. Profit margin: ${stock.profitMargin}%. Debt/equity: ${stock.debtToEquity}. RSI: ${stock.rsi}. Recent news headlines: ${newsHeadlines.join(' | ') || 'No live headlines available'}. Analyst signal: ${analystSignal}. Insider signal: ${insiderSignal}. Latest SEC filing: ${filing ? `${filing.form} filed ${filing.filedDate}` : 'not available'}.`);
+  const aiSummary = await generateAiSummary(`Analyze ${stock.symbol} (${stock.name}) for educational decision support. Score: ${base.score.total}/100. Rating: ${base.score.rating}. Price: ${stock.price}. Forward PE: ${stock.forwardPe}. EPS growth: ${stock.epsGrowth}%. Revenue growth: ${stock.revenueGrowth}%. Profit margin: ${stock.profitMargin}%. Debt/equity: ${stock.debtToEquity}. RSI: ${stock.rsi}. Recent news headlines: ${newsHeadlines.join(' | ') || 'No live headlines available'}. Analyst signal: ${analystSignal}. Insider signal: ${insiderSignal}. Latest SEC filing: ${filing ? `${filing.form} filed ${filing.filedDate}` : 'not available'}.`);
   if (aiSummary) dataSources.push('OpenAI AI summary');
 
   return {
     ...base,
+    stock,
+    score: scoreStock(stock),
     dataSources,
     aiSummary,
     secFiling: {
@@ -188,20 +255,15 @@ export async function buildLiveStockIntelligenceReport(symbol: string): Promise<
   };
 }
 
-export function buildStockIntelligenceReport(symbol: string): IntelligenceReport {
-  const stock = getStock(symbol);
+export function buildStockIntelligenceReport(symbol: string, overrideStock?: StockMetrics): IntelligenceReport {
+  const stock = overrideStock || fallbackStock(symbol);
   const score = scoreStock(stock);
-  const upside = ((stock.analystTarget - stock.price) / stock.price) * 100;
+  const upside = stock.price > 0 ? ((stock.analystTarget - stock.price) / stock.price) * 100 : 0;
   const highGrowth = stock.revenueGrowth > 12 && stock.epsGrowth > 12;
   const expensive = stock.forwardPe > 35;
   const volatile = stock.beta > 1.5;
 
-  const verdict = score.total >= 78 && upside > 8
-    ? 'BUY CANDIDATE'
-    : score.total < 55 || upside < -5
-      ? 'AVOID / WAIT'
-      : 'HOLD / WATCH';
-
+  const verdict = score.total >= 78 && upside > 8 ? 'BUY CANDIDATE' : score.total < 55 || upside < -5 ? 'AVOID / WAIT' : 'HOLD / WATCH';
   const confidence = Math.min(95, Math.max(45, score.total + (upside > 10 ? 6 : upside < 0 ? -8 : 0)));
 
   return {
