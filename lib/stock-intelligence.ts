@@ -48,7 +48,17 @@ type FinnhubNewsItem = { headline?: string; summary?: string; datetime?: number 
 type FinnhubRecommendation = { buy?: number; hold?: number; sell?: number; strongBuy?: number; strongSell?: number; period?: string };
 type FinnhubInsider = { name?: string; share?: number; change?: number; transactionPrice?: number; transactionDate?: string };
 type FinnhubQuote = { c?: number; dp?: number };
-type FinnhubProfile = { name?: string; ticker?: string };
+type FinnhubProfile = {
+  name?: string;
+  ticker?: string;
+  marketCapitalization?: number;
+  finnhubIndustry?: string;
+  exchange?: string;
+  country?: string;
+  ipo?: string;
+  weburl?: string;
+  logo?: string;
+};
 type FinnhubMetric = {
   metric?: {
     peNormalizedAnnual?: number;
@@ -86,7 +96,7 @@ function fallbackStock(symbol: string): StockMetrics {
   };
 }
 
-async function getFinnhubJson<T>(path: string): Promise<T | null> {
+export async function getFinnhubJson<T>(path: string): Promise<T | null> {
   const token = process.env.FINNHUB_API_KEY;
   if (!token) return null;
   try {
@@ -129,6 +139,14 @@ async function buildStockFromFinnhub(symbol: string): Promise<StockMetrics> {
     analystTarget,
     rsi: Number(metrics.rsi14 || fallback.rsi || 50),
     beta: Number(metrics.beta || fallback.beta || 1),
+    marketCap: profile?.marketCapitalization ? profile.marketCapitalization * 1_000_000 : fallback.marketCap,
+    sector: fallback.sector,
+    industry: profile?.finnhubIndustry || fallback.industry,
+    exchange: profile?.exchange || fallback.exchange,
+    country: profile?.country || fallback.country,
+    ipo: profile?.ipo || fallback.ipo,
+    website: profile?.weburl || fallback.website,
+    logo: profile?.logo || fallback.logo,
   };
 }
 
