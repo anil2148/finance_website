@@ -12,95 +12,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts';
-
-type StockMetrics = {
-  symbol: string;
-  name: string;
-  price: number;
-  changePercent: number;
-  pe: number;
-  forwardPe: number;
-  epsGrowth: number;
-  revenueGrowth: number;
-  profitMargin: number;
-  debtToEquity: number;
-  roe: number;
-  dividendYield: number;
-  analystTarget: number;
-  rsi: number;
-  beta: number;
-};
-
-const demoStocks: Record<string, StockMetrics> = {
-  AAPL: {
-    symbol: 'AAPL',
-    name: 'Apple Inc.',
-    price: 214.35,
-    changePercent: 1.24,
-    pe: 28.4,
-    forwardPe: 24.6,
-    epsGrowth: 8.1,
-    revenueGrowth: 5.4,
-    profitMargin: 26.3,
-    debtToEquity: 1.45,
-    roe: 145.2,
-    dividendYield: 0.47,
-    analystTarget: 235,
-    rsi: 58,
-    beta: 1.12,
-  },
-  MSFT: {
-    symbol: 'MSFT',
-    name: 'Microsoft Corporation',
-    price: 427.8,
-    changePercent: 0.86,
-    pe: 34.7,
-    forwardPe: 29.2,
-    epsGrowth: 14.8,
-    revenueGrowth: 13.2,
-    profitMargin: 36.4,
-    debtToEquity: 0.35,
-    roe: 37.8,
-    dividendYield: 0.72,
-    analystTarget: 485,
-    rsi: 62,
-    beta: 0.94,
-  },
-  NVDA: {
-    symbol: 'NVDA',
-    name: 'NVIDIA Corporation',
-    price: 139.12,
-    changePercent: 2.91,
-    pe: 49.5,
-    forwardPe: 35.8,
-    epsGrowth: 36.5,
-    revenueGrowth: 42.1,
-    profitMargin: 48.8,
-    debtToEquity: 0.21,
-    roe: 91.4,
-    dividendYield: 0.03,
-    analystTarget: 165,
-    rsi: 68,
-    beta: 1.76,
-  },
-  TSLA: {
-    symbol: 'TSLA',
-    name: 'Tesla Inc.',
-    price: 184.44,
-    changePercent: -1.18,
-    pe: 61.2,
-    forwardPe: 47.4,
-    epsGrowth: 6.7,
-    revenueGrowth: 8.2,
-    profitMargin: 9.7,
-    debtToEquity: 0.18,
-    roe: 13.9,
-    dividendYield: 0,
-    analystTarget: 205,
-    rsi: 44,
-    beta: 2.02,
-  },
-};
+import { DecisionSupportInsights } from '@/components/stocks/decision-support-insights';
+import { InvestmentCommitteeVerdict } from '@/components/stocks/investment-committee-verdict';
+import { StockOutlookInsights } from '@/components/stocks/stock-outlook-insights';
+import { demoStocks, scoreStock, type StockMetrics } from '@/lib/stocks';
 
 const chartData = [
   { month: 'Jan', price: 100, revenue: 70 },
@@ -117,36 +32,6 @@ const chartData = [
   { month: 'Dec', price: 155, revenue: 131 },
 ];
 
-function clamp(value: number, min = 0, max = 100) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function scoreStock(stock: StockMetrics) {
-  const valuation = clamp(25 - stock.forwardPe * 0.45 + Math.max(0, stock.analystTarget / stock.price - 1) * 30, 0, 25);
-  const growth = clamp((stock.epsGrowth + stock.revenueGrowth) * 0.6, 0, 25);
-  const profitability = clamp(stock.profitMargin * 0.35 + stock.roe * 0.08, 0, 20);
-  const health = clamp(15 - stock.debtToEquity * 4 + (stock.beta < 1.4 ? 3 : 0), 0, 15);
-  const technical = clamp(15 - Math.abs(55 - stock.rsi) * 0.35 + (stock.changePercent > 0 ? 2 : -1), 0, 15);
-  const total = Math.round(valuation + growth + profitability + health + technical);
-
-  let rating = 'Avoid';
-  if (total >= 80) rating = 'Strong Buy';
-  else if (total >= 65) rating = 'Buy';
-  else if (total >= 50) rating = 'Hold';
-
-  return {
-    total,
-    rating,
-    parts: [
-      { name: 'Valuation', value: Math.round(valuation), max: 25 },
-      { name: 'Growth', value: Math.round(growth), max: 25 },
-      { name: 'Profitability', value: Math.round(profitability), max: 20 },
-      { name: 'Financial Health', value: Math.round(health), max: 15 },
-      { name: 'Technical Trend', value: Math.round(technical), max: 15 },
-    ],
-  };
-}
-
 function currency(value: number) {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
 }
@@ -154,7 +39,7 @@ function currency(value: number) {
 export default function StockAnalyzer() {
   const [query, setQuery] = useState('MSFT');
   const [selectedSymbol, setSelectedSymbol] = useState('MSFT');
-  const stock = demoStocks[selectedSymbol] ?? demoStocks.MSFT;
+  const stock: StockMetrics = demoStocks[selectedSymbol] ?? demoStocks.MSFT;
   const score = useMemo(() => scoreStock(stock), [stock]);
   const upside = ((stock.analystTarget - stock.price) / stock.price) * 100;
 
@@ -172,7 +57,7 @@ export default function StockAnalyzer() {
               <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">FinanceSphere Tool</p>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Stock Analyzer</h1>
               <p className="mt-4 max-w-2xl text-lg text-slate-300">
-                Compare valuation, growth, profitability, balance-sheet risk, and technical momentum in one simple stock score.
+                A decision-support app that converts stock data into bullish drivers, bearish risks, fair value, expected return, and an investment committee verdict.
               </p>
             </div>
             <div className="rounded-2xl border border-emerald-400/20 bg-black/30 p-5">
@@ -193,7 +78,7 @@ export default function StockAnalyzer() {
                   Analyze
                 </button>
               </div>
-              <p className="mt-3 text-xs text-slate-400">Demo symbols: AAPL, MSFT, NVDA, TSLA. Connect a stock API later for live data.</p>
+              <p className="mt-3 text-xs text-slate-400">Demo symbols: AAPL, MSFT, NVDA, TSLA. Live data route is ready for FINNHUB_API_KEY.</p>
             </div>
           </div>
         </div>
@@ -269,6 +154,10 @@ export default function StockAnalyzer() {
           <MetricCard label="Dividend Yield" value={`${stock.dividendYield}%`} note="Income return from dividends" />
         </div>
 
+        <InvestmentCommitteeVerdict stock={stock} />
+        <DecisionSupportInsights stock={stock} />
+        <StockOutlookInsights stock={stock} />
+
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
             <h3 className="text-xl font-bold">Growth trend</h3>
@@ -287,16 +176,16 @@ export default function StockAnalyzer() {
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
-            <h3 className="text-xl font-bold">AI-style insight</h3>
+            <h3 className="text-xl font-bold">Important disclaimer</h3>
             <div className="mt-4 space-y-4 text-slate-300">
               <p>
-                {stock.name} currently receives a <strong className="text-white">{score.rating}</strong> rating based on a {score.total}/100 blended score.
+                FinanceSphere helps users structure decisions with data, but it does not know your full financial situation, time horizon, tax profile, or risk tolerance.
               </p>
               <p>
-                The strongest areas are growth and profitability. Watch valuation risk if forward P/E stays elevated or RSI moves above 70.
+                Use this tool to identify what to research next: earnings quality, valuation, debt, growth durability, technical setup, and position-sizing risk.
               </p>
               <p className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-100">
-                Educational demo only. This is not financial advice. Add live market data and disclosures before production launch.
+                Educational information only. This is not financial advice or a recommendation to buy or sell any security.
               </p>
             </div>
           </div>
