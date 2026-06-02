@@ -65,7 +65,7 @@ async function getFinnhubJson<T>(path: string): Promise<T | null> {
   }
 }
 
-async function getSecLatestFiling(symbol: string) {
+async function getSecLatestFiling(symbol: string): Promise<{ form: string; filedDate: string; accessionNumber: string } | null> {
   const userAgent = process.env.SEC_USER_AGENT;
   if (!userAgent) return null;
   try {
@@ -88,7 +88,7 @@ async function getSecLatestFiling(symbol: string) {
     const dates: string[] = submissions?.filings?.recent?.filingDate || [];
     const accessionNumbers: string[] = submissions?.filings?.recent?.accessionNumber || [];
     const index = forms.findIndex((form) => form === '10-K' || form === '10-Q');
-    if (index < 0) return null;
+    if (index < 0 || !forms[index] || !dates[index] || !accessionNumbers[index]) return null;
     return { form: forms[index], filedDate: dates[index], accessionNumber: accessionNumbers[index] };
   } catch (error) {
     console.error('SEC request failed', error);
@@ -96,9 +96,9 @@ async function getSecLatestFiling(symbol: string) {
   }
 }
 
-async function generateAiSummary(reportSeed: string) {
+async function generateAiSummary(reportSeed: string): Promise<string | undefined> {
   const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) return undefined;
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -115,12 +115,13 @@ async function generateAiSummary(reportSeed: string) {
         temperature: 0.3,
       }),
     });
-    if (!response.ok) return null;
+    if (!response.ok) return undefined;
     const data = await response.json();
-    return data?.choices?.[0]?.message?.content as string | undefined;
+    const content = data?.choices?.[0]?.message?.content;
+    return typeof content === 'string' ? content : undefined;
   } catch (error) {
     console.error('OpenAI request failed', error);
-    return null;
+    return undefined;
   }
 }
 
