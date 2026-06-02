@@ -14,6 +14,14 @@ export type StockMetrics = {
   analystTarget: number;
   rsi: number;
   beta: number;
+  marketCap?: number;
+  sector?: string;
+  industry?: string;
+  exchange?: string;
+  country?: string;
+  ipo?: string;
+  website?: string;
+  logo?: string;
 };
 
 export const demoStocks: Record<string, StockMetrics> = {
@@ -33,6 +41,11 @@ export const demoStocks: Record<string, StockMetrics> = {
     analystTarget: 235,
     rsi: 58,
     beta: 1.12,
+    sector: 'Technology',
+    industry: 'Consumer Electronics',
+    exchange: 'NASDAQ',
+    country: 'US',
+    website: 'https://www.apple.com',
   },
   MSFT: {
     symbol: 'MSFT',
@@ -50,6 +63,11 @@ export const demoStocks: Record<string, StockMetrics> = {
     analystTarget: 485,
     rsi: 62,
     beta: 0.94,
+    sector: 'Technology',
+    industry: 'Software',
+    exchange: 'NASDAQ',
+    country: 'US',
+    website: 'https://www.microsoft.com',
   },
   NVDA: {
     symbol: 'NVDA',
@@ -67,6 +85,11 @@ export const demoStocks: Record<string, StockMetrics> = {
     analystTarget: 165,
     rsi: 68,
     beta: 1.76,
+    sector: 'Technology',
+    industry: 'Semiconductors',
+    exchange: 'NASDAQ',
+    country: 'US',
+    website: 'https://www.nvidia.com',
   },
   TSLA: {
     symbol: 'TSLA',
@@ -84,6 +107,11 @@ export const demoStocks: Record<string, StockMetrics> = {
     analystTarget: 205,
     rsi: 44,
     beta: 2.02,
+    sector: 'Consumer Cyclical',
+    industry: 'Auto Manufacturers',
+    exchange: 'NASDAQ',
+    country: 'US',
+    website: 'https://www.tesla.com',
   },
 };
 
@@ -92,7 +120,8 @@ export function clamp(value: number, min = 0, max = 100) {
 }
 
 export function scoreStock(stock: StockMetrics) {
-  const valuation = clamp(25 - stock.forwardPe * 0.45 + Math.max(0, stock.analystTarget / stock.price - 1) * 30, 0, 25);
+  const price = stock.price > 0 ? stock.price : 1;
+  const valuation = clamp(25 - stock.forwardPe * 0.45 + Math.max(0, stock.analystTarget / price - 1) * 30, 0, 25);
   const growth = clamp((stock.epsGrowth + stock.revenueGrowth) * 0.6, 0, 25);
   const profitability = clamp(stock.profitMargin * 0.35 + stock.roe * 0.08, 0, 20);
   const health = clamp(15 - stock.debtToEquity * 4 + (stock.beta < 1.4 ? 3 : 0), 0, 15);
