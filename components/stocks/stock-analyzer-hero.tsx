@@ -2,7 +2,7 @@
 
 import type { StockMetrics } from '@/lib/stocks';
 
-type SearchResult = { symbol: string; description: string; type: string };
+type SearchResult = { symbol: string; description: string; exchange?: string; type: string };
 
 type Props = {
   query: string;
@@ -10,12 +10,20 @@ type Props = {
   selectedSymbol: string;
   suggestions: SearchResult[];
   searchLoading: boolean;
+  searchMessage?: string | null;
   profileLoading: boolean;
   profileError: string | null;
+  isAnalyzing: boolean;
+  isRefreshing: boolean;
+  lastUpdated?: string | null;
+  dataSourceStatus?: string | null;
+  isFallback?: boolean;
+  profileWarning?: string | null;
   stock: StockMetrics | null;
   score: { total: number; rating: string } | null;
   upside: number;
   analyzeStock: (symbolOverride?: string) => void;
+  onRefresh: () => void;
 };
 
 function currency(value: number) {
@@ -34,19 +42,43 @@ function GuideStep({ number, title, text }: { number: string; title: string; tex
   );
 }
 
+function Spinner() {
+  return <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-slate-950/30 border-t-slate-950" aria-hidden="true" />;
+}
+
+function formatUpdated(value?: string | null) {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+}
+
 export function StockAnalyzerHero({
   query,
   setQuery,
   selectedSymbol,
   suggestions,
   searchLoading,
+  searchMessage,
   profileLoading,
   profileError,
+  isAnalyzing,
+  isRefreshing,
+  lastUpdated,
+  dataSourceStatus,
+  isFallback,
+  profileWarning,
   stock,
   score,
   upside,
   analyzeStock,
+  onRefresh,
 }: Props) {
+  const updatedAt = formatUpdated(lastUpdated);
+  const pendingSymbol = query.trim().toUpperCase() || selectedSymbol;
+  const buttonText = isAnalyzing ? (isRefreshing ? 'Refreshing...' : 'Analyzing...') : 'Analyze';
+  const showSuggestions = (suggestions.length > 0 || searchLoading || searchMessage) && query.trim().toUpperCase() !== selectedSymbol;
+
   return (
     <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950 p-8 shadow-2xl">
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
@@ -74,21 +106,39 @@ export function StockAnalyzerHero({
                 className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none ring-emerald-400 transition focus:ring-2"
                 autoComplete="off"
               />
-              <button onClick={() => analyzeStock()} className="rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300">Analyze</button>
+              <button
+                onClick={() => analyzeStock()}
+                disabled={isAnalyzing}
+                className="inline-flex min-w-[118px] items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:bg-emerald-300 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isAnalyzing && <Spinner />}
+                {buttonText}
+              </button>
             </div>
-            {(suggestions.length > 0 || searchLoading) && query !== selectedSymbol && (
+            {showSuggestions && (
               <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-slate-900 shadow-2xl">
                 {searchLoading && <div className="px-4 py-3 text-sm text-slate-400">Searching...</div>}
                 {suggestions.map((item) => (
                   <button key={`${item.symbol}-${item.description}`} onClick={() => analyzeStock(item.symbol)} className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm hover:bg-white/10">
-                    <span className="font-bold text-white">{item.symbol}</span>
-                    <span className="truncate text-slate-400">{item.description}</span>
+                    <span className="min-w-0">
+                      <span className="block font-bold text-white">{item.symbol}</span>
+                      <span className="block truncate text-slate-400">{item.description}</span>
+                    </span>
+                    <span className="shrink-0 text-xs text-slate-500">{item.exchange || item.type}</span>
                   </button>
                 ))}
+                {!searchLoading && !suggestions.length && searchMessage && (
+                  <div className="px-4 py-3 text-sm text-slate-400">{searchMessage}</div>
+                )}
               </div>
             )}
           </div>
-          <p className="mt-3 text-xs text-slate-400">Start with a ticker symbol. Example: SOFI, PLTR, NVDA, AAPL, MSFT.</p>
+          <div className="mt-3 flex flex-col gap-2 text-xs text-slate-400">
+            <p>Start with a ticker symbol. Example: SOFI, PLTR, NVDA, AAPL, MSFT.</p>
+            {isAnalyzing && <p className="text-emerald-200">{isRefreshing ? `Refreshing ${selectedSymbol}...` : `Analyzing ${pendingSymbol}...`}</p>}
+            {!isAnalyzing && updatedAt && <p className="text-emerald-200">{selectedSymbol} updated just now · Last updated: {updatedAt}{dataSourceStatus ? ` · Source: ${dataSourceStatus}` : ''}</p>}
+            {profileError && <p className="text-red-200">Could not refresh {selectedSymbol}. Try again.</p>}
+          </div>
 
           {stock && score && !profileLoading && !profileError && (
             <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] p-4">
@@ -106,9 +156,27 @@ export function StockAnalyzerHero({
                 <div className="rounded-xl bg-black/20 p-3"><p className="text-xs text-slate-400">Rating</p><p className="text-lg font-bold text-white">{score.rating}</p></div>
                 <div className="rounded-xl bg-black/20 p-3"><p className="text-xs text-slate-400">Upside</p><p className={upside >= 0 ? 'text-lg font-bold text-emerald-300' : 'text-lg font-bold text-red-300'}>{upside.toFixed(1)}%</p></div>
               </div>
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="text-xs text-slate-400">
+                  {updatedAt && <p>Last updated: {updatedAt}</p>}
+                  {dataSourceStatus && <p>Source: {dataSourceStatus}</p>}
+                </div>
+                <button
+                  onClick={onRefresh}
+                  disabled={isAnalyzing}
+                  className="rounded-xl border border-white/10 bg-black/20 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {isRefreshing ? 'Refreshing...' : 'Refresh'}
+                </button>
+              </div>
+              {(isFallback || profileWarning) && (
+                <div className="mt-4 rounded-xl border border-amber-300/20 bg-amber-300/10 p-3 text-sm leading-6 text-amber-100">
+                  {profileWarning || 'Some data may be limited because provider data was unavailable.'}
+                </div>
+              )}
             </div>
           )}
-          {profileLoading && <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">Loading live snapshot...</div>}
+          {profileLoading && <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">Loading live quote for {selectedSymbol}...</div>}
         </div>
       </div>
     </div>

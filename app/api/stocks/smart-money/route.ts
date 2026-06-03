@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { STOCK_NO_STORE_HEADERS, stockFreshnessMeta } from '@/lib/stock-api';
 import { getFinnhubJson } from '@/lib/stock-intelligence';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 type InsiderTransaction = {
   name?: string;
@@ -44,7 +47,7 @@ export async function GET(request: Request) {
   const symbol = (searchParams.get('symbol') || '').trim().toUpperCase();
 
   if (!symbol) {
-    return NextResponse.json({ error: 'Stock symbol is required.' }, { status: 400 });
+    return NextResponse.json({ error: 'Stock symbol is required.' }, { status: 400, headers: STOCK_NO_STORE_HEADERS });
   }
 
   const [insider, ownership] = await Promise.all([
@@ -67,38 +70,43 @@ export async function GET(request: Request) {
     (ownershipRows.length >= 5 ? 6 : 0)
   ));
 
-  return NextResponse.json({
-    symbol,
-    score: smartMoneyScore,
-    signal: smartMoneyScore >= 65 ? 'Bullish' : smartMoneyScore <= 40 ? 'Bearish' : 'Neutral',
-    insider: {
-      signal: computeSignal(insiderNetShares),
-      netShares: insiderNetShares,
-      buys: insiderBuys,
-      sells: insiderSells,
-      transactions: insiderRows.map((row) => ({
-        name: row.name,
-        date: row.transactionDate,
-        change: row.change,
-        shares: row.share,
-        price: row.transactionPrice,
-        code: row.transactionCode,
-      })),
+  const warnings = [
+    ...(insiderRows.length ? [] : ['No insider transaction rows were returned by the provider.']),
+    ...(ownershipRows.length ? [] : ['No institutional ownership rows were returned by the provider or API tier.']),
+  ];
+
+  return NextResponse.json(
+    {
+      ...stockFreshnessMeta({ symbol, source: 'finnhub smart money', isFallback: warnings.length > 0, warning: warnings.join(' ') }),
+      score: smartMoneyScore,
+      signal: smartMoneyScore >= 65 ? 'Bullish' : smartMoneyScore <= 40 ? 'Bearish' : 'Neutral',
+      insider: {
+        signal: computeSignal(insiderNetShares),
+        netShares: insiderNetShares,
+        buys: insiderBuys,
+        sells: insiderSells,
+        transactions: insiderRows.map((row) => ({
+          name: row.name,
+          date: row.transactionDate,
+          change: row.change,
+          shares: row.share,
+          price: row.transactionPrice,
+          code: row.transactionCode,
+        })),
+      },
+      institutional: {
+        signal: computeSignal(institutionalNetChange),
+        netChange: institutionalNetChange,
+        holders: ownershipRows.map((row) => ({
+          name: row.name,
+          shares: row.share,
+          change: row.change,
+          filingDate: row.filingDate,
+          reportDate: row.reportDate,
+        })),
+      },
+      warnings,
     },
-    institutional: {
-      signal: computeSignal(institutionalNetChange),
-      netChange: institutionalNetChange,
-      holders: ownershipRows.map((row) => ({
-        name: row.name,
-        shares: row.share,
-        change: row.change,
-        filingDate: row.filingDate,
-        reportDate: row.reportDate,
-      })),
-    },
-    warnings: [
-      ...(insiderRows.length ? [] : ['No insider transaction rows were returned by the provider.']),
-      ...(ownershipRows.length ? [] : ['No institutional ownership rows were returned by the provider or API tier.']),
-    ],
-  });
+    { headers: STOCK_NO_STORE_HEADERS }
+  );
 }

@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { STOCK_NO_STORE_HEADERS, stockFreshnessMeta } from '@/lib/stock-api';
 import { buildLiveStockIntelligenceReport, type IntelligenceReport } from '@/lib/stock-intelligence';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 const OPENAI_MODEL = 'gpt-4o-mini';
 
@@ -60,7 +63,7 @@ export async function POST(request: Request) {
 
   if (!symbol || !question) {
     logAiError({ stage: 'validation', symbol, hasQuestion: Boolean(question) });
-    return NextResponse.json({ error: 'Symbol and question are required.' }, { status: 400 });
+    return NextResponse.json({ error: 'Symbol and question are required.' }, { status: 400, headers: STOCK_NO_STORE_HEADERS });
   }
 
   try {
@@ -69,7 +72,10 @@ export async function POST(request: Request) {
 
     if (!apiKey) {
       logAiError({ stage: 'config', symbol, error: 'OPENAI_API_KEY missing', fallback: true });
-      return NextResponse.json({ symbol, mode: 'fallback', answer: buildFallbackAnswer(report, question, 'OPENAI_API_KEY is not configured.') });
+      return NextResponse.json(
+        { ...stockFreshnessMeta({ symbol, source: 'FinanceSphere AI fallback', isFallback: true, warning: 'OPENAI_API_KEY is not configured.' }), mode: 'fallback', answer: buildFallbackAnswer(report, question, 'OPENAI_API_KEY is not configured.') },
+        { headers: STOCK_NO_STORE_HEADERS }
+      );
     }
 
     const payload = {
@@ -111,14 +117,20 @@ export async function POST(request: Request) {
         errorMessage: message,
         fallback: true,
       });
-      return NextResponse.json({ symbol, mode: 'fallback', providerError: message, answer: buildFallbackAnswer(report, question, message) });
+      return NextResponse.json(
+        { ...stockFreshnessMeta({ symbol, source: 'FinanceSphere AI fallback', isFallback: true, warning: 'AI provider was unavailable.' }), mode: 'fallback', providerError: message, answer: buildFallbackAnswer(report, question, message) },
+        { headers: STOCK_NO_STORE_HEADERS }
+      );
     }
 
     const answer = data?.choices?.[0]?.message?.content || 'No AI answer was generated.';
     if (!data?.choices?.[0]?.message?.content) {
       logAiError({ stage: 'empty_completion', symbol, model: OPENAI_MODEL, finishReason: data?.choices?.[0]?.finish_reason });
     }
-    return NextResponse.json({ symbol, mode: 'openai', answer });
+    return NextResponse.json(
+      { ...stockFreshnessMeta({ symbol, source: OPENAI_MODEL, isFallback: false }), mode: 'openai', answer },
+      { headers: STOCK_NO_STORE_HEADERS }
+    );
   } catch (error) {
     logAiError({
       stage: 'exception',
@@ -127,6 +139,9 @@ export async function POST(request: Request) {
       errorName: error instanceof Error ? error.name : 'UnknownError',
       errorMessage: error instanceof Error ? error.message : String(error),
     });
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unable to answer this stock question right now.' }, { status: 500 });
+    return NextResponse.json(
+      { ...stockFreshnessMeta({ symbol, source: 'FinanceSphere AI', isFallback: true, warning: 'Unable to answer this stock question right now.' }), error: error instanceof Error ? error.message : 'Unable to answer this stock question right now.' },
+      { status: 500, headers: STOCK_NO_STORE_HEADERS }
+    );
   }
 }

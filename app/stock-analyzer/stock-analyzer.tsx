@@ -18,9 +18,14 @@ import { StockResearchTabs } from '@/components/stocks/stock-research-tabs';
 import { StockOutlookInsights } from '@/components/stocks/stock-outlook-insights';
 import { scoreStock, type StockMetrics } from '@/lib/stocks';
 
-type SearchResult = { symbol: string; description: string; type: string };
+type SearchResult = { symbol: string; description: string; exchange?: string; type: string };
 type Candle = { date: string; open: number; high: number; low: number; close: number; volume: number };
 type EarningsItem = { date?: string; epsActual?: number; epsEstimate?: number; revenueActual?: number; revenueEstimate?: number; quarter?: number; year?: number };
+type StockApiMeta = { symbol?: string; fetchedAt?: string; source?: string; isFallback?: boolean; warning?: string; error?: string; message?: string };
+type ProfileResponse = StockApiMeta & { stock?: StockMetrics };
+type SearchResponse = StockApiMeta & { results?: SearchResult[] };
+type CandlesResponse = StockApiMeta & { candles?: Candle[] };
+type EarningsResponse = StockApiMeta & { earnings?: EarningsItem[] };
 
 const researchTabLabels: Record<string, string> = {
   decision: 'Decision',
@@ -53,13 +58,27 @@ export default function StockAnalyzer() {
   const [query, setQuery] = useState('MSFT');
   const [selectedSymbol, setSelectedSymbol] = useState('MSFT');
   const [stock, setStock] = useState<StockMetrics | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshMode, setRefreshMode] = useState<'new' | 'same'>('new');
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState<string | null>(null);
+  const [profileFetchedAt, setProfileFetchedAt] = useState<string | null>(null);
+  const [profileSource, setProfileSource] = useState<string | null>(null);
+  const [profileWarning, setProfileWarning] = useState<string | null>(null);
+  const [profileFallback, setProfileFallback] = useState(false);
+  const [requestStatus, setRequestStatus] = useState('Loading live quote...');
   const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [searchMessage, setSearchMessage] = useState<string | null>(null);
   const [candles, setCandles] = useState<Candle[]>([]);
+  const [chartLoading, setChartLoading] = useState(true);
+  const [chartError, setChartError] = useState<string | null>(null);
+  const [chartWarning, setChartWarning] = useState<string | null>(null);
   const [earnings, setEarnings] = useState<EarningsItem[]>([]);
   const [earningsSource, setEarningsSource] = useState<string | null>(null);
+  const [earningsLoading, setEarningsLoading] = useState(true);
+  const [earningsError, setEarningsError] = useState<string | null>(null);
+  const [earningsWarning, setEarningsWarning] = useState<string | null>(null);
   const [chatQuestion, setChatQuestion] = useState('Should I buy this stock for the next 3 years?');
   const [chatAnswer, setChatAnswer] = useState<string | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
@@ -67,29 +86,119 @@ export default function StockAnalyzer() {
   const [currentReportTab, setCurrentReportTab] = useState('decision');
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
+    const requestedSymbol = selectedSymbol;
     async function loadProfile() {
-      setProfileLoading(true); setProfileError(null);
-      try { const response = await fetch(`/api/stocks/profile?symbol=${encodeURIComponent(selectedSymbol)}`); const data = await response.json(); if (!response.ok) throw new Error(data?.error || `No live stock profile found for ${selectedSymbol}.`); if (active) setStock(data.stock as StockMetrics); }
-      catch (error) { if (active) { setStock(null); setProfileError(error instanceof Error ? error.message : 'Unable to load stock profile.'); } }
-      finally { if (active) setProfileLoading(false); }
+      setProfileLoading(true);
+      setProfileError(null);
+      setProfileWarning(null);
+      setRequestStatus(refreshMode === 'same' ? `Refreshing ${requestedSymbol}...` : `Analyzing ${requestedSymbol}...`);
+      try {
+        const response = await fetch(`/api/stocks/profile?symbol=${encodeURIComponent(requestedSymbol)}&refresh=${refreshKey}`, { cache: 'no-store', signal: controller.signal });
+        const data = await response.json() as ProfileResponse;
+        if (controller.signal.aborted) return;
+        if (!response.ok || !data.stock) throw new Error(data?.error || `Could not load live data for ${requestedSymbol}. Please verify the ticker or try again.`);
+        if (data.symbol && data.symbol !== requestedSymbol) return;
+        setStock(data.stock);
+        setProfileFetchedAt(data.fetchedAt || new Date().toISOString());
+        setProfileSource(data.source || 'Provider');
+        setProfileFallback(Boolean(data.isFallback));
+        setProfileWarning(data.warning || null);
+        setRequestStatus(`${requestedSymbol} updated just now`);
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setStock(null);
+        setProfileFetchedAt(null);
+        setProfileSource(null);
+        setProfileFallback(false);
+        setProfileWarning(null);
+        setProfileError(error instanceof Error ? error.message : `Could not load live data for ${requestedSymbol}. Please verify the ticker or try again.`);
+        setRequestStatus(`Could not refresh ${requestedSymbol}. Try again.`);
+      } finally {
+        if (!controller.signal.aborted) setProfileLoading(false);
+      }
     }
-    loadProfile(); return () => { active = false; };
-  }, [selectedSymbol]);
+    loadProfile();
+    return () => controller.abort();
+  }, [selectedSymbol, refreshKey, refreshMode]);
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
+    const requestedSymbol = selectedSymbol;
     async function loadResearchData() {
-      try { const [candlesResponse, earningsResponse] = await Promise.all([fetch(`/api/stocks/candles?symbol=${encodeURIComponent(selectedSymbol)}`), fetch(`/api/stocks/earnings?symbol=${encodeURIComponent(selectedSymbol)}`)]); const candlesData = await candlesResponse.json(); const earningsData = await earningsResponse.json(); if (active) { setCandles(candlesResponse.ok ? candlesData.candles || [] : []); setEarnings(earningsResponse.ok ? earningsData.earnings || [] : []); setEarningsSource(earningsResponse.ok ? earningsData.source || null : null); } }
-      catch { if (active) { setCandles([]); setEarnings([]); setEarningsSource(null); } }
+      setChartLoading(true);
+      setEarningsLoading(true);
+      setChartError(null);
+      setChartWarning(null);
+      setEarningsError(null);
+      setEarningsWarning(null);
+      try {
+        const [candlesResponse, earningsResponse] = await Promise.all([
+          fetch(`/api/stocks/candles?symbol=${encodeURIComponent(requestedSymbol)}&refresh=${refreshKey}`, { cache: 'no-store', signal: controller.signal }),
+          fetch(`/api/stocks/earnings?symbol=${encodeURIComponent(requestedSymbol)}&refresh=${refreshKey}`, { cache: 'no-store', signal: controller.signal }),
+        ]);
+        const candlesData = await candlesResponse.json() as CandlesResponse;
+        const earningsData = await earningsResponse.json() as EarningsResponse;
+        if (controller.signal.aborted) return;
+
+        if (candlesResponse.ok && (!candlesData.symbol || candlesData.symbol === requestedSymbol)) {
+          setCandles(candlesData.candles || []);
+          setChartWarning(candlesData.warning || null);
+        } else {
+          setCandles([]);
+          setChartError(candlesData.error || 'Historical chart unavailable right now.');
+        }
+
+        if (earningsResponse.ok && (!earningsData.symbol || earningsData.symbol === requestedSymbol)) {
+          setEarnings(earningsData.earnings || []);
+          setEarningsSource(earningsData.source || null);
+          setEarningsWarning(earningsData.warning || null);
+        } else {
+          setEarnings([]);
+          setEarningsSource(null);
+          setEarningsError(earningsData.error || 'Earnings data unavailable right now.');
+        }
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setCandles([]);
+        setEarnings([]);
+        setEarningsSource(null);
+        setChartError('Historical chart unavailable right now.');
+        setEarningsError('Earnings data unavailable right now.');
+      } finally {
+        if (!controller.signal.aborted) {
+          setChartLoading(false);
+          setEarningsLoading(false);
+        }
+      }
     }
-    loadResearchData(); setChatAnswer(null); setChatError(null); return () => { active = false; };
-  }, [selectedSymbol]);
+    loadResearchData(); setChatAnswer(null); setChatError(null); return () => controller.abort();
+  }, [selectedSymbol, refreshKey]);
 
   useEffect(() => {
-    const value = query.trim(); if (value.length < 1 || value.toUpperCase() === selectedSymbol) { setSuggestions([]); return; }
-    const timeout = window.setTimeout(async () => { setSearchLoading(true); try { const response = await fetch(`/api/stocks/search?q=${encodeURIComponent(value)}`); const data = await response.json(); setSuggestions(response.ok ? data.results || [] : []); } catch { setSuggestions([]); } finally { setSearchLoading(false); } }, 250);
-    return () => window.clearTimeout(timeout);
+    const value = query.trim().toUpperCase();
+    setSearchMessage(null);
+    if (value.length < 1 || value === selectedSymbol) { setSuggestions([]); setSearchLoading(false); return; }
+    const controller = new AbortController();
+    const timeout = window.setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const response = await fetch(`/api/stocks/search?q=${encodeURIComponent(value)}&refresh=${Date.now()}`, { cache: 'no-store', signal: controller.signal });
+        const data = await response.json() as SearchResponse;
+        if (controller.signal.aborted) return;
+        const results = response.ok ? data.results || [] : [];
+        setSuggestions(results);
+        setSearchMessage(results.length ? null : data.message || `No matches found for ${value}.`);
+      } catch {
+        if (!controller.signal.aborted) {
+          setSuggestions([]);
+          setSearchMessage(`No matches found for ${value}.`);
+        }
+      } finally {
+        if (!controller.signal.aborted) setSearchLoading(false);
+      }
+    }, 275);
+    return () => { window.clearTimeout(timeout); controller.abort(); };
   }, [query, selectedSymbol]);
 
   const score = useMemo(() => (stock ? scoreStock(stock) : null), [stock]);
@@ -97,28 +206,100 @@ export default function StockAnalyzer() {
   const beginnerVerdict = stock && score ? getBeginnerVerdict(stock, score, upside) : null;
   const checklist = stock && score ? getDecisionChecklist(stock, score, upside) : [];
 
-  function analyzeStock(symbolOverride?: string) { const symbol = (symbolOverride || query).trim().toUpperCase(); if (!symbol) return; setQuery(symbol); setSelectedSymbol(symbol); setSuggestions([]); }
-  async function askAi() { setChatLoading(true); setChatError(null); setChatAnswer(null); try { const response = await fetch('/api/stocks/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ symbol: selectedSymbol, question: chatQuestion }) }); const data = await response.json(); if (!response.ok) throw new Error(data?.error || 'Unable to generate AI answer.'); setChatAnswer(data.answer); } catch (error) { setChatError(error instanceof Error ? error.message : 'Unable to generate AI answer.'); } finally { setChatLoading(false); } }
+  function analyzeStock(symbolOverride?: string) {
+    const symbol = (symbolOverride || query).trim().toUpperCase();
+    if (!symbol) return;
+    const sameSymbol = symbol === selectedSymbol;
+    setQuery(symbol);
+    setSelectedSymbol(symbol);
+    setSuggestions([]);
+    setSearchMessage(null);
+    setRefreshMode(sameSymbol ? 'same' : 'new');
+    if (!sameSymbol) {
+      setStock(null);
+      setCandles([]);
+      setEarnings([]);
+      setEarningsSource(null);
+      setProfileFetchedAt(null);
+      setProfileSource(null);
+      setProfileWarning(null);
+      setProfileFallback(false);
+      setProfileError(null);
+    }
+    setRefreshKey((key) => key + 1);
+  }
+  function refreshCurrentStock() {
+    setQuery(selectedSymbol);
+    setSuggestions([]);
+    setSearchMessage(null);
+    setRefreshMode('same');
+    setRefreshKey((key) => key + 1);
+  }
+  async function askAi() { setChatLoading(true); setChatError(null); setChatAnswer(null); try { const response = await fetch('/api/stocks/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify({ symbol: selectedSymbol, question: chatQuestion }) }); const data = await response.json(); if (!response.ok) throw new Error(data?.error || 'Unable to generate AI answer.'); setChatAnswer(data.answer); } catch (error) { setChatError(error instanceof Error ? error.message : 'Unable to generate AI answer.'); } finally { setChatLoading(false); } }
 
   const tabs = stock && score && !profileLoading && !profileError ? [
-    { id: 'decision', label: 'Decision', description: 'Buy, hold, reduce, or sell view with confidence, reasons, risks, and what to monitor.', content: <StockDecisionSection stock={stock} score={score} earnings={earnings} upside={upside} /> },
-    { id: 'overview', label: 'Overview', description: 'Executive summary, beginner checklist, and live intelligence.', content: <>{beginnerVerdict && <StockOverviewSection verdict={beginnerVerdict} score={score} upside={upside} />}<section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section><LiveIntelligencePanel symbol={selectedSymbol} /></> },
+    { id: 'decision', label: 'Decision', description: 'Buy, hold, reduce, or sell view with confidence, reasons, risks, and what to monitor.', content: earningsLoading ? <LoadingCard title={`Updating decision model for ${selectedSymbol}...`} text="Checking earnings history and recalculating risk/reward before showing the Decision tab." /> : <><WarningCard text={earningsWarning} /><StockDecisionSection stock={stock} score={score} earnings={earnings} upside={upside} /></> },
+    { id: 'overview', label: 'Overview', description: 'Executive summary, beginner checklist, and live intelligence.', content: <>{beginnerVerdict && <StockOverviewSection verdict={beginnerVerdict} score={score} upside={upside} />}<section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section><LiveIntelligencePanel symbol={selectedSymbol} refreshKey={refreshKey} /></> },
     { id: 'thesis', label: 'Thesis', description: 'Investment thesis, bull case, bear case, SWOT, and committee-style decision support.', content: <><AdvancedResearchThesis stock={stock} score={score} upside={upside} /><InvestmentCommitteeVerdict stock={stock} /><DecisionSupportInsights stock={stock} /><StockOutlookInsights stock={stock} /></> },
-    { id: 'smart-money', label: 'Smart Money', description: 'Insider transactions and institutional ownership signals.', content: <SmartMoneyPanel symbol={selectedSymbol} /> },
-    { id: 'metrics', label: 'Metrics', description: 'Score, chart, company overview, and key metric explanations.', content: <StockMetricsSection stock={stock} score={score} candles={candles} upside={upside} /> },
-    { id: 'earnings', label: 'Earnings', description: 'Earnings beat rate, surprise, and detailed earnings history.', content: <><EarningsIntelligencePanel earnings={earnings} source={earningsSource} /><StockEarningsSection earnings={earnings} source={earningsSource} /></> },
+    { id: 'smart-money', label: 'Smart Money', description: 'Insider transactions and institutional ownership signals.', content: <SmartMoneyPanel symbol={selectedSymbol} refreshKey={refreshKey} /> },
+    { id: 'metrics', label: 'Metrics', description: 'Score, chart, company overview, and key metric explanations.', content: <>{chartLoading && <LoadingCard title="Refreshing historical chart..." text={`Fetching fresh price history for ${selectedSymbol}.`} />}<WarningCard text={chartWarning || chartError} /><StockMetricsSection stock={stock} score={score} candles={candles} upside={upside} /></> },
+    { id: 'earnings', label: 'Earnings', description: 'Earnings beat rate, surprise, and detailed earnings history.', content: <>{earningsLoading && <LoadingCard title="Checking earnings history..." text={`Fetching fresh earnings rows for ${selectedSymbol}.`} />}<WarningCard text={earningsWarning || earningsError} /><EarningsIntelligencePanel earnings={earnings} source={earningsSource} /><StockEarningsSection earnings={earnings} source={earningsSource} /></> },
     { id: 'ai', label: 'AI Assistant', description: 'Ask beginner-friendly research questions. Includes local fallback when OpenAI quota is unavailable.', content: <StockAISection question={chatQuestion} setQuestion={setChatQuestion} answer={chatAnswer} loading={chatLoading} error={chatError} askAi={askAi} /> },
     { id: 'export', label: 'Export', description: 'Export the current tab or full research report as a clean PDF.', content: <ResearchReportExport stock={stock} score={score} upside={upside} earnings={earnings} earningsSource={earningsSource} currentTabId={currentReportTab} currentTabLabel={researchTabLabels[currentReportTab]} beginnerVerdict={beginnerVerdict} checklist={checklist} aiQuestion={chatQuestion} aiAnswer={chatAnswer} /> },
   ] : [];
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8"><section className="mx-auto max-w-7xl">
-      <StockAnalyzerHero query={query} setQuery={setQuery} selectedSymbol={selectedSymbol} suggestions={suggestions} searchLoading={searchLoading} profileLoading={profileLoading} profileError={profileError} stock={stock} score={score} upside={upside} analyzeStock={analyzeStock} />
+      <StockAnalyzerHero query={query} setQuery={setQuery} selectedSymbol={selectedSymbol} suggestions={suggestions} searchLoading={searchLoading} searchMessage={searchMessage} profileLoading={profileLoading} profileError={profileError} isAnalyzing={profileLoading || chartLoading || earningsLoading} isRefreshing={refreshMode === 'same'} lastUpdated={profileFetchedAt} dataSourceStatus={profileSource} isFallback={profileFallback} profileWarning={profileWarning} stock={stock} score={score} upside={upside} analyzeStock={analyzeStock} onRefresh={refreshCurrentStock} />
       <GlossaryPanel />
-      {profileError && !profileLoading && <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-6 text-red-100"><h2 className="text-2xl font-bold">Stock not found</h2><p className="mt-2">{profileError}</p><p className="mt-3 text-sm">Try searching for another symbol such as SOFI, AAPL, MSFT, NVDA, PLTR, or AMD.</p></div>}
+      {(profileLoading || chartLoading || earningsLoading) && <StatusGrid symbol={selectedSymbol} profileLoading={profileLoading} chartLoading={chartLoading} earningsLoading={earningsLoading} status={requestStatus} />}
+      {profileError && !profileLoading && <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-6 text-red-100"><h2 className="text-2xl font-bold">Could not load live data for {selectedSymbol}</h2><p className="mt-2">{profileError}</p><p className="mt-3 text-sm">Please verify the ticker or try again. The analyzer will not show stale data for a failed request.</p></div>}
       {tabs.length > 0 && <StockResearchTabs tabs={tabs} defaultTab="decision" onActiveTabChange={(tabId) => { if (tabId !== 'export') setCurrentReportTab(tabId); }} />}
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Important disclaimer</h3><div className="mt-4 space-y-4 text-slate-300"><p>FinanceSphere helps users structure decisions with data, but it does not know your full financial situation, time horizon, tax profile, or risk tolerance.</p><p>Use this tool to identify what to research next: earnings quality, valuation, debt, growth durability, technical setup, and position-sizing risk.</p><p className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-100">Educational information only. This is not financial advice or a recommendation to buy or sell any security.</p></div></div>
     </section></main>
+  );
+}
+
+function LoadingCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="mt-6 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-5 text-sm leading-6 text-emerald-50">
+      <div className="flex items-center gap-3">
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-100/30 border-t-emerald-100" />
+        <h3 className="font-bold">{title}</h3>
+      </div>
+      <p className="mt-2 text-emerald-100/90">{text}</p>
+    </div>
+  );
+}
+
+function WarningCard({ text }: { text?: string | null }) {
+  if (!text) return null;
+  return (
+    <div className="mt-6 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-5 text-sm leading-6 text-amber-50">
+      {text}
+    </div>
+  );
+}
+
+function StatusGrid({ symbol, profileLoading, chartLoading, earningsLoading, status }: { symbol: string; profileLoading: boolean; chartLoading: boolean; earningsLoading: boolean; status: string }) {
+  return (
+    <section className="mt-6 grid gap-4 md:grid-cols-3">
+      <StatusCard active={profileLoading} title="Loading live quote..." text={profileLoading ? status : `${symbol} quote refreshed.`} />
+      <StatusCard active={chartLoading} title="Refreshing historical chart..." text={chartLoading ? `Fetching fresh chart data for ${symbol}.` : 'Historical chart check complete.'} />
+      <StatusCard active={earningsLoading} title="Checking earnings history..." text={earningsLoading ? `Updating earnings rows for ${symbol}.` : 'Earnings check complete.'} />
+    </section>
+  );
+}
+
+function StatusCard({ active, title, text }: { active: boolean; title: string; text: string }) {
+  return (
+    <div className={active ? 'rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4' : 'rounded-2xl border border-white/10 bg-white/[0.04] p-4'}>
+      <div className="flex items-center gap-2">
+        {active && <span className="h-3 w-3 animate-spin rounded-full border-2 border-emerald-100/30 border-t-emerald-100" />}
+        <h3 className="text-sm font-bold text-white">{title}</h3>
+      </div>
+      <p className="mt-2 text-sm leading-6 text-slate-300">{text}</p>
+    </div>
   );
 }
 

@@ -32,6 +32,9 @@ type SmartMoneyResponse = {
     }>;
   };
   warnings?: string[];
+  fetchedAt?: string;
+  source?: string;
+  isFallback?: boolean;
 };
 
 function compact(value?: number) {
@@ -45,32 +48,30 @@ function signalClass(signal?: string) {
   return 'border-slate-300/20 bg-slate-300/10 text-slate-100';
 }
 
-export function SmartMoneyPanel({ symbol }: { symbol: string }) {
+export function SmartMoneyPanel({ symbol, refreshKey = 0 }: { symbol: string; refreshKey?: number }) {
   const [data, setData] = useState<SmartMoneyResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
     async function load() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/stocks/smart-money?symbol=${encodeURIComponent(symbol)}`);
+        const response = await fetch(`/api/stocks/smart-money?symbol=${encodeURIComponent(symbol)}&refresh=${refreshKey}`, { cache: 'no-store', signal: controller.signal });
         const payload = await response.json();
         if (!response.ok) throw new Error(payload?.error || 'Unable to load smart money data.');
-        if (active) setData(payload);
+        if (!controller.signal.aborted && (!payload?.symbol || payload.symbol === symbol)) setData(payload);
       } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : 'Unable to load smart money data.');
+        if (!controller.signal.aborted) setError(err instanceof Error ? err.message : 'Unable to load smart money data.');
       } finally {
-        if (active) setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
     load();
-    return () => {
-      active = false;
-    };
-  }, [symbol]);
+    return () => controller.abort();
+  }, [symbol, refreshKey]);
 
   return (
     <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
@@ -87,11 +88,12 @@ export function SmartMoneyPanel({ symbol }: { symbol: string }) {
             <p className="text-xs uppercase tracking-[0.2em] opacity-80">Smart Money View</p>
             <p className="mt-2 text-2xl font-black">{data.signal}</p>
             <p className="mt-1 text-sm">Score {data.score}/100</p>
+            {data.fetchedAt && <p className="mt-1 text-xs opacity-70">Updated {new Date(data.fetchedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</p>}
           </div>
         )}
       </div>
 
-      {loading && <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">Loading insider and institutional data...</div>}
+      {loading && <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">Updating insider and institutional data for {symbol}...</div>}
       {error && <div className="mt-5 rounded-xl border border-red-300/20 bg-red-300/10 p-4 text-sm text-red-100">{error}</div>}
 
       {data && !loading && !error && (

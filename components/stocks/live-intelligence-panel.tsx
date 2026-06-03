@@ -5,34 +5,33 @@ import type { IntelligenceReport } from '@/lib/stock-intelligence';
 
 type Props = {
   symbol: string;
+  refreshKey?: number;
 };
 
-export function LiveIntelligencePanel({ symbol }: Props) {
+export function LiveIntelligencePanel({ symbol, refreshKey = 0 }: Props) {
   const [report, setReport] = useState<IntelligenceReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let active = true;
+    const controller = new AbortController();
     async function loadReport() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch(`/api/stocks/intelligence?symbol=${encodeURIComponent(symbol)}`);
+        const response = await fetch(`/api/stocks/intelligence?symbol=${encodeURIComponent(symbol)}&refresh=${refreshKey}`, { cache: 'no-store', signal: controller.signal });
         if (!response.ok) throw new Error('Unable to load live intelligence report.');
         const data = await response.json() as IntelligenceReport;
-        if (active) setReport(data);
+        if (!controller.signal.aborted && data.stock.symbol === symbol) setReport(data);
       } catch (err) {
-        if (active) setError(err instanceof Error ? err.message : 'Unable to load live intelligence report.');
+        if (!controller.signal.aborted) setError(err instanceof Error ? err.message : 'Unable to load live intelligence report.');
       } finally {
-        if (active) setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
     loadReport();
-    return () => {
-      active = false;
-    };
-  }, [symbol]);
+    return () => controller.abort();
+  }, [symbol, refreshKey]);
 
   if (loading) {
     return (

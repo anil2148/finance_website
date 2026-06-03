@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { STOCK_NO_STORE_HEADERS, stockFreshnessMeta } from '@/lib/stock-api';
 import { getFinnhubJson } from '@/lib/stock-intelligence';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 type FinnhubCandleResponse = {
   c?: number[];
@@ -42,18 +45,20 @@ export async function GET(request: Request) {
   const to = Number(searchParams.get('to')) || now;
 
   if (!symbol) {
-    return NextResponse.json({ error: 'Stock symbol is required.', candles: [] }, { status: 400 });
+    return NextResponse.json({ error: 'Stock symbol is required.', candles: [] }, { status: 400, headers: STOCK_NO_STORE_HEADERS });
   }
 
   const data = await getFinnhubJson<FinnhubCandleResponse>(`/stock/candle?symbol=${symbol}&resolution=${resolution}&from=${from}&to=${to}`);
 
   if (!data || data.s !== 'ok' || !data.t?.length) {
-    return NextResponse.json({
-      symbol,
-      source: 'fallback',
-      warning: 'Finnhub historical candle data was unavailable for this symbol or account tier. Showing illustrative chart data.',
-      candles: buildSyntheticCandles(symbol),
-    });
+    const warning = 'Finnhub historical candle data was unavailable for this symbol or account tier. Showing illustrative chart data.';
+    return NextResponse.json(
+      {
+        ...stockFreshnessMeta({ symbol, source: 'fallback chart model', isFallback: true, warning }),
+        candles: buildSyntheticCandles(symbol),
+      },
+      { headers: STOCK_NO_STORE_HEADERS }
+    );
   }
 
   const candles = data.t.map((timestamp, index) => ({
@@ -65,5 +70,8 @@ export async function GET(request: Request) {
     volume: data.v?.[index] ?? 0,
   }));
 
-  return NextResponse.json({ symbol, source: 'finnhub', candles });
+  return NextResponse.json(
+    { ...stockFreshnessMeta({ symbol, source: 'finnhub', isFallback: false }), candles },
+    { headers: STOCK_NO_STORE_HEADERS }
+  );
 }

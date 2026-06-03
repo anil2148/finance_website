@@ -1,7 +1,10 @@
 import { NextResponse } from 'next/server';
+import { STOCK_NO_STORE_HEADERS, stockFreshnessMeta } from '@/lib/stock-api';
 import { getFinnhubJson } from '@/lib/stock-intelligence';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 type EarningsItem = {
   date?: string;
@@ -43,7 +46,7 @@ async function getAlphaVantageEarnings(symbol: string): Promise<{ earnings: Earn
 
   try {
     const response = await fetch(`https://www.alphavantage.co/query?function=EARNINGS&symbol=${encodeURIComponent(symbol)}&apikey=${apiKey}`, {
-      next: { revalidate: 21600 },
+      cache: 'no-store',
     });
     if (!response.ok) return { earnings: [], warning: `Alpha Vantage returned HTTP ${response.status}.` };
     const data = await response.json() as AlphaVantageEarningsResponse;
@@ -82,21 +85,23 @@ export async function GET(request: Request) {
   const symbol = (searchParams.get('symbol') || '').trim().toUpperCase();
 
   if (!symbol) {
-    return NextResponse.json({ error: 'Stock symbol is required.' }, { status: 400 });
+    return NextResponse.json({ error: 'Stock symbol is required.' }, { status: 400, headers: STOCK_NO_STORE_HEADERS });
   }
 
   const warnings: string[] = [];
   const history = await getFinnhubJson<EarningsItem[]>(`/stock/earnings?symbol=${symbol}`);
 
   if (history?.length) {
-    return NextResponse.json({
-      symbol,
-      source: 'Finnhub historical earnings',
-      providerPriority: ['Finnhub historical earnings'],
-      earnings: history.map((item) => ({ ...item, source: 'Finnhub' })),
-      warnings,
-      researchLinks: buildManualResearchLinks(symbol),
-    });
+    return NextResponse.json(
+      {
+        ...stockFreshnessMeta({ symbol, source: 'Finnhub historical earnings', isFallback: false }),
+        providerPriority: ['Finnhub historical earnings'],
+        earnings: history.map((item) => ({ ...item, source: 'Finnhub' })),
+        warnings,
+        researchLinks: buildManualResearchLinks(symbol),
+      },
+      { headers: STOCK_NO_STORE_HEADERS }
+    );
   }
 
   warnings.push('Finnhub historical earnings returned no rows.');
@@ -118,14 +123,16 @@ export async function GET(request: Request) {
   }));
 
   if (calendarEarnings.length) {
-    return NextResponse.json({
-      symbol,
-      source: 'Finnhub earnings calendar',
-      providerPriority: ['Finnhub historical earnings', 'Finnhub earnings calendar'],
-      earnings: calendarEarnings,
-      warnings,
-      researchLinks: buildManualResearchLinks(symbol),
-    });
+    return NextResponse.json(
+      {
+        ...stockFreshnessMeta({ symbol, source: 'Finnhub earnings calendar', isFallback: false, warning: warnings.join(' ') }),
+        providerPriority: ['Finnhub historical earnings', 'Finnhub earnings calendar'],
+        earnings: calendarEarnings,
+        warnings,
+        researchLinks: buildManualResearchLinks(symbol),
+      },
+      { headers: STOCK_NO_STORE_HEADERS }
+    );
   }
 
   warnings.push('Finnhub earnings calendar returned no rows.');
@@ -133,22 +140,26 @@ export async function GET(request: Request) {
   const alpha = await getAlphaVantageEarnings(symbol);
   if (alpha.warning) warnings.push(alpha.warning);
   if (alpha.earnings.length) {
-    return NextResponse.json({
-      symbol,
-      source: 'Alpha Vantage quarterly earnings',
-      providerPriority: ['Finnhub historical earnings', 'Finnhub earnings calendar', 'Alpha Vantage quarterly earnings'],
-      earnings: alpha.earnings,
-      warnings,
-      researchLinks: buildManualResearchLinks(symbol),
-    });
+    return NextResponse.json(
+      {
+        ...stockFreshnessMeta({ symbol, source: 'Alpha Vantage quarterly earnings', isFallback: false, warning: warnings.join(' ') }),
+        providerPriority: ['Finnhub historical earnings', 'Finnhub earnings calendar', 'Alpha Vantage quarterly earnings'],
+        earnings: alpha.earnings,
+        warnings,
+        researchLinks: buildManualResearchLinks(symbol),
+      },
+      { headers: STOCK_NO_STORE_HEADERS }
+    );
   }
 
-  return NextResponse.json({
-    symbol,
-    source: 'manual research required',
-    providerPriority: ['Finnhub historical earnings', 'Finnhub earnings calendar', 'Alpha Vantage quarterly earnings', 'SEC EDGAR manual review', 'Company investor relations manual review'],
-    earnings: [],
-    warnings,
-    researchLinks: buildManualResearchLinks(symbol),
-  });
+  return NextResponse.json(
+    {
+      ...stockFreshnessMeta({ symbol, source: 'manual research required', isFallback: true, warning: 'Earnings data is not available from the provider right now.' }),
+      providerPriority: ['Finnhub historical earnings', 'Finnhub earnings calendar', 'Alpha Vantage quarterly earnings', 'SEC EDGAR manual review', 'Company investor relations manual review'],
+      earnings: [],
+      warnings,
+      researchLinks: buildManualResearchLinks(symbol),
+    },
+    { headers: STOCK_NO_STORE_HEADERS }
+  );
 }

@@ -44,6 +44,13 @@ export type IntelligenceReport = {
   };
 };
 
+export type LiveStockProfileResult = {
+  stock: StockMetrics;
+  source: string;
+  isFallback: boolean;
+  warning?: string;
+};
+
 type FinnhubNewsItem = { headline?: string; summary?: string; datetime?: number };
 type FinnhubRecommendation = { buy?: number; hold?: number; sell?: number; strongBuy?: number; strongSell?: number; period?: string };
 type FinnhubInsider = { name?: string; share?: number; change?: number; transactionPrice?: number; transactionDate?: string };
@@ -100,8 +107,11 @@ export async function getFinnhubJson<T>(path: string): Promise<T | null> {
   const token = process.env.FINNHUB_API_KEY;
   if (!token) return null;
   try {
-    const response = await fetch(`https://finnhub.io/api/v1${path}${path.includes('?') ? '&' : '?'}token=${token}`, { next: { revalidate: 900 } });
-    if (!response.ok) return null;
+    const response = await fetch(`https://finnhub.io/api/v1${path}${path.includes('?') ? '&' : '?'}token=${token}`, { cache: 'no-store' });
+    if (!response.ok) {
+      console.warn(`Finnhub request failed for ${path}: HTTP ${response.status}`);
+      return null;
+    }
     return response.json() as Promise<T>;
   } catch (error) {
     console.error('Finnhub request failed', error);
@@ -109,7 +119,7 @@ export async function getFinnhubJson<T>(path: string): Promise<T | null> {
   }
 }
 
-async function buildStockFromFinnhub(symbol: string): Promise<StockMetrics> {
+async function buildStockFromFinnhubResult(symbol: string): Promise<LiveStockProfileResult> {
   const normalized = symbol.toUpperCase();
   const fallback = fallbackStock(normalized);
   const [quote, profile, metric] = await Promise.all([
@@ -118,40 +128,60 @@ async function buildStockFromFinnhub(symbol: string): Promise<StockMetrics> {
     getFinnhubJson<FinnhubMetric>(`/stock/metric?symbol=${normalized}&metric=all`),
   ]);
   const metrics = metric?.metric || {};
-  const price = Number(quote?.c || fallback.price || 0);
+  const livePrice = Number(quote?.c || 0);
+  const price = Number(livePrice || fallback.price || 0);
   const forwardPe = Number(metrics.forwardPE || fallback.forwardPe || metrics.peTTM || 30);
   const pe = Number(metrics.peTTM || metrics.peNormalizedAnnual || fallback.pe || forwardPe);
   const analystTarget = fallback.analystTarget && fallback.analystTarget > 0 ? fallback.analystTarget : price > 0 ? price * 1.08 : 0;
+  const isFallback = !(livePrice > 0) || !profile?.name || !metric?.metric;
+  const missingParts = [
+    livePrice > 0 ? '' : 'quote',
+    profile?.name ? '' : 'company profile',
+    metric?.metric ? '' : 'fundamental metrics',
+  ].filter(Boolean);
+  const warning = isFallback
+    ? `Provider data was limited for ${normalized}. Missing or fallback-backed fields: ${missingParts.join(', ')}.`
+    : undefined;
 
   return {
-    symbol: normalized,
-    name: profile?.name || fallback.name || normalized,
-    price,
-    changePercent: Number(quote?.dp || fallback.changePercent || 0),
-    pe,
-    forwardPe,
-    epsGrowth: Number(metrics.epsGrowth3Y || fallback.epsGrowth || 5),
-    revenueGrowth: Number(metrics.revenueGrowth3Y || fallback.revenueGrowth || 5),
-    profitMargin: Number(metrics.netProfitMarginTTM || fallback.profitMargin || 10),
-    debtToEquity: Number(metrics.totalDebtToEquityAnnual || fallback.debtToEquity || 1),
-    roe: Number(metrics.roeTTM || fallback.roe || 10),
-    dividendYield: Number(metrics.dividendYieldIndicatedAnnual || fallback.dividendYield || 0),
-    analystTarget,
-    rsi: Number(metrics.rsi14 || fallback.rsi || 50),
-    beta: Number(metrics.beta || fallback.beta || 1),
-    marketCap: profile?.marketCapitalization ? profile.marketCapitalization * 1_000_000 : fallback.marketCap,
-    sector: fallback.sector,
-    industry: profile?.finnhubIndustry || fallback.industry,
-    exchange: profile?.exchange || fallback.exchange,
-    country: profile?.country || fallback.country,
-    ipo: profile?.ipo || fallback.ipo,
-    website: profile?.weburl || fallback.website,
-    logo: profile?.logo || fallback.logo,
+    source: isFallback ? 'finnhub + FinanceSphere fallback' : 'finnhub',
+    isFallback,
+    warning,
+    stock: {
+      symbol: normalized,
+      name: profile?.name || fallback.name || normalized,
+      price,
+      changePercent: Number(quote?.dp || fallback.changePercent || 0),
+      pe,
+      forwardPe,
+      epsGrowth: Number(metrics.epsGrowth3Y || fallback.epsGrowth || 5),
+      revenueGrowth: Number(metrics.revenueGrowth3Y || fallback.revenueGrowth || 5),
+      profitMargin: Number(metrics.netProfitMarginTTM || fallback.profitMargin || 10),
+      debtToEquity: Number(metrics.totalDebtToEquityAnnual || fallback.debtToEquity || 1),
+      roe: Number(metrics.roeTTM || fallback.roe || 10),
+      dividendYield: Number(metrics.dividendYieldIndicatedAnnual || fallback.dividendYield || 0),
+      analystTarget,
+      rsi: Number(metrics.rsi14 || fallback.rsi || 50),
+      beta: Number(metrics.beta || fallback.beta || 1),
+      marketCap: profile?.marketCapitalization ? profile.marketCapitalization * 1_000_000 : fallback.marketCap,
+      sector: fallback.sector,
+      industry: profile?.finnhubIndustry || fallback.industry,
+      exchange: profile?.exchange || fallback.exchange,
+      country: profile?.country || fallback.country,
+      ipo: profile?.ipo || fallback.ipo,
+      website: profile?.weburl || fallback.website,
+      logo: profile?.logo || fallback.logo,
+    },
   };
 }
 
 export async function buildLiveStockProfile(symbol: string): Promise<StockMetrics> {
-  return buildStockFromFinnhub(symbol);
+  const result = await buildStockFromFinnhubResult(symbol);
+  return result.stock;
+}
+
+export async function buildLiveStockProfileResult(symbol: string): Promise<LiveStockProfileResult> {
+  return buildStockFromFinnhubResult(symbol);
 }
 
 async function getSecLatestFiling(symbol: string): Promise<{ form: string; filedDate: string; accessionNumber: string } | null> {
@@ -160,7 +190,7 @@ async function getSecLatestFiling(symbol: string): Promise<{ form: string; filed
   try {
     const tickersResponse = await fetch('https://www.sec.gov/files/company_tickers.json', {
       headers: { 'User-Agent': userAgent, Accept: 'application/json' },
-      next: { revalidate: 86400 },
+      cache: 'no-store',
     });
     if (!tickersResponse.ok) return null;
     const tickers = await tickersResponse.json() as Record<string, { cik_str: number; ticker: string; title: string }>;
@@ -169,7 +199,7 @@ async function getSecLatestFiling(symbol: string): Promise<{ form: string; filed
     const cik = String(company.cik_str).padStart(10, '0');
     const submissionsResponse = await fetch(`https://data.sec.gov/submissions/CIK${cik}.json`, {
       headers: { 'User-Agent': userAgent, Accept: 'application/json' },
-      next: { revalidate: 21600 },
+      cache: 'no-store',
     });
     if (!submissionsResponse.ok) return null;
     const submissions = await submissionsResponse.json();
@@ -212,7 +242,8 @@ async function generateAiSummary(reportSeed: string): Promise<string | undefined
 }
 
 export async function buildLiveStockIntelligenceReport(symbol: string): Promise<IntelligenceReport> {
-  const stock = await buildStockFromFinnhub(symbol);
+  const profileResult = await buildStockFromFinnhubResult(symbol);
+  const stock = profileResult.stock;
   const base = buildStockIntelligenceReport(stock.symbol, stock);
   const from = new Date(Date.now() - 1000 * 60 * 60 * 24 * 30).toISOString().slice(0, 10);
   const to = new Date().toISOString().slice(0, 10);
