@@ -106,6 +106,22 @@ function buildDecision(stock: StockMetrics, score: Score, earnings: EarningsItem
   );
   const marginOfSafety = stock.analystTarget > 0 && stock.price > 0 ? ((stock.analystTarget - stock.price) / stock.analystTarget) * 100 : 0;
   const riskLevel = riskScore >= 65 ? 'High' : riskScore >= 40 ? 'Medium' : 'Lower';
+  const bullProbability = confidence >= 78 ? 55 : confidence >= 62 ? 45 : confidence >= 45 ? 30 : 20;
+  const bearProbability = riskScore >= 65 ? 35 : riskScore >= 40 ? 25 : 15;
+  const baseProbability = Math.max(10, 100 - bullProbability - bearProbability);
+  const bullPrice = stock.analystTarget > stock.price ? stock.analystTarget * 1.08 : stock.price * 1.2;
+  const basePrice = stock.analystTarget > 0 ? (stock.price + stock.analystTarget) / 2 : stock.price * 1.08;
+  const bearPrice = stock.price * (riskScore >= 65 ? 0.72 : riskScore >= 40 ? 0.82 : 0.9);
+  const expectedValue = (bullPrice * bullProbability + basePrice * baseProbability + bearPrice * bearProbability) / 100;
+  const positionSize = verdict === 'STRONG BUY'
+    ? '5% - 8% max portfolio allocation, accumulated in stages'
+    : verdict === 'BUY'
+      ? '3% - 5% starter-to-core allocation, staged entries preferred'
+      : verdict === 'HOLD / WATCH'
+        ? '0% - 2% watchlist or small starter only'
+        : verdict === 'REDUCE'
+          ? 'Trim 25% - 50% if already owned, avoid adding'
+          : '0%; avoid new buying until thesis improves';
 
   return {
     verdict,
@@ -114,6 +130,13 @@ function buildDecision(stock: StockMetrics, score: Score, earnings: EarningsItem
     riskScore,
     marginOfSafety,
     riskLevel,
+    expectedValue,
+    positionSize,
+    scenarios: [
+      { name: 'Bull Case', price: bullPrice, probability: bullProbability, note: 'Growth remains strong, earnings execution improves, and valuation stays supported.' },
+      { name: 'Base Case', price: basePrice, probability: baseProbability, note: 'Business performs near current expectations without major positive or negative surprise.' },
+      { name: 'Bear Case', price: bearPrice, probability: bearProbability, note: 'Growth slows, valuation compresses, earnings miss, or risk appetite weakens.' },
+    ],
     action: verdict === 'STRONG BUY'
       ? 'Bullish signals dominate. Consider buying in stages, not all at once.'
       : verdict === 'BUY'
@@ -178,6 +201,47 @@ export function StockDecisionSection({ stock, score, earnings, upside }: Props) 
         <GaugeCard title="Opportunity Score" value={decision.opportunityScore} suffix="/100" note="Higher means bullish signals outweigh bearish signals." tone="bull" />
         <GaugeCard title="Risk Score" value={decision.riskScore} suffix="/100" note="Higher means valuation, debt, volatility, or timing risk is elevated." tone="risk" />
         <GaugeCard title="Margin of Safety" value={Math.round(decision.marginOfSafety)} suffix="%" note="Estimated distance between current price and analyst target." tone="neutral" />
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+          <h3 className="text-2xl font-bold text-white">Bull / Base / Bear Scenario Model</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-400">This helps estimate possible outcomes instead of relying on a single target price.</p>
+          <div className="mt-5 grid gap-3">
+            {decision.scenarios.map((scenario) => (
+              <div key={scenario.name} className="rounded-xl border border-white/10 bg-black/20 p-4">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <h4 className="font-bold text-white">{scenario.name}</h4>
+                    <p className="mt-1 text-sm text-slate-400">{scenario.note}</p>
+                  </div>
+                  <div className="text-left sm:text-right">
+                    <p className="text-xl font-black text-white">{currency(scenario.price)}</p>
+                    <p className="text-sm text-slate-400">{scenario.probability}% probability</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 rounded-xl border border-sky-300/20 bg-sky-300/10 p-4">
+            <p className="text-sm text-sky-100">Probability-weighted expected value</p>
+            <p className="mt-1 text-3xl font-black text-white">{currency(decision.expectedValue)}</p>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+          <h3 className="text-2xl font-bold text-white">Position Size Suggestion</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-400">This keeps the decision practical by connecting the verdict to portfolio risk.</p>
+          <div className="mt-5 rounded-xl border border-emerald-300/20 bg-emerald-300/10 p-5">
+            <p className="text-sm uppercase tracking-[0.2em] text-emerald-200">Suggested sizing</p>
+            <p className="mt-2 text-2xl font-black text-white">{decision.positionSize}</p>
+          </div>
+          <div className="mt-4 grid gap-3 text-sm text-slate-300">
+            <p className="rounded-xl border border-white/10 bg-black/20 p-4">Use staged entries to reduce timing risk.</p>
+            <p className="rounded-xl border border-white/10 bg-black/20 p-4">Use smaller size when risk score is high, even if the opportunity score is attractive.</p>
+            <p className="rounded-xl border border-white/10 bg-black/20 p-4">Avoid concentrating too much portfolio weight in one stock.</p>
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
