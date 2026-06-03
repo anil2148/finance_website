@@ -12,11 +12,17 @@ type TabItem = {
 type Props = {
   tabs: TabItem[];
   defaultTab?: string;
+  onActiveTabChange?: (tabId: string) => void;
 };
 
-export function StockResearchTabs({ tabs, defaultTab }: Props) {
+export function StockResearchTabs({ tabs, defaultTab, onActiveTabChange }: Props) {
   const [activeTab, setActiveTab] = useState(defaultTab || tabs[0]?.id || 'overview');
   const active = tabs.find((tab) => tab.id === activeTab) || tabs[0];
+
+  function selectTab(tabId: string) {
+    setActiveTab(tabId);
+    onActiveTabChange?.(tabId);
+  }
 
   return (
     <section className="mt-8">
@@ -25,7 +31,7 @@ export function StockResearchTabs({ tabs, defaultTab }: Props) {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => selectTab(tab.id)}
               className={activeTab === tab.id
                 ? 'shrink-0 rounded-full bg-emerald-400 px-4 py-2 text-sm font-bold text-slate-950'
                 : 'shrink-0 rounded-full border border-white/10 bg-black/20 px-4 py-2 text-sm font-semibold text-slate-300 hover:bg-white/10'}

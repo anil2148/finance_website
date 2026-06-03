@@ -22,6 +22,16 @@ type SearchResult = { symbol: string; description: string; type: string };
 type Candle = { date: string; open: number; high: number; low: number; close: number; volume: number };
 type EarningsItem = { date?: string; epsActual?: number; epsEstimate?: number; revenueActual?: number; revenueEstimate?: number; quarter?: number; year?: number };
 
+const researchTabLabels: Record<string, string> = {
+  decision: 'Decision',
+  overview: 'Overview',
+  thesis: 'Thesis',
+  'smart-money': 'Smart Money',
+  metrics: 'Metrics',
+  earnings: 'Earnings',
+  ai: 'AI Assistant',
+};
+
 function getBeginnerVerdict(stock: StockMetrics, score: ReturnType<typeof scoreStock>, upside: number) {
   const positives = [stock.revenueGrowth > 10 ? 'Revenue growth is healthy, which can support a bullish outlook.' : 'Revenue growth is modest, so future upside may depend on improvement.', stock.profitMargin > 15 ? 'Profit margin looks strong enough to suggest business efficiency.' : 'Profit margin is weaker, so cost control matters.', stock.debtToEquity < 1 ? 'Debt looks manageable, which can reduce financial risk.' : 'Debt is higher, so balance-sheet risk should be watched.'];
   const risks = [stock.forwardPe > 35 ? 'Forward P/E is high, meaning expectations may already be priced in.' : 'Valuation is not extremely stretched based on forward P/E.', stock.rsi > 70 ? 'RSI suggests the stock may be overbought in the short term.' : stock.rsi < 35 ? 'RSI suggests weak momentum, but it may attract dip buyers.' : 'RSI is not at an extreme level.', upside < 0 ? 'Estimated target is below current price, which is a bearish risk.' : 'Estimated target suggests some upside, but verify with analyst data.'];
@@ -54,6 +64,7 @@ export default function StockAnalyzer() {
   const [chatAnswer, setChatAnswer] = useState<string | null>(null);
   const [chatLoading, setChatLoading] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
+  const [currentReportTab, setCurrentReportTab] = useState('decision');
 
   useEffect(() => {
     let active = true;
@@ -97,7 +108,7 @@ export default function StockAnalyzer() {
     { id: 'metrics', label: 'Metrics', description: 'Score, chart, company overview, and key metric explanations.', content: <StockMetricsSection stock={stock} score={score} candles={candles} upside={upside} /> },
     { id: 'earnings', label: 'Earnings', description: 'Earnings beat rate, surprise, and detailed earnings history.', content: <><EarningsIntelligencePanel earnings={earnings} source={earningsSource} /><StockEarningsSection earnings={earnings} source={earningsSource} /></> },
     { id: 'ai', label: 'AI Assistant', description: 'Ask beginner-friendly research questions. Includes local fallback when OpenAI quota is unavailable.', content: <StockAISection question={chatQuestion} setQuestion={setChatQuestion} answer={chatAnswer} loading={chatLoading} error={chatError} askAi={askAi} /> },
-    { id: 'export', label: 'Export', description: 'Print, copy, or save the research summary.', content: <ResearchReportExport stock={stock} score={score} upside={upside} /> },
+    { id: 'export', label: 'Export', description: 'Export the current tab or full research report as a clean PDF.', content: <ResearchReportExport stock={stock} score={score} upside={upside} earnings={earnings} earningsSource={earningsSource} currentTabId={currentReportTab} currentTabLabel={researchTabLabels[currentReportTab]} beginnerVerdict={beginnerVerdict} checklist={checklist} aiQuestion={chatQuestion} aiAnswer={chatAnswer} /> },
   ] : [];
 
   return (
@@ -105,7 +116,7 @@ export default function StockAnalyzer() {
       <StockAnalyzerHero query={query} setQuery={setQuery} selectedSymbol={selectedSymbol} suggestions={suggestions} searchLoading={searchLoading} profileLoading={profileLoading} profileError={profileError} stock={stock} score={score} upside={upside} analyzeStock={analyzeStock} />
       <GlossaryPanel />
       {profileError && !profileLoading && <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-6 text-red-100"><h2 className="text-2xl font-bold">Stock not found</h2><p className="mt-2">{profileError}</p><p className="mt-3 text-sm">Try searching for another symbol such as SOFI, AAPL, MSFT, NVDA, PLTR, or AMD.</p></div>}
-      {tabs.length > 0 && <StockResearchTabs tabs={tabs} defaultTab="decision" />}
+      {tabs.length > 0 && <StockResearchTabs tabs={tabs} defaultTab="decision" onActiveTabChange={(tabId) => { if (tabId !== 'export') setCurrentReportTab(tabId); }} />}
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Important disclaimer</h3><div className="mt-4 space-y-4 text-slate-300"><p>FinanceSphere helps users structure decisions with data, but it does not know your full financial situation, time horizon, tax profile, or risk tolerance.</p><p>Use this tool to identify what to research next: earnings quality, valuation, debt, growth durability, technical setup, and position-sizing risk.</p><p className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-100">Educational information only. This is not financial advice or a recommendation to buy or sell any security.</p></div></div>
     </section></main>
   );
