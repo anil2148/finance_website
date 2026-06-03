@@ -36,6 +36,10 @@ function pct(value?: number) {
   return `${Number(value).toFixed(1)}%`;
 }
 
+function clamp(value: number) {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
 function getEarningsBeatRate(earnings: EarningsItem[]) {
   const comparable = earnings
     .slice(0, 8)
@@ -91,13 +95,24 @@ function buildDecision(stock: StockMetrics, score: Score, earnings: EarningsItem
 
   const bullScore = bullish.reduce((sum, item) => sum + item.impact, 0);
   const bearScore = bearish.reduce((sum, item) => sum + item.impact, 0);
-  const confidence = Math.max(0, Math.min(100, Math.round(50 + bullScore - bearScore)));
+  const confidence = clamp(50 + bullScore - bearScore);
   const verdict = confidence >= 78 ? 'STRONG BUY' : confidence >= 62 ? 'BUY' : confidence >= 45 ? 'HOLD / WATCH' : confidence >= 32 ? 'REDUCE' : 'SELL / AVOID';
-  const riskLevel = stock.beta > 1.6 || stock.forwardPe > 40 || stock.debtToEquity > 1.5 ? 'High' : stock.beta > 1.2 || stock.forwardPe > 30 ? 'Medium' : 'Lower';
+  const riskScore = clamp(
+    (stock.beta > 0 ? stock.beta * 20 : 25) +
+    (stock.forwardPe > 40 ? 25 : stock.forwardPe > 30 ? 15 : stock.forwardPe > 22 ? 8 : 0) +
+    (stock.debtToEquity > 1.5 ? 20 : stock.debtToEquity > 0.8 ? 10 : 0) +
+    (stock.rsi >= 70 ? 10 : 0) +
+    (stock.profitMargin < 6 ? 10 : 0)
+  );
+  const marginOfSafety = stock.analystTarget > 0 && stock.price > 0 ? ((stock.analystTarget - stock.price) / stock.analystTarget) * 100 : 0;
+  const riskLevel = riskScore >= 65 ? 'High' : riskScore >= 40 ? 'Medium' : 'Lower';
 
   return {
     verdict,
     confidence,
+    opportunityScore: confidence,
+    riskScore,
+    marginOfSafety,
     riskLevel,
     action: verdict === 'STRONG BUY'
       ? 'Bullish signals dominate. Consider buying in stages, not all at once.'
@@ -159,6 +174,12 @@ export function StockDecisionSection({ stock, score, earnings, upside }: Props) 
         </div>
       </div>
 
+      <div className="grid gap-4 lg:grid-cols-3">
+        <GaugeCard title="Opportunity Score" value={decision.opportunityScore} suffix="/100" note="Higher means bullish signals outweigh bearish signals." tone="bull" />
+        <GaugeCard title="Risk Score" value={decision.riskScore} suffix="/100" note="Higher means valuation, debt, volatility, or timing risk is elevated." tone="risk" />
+        <GaugeCard title="Margin of Safety" value={Math.round(decision.marginOfSafety)} suffix="%" note="Estimated distance between current price and analyst target." tone="neutral" />
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-2">
         <PointerList title="Why this could be a BUY" tone="bull" items={decision.bullish} />
         <PointerList title="Why this could be a SELL / Avoid" tone="bear" items={decision.bearish} />
@@ -183,6 +204,22 @@ function DecisionMini({ title, value, note }: { title: string; value: string; no
       <p className="text-xs uppercase tracking-[0.2em] opacity-70">{title}</p>
       <p className="mt-2 text-lg font-black">{value}</p>
       <p className="mt-1 text-xs opacity-70">{note}</p>
+    </div>
+  );
+}
+
+function GaugeCard({ title, value, suffix, note, tone }: { title: string; value: number; suffix: string; note: string; tone: 'bull' | 'risk' | 'neutral' }) {
+  const barClass = tone === 'bull' ? 'bg-emerald-400' : tone === 'risk' ? 'bg-red-400' : 'bg-sky-400';
+  const textClass = tone === 'bull' ? 'text-emerald-200' : tone === 'risk' ? 'text-red-200' : 'text-sky-200';
+  const width = `${clamp(value)}%`;
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <p className="text-sm text-slate-400">{title}</p>
+      <p className={`mt-2 text-3xl font-black ${textClass}`}>{value}{suffix}</p>
+      <div className="mt-4 h-3 rounded-full bg-black/30">
+        <div className={`h-3 rounded-full ${barClass}`} style={{ width }} />
+      </div>
+      <p className="mt-3 text-sm leading-6 text-slate-400">{note}</p>
     </div>
   );
 }
