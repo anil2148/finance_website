@@ -28,6 +28,7 @@ const globalLinks: NavLink[] = [
       { label: 'Start a decision', href: '/ai-money-copilot' },
       { label: 'Calculators', href: '/calculators' },
       { label: 'Stock Analyzer', href: '/stock-analyzer' },
+      { label: 'PDF Editor', href: '/pdf-editor' },
       { label: 'Comparisons', href: '/comparison' }
     ],
   },
@@ -48,6 +49,7 @@ const indiaLinks: NavLink[] = [
       { label: 'Start a decision', href: '/ai-money-copilot' },
       { label: 'India calculators', href: '/in/calculators' },
       { label: 'Stock Analyzer', href: '/stock-analyzer' },
+      { label: 'PDF Editor', href: '/pdf-editor' },
       { label: 'Tax decisions', href: '/in/tax' }
     ],
   },
