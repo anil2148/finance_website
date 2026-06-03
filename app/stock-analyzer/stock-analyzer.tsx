@@ -12,6 +12,7 @@ import { StockAnalyzerHero } from '@/components/stocks/stock-analyzer-hero';
 import { StockEarningsSection } from '@/components/stocks/stock-earnings-section';
 import { StockMetricsSection } from '@/components/stocks/stock-metrics-section';
 import { StockOverviewSection } from '@/components/stocks/stock-overview-section';
+import { StockResearchTabs } from '@/components/stocks/stock-research-tabs';
 import { StockOutlookInsights } from '@/components/stocks/stock-outlook-insights';
 import { scoreStock, type StockMetrics } from '@/lib/stocks';
 
@@ -86,23 +87,21 @@ export default function StockAnalyzer() {
   function analyzeStock(symbolOverride?: string) { const symbol = (symbolOverride || query).trim().toUpperCase(); if (!symbol) return; setQuery(symbol); setSelectedSymbol(symbol); setSuggestions([]); }
   async function askAi() { setChatLoading(true); setChatError(null); setChatAnswer(null); try { const response = await fetch('/api/stocks/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ symbol: selectedSymbol, question: chatQuestion }) }); const data = await response.json(); if (!response.ok) throw new Error(data?.error || 'Unable to generate AI answer.'); setChatAnswer(data.answer); } catch (error) { setChatError(error instanceof Error ? error.message : 'Unable to generate AI answer.'); } finally { setChatLoading(false); } }
 
+  const tabs = stock && score && !profileLoading && !profileError ? [
+    { id: 'overview', label: 'Overview', description: 'Executive summary, beginner checklist, and live intelligence.', content: <>{beginnerVerdict && <StockOverviewSection verdict={beginnerVerdict} score={score} upside={upside} />}<section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section><LiveIntelligencePanel symbol={selectedSymbol} /></> },
+    { id: 'thesis', label: 'Thesis', description: 'Investment thesis, bull case, bear case, SWOT, and committee-style decision support.', content: <><AdvancedResearchThesis stock={stock} score={score} upside={upside} /><InvestmentCommitteeVerdict stock={stock} /><DecisionSupportInsights stock={stock} /><StockOutlookInsights stock={stock} /></> },
+    { id: 'smart-money', label: 'Smart Money', description: 'Insider transactions and institutional ownership signals.', content: <SmartMoneyPanel symbol={selectedSymbol} /> },
+    { id: 'metrics', label: 'Metrics', description: 'Score, chart, company overview, and key metric explanations.', content: <StockMetricsSection stock={stock} score={score} candles={candles} upside={upside} /> },
+    { id: 'earnings', label: 'Earnings', description: 'Earnings beat rate, surprise, and detailed earnings history.', content: <><EarningsIntelligencePanel earnings={earnings} source={earningsSource} /><StockEarningsSection earnings={earnings} source={earningsSource} /></> },
+    { id: 'ai', label: 'AI Assistant', description: 'Ask beginner-friendly research questions. Includes local fallback when OpenAI quota is unavailable.', content: <StockAISection question={chatQuestion} setQuestion={setChatQuestion} answer={chatAnswer} loading={chatLoading} error={chatError} askAi={askAi} /> },
+  ] : [];
+
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8"><section className="mx-auto max-w-7xl">
       <StockAnalyzerHero query={query} setQuery={setQuery} selectedSymbol={selectedSymbol} suggestions={suggestions} searchLoading={searchLoading} profileLoading={profileLoading} profileError={profileError} stock={stock} score={score} upside={upside} analyzeStock={analyzeStock} />
       <GlossaryPanel />
       {profileError && !profileLoading && <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-6 text-red-100"><h2 className="text-2xl font-bold">Stock not found</h2><p className="mt-2">{profileError}</p><p className="mt-3 text-sm">Try searching for another symbol such as SOFI, AAPL, MSFT, NVDA, PLTR, or AMD.</p></div>}
-      {stock && score && !profileLoading && !profileError && <>
-        {beginnerVerdict && <StockOverviewSection verdict={beginnerVerdict} score={score} upside={upside} />}
-        <AdvancedResearchThesis stock={stock} score={score} upside={upside} />
-        <SmartMoneyPanel symbol={selectedSymbol} />
-        <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section>
-        <StockMetricsSection stock={stock} score={score} candles={candles} upside={upside} />
-        <LiveIntelligencePanel symbol={selectedSymbol} />
-        <EarningsIntelligencePanel earnings={earnings} source={earningsSource} />
-        <StockEarningsSection earnings={earnings} source={earningsSource} />
-        <StockAISection question={chatQuestion} setQuestion={setChatQuestion} answer={chatAnswer} loading={chatLoading} error={chatError} askAi={askAi} />
-        <InvestmentCommitteeVerdict stock={stock} /><DecisionSupportInsights stock={stock} /><StockOutlookInsights stock={stock} />
-      </>}
+      {tabs.length > 0 && <StockResearchTabs tabs={tabs} defaultTab="overview" />}
       <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Important disclaimer</h3><div className="mt-4 space-y-4 text-slate-300"><p>FinanceSphere helps users structure decisions with data, but it does not know your full financial situation, time horizon, tax profile, or risk tolerance.</p><p>Use this tool to identify what to research next: earnings quality, valuation, debt, growth durability, technical setup, and position-sizing risk.</p><p className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-100">Educational information only. This is not financial advice or a recommendation to buy or sell any security.</p></div></div>
     </section></main>
   );
