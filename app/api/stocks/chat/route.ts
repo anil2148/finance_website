@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { buildLiveStockIntelligenceReport } from '@/lib/stock-intelligence';
+import { buildLiveStockIntelligenceReport, type IntelligenceReport } from '@/lib/stock-intelligence';
 
 export const runtime = 'nodejs';
 
@@ -14,13 +14,46 @@ function logAiError(context: Record<string, unknown>) {
   console.error('[stock-chat-ai-error]', JSON.stringify(context));
 }
 
-export async function POST(request: Request) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) {
-    logAiError({ stage: 'config', error: 'OPENAI_API_KEY missing' });
-    return NextResponse.json({ error: 'OPENAI_API_KEY is not configured in this environment.' }, { status: 500 });
-  }
+function buildFallbackAnswer(report: IntelligenceReport, question: string, reason?: string) {
+  const stock = report.stock;
+  const score = report.score;
+  const upside = stock.price > 0 ? ((stock.analystTarget - stock.price) / stock.price) * 100 : 0;
+  const bullFactors = [
+    stock.revenueGrowth > 10 ? `Revenue growth is supportive at ${stock.revenueGrowth.toFixed(1)}%.` : `Revenue growth is modest at ${stock.revenueGrowth.toFixed(1)}%.`,
+    stock.epsGrowth > 10 ? `EPS growth is supportive at ${stock.epsGrowth.toFixed(1)}%.` : `EPS growth needs monitoring at ${stock.epsGrowth.toFixed(1)}%.`,
+    stock.profitMargin > 15 ? `Profit margin looks healthy at ${stock.profitMargin.toFixed(1)}%.` : `Profit margin is not especially strong at ${stock.profitMargin.toFixed(1)}%.`,
+    stock.debtToEquity < 1 ? `Debt/equity of ${stock.debtToEquity.toFixed(2)} looks manageable.` : `Debt/equity of ${stock.debtToEquity.toFixed(2)} adds balance-sheet risk.`,
+  ];
+  const bearFactors = [
+    stock.forwardPe > 35 ? `Forward P/E of ${stock.forwardPe.toFixed(1)} suggests valuation risk.` : `Forward P/E of ${stock.forwardPe.toFixed(1)} is not extremely stretched.`,
+    stock.rsi > 70 ? `RSI of ${stock.rsi.toFixed(1)} may indicate overbought short-term momentum.` : stock.rsi < 35 ? `RSI of ${stock.rsi.toFixed(1)} shows weak/oversold momentum.` : `RSI of ${stock.rsi.toFixed(1)} is not at an extreme.`,
+    upside < 0 ? `Estimated target is below current price, which is bearish.` : `Estimated target implies about ${upside.toFixed(1)}% upside, but this is only a rough guide.`,
+  ];
 
+  return [
+    reason ? `AI provider fallback: ${reason}` : 'AI provider fallback: generated from FinanceSphere metrics because OpenAI is unavailable.',
+    '',
+    `Question: ${question}`,
+    '',
+    `${stock.symbol} quick view: ${score.total}/100 (${score.rating}). Current price is $${stock.price.toFixed(2)} and estimated upside is ${upside.toFixed(1)}%.`,
+    '',
+    'Bullish factors:',
+    ...bullFactors.map((item) => `• ${item}`),
+    '',
+    'Bearish / risk factors:',
+    ...bearFactors.map((item) => `• ${item}`),
+    '',
+    'What to verify next:',
+    '• Latest earnings report and management guidance.',
+    '• Whether revenue growth and EPS growth are improving or slowing.',
+    '• Whether valuation is reasonable compared with peers.',
+    '• Insider activity, analyst revisions, and SEC filing risk factors.',
+    '',
+    'Educational information only — not financial advice.',
+  ].join('\n');
+}
+
+export async function POST(request: Request) {
   const body = await request.json().catch(() => ({})) as ChatRequest;
   const symbol = (body.symbol || '').trim().toUpperCase();
   const question = (body.question || '').trim();
@@ -32,6 +65,13 @@ export async function POST(request: Request) {
 
   try {
     const report = await buildLiveStockIntelligenceReport(symbol);
+    const apiKey = process.env.OPENAI_API_KEY;
+
+    if (!apiKey) {
+      logAiError({ stage: 'config', symbol, error: 'OPENAI_API_KEY missing', fallback: true });
+      return NextResponse.json({ symbol, mode: 'fallback', answer: buildFallbackAnswer(report, question, 'OPENAI_API_KEY is not configured.') });
+    }
+
     const payload = {
       model: OPENAI_MODEL,
       temperature: 0.25,
@@ -69,20 +109,16 @@ export async function POST(request: Request) {
         errorType: data?.error?.type,
         errorCode: data?.error?.code,
         errorMessage: message,
+        fallback: true,
       });
-      return NextResponse.json({ error: message }, { status: response.status });
+      return NextResponse.json({ symbol, mode: 'fallback', providerError: message, answer: buildFallbackAnswer(report, question, message) });
     }
 
     const answer = data?.choices?.[0]?.message?.content || 'No AI answer was generated.';
     if (!data?.choices?.[0]?.message?.content) {
-      logAiError({
-        stage: 'empty_completion',
-        symbol,
-        model: OPENAI_MODEL,
-        finishReason: data?.choices?.[0]?.finish_reason,
-      });
+      logAiError({ stage: 'empty_completion', symbol, model: OPENAI_MODEL, finishReason: data?.choices?.[0]?.finish_reason });
     }
-    return NextResponse.json({ symbol, answer });
+    return NextResponse.json({ symbol, mode: 'openai', answer });
   } catch (error) {
     logAiError({
       stage: 'exception',
