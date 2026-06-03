@@ -17,6 +17,7 @@ import { InvestmentCommitteeVerdict } from '@/components/stocks/investment-commi
 import { LiveIntelligencePanel } from '@/components/stocks/live-intelligence-panel';
 import { SmartMoneyPanel } from '@/components/stocks/smart-money-panel';
 import { StockAnalyzerHero } from '@/components/stocks/stock-analyzer-hero';
+import { StockOverviewSection } from '@/components/stocks/stock-overview-section';
 import { StockOutlookInsights } from '@/components/stocks/stock-outlook-insights';
 import { scoreStock, type StockMetrics } from '@/lib/stocks';
 
@@ -101,7 +102,7 @@ export default function StockAnalyzer() {
       <GlossaryPanel />
       {profileError && !profileLoading && <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-6 text-red-100"><h2 className="text-2xl font-bold">Stock not found</h2><p className="mt-2">{profileError}</p><p className="mt-3 text-sm">Try searching for another symbol such as SOFI, AAPL, MSFT, NVDA, PLTR, or AMD.</p></div>}
       {stock && score && !profileLoading && !profileError && <>
-        {beginnerVerdict && <section className="mt-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-6"><p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Executive Summary</p><h2 className="mt-2 text-2xl font-bold">{beginnerVerdict.headline}</h2><div className="mt-5 grid gap-5 lg:grid-cols-3"><div className="rounded-xl border border-white/10 bg-black/20 p-4"><h3 className="font-bold text-white">Decision Snapshot</h3><p className="mt-2 text-sm leading-6 text-slate-300">Score {score.total}/100 • {score.rating} • Estimated upside {upside.toFixed(1)}%</p><p className="mt-2 text-xs leading-5 text-slate-400">Use this as a starting point, not a final answer. Always compare it with earnings, valuation, risks, and your time horizon.</p></div><div className="rounded-xl border border-emerald-300/20 bg-black/20 p-4"><h3 className="font-bold text-emerald-200">What looks bullish?</h3><ul className="mt-3 space-y-2 text-sm leading-6 text-slate-200">{beginnerVerdict.positives.map((item) => <li key={item}>✓ {item}</li>)}</ul></div><div className="rounded-xl border border-amber-300/20 bg-black/20 p-4"><h3 className="font-bold text-amber-200">What could be bearish?</h3><ul className="mt-3 space-y-2 text-sm leading-6 text-slate-200">{beginnerVerdict.risks.map((item) => <li key={item}>⚠ {item}</li>)}</ul></div></div></section>}
+        {beginnerVerdict && <StockOverviewSection verdict={beginnerVerdict} score={score} upside={upside} />}
         <AdvancedResearchThesis stock={stock} score={score} upside={upside} />
         <SmartMoneyPanel symbol={selectedSymbol} />
         <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section>
