@@ -6,6 +6,7 @@ import { DecisionSupportInsights } from '@/components/stocks/decision-support-in
 import { EarningsIntelligencePanel } from '@/components/stocks/earnings-intelligence-panel';
 import { InvestmentCommitteeVerdict } from '@/components/stocks/investment-committee-verdict';
 import { LiveIntelligencePanel } from '@/components/stocks/live-intelligence-panel';
+import { ResearchReportExport } from '@/components/stocks/research-report-export';
 import { SmartMoneyPanel } from '@/components/stocks/smart-money-panel';
 import { StockAISection } from '@/components/stocks/stock-ai-section';
 import { StockAnalyzerHero } from '@/components/stocks/stock-analyzer-hero';
@@ -96,6 +97,7 @@ export default function StockAnalyzer() {
     { id: 'metrics', label: 'Metrics', description: 'Score, chart, company overview, and key metric explanations.', content: <StockMetricsSection stock={stock} score={score} candles={candles} upside={upside} /> },
     { id: 'earnings', label: 'Earnings', description: 'Earnings beat rate, surprise, and detailed earnings history.', content: <><EarningsIntelligencePanel earnings={earnings} source={earningsSource} /><StockEarningsSection earnings={earnings} source={earningsSource} /></> },
     { id: 'ai', label: 'AI Assistant', description: 'Ask beginner-friendly research questions. Includes local fallback when OpenAI quota is unavailable.', content: <StockAISection question={chatQuestion} setQuestion={setChatQuestion} answer={chatAnswer} loading={chatLoading} error={chatError} askAi={askAi} /> },
+    { id: 'export', label: 'Export', description: 'Print, copy, or save the research summary.', content: <ResearchReportExport stock={stock} score={score} upside={upside} /> },
   ] : [];
 
   return (

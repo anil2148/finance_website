@@ -240,6 +240,7 @@ export function StockDecisionSection({ stock, score, earnings, upside }: Props) 
             <p className="rounded-xl border border-white/10 bg-black/20 p-4">Use staged entries to reduce timing risk.</p>
             <p className="rounded-xl border border-white/10 bg-black/20 p-4">Use smaller size when risk score is high, even if the opportunity score is attractive.</p>
             <p className="rounded-xl border border-white/10 bg-black/20 p-4">Avoid concentrating too much portfolio weight in one stock.</p>
+            <p className="rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-amber-100">Educational information only. This is not financial advice or a recommendation to buy or sell any security.</p>
           </div>
         </div>
       </div>
