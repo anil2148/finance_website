@@ -50,6 +50,24 @@ function compactNumber(value?: number) {
   return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(value);
 }
 
+function getBeginnerVerdict(stock: StockMetrics, score: ReturnType<typeof scoreStock>, upside: number) {
+  const positives = [
+    stock.revenueGrowth > 10 ? 'Revenue growth is healthy, which can support a bullish outlook.' : 'Revenue growth is modest, so future upside may depend on improvement.',
+    stock.profitMargin > 15 ? 'Profit margin looks strong enough to suggest business efficiency.' : 'Profit margin is weaker, so cost control matters.',
+    stock.debtToEquity < 1 ? 'Debt looks manageable, which can reduce financial risk.' : 'Debt is higher, so balance-sheet risk should be watched.',
+  ];
+  const risks = [
+    stock.forwardPe > 35 ? 'Forward P/E is high, meaning expectations may already be priced in.' : 'Valuation is not extremely stretched based on forward P/E.',
+    stock.rsi > 70 ? 'RSI suggests the stock may be overbought in the short term.' : stock.rsi < 35 ? 'RSI suggests weak momentum, but it may attract dip buyers.' : 'RSI is not at an extreme level.',
+    upside < 0 ? 'Estimated target is below current price, which is a bearish risk.' : 'Estimated target suggests some upside, but verify with analyst data.',
+  ];
+  return {
+    headline: score.total >= 70 ? 'Potentially constructive, but verify risks' : score.total >= 50 ? 'Mixed signals — research further' : 'Risky setup — be cautious',
+    positives,
+    risks,
+  };
+}
+
 export default function StockAnalyzer() {
   const [query, setQuery] = useState('MSFT');
   const [selectedSymbol, setSelectedSymbol] = useState('MSFT');
@@ -145,6 +163,7 @@ export default function StockAnalyzer() {
   const score = useMemo(() => (stock ? scoreStock(stock) : null), [stock]);
   const upside = stock && stock.price > 0 ? ((stock.analystTarget - stock.price) / stock.price) * 100 : 0;
   const chartData = candles.length ? candles.slice(-180).map((candle) => ({ date: candle.date.slice(5), close: candle.close })) : [];
+  const beginnerVerdict = stock && score ? getBeginnerVerdict(stock, score, upside) : null;
 
   function analyzeStock(symbolOverride?: string) {
     const symbol = (symbolOverride || query).trim().toUpperCase();
@@ -183,8 +202,13 @@ export default function StockAnalyzer() {
               <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">FinanceSphere Tool</p>
               <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Stock Analyzer</h1>
               <p className="mt-4 max-w-2xl text-lg text-slate-300">
-                A live decision-support app powered by Finnhub, SEC EDGAR, OpenAI, and FinanceSphere scoring models.
+                A beginner-friendly decision-support page that explains price, valuation, growth, profitability, risk, earnings, and AI research in plain English.
               </p>
+              <div className="mt-5 grid gap-3 text-sm text-slate-300 md:grid-cols-3">
+                <GuideStep number="1" title="Check quality" text="Look at growth, profit margin, debt, and business strength." />
+                <GuideStep number="2" title="Check price risk" text="Use P/E, target upside, RSI, and chart trend to judge if expectations are too high." />
+                <GuideStep number="3" title="Read both sides" text="Compare bullish drivers and bearish risks before making any decision." />
+              </div>
             </div>
             <div className="rounded-2xl border border-emerald-400/20 bg-black/30 p-5">
               <label className="text-sm font-medium text-slate-300" htmlFor="symbol">Search stock symbol</label>
@@ -222,10 +246,12 @@ export default function StockAnalyzer() {
                   </div>
                 )}
               </div>
-              <p className="mt-3 text-xs text-slate-400">Search is live from Finnhub. Invalid or unsupported symbols show an error instead of fallback data.</p>
+              <p className="mt-3 text-xs text-slate-400">Tip: A ticker symbol is a short stock code, like SOFI, AAPL, MSFT, or NVDA.</p>
             </div>
           </div>
         </div>
+
+        <GlossaryPanel />
 
         {profileLoading && (
           <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] p-6 text-slate-300">
@@ -243,6 +269,23 @@ export default function StockAnalyzer() {
 
         {stock && score && !profileLoading && !profileError && (
           <>
+            {beginnerVerdict && (
+              <section className="mt-8 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-6">
+                <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Beginner Summary</p>
+                <h2 className="mt-2 text-2xl font-bold">{beginnerVerdict.headline}</h2>
+                <div className="mt-5 grid gap-5 lg:grid-cols-2">
+                  <div className="rounded-xl border border-emerald-300/20 bg-black/20 p-4">
+                    <h3 className="font-bold text-emerald-200">What looks bullish?</h3>
+                    <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-200">{beginnerVerdict.positives.map((item) => <li key={item}>✓ {item}</li>)}</ul>
+                  </div>
+                  <div className="rounded-xl border border-amber-300/20 bg-black/20 p-4">
+                    <h3 className="font-bold text-amber-200">What could be bearish?</h3>
+                    <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-200">{beginnerVerdict.risks.map((item) => <li key={item}>⚠ {item}</li>)}</ul>
+                  </div>
+                </div>
+              </section>
+            )}
+
             <div className="mt-8 grid gap-6 lg:grid-cols-4">
               <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 lg:col-span-1">
                 <p className="text-sm text-slate-400">Live score</p>
@@ -251,6 +294,7 @@ export default function StockAnalyzer() {
                   <span className="pb-2 text-slate-400">/100</span>
                 </div>
                 <p className="mt-4 rounded-full bg-emerald-400/10 px-4 py-2 text-center font-semibold text-emerald-300">{score.rating}</p>
+                <p className="mt-3 text-xs leading-5 text-slate-400">The score combines valuation, growth, profitability, financial health, and technical trend. It is a research shortcut, not a buy/sell instruction.</p>
                 <div className="mt-6 space-y-4">
                   {score.parts.map((part) => (
                     <div key={part.name}>
@@ -273,18 +317,20 @@ export default function StockAnalyzer() {
                     <div>
                       <p className="text-sm text-slate-400">{stock.symbol}</p>
                       <h2 className="text-3xl font-bold">{stock.name}</h2>
-                      <div className="mt-3 flex items-center gap-3">
+                      <div className="mt-3 flex flex-wrap items-center gap-3">
                         <span className="text-3xl font-bold">{currency(stock.price)}</span>
                         <span className={stock.changePercent >= 0 ? 'text-emerald-300' : 'text-red-300'}>
                           {stock.changePercent >= 0 ? '+' : ''}{stock.changePercent.toFixed(2)}% today
                         </span>
                       </div>
+                      <p className="mt-2 max-w-2xl text-sm text-slate-400">Price shows what the market pays today. A rising price can indicate demand, but it does not automatically mean the stock is cheap or safe.</p>
                     </div>
                   </div>
                   <div className="rounded-2xl bg-white/5 p-4 text-right">
                     <p className="text-sm text-slate-400">Estimated target</p>
                     <p className="text-2xl font-bold">{currency(stock.analystTarget)}</p>
                     <p className={upside >= 0 ? 'text-emerald-300' : 'text-red-300'}>{upside.toFixed(1)}% upside</p>
+                    <p className="mt-2 text-xs text-slate-400">Positive upside can be bullish, but targets change after earnings, news, and market moves.</p>
                   </div>
                 </div>
 
@@ -309,31 +355,41 @@ export default function StockAnalyzer() {
                     <div className="flex h-full items-center justify-center rounded-2xl border border-white/10 bg-black/20 text-slate-400">Historical chart unavailable for this symbol.</div>
                   )}
                 </div>
+                <p className="mt-3 text-xs text-slate-400">Chart guide: uptrend can be bullish momentum; sharp spikes can mean higher risk; flat or falling trend can signal weak demand or uncertainty.</p>
               </div>
             </div>
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-3">
-              <MetricCard label="Market Cap" value={compactNumber(stock.marketCap)} note="Company equity market value" />
-              <MetricCard label="Industry" value={stock.industry || 'N/A'} note="Finnhub company classification" />
-              <MetricCard label="Exchange" value={stock.exchange || 'N/A'} note="Primary trading venue" />
-              <MetricCard label="Country" value={stock.country || 'N/A'} note="Company country from profile" />
-              <MetricCard label="IPO Date" value={stock.ipo || 'N/A'} note="Initial public offering date" />
-              <MetricCard label="Website" value={stock.website || 'N/A'} note="Official company website" />
-            </div>
+            <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+              <h3 className="text-xl font-bold">Company Overview</h3>
+              <p className="mt-2 text-sm text-slate-400">This tells you what the company is, where it trades, and how large it is. Bigger companies are not always better, but they are often more established.</p>
+              <div className="mt-5 grid gap-6 lg:grid-cols-3">
+                <MetricCard label="Market Cap" value={compactNumber(stock.marketCap)} note="Total market value of the company. Larger can mean stability; smaller can mean more growth and more risk." />
+                <MetricCard label="Industry" value={stock.industry || 'N/A'} note="Shows the business category. Compare stocks within the same industry for fairer judgment." />
+                <MetricCard label="Exchange" value={stock.exchange || 'N/A'} note="Where the stock trades, such as NASDAQ or NYSE." />
+                <MetricCard label="Country" value={stock.country || 'N/A'} note="Company's listed country. This can affect currency, regulation, and market risk." />
+                <MetricCard label="IPO Date" value={stock.ipo || 'N/A'} note="When the company became public. Newer companies can be more volatile." />
+                <MetricCard label="Website" value={stock.website || 'N/A'} note="Official company website for deeper research." />
+              </div>
+            </section>
 
             <LiveIntelligencePanel symbol={selectedSymbol} />
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-3">
-              <MetricCard label="P/E Ratio" value={stock.pe.toFixed(2)} note="Lower can mean cheaper valuation" />
-              <MetricCard label="EPS Growth" value={`${stock.epsGrowth.toFixed(2)}%`} note="Higher growth improves score" />
-              <MetricCard label="Profit Margin" value={`${stock.profitMargin.toFixed(2)}%`} note="Shows business efficiency" />
-              <MetricCard label="Debt / Equity" value={stock.debtToEquity.toFixed(2)} note="Lower is usually safer" />
-              <MetricCard label="RSI" value={stock.rsi.toFixed(2)} note="30 oversold, 70 overbought" />
-              <MetricCard label="Dividend Yield" value={`${stock.dividendYield.toFixed(2)}%`} note="Income return from dividends" />
-            </div>
+            <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+              <h3 className="text-xl font-bold">Key Metrics Explained</h3>
+              <p className="mt-2 text-sm text-slate-400">These numbers help you judge valuation, growth, profitability, debt risk, momentum, and income potential.</p>
+              <div className="mt-5 grid gap-6 lg:grid-cols-3">
+                <MetricCard label="P/E Ratio" value={stock.pe.toFixed(2)} note="Price divided by earnings. High P/E means investors expect growth; low P/E may mean cheap or low expectations." />
+                <MetricCard label="EPS Growth" value={`${stock.epsGrowth.toFixed(2)}%`} note="Earnings per share growth. Higher is usually bullish because profits are growing." />
+                <MetricCard label="Profit Margin" value={`${stock.profitMargin.toFixed(2)}%`} note="How much profit remains from sales. Higher margin can mean pricing power and efficiency." />
+                <MetricCard label="Debt / Equity" value={stock.debtToEquity.toFixed(2)} note="Compares debt with shareholder equity. Lower usually means less financial risk." />
+                <MetricCard label="RSI" value={stock.rsi.toFixed(2)} note="Momentum indicator. Above 70 may be overbought; below 30 may be oversold." />
+                <MetricCard label="Dividend Yield" value={`${stock.dividendYield.toFixed(2)}%`} note="Cash paid to shareholders as a percentage of price. Useful for income investors." />
+              </div>
+            </section>
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
               <h3 className="text-xl font-bold">Earnings History</h3>
+              <p className="mt-2 text-sm text-slate-400">Earnings show whether the company is beating or missing expectations. Repeated beats can be bullish; repeated misses can be bearish.</p>
               <div className="mt-4 overflow-x-auto">
                 <table className="w-full min-w-[720px] text-left text-sm">
                   <thead className="text-slate-400">
@@ -358,7 +414,7 @@ export default function StockAnalyzer() {
                       </tr>
                     ))}
                     {!earnings.length && (
-                      <tr><td className="py-3 text-slate-400" colSpan={6}>No earnings history available.</td></tr>
+                      <tr><td className="py-3 text-slate-400" colSpan={6}>No earnings history available from the provider for this stock yet.</td></tr>
                     )}
                   </tbody>
                 </table>
@@ -367,12 +423,17 @@ export default function StockAnalyzer() {
 
             <div className="mt-6 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-6">
               <h3 className="text-xl font-bold">Ask FinanceSphere AI</h3>
-              <p className="mt-2 text-sm text-slate-300">Ask a research question about {stock.symbol}. Answers are educational and not personalized financial advice.</p>
+              <p className="mt-2 text-sm text-slate-300">Good beginner questions: “What is the bull case?”, “What is the biggest risk?”, “Is the valuation expensive?”, or “What should I verify before buying?”</p>
               <textarea
                 value={chatQuestion}
                 onChange={(event) => setChatQuestion(event.target.value)}
                 className="mt-4 min-h-24 w-full rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white outline-none ring-emerald-400 focus:ring-2"
               />
+              <div className="mt-3 flex flex-wrap gap-2">
+                {['What is the bull case?', 'What are the biggest risks?', 'Is the valuation expensive?', 'What should I verify before buying?'].map((question) => (
+                  <button key={question} onClick={() => setChatQuestion(question)} className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs text-slate-200 hover:bg-white/10">{question}</button>
+                ))}
+              </div>
               <button
                 onClick={askAi}
                 disabled={chatLoading || !chatQuestion.trim()}
@@ -405,12 +466,59 @@ export default function StockAnalyzer() {
   );
 }
 
+function GuideStep({ number, title, text }: { number: string; title: string; text: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+      <div className="flex items-center gap-2">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-400 text-xs font-black text-slate-950">{number}</span>
+        <strong className="text-white">{title}</strong>
+      </div>
+      <p className="mt-2 text-xs leading-5 text-slate-400">{text}</p>
+    </div>
+  );
+}
+
+function GlossaryPanel() {
+  const terms = [
+    ['Bullish', 'You expect the stock may go up. Usually supported by strong growth, profits, momentum, or positive news.'],
+    ['Bearish', 'You expect the stock may go down or underperform. Often caused by weak growth, high valuation, debt, or bad news.'],
+    ['P/E Ratio', 'Price divided by earnings. It helps judge whether the stock is expensive compared with profits.'],
+    ['EPS', 'Earnings per share. It shows how much profit belongs to each share. Growing EPS is usually positive.'],
+    ['Revenue', 'Total sales. Revenue growth means the business is selling more.'],
+    ['Profit Margin', 'Profit as a percentage of sales. Higher margin means the company keeps more money after expenses.'],
+    ['Debt / Equity', 'Debt compared with shareholder equity. Higher debt can increase risk.'],
+    ['RSI', 'Relative Strength Index. A momentum signal: above 70 may be overbought, below 30 may be oversold.'],
+    ['Market Cap', 'Stock price times shares outstanding. It measures company size.'],
+    ['Dividend Yield', 'Annual dividends divided by stock price. Important for income investors.'],
+  ];
+
+  return (
+    <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Stock Market Legend</p>
+          <h2 className="mt-2 text-2xl font-bold">New to stocks? Start here.</h2>
+        </div>
+        <p className="max-w-2xl text-sm text-slate-400">Use this legend while reading the page. It explains the most common terms in plain English.</p>
+      </div>
+      <div className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {terms.map(([term, explanation]) => (
+          <div key={term} className="rounded-xl border border-white/10 bg-black/20 p-4">
+            <h3 className="font-bold text-white">{term}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">{explanation}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function MetricCard({ label, value, note }: { label: string; value: string; note: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
       <p className="text-sm text-slate-400">{label}</p>
       <p className="mt-2 break-words text-3xl font-bold text-white">{value}</p>
-      <p className="mt-2 text-sm text-slate-400">{note}</p>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{note}</p>
     </div>
   );
 }
