@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 type StockMetrics = {
   symbol: string;
@@ -38,6 +38,20 @@ type SmartMoney = {
   insider?: { signal?: 'Bullish' | 'Neutral' | 'Bearish'; netShares?: number; buys?: number; sells?: number };
   institutional?: { signal?: 'Bullish' | 'Neutral' | 'Bearish'; netChange?: number };
   warnings?: string[];
+};
+
+type SearchResult = {
+  symbol: string;
+  description?: string;
+  name?: string;
+  exchange?: string;
+  type?: string;
+};
+
+type SearchResponse = {
+  results?: SearchResult[];
+  result?: SearchResult[];
+  message?: string;
 };
 
 type Opportunity = {
@@ -179,19 +193,92 @@ function verdictClass(verdict: Opportunity['verdict']) {
   return 'border-amber-300/30 bg-amber-300/10 text-amber-100';
 }
 
+function getCompanyName(result: SearchResult) {
+  return result.description || result.name || 'Company name unavailable';
+}
+
+function normalizeSearchResults(data: SearchResponse): SearchResult[] {
+  const rawResults = Array.isArray(data.results) ? data.results : Array.isArray(data.result) ? data.result : [];
+  return rawResults
+    .filter((item) => typeof item.symbol === 'string' && item.symbol.trim())
+    .map((item) => ({
+      symbol: item.symbol.trim().toUpperCase(),
+      description: item.description,
+      name: item.name,
+      exchange: item.exchange,
+      type: item.type,
+    }));
+}
+
+function Spinner() {
+  return <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-slate-950/30 border-t-slate-950" aria-hidden="true" />;
+}
+
 export default function StockOpportunityClient() {
   const [query, setQuery] = useState('MSFT');
+  const [selectedSymbol, setSelectedSymbol] = useState('MSFT');
+  const [suggestions, setSuggestions] = useState<SearchResult[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchMessage, setSearchMessage] = useState<string | null>(null);
   const [stock, setStock] = useState<StockMetrics | null>(null);
   const [earnings, setEarnings] = useState<EarningsItem[]>([]);
   const [smartMoney, setSmartMoney] = useState<SmartMoney | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const analysisRequestId = useRef(0);
 
   const opportunity = useMemo(() => stock ? buildOpportunity(stock, earnings, smartMoney) : null, [stock, earnings, smartMoney]);
 
-  async function analyze() {
-    const symbol = query.trim().toUpperCase();
+  useEffect(() => {
+    const value = query.trim().toUpperCase();
+    setSearchMessage(null);
+
+    if (!value || value === selectedSymbol) {
+      setSuggestions([]);
+      setSearchLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    const timeout = window.setTimeout(async () => {
+      setSearchLoading(true);
+      try {
+        const response = await fetch(`/api/stocks/search?q=${encodeURIComponent(value)}`, {
+          cache: 'no-store',
+          signal: controller.signal,
+        });
+        const data = await response.json().catch(() => ({})) as SearchResponse;
+        if (controller.signal.aborted) return;
+
+        const results = response.ok ? normalizeSearchResults(data) : [];
+        setSuggestions(results);
+        setSearchMessage(results.length ? null : data.message || 'No matching stocks found.');
+      } catch {
+        if (!controller.signal.aborted) {
+          setSuggestions([]);
+          setSearchMessage('No matching stocks found.');
+        }
+      } finally {
+        if (!controller.signal.aborted) setSearchLoading(false);
+      }
+    }, 275);
+
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [query, selectedSymbol]);
+
+  async function analyze(symbolOverride?: string) {
+    const symbol = (symbolOverride || query).trim().toUpperCase();
     if (!symbol) return;
+    const requestId = analysisRequestId.current + 1;
+    analysisRequestId.current = requestId;
+    setQuery(symbol);
+    setSelectedSymbol(symbol);
+    setSuggestions([]);
+    setSearchMessage(null);
+    setSearchLoading(false);
     setLoading(true);
     setError(null);
     setStock(null);
@@ -206,17 +293,22 @@ export default function StockOpportunityClient() {
       const profileData = await profileResponse.json();
       const earningsData = await earningsResponse.json().catch(() => ({}));
       const smartMoneyData = await smartMoneyResponse.json().catch(() => null);
-      if (!profileResponse.ok) throw new Error(profileData?.error || `Unable to load ${symbol}.`);
+      if (requestId !== analysisRequestId.current) return;
+      if (!profileResponse.ok || !profileData?.stock) throw new Error(profileData?.error || `Could not load live data for ${symbol}.`);
       setQuery(symbol);
       setStock(profileData.stock);
       setEarnings(earningsResponse.ok ? earningsData.earnings || [] : []);
       setSmartMoney(smartMoneyResponse.ok ? smartMoneyData : null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to generate opportunity decision.');
+      if (requestId !== analysisRequestId.current) return;
+      const message = err instanceof Error ? err.message : `Could not load live data for ${symbol}.`;
+      setError(message.includes(symbol) ? message : `Could not load live data for ${symbol}.`);
     } finally {
-      setLoading(false);
+      if (requestId === analysisRequestId.current) setLoading(false);
     }
   }
+
+  const showSuggestions = (suggestions.length > 0 || searchLoading || searchMessage) && query.trim().toUpperCase() !== selectedSymbol;
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8">
@@ -229,12 +321,64 @@ export default function StockOpportunityClient() {
               <p className="mt-4 max-w-2xl text-lg text-slate-300">A dedicated decision page that converts stock data into a clear opportunity verdict, confidence score, action plan, and every reason behind the decision.</p>
             </div>
             <div className="rounded-2xl border border-emerald-400/20 bg-black/30 p-5">
-              <label htmlFor="opportunity-symbol" className="text-sm font-medium text-slate-300">Enter stock symbol</label>
-              <div className="mt-3 flex gap-3">
-                <input id="opportunity-symbol" value={query} onChange={(event) => setQuery(event.target.value.toUpperCase())} onKeyDown={(event) => event.key === 'Enter' && analyze()} className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none ring-emerald-400 focus:ring-2" placeholder="SOFI, NVDA, MSFT" />
-                <button onClick={analyze} disabled={loading} className="rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 transition hover:bg-emerald-300 disabled:opacity-60">{loading ? 'Analyzing...' : 'Analyze'}</button>
+              <label htmlFor="opportunity-symbol" className="text-sm font-medium text-slate-300">Search stock symbol</label>
+              <div className="relative mt-3">
+                <div className="flex gap-3">
+                  <input
+                    id="opportunity-symbol"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value.toUpperCase())}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        event.preventDefault();
+                        analyze();
+                      }
+                    }}
+                    className="w-full rounded-xl border border-white/10 bg-white/10 px-4 py-3 text-white outline-none ring-emerald-400 transition focus:ring-2"
+                    placeholder="Search SOFI, NVDA, MSFT"
+                    autoComplete="off"
+                  />
+                  <button
+                    onClick={() => analyze()}
+                    disabled={loading}
+                    className="inline-flex min-w-[124px] items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-slate-950 shadow-lg shadow-emerald-950/30 transition hover:-translate-y-0.5 hover:bg-emerald-300 active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-70"
+                  >
+                    {loading && <Spinner />}
+                    {loading ? 'Analyzing...' : 'Analyze'}
+                  </button>
+                </div>
+                {showSuggestions && (
+                  <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-slate-900 shadow-2xl">
+                    {searchLoading && <div className="px-4 py-3 text-sm text-slate-400">Searching...</div>}
+                    {suggestions.map((item) => (
+                      <button
+                        key={`${item.symbol}-${getCompanyName(item)}`}
+                        onClick={() => analyze(item.symbol)}
+                        className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm transition hover:bg-white/10"
+                      >
+                        <span className="min-w-0">
+                          <span className="block font-bold text-white">{item.symbol}</span>
+                          <span className="block truncate text-slate-400">{getCompanyName(item)}</span>
+                        </span>
+                        {(item.exchange || item.type) && (
+                          <span className="shrink-0 text-right text-xs text-slate-500">
+                            {[item.exchange, item.type].filter(Boolean).join(' · ')}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                    {!searchLoading && !suggestions.length && searchMessage && (
+                      <div className="px-4 py-3 text-sm text-slate-400">No matching stocks found.</div>
+                    )}
+                  </div>
+                )}
               </div>
-              <p className="mt-3 text-xs text-slate-400">This page is educational and should be used with your own risk tolerance, time horizon, and position sizing.</p>
+              <div className="mt-3 space-y-1 text-xs text-slate-400">
+                <p>Start typing a company or ticker.</p>
+                <p>Tip: Search by ticker or company name.</p>
+                {loading && <p className="text-emerald-200">Analyzing {selectedSymbol}...</p>}
+                <p>This page is educational and should be used with your own risk tolerance, time horizon, and position sizing.</p>
+              </div>
             </div>
           </div>
         </div>
