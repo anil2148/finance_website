@@ -91,6 +91,19 @@ type SelectedTextState = {
   boxes: PdfSelectionBox[];
 };
 
+type SelectedTextMenu = {
+  xPercent: number;
+  yPercent: number;
+};
+
+type ResizeHandle = 'nw' | 'ne' | 'sw' | 'se';
+
+type PagePointerState = {
+  x: number;
+  y: number;
+  tool: EditorTool;
+};
+
 type PdfSnapshot = {
   bytes: Uint8Array;
   pageCount: number;
@@ -369,6 +382,19 @@ function getPendingObjectName(object: PendingObject) {
   return object.text || 'Text';
 }
 
+function isPlaceableEditorTool(tool: EditorTool) {
+  return tool !== 'none' && tool !== 'page-tools' && tool !== 'select-text';
+}
+
+function pdfSelectionBoxToPercents(box: PdfSelectionBox, pageSize: { width: number; height: number }) {
+  return {
+    xPercent: (box.x / pageSize.width) * 100,
+    yPercent: ((pageSize.height - box.y - box.height) / pageSize.height) * 100,
+    widthPercent: (box.width / pageSize.width) * 100,
+    heightPercent: (box.height / pageSize.height) * 100,
+  };
+}
+
 function formLabel(kind?: FormFieldKind) {
   if (kind === 'checkbox') return 'Checkbox';
   if (kind === 'radio') return 'Radio button';
@@ -427,6 +453,7 @@ export function PdfEditorClient() {
   const pdfPageLayerRef = useRef<HTMLDivElement | null>(null);
   const pdfCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const pdfTextLayerRef = useRef<HTMLDivElement | null>(null);
+  const pagePointerRef = useRef<PagePointerState | null>(null);
   const [files, setFiles] = useState<PdfFileItem[]>([]);
   const [activeFileId, setActiveFileId] = useState<string | null>(null);
   const [editedBytes, setEditedBytes] = useState<Uint8Array | null>(null);
@@ -441,7 +468,9 @@ export function PdfEditorClient() {
   const [pendingObjects, setPendingObjects] = useState<PendingObject[]>([]);
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const [draggingObjectId, setDraggingObjectId] = useState<string | null>(null);
+  const [resizingObject, setResizingObject] = useState<{ id: string; handle: ResizeHandle } | null>(null);
   const [selectedText, setSelectedText] = useState<SelectedTextState | null>(null);
+  const [selectedTextMenu, setSelectedTextMenu] = useState<SelectedTextMenu | null>(null);
   const [replacementText, setReplacementText] = useState('');
   const [replacementFontSize, setReplacementFontSize] = useState(12);
   const [textLayerStatus, setTextLayerStatus] = useState('Upload a PDF to enable text selection.');
@@ -1192,7 +1221,6 @@ export function PdfEditorClient() {
   };
 
   const captureSelectedPdfText = () => {
-    if (activeTool !== 'select-text') return;
     const selection = window.getSelection();
     const pageLayer = pdfTextLayerRef.current;
     if (!selection || selection.rangeCount === 0 || !pageLayer || !pdfPageSize) return;
@@ -1245,6 +1273,7 @@ export function PdfEditorClient() {
     if (!boxes.length) {
       setError(hasRectOutsidePage ? 'Please select text on one page at a time.' : 'No selectable text boxes were found. Use Erase Text Area instead.');
       setSelectedText(null);
+      setSelectedTextMenu(null);
       return;
     }
 
@@ -1255,10 +1284,89 @@ export function PdfEditorClient() {
     }
 
     const suggestedFontSize = clampNumber(Math.round(Math.max(...boxes.map((box) => box.height)) * 0.8), 6, 72);
+    const firstBox = boxes[0];
+    const menuPosition = pdfSelectionBoxToPercents(firstBox, pdfPageSize);
     setSelectedText({ text: selectedValue, pageIndex: selectionPage, boxes });
+    setSelectedTextMenu({
+      xPercent: clampNumber(menuPosition.xPercent, 2, 72),
+      yPercent: clampNumber(menuPosition.yPercent - 8, 0, 88),
+    });
+    setSelectedObjectId(null);
     setReplacementText(selectedValue);
     setReplacementFontSize(suggestedFontSize);
     setSuccess(`Selected ${boxes.length} text box${boxes.length === 1 ? '' : 'es'} on page ${selectionPage + 1}.`);
+    setError(null);
+  };
+
+  const clearSelectedPdfText = () => {
+    setSelectedText(null);
+    setSelectedTextMenu(null);
+    setReplacementText('');
+    setReplacementFontSize(12);
+    window.getSelection()?.removeAllRanges();
+  };
+
+  const createSelectedTextCoverObjects = (mode: 'delete' | 'edit' | 'highlight') => {
+    if (!selectedText || !pdfPageSize) {
+      setError('Select text in the PDF first.');
+      return;
+    }
+
+    const coverObjects: PendingObject[] = selectedText.boxes.map((box) => {
+      const boxPercents = pdfSelectionBoxToPercents(box, pdfPageSize);
+      return {
+        id: makeObjectId(),
+        type: mode === 'highlight' ? 'highlight' : 'erase',
+        pageIndex: selectedText.pageIndex,
+        xPercent: clampNumber(boxPercents.xPercent, 0, 94),
+        yPercent: clampNumber(boxPercents.yPercent, 0, 94),
+        widthPercent: clampNumber(boxPercents.widthPercent, 1, 96),
+        heightPercent: clampNumber(boxPercents.heightPercent, 1, 40),
+        text: '',
+        fontSize: replacementFontSize,
+        color: mode === 'highlight' ? 'emerald' : 'slate',
+        bold: false,
+      };
+    });
+
+    let replacementObject: PendingObject | null = null;
+    if (mode === 'edit' && selectedText.boxes[0]) {
+      const firstBox = pdfSelectionBoxToPercents(selectedText.boxes[0], pdfPageSize);
+      const selectionWidth = selectedText.boxes.reduce((sum, box) => sum + box.width, 0);
+      replacementObject = {
+        id: makeObjectId(),
+        type: 'text',
+        pageIndex: selectedText.pageIndex,
+        xPercent: clampNumber(firstBox.xPercent, 0, 94),
+        yPercent: clampNumber(firstBox.yPercent, 0, 94),
+        widthPercent: clampNumber((selectionWidth / pdfPageSize.width) * 100, 8, 90),
+        heightPercent: clampNumber(firstBox.heightPercent * 1.5, 3, 30),
+        text: replacementText || selectedText.text,
+        fontSize: replacementFontSize,
+        color: annotationColor,
+        bold: false,
+      };
+    }
+
+    const nextObjects = replacementObject ? [...coverObjects, replacementObject] : coverObjects;
+    setPendingObjects((previousObjects) => [...previousObjects, ...nextObjects]);
+    setSelectedObjectId(replacementObject?.id ?? coverObjects[0]?.id ?? null);
+    setActivePageIndex(selectedText.pageIndex);
+    setSuccess(
+      mode === 'edit'
+        ? 'Created an adjustable cover and replacement text. Resize or move them, then Apply Changes.'
+        : mode === 'highlight'
+          ? 'Created adjustable highlight boxes. Resize or move them, then Apply Changes.'
+          : 'Created removable text covers. Adjust if needed, then Apply Changes.',
+    );
+    setError(null);
+    clearSelectedPdfText();
+  };
+
+  const copySelectedPdfText = () => {
+    if (!selectedText) return;
+    void navigator.clipboard?.writeText(selectedText.text);
+    setSuccess('Selected text copied.');
     setError(null);
   };
 
@@ -1266,15 +1374,76 @@ export function PdfEditorClient() {
     event.preventDefault();
     event.stopPropagation();
     setSelectedObjectId(objectId);
+    setSelectedText(null);
+    setSelectedTextMenu(null);
     setDraggingObjectId(objectId);
   };
 
-  const handlePreviewPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (!draggingObjectId || !pdfPageLayerRef.current) return;
+  const handleResizePointerDown = (event: PointerEvent<HTMLDivElement>, objectId: string, handle: ResizeHandle) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setSelectedObjectId(objectId);
+    setDraggingObjectId(null);
+    setResizingObject({ id: objectId, handle });
+  };
+
+  const handlePagePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!hasFiles || !isPlaceableEditorTool(activeTool)) return;
+    if ((event.target as HTMLElement).closest('[data-editor-object="true"], [data-resize-handle="true"], button, textarea, input, select')) return;
+
+    pagePointerRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      tool: activeTool,
+    };
+  };
+
+  const handlePagePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const pointerStart = pagePointerRef.current;
+    pagePointerRef.current = null;
+    window.setTimeout(captureSelectedPdfText, 0);
+
+    if (!pointerStart || !pdfPageLayerRef.current || !hasFiles || !isPlaceableEditorTool(pointerStart.tool)) return;
+    if ((event.target as HTMLElement).closest('[data-editor-object="true"], [data-resize-handle="true"], button, textarea, input, select')) return;
+
+    const dragDistance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+    if (dragDistance > 6 || window.getSelection()?.toString().trim()) return;
 
     const rect = pdfPageLayerRef.current.getBoundingClientRect();
     const xPercent = ((event.clientX - rect.left) / rect.width) * 100;
     const yPercent = ((event.clientY - rect.top) / rect.height) * 100;
+    addPendingObjectForActiveTool(xPercent, yPercent);
+  };
+
+  const handlePreviewPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (!pdfPageLayerRef.current) return;
+
+    const rect = pdfPageLayerRef.current.getBoundingClientRect();
+    const xPercent = ((event.clientX - rect.left) / rect.width) * 100;
+    const yPercent = ((event.clientY - rect.top) / rect.height) * 100;
+
+    if (resizingObject) {
+      const object = pendingObjects.find((candidate) => candidate.id === resizingObject.id);
+      if (!object) return;
+
+      const right = object.xPercent + object.widthPercent;
+      const bottom = object.yPercent + object.heightPercent;
+      const nextX = resizingObject.handle.includes('w') ? clampNumber(xPercent, 0, right - 1) : object.xPercent;
+      const nextY = resizingObject.handle.includes('n') ? clampNumber(yPercent, 0, bottom - 1) : object.yPercent;
+      const nextRight = resizingObject.handle.includes('e') ? clampNumber(xPercent, object.xPercent + 1, 100) : right;
+      const nextBottom = resizingObject.handle.includes('s') ? clampNumber(yPercent, object.yPercent + 1, 100) : bottom;
+
+      updatePendingObject(resizingObject.id, {
+        xPercent: clampNumber(nextX, 0, 96),
+        yPercent: clampNumber(nextY, 0, 96),
+        widthPercent: clampNumber(nextRight - nextX, 1, 100 - nextX),
+        heightPercent: clampNumber(nextBottom - nextY, 1, 100 - nextY),
+      });
+      return;
+    }
+
+    if (!draggingObjectId) return;
+
     updatePendingObject(draggingObjectId, {
       xPercent: clampNumber(xPercent, 0, 94),
       yPercent: clampNumber(yPercent, 0, 94),
@@ -2211,7 +2380,7 @@ export function PdfEditorClient() {
         </div>
       </div>
 
-      <div className={hasFiles ? `grid h-[calc(100vh-120px)] min-h-[680px] gap-0 ${showPropertiesPanel ? 'lg:grid-cols-[220px_minmax(760px,1fr)_360px]' : 'lg:grid-cols-[220px_minmax(760px,1fr)]'}` : 'grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]'}>
+      <div className={hasFiles ? `grid h-[calc(100vh-120px)] min-h-[680px] gap-0 ${showPropertiesPanel ? 'lg:grid-cols-[220px_minmax(760px,1fr)_420px]' : 'lg:grid-cols-[220px_minmax(760px,1fr)]'}` : 'grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]'}>
         <div className={hasFiles ? 'space-y-4 border-r border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900 lg:h-[calc(100vh-120px)] lg:overflow-auto' : 'space-y-6'}>
           <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -3156,9 +3325,18 @@ export function PdfEditorClient() {
                     pdfPageLayerRef.current = node;
                   }}
                   className={hasFiles ? 'relative mx-auto min-h-[calc(100vh-350px)] w-fit origin-top bg-white shadow-2xl shadow-slate-900/20' : 'relative mx-auto min-h-[560px] w-fit origin-top bg-white'}
+                  onPointerDownCapture={handlePagePointerDown}
+                  onPointerUpCapture={handlePagePointerUp}
                   onPointerMove={handlePreviewPointerMove}
-                  onPointerUp={() => setDraggingObjectId(null)}
-                  onPointerLeave={() => setDraggingObjectId(null)}
+                  onPointerUp={() => {
+                    setDraggingObjectId(null);
+                    setResizingObject(null);
+                  }}
+                  onPointerLeave={() => {
+                    setDraggingObjectId(null);
+                    setResizingObject(null);
+                    pagePointerRef.current = null;
+                  }}
                   onMouseUp={captureSelectedPdfText}
                 >
                   {previewUrl && pdfRenderFailed ? (
@@ -3178,14 +3356,14 @@ export function PdfEditorClient() {
                         className="pdf-text-layer absolute inset-0 overflow-hidden text-transparent"
                         style={{
                           cursor: activeTool === 'select-text' ? 'text' : 'default',
-                          userSelect: activeTool === 'select-text' ? 'text' : 'none',
-                          pointerEvents: activeTool === 'select-text' ? 'auto' : 'none',
+                          userSelect: draggingObjectId || resizingObject ? 'none' : 'text',
+                          pointerEvents: draggingObjectId || resizingObject ? 'none' : 'auto',
                         }}
                       />
                       {selectedText && selectedText.pageIndex === activePageIndex && pdfPageSize && selectedText.boxes.map((box, index) => (
                         <div
                           key={`${box.x}-${box.y}-${index}`}
-                          className="pointer-events-none absolute rounded-sm border-2 border-blue-500 bg-blue-400/15"
+                          className="pointer-events-none absolute rounded-sm border-2 border-dashed border-orange-500 bg-orange-300/15"
                           style={{
                             left: `${(box.x / pdfPageSize.width) * 100}%`,
                             top: `${((pdfPageSize.height - box.y - box.height) / pdfPageSize.height) * 100}%`,
@@ -3194,6 +3372,22 @@ export function PdfEditorClient() {
                           }}
                         />
                       ))}
+                      {selectedText && selectedText.pageIndex === activePageIndex && selectedTextMenu && (
+                        <div
+                          className="absolute z-30 flex flex-wrap gap-1 rounded-xl border border-slate-200 bg-white p-2 text-xs font-bold text-slate-700 shadow-2xl dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                          style={{
+                            left: `${selectedTextMenu.xPercent}%`,
+                            top: `${selectedTextMenu.yPercent}%`,
+                          }}
+                          onPointerDown={(event) => event.stopPropagation()}
+                        >
+                          <button type="button" onClick={() => createSelectedTextCoverObjects('edit')} className="rounded-lg bg-emerald-500 px-2 py-1 text-white">Edit</button>
+                          <button type="button" onClick={() => createSelectedTextCoverObjects('delete')} className="rounded-lg bg-red-600 px-2 py-1 text-white">Delete</button>
+                          <button type="button" onClick={copySelectedPdfText} className="rounded-lg border border-slate-200 px-2 py-1 dark:border-slate-700">Copy</button>
+                          <button type="button" onClick={() => createSelectedTextCoverObjects('highlight')} className="rounded-lg border border-amber-200 px-2 py-1 text-amber-700 dark:border-amber-500/30 dark:text-amber-100">Highlight</button>
+                          <button type="button" onClick={clearSelectedPdfText} className="rounded-lg border border-slate-200 px-2 py-1 dark:border-slate-700">Clear</button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className={hasFiles ? 'flex h-[calc(100vh-340px)] min-h-[640px] flex-col items-center justify-center p-6 text-center' : 'flex h-[560px] flex-col items-center justify-center p-6 text-center'}>
@@ -3208,9 +3402,7 @@ export function PdfEditorClient() {
                   )}
 
                   <div
-                    className="absolute inset-0"
-                    style={{ pointerEvents: activeTool === 'select-text' ? 'none' : activeTool !== 'none' || pendingObjects.length > 0 ? 'auto' : 'none' }}
-                    onPointerDown={handlePreviewClick}
+                    className="pointer-events-none absolute inset-0"
                   >
                     {pendingObjects.filter((object) => object.pageIndex === activePageIndex).map((object) => {
                       const isSelected = object.id === selectedObjectId;
@@ -3219,8 +3411,9 @@ export function PdfEditorClient() {
                           key={object.id}
                           role="button"
                           tabIndex={0}
+                          data-editor-object="true"
                           onPointerDown={(event) => handleObjectPointerDown(event, object.id)}
-                          className={`absolute cursor-move rounded-md border-2 border-dashed shadow-lg ${
+                          className={`pointer-events-auto absolute cursor-move rounded-md border-2 border-dashed shadow-lg ${
                             isSelected ? 'border-orange-500 ring-4 ring-orange-300/30' : 'border-emerald-400'
                           }`}
                           style={{
@@ -3282,7 +3475,26 @@ export function PdfEditorClient() {
                             </div>
                           )}
                           {isSelected && (
-                            <div className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-orange-500" />
+                            <>
+                              {(['nw', 'ne', 'sw', 'se'] as const).map((handle) => (
+                                <div
+                                  key={handle}
+                                  data-resize-handle="true"
+                                  onPointerDown={(event) => handleResizePointerDown(event, object.id, handle)}
+                                  className={`absolute h-3 w-3 rounded-full border-2 border-white bg-orange-500 shadow ${
+                                    handle === 'nw' ? '-left-1.5 -top-1.5 cursor-nwse-resize' :
+                                      handle === 'ne' ? '-right-1.5 -top-1.5 cursor-nesw-resize' :
+                                        handle === 'sw' ? '-bottom-1.5 -left-1.5 cursor-nesw-resize' :
+                                          '-bottom-1.5 -right-1.5 cursor-nwse-resize'
+                                  }`}
+                                />
+                              ))}
+                              <div className="absolute -top-9 left-0 z-20 flex gap-1 rounded-lg border border-slate-200 bg-white p-1 text-[10px] font-bold text-slate-700 shadow-xl dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <button type="button" onClick={() => duplicatePendingObject(object.id)} className="rounded px-2 py-1 hover:bg-slate-100 dark:hover:bg-slate-800">Duplicate</button>
+                                <button type="button" onClick={() => deletePendingObject(object.id)} className="rounded px-2 py-1 text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10">Delete</button>
+                                <button type="button" onClick={() => void applyPendingObjects()} className="rounded bg-emerald-500 px-2 py-1 text-white">Apply</button>
+                              </div>
+                            </>
                           )}
                         </div>
                       );
@@ -3290,7 +3502,7 @@ export function PdfEditorClient() {
 
                     {selectedObject && (
                       <div
-                        className="absolute z-20 flex flex-wrap gap-1 rounded-xl border border-slate-200 bg-white p-2 text-xs shadow-xl"
+                        className="pointer-events-auto absolute z-20 flex flex-wrap gap-1 rounded-xl border border-slate-200 bg-white p-2 text-xs shadow-xl"
                         onPointerDown={(event) => event.stopPropagation()}
                         style={{
                           left: `${Math.min(selectedObject.xPercent, 62)}%`,
@@ -3452,49 +3664,64 @@ export function PdfEditorClient() {
 
             <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 dark:border-blue-500/30 dark:bg-blue-500/10">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-sm font-bold text-blue-950 dark:text-blue-100">Selected text</h3>
+                <h3 className="text-base font-bold text-blue-950 dark:text-blue-100">Selected Text</h3>
                 <span className="rounded-full bg-white/70 px-2 py-1 text-[10px] font-bold text-blue-700 dark:bg-blue-500/20 dark:text-blue-100">
                   {textLayerAvailable ? 'Selectable' : 'Fallback'}
                 </span>
               </div>
               <p className="mt-2 text-xs leading-5 text-blue-800 dark:text-blue-100">{textLayerStatus}</p>
+              <p className="mt-2 rounded-xl bg-white/70 p-3 text-xs font-semibold leading-5 text-blue-900 dark:bg-slate-950/70 dark:text-blue-100">
+                Selected PDF text is removed by covering the selected visible text. Some scanned PDFs may require Erase Area.
+              </p>
               {selectedText ? (
                 <div className="mt-4 space-y-3">
-                  <div className="rounded-xl bg-white/80 p-3 text-sm text-slate-700 dark:bg-slate-950/70 dark:text-slate-200">
-                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Preview</p>
-                    <p className="mt-1 max-h-28 overflow-auto">{selectedText.text}</p>
-                  </div>
+                  <FieldLabel label="Original selected text">
+                    <textarea value={selectedText.text} readOnly className={`${inputClassName} min-h-28 resize-y`} />
+                  </FieldLabel>
                   <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-blue-900 dark:text-blue-100">
                     <span>Page {selectedText.pageIndex + 1}</span>
                     <span>{selectedText.boxes.length} text box{selectedText.boxes.length === 1 ? '' : 'es'}</span>
                   </div>
-                  <button type="button" onClick={() => void applySelectedTextEdit('delete')} disabled={isProcessing} className="w-full rounded-xl bg-red-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-50">
-                    Delete Selected Text
-                  </button>
                   <FieldLabel label="Replacement text">
-                    <input value={replacementText} onChange={(event) => setReplacementText(event.target.value)} className={inputClassName} />
+                    <textarea value={replacementText} onChange={(event) => setReplacementText(event.target.value)} className={`${inputClassName} min-h-28 resize-y`} />
                   </FieldLabel>
-                  <FieldLabel label="Replacement font size">
-                    <input
-                      type="number"
-                      min={6}
-                      max={72}
-                      value={replacementFontSize}
-                      onChange={(event) => setReplacementFontSize(clampNumber(Number(event.target.value), 6, 72))}
-                      className={inputClassName}
-                    />
-                  </FieldLabel>
-                  <button type="button" onClick={() => void applySelectedTextEdit('replace')} disabled={isProcessing || !replacementText.trim()} className="w-full rounded-xl bg-emerald-500 px-3 py-2 text-sm font-bold text-white transition hover:bg-emerald-600 disabled:opacity-50">
-                    Replace Selected Text
-                  </button>
+                  <div className="grid grid-cols-2 gap-3">
+                    <FieldLabel label="Replacement font size">
+                      <input
+                        type="number"
+                        min={6}
+                        max={72}
+                        value={replacementFontSize}
+                        onChange={(event) => setReplacementFontSize(clampNumber(Number(event.target.value), 6, 72))}
+                        className={inputClassName}
+                      />
+                    </FieldLabel>
+                    <FieldLabel label="Replacement color">
+                      <select value={annotationColor} onChange={(event) => setAnnotationColor(event.target.value as PdfTextColor)} className={inputClassName}>
+                        <option value="slate">Slate</option>
+                        <option value="emerald">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="red">Red</option>
+                      </select>
+                    </FieldLabel>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button type="button" onClick={() => createSelectedTextCoverObjects('edit')} disabled={isProcessing} className="rounded-xl bg-emerald-500 px-3 py-2 text-sm font-bold text-white transition hover:bg-emerald-600 disabled:opacity-50">
+                      Edit Selected Text
+                    </button>
+                    <button type="button" onClick={() => createSelectedTextCoverObjects('delete')} disabled={isProcessing} className="rounded-xl bg-red-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-50">
+                      Delete Selected Text
+                    </button>
+                    <button type="button" onClick={() => createSelectedTextCoverObjects('highlight')} disabled={isProcessing} className={secondaryButtonClassName}>
+                      Highlight Selected Text
+                    </button>
+                    <button type="button" onClick={copySelectedPdfText} className={secondaryButtonClassName}>
+                      Copy Text
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => {
-                      setSelectedText(null);
-                      setReplacementText('');
-                      setReplacementFontSize(12);
-                      window.getSelection()?.removeAllRanges();
-                    }}
+                    onClick={clearSelectedPdfText}
                     className={`${secondaryButtonClassName} w-full`}
                   >
                     Clear Selection
@@ -3516,15 +3743,42 @@ export function PdfEditorClient() {
                 <div className="mt-3 space-y-3 text-sm text-slate-600 dark:text-slate-300">
                   <p className="font-semibold text-slate-900 dark:text-white">{getPendingObjectName(selectedObject)}</p>
                   <FieldLabel label={selectedObject.type === 'form-field' ? 'Label' : 'Content'}>
-                    <input
+                    <textarea
                       value={selectedObject.type === 'form-field' ? selectedObject.label || '' : selectedObject.text}
                       onChange={(event) => updatePendingObject(selectedObject.id, selectedObject.type === 'form-field' ? { label: event.target.value } : { text: event.target.value })}
-                      className={inputClassName}
+                      className={`${inputClassName} min-h-24 resize-y`}
                     />
                   </FieldLabel>
+                  <div className="grid grid-cols-2 gap-3">
+                    <FieldLabel label="X position">
+                      <input type="number" min={0} max={100} value={Math.round(selectedObject.xPercent)} onChange={(event) => updatePendingObject(selectedObject.id, { xPercent: clampNumber(Number(event.target.value), 0, 98) })} className={inputClassName} />
+                    </FieldLabel>
+                    <FieldLabel label="Y position">
+                      <input type="number" min={0} max={100} value={Math.round(selectedObject.yPercent)} onChange={(event) => updatePendingObject(selectedObject.id, { yPercent: clampNumber(Number(event.target.value), 0, 98) })} className={inputClassName} />
+                    </FieldLabel>
+                    <FieldLabel label="Width">
+                      <input type="number" min={1} max={100} value={Math.round(selectedObject.widthPercent)} onChange={(event) => updatePendingObject(selectedObject.id, { widthPercent: clampNumber(Number(event.target.value), 1, 100 - selectedObject.xPercent) })} className={inputClassName} />
+                    </FieldLabel>
+                    <FieldLabel label="Height">
+                      <input type="number" min={1} max={100} value={Math.round(selectedObject.heightPercent)} onChange={(event) => updatePendingObject(selectedObject.id, { heightPercent: clampNumber(Number(event.target.value), 1, 100 - selectedObject.yPercent) })} className={inputClassName} />
+                    </FieldLabel>
+                    <FieldLabel label={selectedObject.type === 'line' ? 'Stroke size' : 'Font size'}>
+                      <input type="number" min={1} max={96} value={selectedObject.fontSize} onChange={(event) => updatePendingObject(selectedObject.id, { fontSize: clampNumber(Number(event.target.value), 1, 96) })} className={inputClassName} />
+                    </FieldLabel>
+                    <FieldLabel label={selectedObject.type === 'erase' ? 'Replacement color' : 'Color'}>
+                      <select value={selectedObject.color} onChange={(event) => updatePendingObject(selectedObject.id, { color: event.target.value as PdfTextColor })} className={inputClassName}>
+                        <option value="slate">Slate</option>
+                        <option value="emerald">Green</option>
+                        <option value="blue">Blue</option>
+                        <option value="red">Red</option>
+                      </select>
+                    </FieldLabel>
+                  </div>
                   <div className="grid grid-cols-2 gap-2">
+                    <button type="button" onClick={() => updatePendingObject(selectedObject.id, { bold: !selectedObject.bold })} className={secondaryButtonClassName}>{selectedObject.bold ? 'Bold on' : 'Bold off'}</button>
                     <button type="button" onClick={() => duplicatePendingObject(selectedObject.id)} className={secondaryButtonClassName}>Duplicate</button>
                     <button type="button" onClick={() => deletePendingObject(selectedObject.id)} className={secondaryButtonClassName}>Delete</button>
+                    <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className={primaryButtonClassName}>Apply</button>
                   </div>
                 </div>
               ) : (
