@@ -3,6 +3,9 @@ import {
   createEditedFileName,
   convertDomRectToPdfRect,
   formatBytes,
+  getPdfEditorWorkflowStep,
+  getPdfTextFallbackMessage,
+  getPendingChangesCount,
   groupSelectionBoxes,
   mapDomRectToPdfBox,
   padPdfSelectionBox,
@@ -68,4 +71,17 @@ export function runPdfEditorUtilsTests() {
   assert.equal(validateOnePageSelection([2, 2]), 2);
   assert.equal(validateOnePageSelection([]), null);
   assert.throws(() => validateOnePageSelection([1, 2]), /one page at a time/);
+
+  assert.equal(getPendingChangesCount(0, false), 0);
+  assert.equal(getPendingChangesCount(2, true), 3);
+  assert.equal(getPdfTextFallbackMessage(false, false), 'Upload a PDF to check whether text can be selected.');
+  assert.equal(getPdfTextFallbackMessage(true, true), 'Text selection is available for this PDF.');
+  assert.equal(
+    getPdfTextFallbackMessage(true, false),
+    'This PDF appears scanned or flattened. You can still cover text areas and add replacement text.',
+  );
+  assert.equal(getPdfEditorWorkflowStep(false, 0, false), 'Upload');
+  assert.equal(getPdfEditorWorkflowStep(true, 0, false), 'Edit');
+  assert.equal(getPdfEditorWorkflowStep(true, 2, false), 'Apply');
+  assert.equal(getPdfEditorWorkflowStep(true, 0, true), 'Download');
 }

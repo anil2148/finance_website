@@ -14,6 +14,9 @@ import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
 import {
   createEditedFileName,
   formatBytes,
+  getPdfEditorWorkflowStep,
+  getPdfTextFallbackMessage,
+  getPendingChangesCount,
   groupSelectionBoxes,
   mapDomRectToPdfBox,
   padPdfSelectionBox,
@@ -36,6 +39,7 @@ type WatermarkPosition = 'center' | 'top' | 'bottom' | 'diagonal';
 type PageNumberPosition = 'bottom-center' | 'bottom-right' | 'top-right';
 type PageNumberFormat = 'page' | 'number' | 'page-of-total';
 type BlankPagePlacement = 'end' | 'before' | 'after';
+type DownloadChoice = 'apply' | 'current';
 type EditorTool =
   | 'none'
   | 'select-text'
@@ -109,6 +113,14 @@ type ToolCard = {
   description: string;
   status: ToolStatus;
   group: 'Organize Pages' | 'Edit Content' | 'Combine / Split' | 'Export';
+};
+
+type GoalAction = {
+  title: string;
+  description: string;
+  helper: string;
+  action: () => void;
+  disabled?: boolean;
 };
 
 const MAX_FILE_SIZE_MB = 50;
@@ -269,21 +281,21 @@ function isTypingTarget(target: EventTarget | null) {
 }
 
 function getToolInstruction(tool: EditorTool) {
-  if (tool === 'select-text') return 'Drag over text in the PDF to select it. Then choose Delete or Replace.';
-  if (tool === 'add-text') return 'Add Text: Click anywhere on the PDF to place text. Drag to reposition before applying.';
-  if (tool === 'erase') return 'Erase Text Area: Click or drag over visible text to place a white cover box. Add replacement text if needed.';
-  if (tool === 'signature') return 'Signature: Click where you want your typed signature.';
-  if (tool === 'initials') return 'Initials: Click where you want your initials.';
-  if (tool === 'date') return 'Date: Click where you want today’s date.';
-  if (tool === 'checkmark') return 'Checkmark: Click the checkbox or approval spot.';
-  if (tool === 'x-mark') return 'X mark: Click where you want an X.';
-  if (tool === 'circle') return 'Circle: Click to place a circle markup, then resize from properties.';
-  if (tool === 'line') return 'Line: Click to place a line, then resize from properties.';
-  if (tool === 'highlight') return 'Highlight: Click to place a translucent highlight over text.';
-  if (tool === 'sticky-note') return 'Sticky note: Click to place a note callout.';
-  if (tool.startsWith('form-')) return 'Form field: Click where the visual field placeholder should appear.';
-  if (tool === 'page-tools') return 'Page Tools: Select pages from thumbnails or enter page numbers.';
-  return 'Choose a quick action or tool, then review your PDF before downloading.';
+  if (tool === 'select-text') return 'Select text in the PDF, then delete or replace it in the right panel.';
+  if (tool === 'add-text') return 'Click anywhere on the PDF to add text. Drag it to reposition.';
+  if (tool === 'erase') return 'Drag over the content you want to remove. Use this when text cannot be selected.';
+  if (tool === 'signature') return 'Click where you want your signature.';
+  if (tool === 'initials') return 'Click where you want your initials.';
+  if (tool === 'date') return 'Click where you want to place today’s date.';
+  if (tool === 'checkmark') return 'Click where you want to place a checkmark.';
+  if (tool === 'x-mark') return 'Click where you want to place an X.';
+  if (tool === 'circle') return 'Click to place a circle. Drag to move it.';
+  if (tool === 'line') return 'Click to place a line. Drag to move it.';
+  if (tool === 'highlight') return 'Click where you want to highlight.';
+  if (tool === 'sticky-note') return 'Click to add a note. Drag it to move.';
+  if (tool.startsWith('form-')) return 'Click where the form field should appear.';
+  if (tool === 'page-tools') return 'Select pages from the left panel, then rotate, delete, or extract.';
+  return 'Choose what you want to do, then click or select content on the PDF.';
 }
 
 async function readPdfFile(file: File): Promise<PdfFileItem> {
@@ -344,7 +356,7 @@ function getOriginalFileName(activeItem: PdfFileItem | null) {
 }
 
 function getPendingObjectName(object: PendingObject) {
-  if (object.type === 'erase') return 'Erase box';
+  if (object.type === 'erase') return 'Area to remove';
   if (object.type === 'highlight') return 'Highlight';
   if (object.type === 'circle') return 'Circle';
   if (object.type === 'line') return 'Line';
@@ -443,6 +455,8 @@ export function PdfEditorClient() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showFirstUploadGuide, setShowFirstUploadGuide] = useState(false);
+  const [downloadPromptOpen, setDownloadPromptOpen] = useState(false);
   const [pageSelection, setPageSelection] = useState('');
   const [deletePageSelection, setDeletePageSelection] = useState('');
   const [extractPageSelection, setExtractPageSelection] = useState('');
@@ -738,6 +752,7 @@ export function PdfEditorClient() {
           ? 'PDF loaded successfully.'
           : `${loadedFiles.length} PDFs loaded successfully for merge.`,
       );
+      setShowFirstUploadGuide(true);
       setEditHistory((previousHistory) => [
         ...loadedFiles.map((file) => `Uploaded ${file.name} (${getPageLabel(file.pageCount)})`),
         ...previousHistory,
@@ -845,6 +860,8 @@ export function PdfEditorClient() {
   };
 
   const deletePages = async () => {
+    if (!window.confirm('Delete the selected pages? This changes the edited PDF.')) return;
+
     await withCurrentPdf(async (pdfDoc, activeFile) => {
       const pageIndexes = parsePageSelection(deletePageSelection.trim() || selectedPageInput, pdfDoc.getPageCount());
       if (pageIndexes.length >= pdfDoc.getPageCount()) {
@@ -1491,6 +1508,7 @@ export function PdfEditorClient() {
       updateEditedPdf(result.bytes, result.pageCount, result.fileName, result.message);
       setPendingObjects([]);
       setSelectedObjectId(null);
+      setSuccess('Changes applied. Your PDF is ready to download.');
     } catch (caughtError) {
       setError(caughtError instanceof Error ? caughtError.message : 'Unable to apply pending edits.');
     } finally {
@@ -1652,26 +1670,27 @@ export function PdfEditorClient() {
     setError(null);
   };
 
-  const downloadEditedPdf = async () => {
+  const downloadEditedPdf = async (choice?: DownloadChoice) => {
     if (!currentBytes || !activeItem) {
       setError('Please upload a PDF file.');
       return;
     }
 
-    if (pendingObjects.length > 0) {
-      const shouldApplyPendingEdits = window.confirm('You have pending edits. Apply them before downloading?');
-      if (!shouldApplyPendingEdits) {
-        setError('You have pending edits. Apply them before downloading, or clear pending edits.');
-        setSuccess(null);
-        return;
-      }
+    if (pendingObjects.length > 0 && !choice) {
+      setDownloadPromptOpen(true);
+      setError(null);
+      setSuccess(null);
+      return;
+    }
 
+    if (pendingObjects.length > 0 && choice === 'apply') {
       setIsProcessing(true);
       try {
         const result = await buildPendingAppliedPdf();
         updateEditedPdf(result.bytes, result.pageCount, result.fileName, result.message);
         setPendingObjects([]);
         setSelectedObjectId(null);
+        setDownloadPromptOpen(false);
         downloadBytes(result.bytes, result.fileName, 'Pending edits applied. Download started.');
       } catch (caughtError) {
         setError(caughtError instanceof Error ? caughtError.message : 'Unable to apply pending edits before download.');
@@ -1682,6 +1701,7 @@ export function PdfEditorClient() {
     }
 
     const fileName = hasEditedPdf ? downloadFileName ?? getEditedFileName(activeItem.name) : activeItem.name;
+    setDownloadPromptOpen(false);
     downloadBytes(currentBytes, fileName, hasEditedPdf ? 'Edited PDF ready to download.' : 'Original PDF download started.');
   };
 
@@ -1717,6 +1737,8 @@ export function PdfEditorClient() {
       setError('Please upload a PDF file.');
       return;
     }
+
+    if (!window.confirm('Reset to the original PDF and clear pending edits?')) return;
 
     resetEditedState('Reset changes to the original PDF.');
     setPendingObjects([]);
@@ -1822,6 +1844,15 @@ export function PdfEditorClient() {
     setSelectedPageIndexes([]);
   };
 
+  const focusWorkspace = () => {
+    previewWorkspaceRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  const activateToolAndFocus = (tool: EditorTool, message?: string) => {
+    setToolAndMessage(tool, message);
+    window.setTimeout(focusWorkspace, 50);
+  };
+
   const useSelectedPagesForToolInputs = () => {
     if (!selectedPageInput) {
       setError('Select one or more page cards first.');
@@ -1882,6 +1913,74 @@ export function PdfEditorClient() {
   }, [deletePendingObject, redoLastEdit, selectedObjectId, undoLastEdit]);
 
   const canEdit = hasFiles && !isProcessing;
+  const pendingChangesCount = getPendingChangesCount(pendingObjects.length, false);
+  const workflowStep = getPdfEditorWorkflowStep(hasFiles, pendingChangesCount, hasEditedPdf);
+  const textSelectionSummary = getPdfTextFallbackMessage(hasFiles, textLayerAvailable);
+  const workflowSteps = ['Upload', 'Edit', 'Apply', 'Download'];
+  const goalActions: GoalAction[] = [
+    {
+      title: 'Fill or add text',
+      description: 'Click the PDF and type what you need.',
+      helper: 'Best for filling blanks and forms.',
+      action: () => activateToolAndFocus('add-text'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Sign document',
+      description: 'Place a typed signature or initials.',
+      helper: 'Click where the signature belongs.',
+      action: () => {
+        setSignatureText(signatureText || 'Signature');
+        activateToolAndFocus('signature');
+      },
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Replace existing text',
+      description: 'Select text directly, then type the replacement.',
+      helper: textLayerAvailable ? 'Text selection is available for this page.' : 'If text cannot be selected, use Remove Area.',
+      action: () => activateToolAndFocus(textLayerAvailable ? 'select-text' : 'erase', textLayerAvailable ? 'Select text in the PDF, then type replacement text in the right panel.' : 'This looks scanned or flattened. Drag over the area to cover it, then add replacement text.'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Remove existing text',
+      description: 'Select text and remove it, or cover an area.',
+      helper: textLayerAvailable ? 'Try selecting text first.' : 'Use Remove Area for scanned PDFs.',
+      action: () => activateToolAndFocus(textLayerAvailable ? 'select-text' : 'erase', textLayerAvailable ? 'Select text to remove. If you cannot select it, use Remove Area.' : 'Drag over the content you want to remove.'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Add date/checkmark',
+      description: 'One-click date, checkmark, X, or N/A tools.',
+      helper: 'Choose a quick-fill item, then click the PDF.',
+      action: () => activateToolAndFocus('date'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Organize pages',
+      description: 'Rotate, delete, extract, or reorder pages.',
+      helper: 'Select pages from the page cards.',
+      action: () => activateToolAndFocus('page-tools'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Merge PDFs',
+      description: 'Upload multiple PDFs and merge them in order.',
+      helper: 'Use the file list to move PDFs up or down.',
+      action: () => void mergePdfs(),
+      disabled: files.length < 2,
+    },
+    {
+      title: 'Add watermark/page numbers',
+      description: 'Add document labels or page numbers.',
+      helper: 'Available under More tools.',
+      action: () => {
+        setSuccess('Open More tools to add a watermark or page numbers.');
+        setError(null);
+      },
+      disabled: !hasFiles,
+    },
+  ];
   const topToolbarButtonClassName =
     'rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-emerald-500/10';
 
@@ -1912,7 +2011,7 @@ export function PdfEditorClient() {
             <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">FinanceSphere tools</p>
             <h1 className="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">PDF Editor</h1>
             <p className="mt-4 text-base leading-7 text-slate-200 sm:text-lg">
-              Upload, preview, organize, annotate, merge, split, and download PDFs from a clean browser-only workspace.
+              Upload a PDF, choose a goal, click or select content on the page, apply changes, and download the finished file.
             </p>
             <div className="mt-6 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm text-emerald-50">
               Your PDF stays in your browser. Files are not uploaded to our server.
@@ -1923,6 +2022,24 @@ export function PdfEditorClient() {
           </div>
         </div>
       </div>
+
+      <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div className="grid gap-3 md:grid-cols-5">
+          {workflowSteps.map((step, index) => {
+            const isActive = step === workflowStep;
+            const isComplete = workflowSteps.indexOf(workflowStep) > index;
+            return (
+              <div key={step} className={`rounded-2xl border p-3 ${isActive ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-500/10' : isComplete ? 'border-emerald-200 bg-white dark:border-emerald-500/30 dark:bg-slate-950' : 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950'}`}>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Step {index + 1}</p>
+                <p className={`mt-1 text-sm font-bold ${isActive ? 'text-emerald-700 dark:text-emerald-200' : 'text-slate-900 dark:text-white'}`}>{step}</p>
+              </div>
+            );
+          })}
+        </div>
+        <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+          {workflowStep === 'Upload' ? 'Step 1: Upload your PDF.' : workflowStep === 'Edit' ? 'Step 2: Choose a tool, then click or select content on the PDF.' : workflowStep === 'Apply' ? `Step 3: You have ${pendingChangesCount} pending edit${pendingChangesCount === 1 ? '' : 's'}. Apply changes before downloading.` : 'Step 4: Download your edited PDF.'}
+        </p>
+      </section>
 
       <div className="sticky top-0 z-30 -mx-4 border-y border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2">
@@ -2003,6 +2120,21 @@ export function PdfEditorClient() {
               </label>
             </div>
 
+            {!hasFiles && (
+              <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">What you can do</h3>
+                <div className="mt-3 grid gap-2 text-sm text-slate-600 dark:text-slate-300">
+                  <span>Fill forms and add text</span>
+                  <span>Sign documents</span>
+                  <span>Replace or remove visible text</span>
+                  <span>Merge, split, rotate, and organize pages</span>
+                </div>
+                <p className="mt-3 rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-xs font-semibold text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-100">
+                  Your PDF stays in your browser. Files are not uploaded to our server.
+                </p>
+              </div>
+            )}
+
             {files.length > 0 && (
               <div className="mt-5 space-y-3">
                 <div className="flex items-center justify-between gap-3">
@@ -2063,15 +2195,48 @@ export function PdfEditorClient() {
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Quick actions</h2>
+                <h2 className="text-xl font-semibold text-slate-950 dark:text-white">What do you want to do?</h2>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                  Pick a common task and the editor will switch to the right mode.
+                  Pick a goal. The editor will choose the right tool and guide your next click.
                 </p>
               </div>
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200">
                 Beginner friendly
               </span>
             </div>
+            <div className="mt-4 grid gap-3">
+              {goalActions.map((goal) => (
+                <button
+                  key={goal.title}
+                  type="button"
+                  onClick={goal.action}
+                  disabled={goal.disabled}
+                  className="rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-emerald-500/10"
+                >
+                  <span className="block text-sm font-bold text-slate-950 dark:text-white">{goal.title}</span>
+                  <span className="mt-1 block text-xs leading-5 text-slate-600 dark:text-slate-300">{goal.description}</span>
+                  <span className="mt-2 block text-xs font-semibold text-emerald-700 dark:text-emerald-300">{goal.helper}</span>
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
+              {textSelectionSummary}
+            </div>
+            {showFirstUploadGuide && hasFiles && (
+              <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="font-bold">Try this first</p>
+                    <p className="mt-1">1. Click Text. 2. Click on the PDF. 3. Type your text. 4. Drag it into place. 5. Apply and download.</p>
+                  </div>
+                  <button type="button" onClick={() => setShowFirstUploadGuide(false)} className="rounded-lg border border-blue-200 px-2 py-1 text-xs font-bold text-blue-700 dark:border-blue-400/40 dark:text-blue-100">
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            )}
+            <details className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+              <summary className="cursor-pointer text-sm font-bold text-slate-900 dark:text-white">More tools</summary>
             <div className="mt-4 space-y-4">
               {[
                 {
@@ -2197,6 +2362,7 @@ export function PdfEditorClient() {
               <p className="mt-1">Step 1: Choose Select Text. Step 2: Highlight text in the PDF. Step 3: Delete or replace it.</p>
               <p className="mt-2 text-xs">Use Erase Text Area when text selection is unavailable or the PDF is scanned.</p>
             </div>
+            </details>
           </section>
 
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -2288,6 +2454,30 @@ export function PdfEditorClient() {
               </p>
             )}
           </section>
+
+          {hasFiles && (
+            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Pages</h2>
+                <span className="text-xs text-slate-500">{currentPageCount} total</span>
+              </div>
+              <div className="mt-4 grid max-h-72 gap-2 overflow-auto">
+                {Array.from({ length: currentPageCount }, (_, pageIndex) => (
+                  <button
+                    key={pageIndex}
+                    type="button"
+                    onClick={() => {
+                      setActivePageIndex(pageIndex);
+                      focusWorkspace();
+                    }}
+                    className={`rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${activePageIndex === pageIndex ? 'border-emerald-400 bg-emerald-50 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300'}`}
+                  >
+                    Page {pageIndex + 1}
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
 
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -2666,6 +2856,31 @@ export function PdfEditorClient() {
               {getToolInstruction(activeTool)}
             </div>
 
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-950">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Quick fill</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[
+                  { label: 'Text', run: () => activateToolAndFocus('add-text') },
+                  { label: 'Signature', run: () => applyQuickAction('signature') },
+                  { label: 'Initials', run: () => applyQuickAction('initials') },
+                  { label: 'Date', run: () => applyQuickAction('date') },
+                  { label: 'Checkmark', run: () => applyQuickAction('checkmark') },
+                  { label: 'X', run: () => applyQuickAction('x-mark') },
+                  { label: 'N/A', run: () => applyQuickAction('na') },
+                ].map((item) => (
+                  <button
+                    key={item.label}
+                    type="button"
+                    onClick={item.run}
+                    disabled={!hasFiles}
+                    className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-emerald-500/10"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <div className="inline-flex overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
                 <button
@@ -2832,7 +3047,7 @@ export function PdfEditorClient() {
                         >
                           {object.type === 'erase' ? (
                             <div className="h-full min-h-8 rounded bg-white text-center text-[10px] font-semibold text-slate-400">
-                              Erase area
+                              Area to remove
                             </div>
                           ) : object.type === 'highlight' ? (
                             <div className="h-full min-h-7 rounded text-center text-[10px] font-semibold text-amber-800/70">
@@ -2951,8 +3166,42 @@ export function PdfEditorClient() {
 
         <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Right sidebar</h2>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Selected object properties, pending edits, edit history, and page info.</p>
+            <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Current step</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+              {workflowStep === 'Upload' ? 'Upload a PDF to begin.' : workflowStep === 'Edit' ? 'Choose a goal and edit directly on the PDF.' : workflowStep === 'Apply' ? 'Apply pending edits before downloading.' : 'Your edited PDF is ready to download.'}
+            </p>
+
+            <div className="mt-5 rounded-2xl border border-emerald-100 bg-emerald-50 p-4 dark:border-emerald-500/30 dark:bg-emerald-500/10">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-bold text-emerald-900 dark:text-emerald-100">Download</h3>
+                  <p className="mt-1 text-xs text-emerald-800 dark:text-emerald-100">
+                    {pendingChangesCount > 0 ? `You have ${pendingChangesCount} pending edit${pendingChangesCount === 1 ? '' : 's'}. Apply them before downloading.` : 'No pending edits blocking download.'}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-3 grid gap-2">
+                <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className={primaryButtonClassName}>
+                  Apply Changes
+                </button>
+                <button type="button" onClick={() => void downloadEditedPdf()} disabled={!hasFiles || isProcessing} className={primaryButtonClassName}>
+                  Download Edited PDF
+                </button>
+                <button type="button" onClick={downloadOriginalPdf} disabled={!hasFiles || isProcessing} className={secondaryButtonClassName}>
+                  Download Original PDF
+                </button>
+              </div>
+              {downloadPromptOpen && (
+                <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+                  <p className="font-bold">You have pending edits. Apply them before downloading?</p>
+                  <div className="mt-3 grid gap-2">
+                    <button type="button" onClick={() => void downloadEditedPdf('apply')} className={primaryButtonClassName}>Apply and Download</button>
+                    <button type="button" onClick={() => void downloadEditedPdf('current')} className={secondaryButtonClassName}>Download without pending edits</button>
+                    <button type="button" onClick={() => setDownloadPromptOpen(false)} className={secondaryButtonClassName}>Cancel</button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
               <h3 className="text-sm font-bold text-slate-900 dark:text-white">Page info</h3>

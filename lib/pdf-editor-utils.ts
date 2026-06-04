@@ -155,3 +155,20 @@ export function validateOnePageSelection(pageIndexes: number[]) {
   }
   return pageIndexes[0] ?? null;
 }
+
+export function getPendingChangesCount(pendingObjectCount: number, hasSelectedText: boolean) {
+  return Math.max(0, pendingObjectCount) + (hasSelectedText ? 1 : 0);
+}
+
+export function getPdfTextFallbackMessage(hasFiles: boolean, textLayerAvailable: boolean) {
+  if (!hasFiles) return 'Upload a PDF to check whether text can be selected.';
+  if (textLayerAvailable) return 'Text selection is available for this PDF.';
+  return 'This PDF appears scanned or flattened. You can still cover text areas and add replacement text.';
+}
+
+export function getPdfEditorWorkflowStep(hasFiles: boolean, pendingCount: number, hasEditedPdf: boolean) {
+  if (!hasFiles) return 'Upload';
+  if (pendingCount > 0) return 'Apply';
+  if (hasEditedPdf) return 'Download';
+  return 'Edit';
+}
