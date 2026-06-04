@@ -23,6 +23,8 @@ type WebViewerInstance = {
     };
     annotationManager: {
       exportAnnotations: () => Promise<string>;
+      getAnnotationsList?: () => unknown[];
+      deleteAnnotations?: (annotations: unknown[]) => void;
       addAnnotation?: (annotation: unknown) => void;
       redrawAnnotation?: (annotation: unknown) => void;
     };
@@ -58,15 +60,18 @@ const limitationMessage =
   'Some PDFs allow text selection. For scanned or flattened PDFs, use Erase Area to cover content and add replacement text.';
 
 const sdkToolNames = {
+  pan: 'Pan',
+  select: 'AnnotationEdit',
   text: 'AnnotationCreateFreeText',
   signature: 'AnnotationCreateSignature',
   highlight: 'AnnotationCreateTextHighlight',
+  underline: 'AnnotationCreateTextUnderline',
+  strikeout: 'AnnotationCreateTextStrikeout',
   rectangle: 'AnnotationCreateRectangle',
   line: 'AnnotationCreateLine',
   arrow: 'AnnotationCreateArrow',
   redaction: 'AnnotationCreateRedaction',
   ink: 'AnnotationCreateFreeHand',
-  select: 'Pan',
 };
 
 function isPdfFile(file: File) {
@@ -265,8 +270,13 @@ export function PdfEditorClient() {
 
   const resetEditor = () => {
     if (!file || !instanceRef.current) return;
+    const annotationManager = instanceRef.current.Core.annotationManager;
+    const annotations = annotationManager.getAnnotationsList?.() ?? [];
+    if (annotations.length > 0) {
+      annotationManager.deleteAnnotations?.(annotations);
+    }
     instanceRef.current.UI.loadDocument(file, { filename: file.name });
-    setStatus('PDF reset to the uploaded file.');
+    setStatus('PDF reset to the uploaded file and annotations cleared.');
     setError(null);
   };
 
@@ -334,18 +344,44 @@ export function PdfEditorClient() {
           </div>
         </div>
       ) : (
-        <div className="flex min-h-screen flex-col">
-          <header className="flex min-h-16 items-center gap-3 border-b border-slate-200 bg-white px-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <div className="flex min-h-screen flex-col overflow-hidden">
+          <header className="flex h-[72px] min-h-[72px] items-center gap-3 border-b border-slate-200 bg-white px-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
             <a href="/tools" className="rounded-xl border border-slate-200 px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200">
               Home
             </a>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold text-slate-950 dark:text-white">{file.name}</p>
               <p className="truncate text-xs font-semibold text-emerald-700 dark:text-emerald-300">{privacyMessage}</p>
+              <p className="truncate text-xs font-semibold text-slate-500 dark:text-slate-400">{status}</p>
             </div>
-            <span className="hidden rounded-xl bg-orange-100 px-3 py-2 text-xs font-bold text-orange-800 dark:bg-orange-500/20 dark:text-orange-100 md:inline-flex">
-              Edit & Fill
-            </span>
+            <div className="hidden max-w-[46vw] items-center gap-2 overflow-x-auto xl:flex">
+              {[
+                ['Select', () => setToolMode(sdkToolNames.select, 'Select')],
+                ['Pan', () => setToolMode(sdkToolNames.pan, 'Pan')],
+                ['Add Text', () => setToolMode(sdkToolNames.text, 'Add Text')],
+                ['Sign', () => setToolMode(sdkToolNames.signature, 'Signature')],
+                ['Initials', () => addFreeText('Initials', 'Initials')],
+                ['Date', () => addFreeText(new Intl.DateTimeFormat('en-US').format(new Date()), 'Date')],
+                ['Checkmark', () => addFreeText('✓', 'Checkmark')],
+                ['Highlight', () => setToolMode(sdkToolNames.highlight, 'Highlight')],
+                ['Underline', () => setToolMode(sdkToolNames.underline, 'Underline')],
+                ['Strikeout', () => setToolMode(sdkToolNames.strikeout, 'Strikeout')],
+                ['Redact / Erase', () => setToolMode(sdkToolNames.redaction, 'Redact / Erase')],
+                ['Draw', () => setToolMode(sdkToolNames.ink, 'Draw')],
+                ['Shape', () => setToolMode(sdkToolNames.rectangle, 'Shape')],
+                ['Arrow', () => setToolMode(sdkToolNames.arrow, 'Arrow')],
+              ].map(([label, action]) => (
+                <button
+                  key={label as string}
+                  type="button"
+                  onClick={action as () => void}
+                  disabled={!viewerReady}
+                  className="shrink-0 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200"
+                >
+                  {label as string}
+                </button>
+              ))}
+            </div>
             <button type="button" onClick={replaceFile} className="rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200">
               Replace PDF
             </button>
@@ -360,19 +396,23 @@ export function PdfEditorClient() {
             </button>
           </header>
 
-          <div className="flex min-h-14 items-center gap-2 overflow-x-auto border-b border-slate-200 bg-slate-50 px-4 dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex min-h-14 items-center gap-2 overflow-x-auto border-b border-slate-200 bg-slate-50 px-4 dark:border-slate-800 dark:bg-slate-900 xl:hidden">
             {[
-              ['Select', sdkToolNames.select, () => setToolMode(sdkToolNames.select, 'Select')],
-              ['Add Text', sdkToolNames.text, () => setToolMode(sdkToolNames.text, 'Add Text')],
-              ['Sign', sdkToolNames.signature, () => setToolMode(sdkToolNames.signature, 'Signature')],
-              ['Add Date', sdkToolNames.text, () => addFreeText(new Intl.DateTimeFormat('en-US').format(new Date()), 'Date')],
-              ['Checkmark', sdkToolNames.text, () => addFreeText('✓', 'Checkmark')],
-              ['Highlight', sdkToolNames.highlight, () => setToolMode(sdkToolNames.highlight, 'Highlight')],
-              ['Redact / Erase', sdkToolNames.redaction, () => setToolMode(sdkToolNames.redaction, 'Redact / Erase')],
-              ['Draw', sdkToolNames.ink, () => setToolMode(sdkToolNames.ink, 'Draw')],
-              ['Shape', sdkToolNames.rectangle, () => setToolMode(sdkToolNames.rectangle, 'Shape')],
-              ['Arrow', sdkToolNames.arrow, () => setToolMode(sdkToolNames.arrow, 'Arrow')],
-            ].map(([label, , action]) => (
+              ['Select', () => setToolMode(sdkToolNames.select, 'Select')],
+              ['Pan', () => setToolMode(sdkToolNames.pan, 'Pan')],
+              ['Add Text', () => setToolMode(sdkToolNames.text, 'Add Text')],
+              ['Sign', () => setToolMode(sdkToolNames.signature, 'Signature')],
+              ['Initials', () => addFreeText('Initials', 'Initials')],
+              ['Date', () => addFreeText(new Intl.DateTimeFormat('en-US').format(new Date()), 'Date')],
+              ['Checkmark', () => addFreeText('✓', 'Checkmark')],
+              ['Highlight', () => setToolMode(sdkToolNames.highlight, 'Highlight')],
+              ['Underline', () => setToolMode(sdkToolNames.underline, 'Underline')],
+              ['Strikeout', () => setToolMode(sdkToolNames.strikeout, 'Strikeout')],
+              ['Redact / Erase', () => setToolMode(sdkToolNames.redaction, 'Redact / Erase')],
+              ['Draw', () => setToolMode(sdkToolNames.ink, 'Draw')],
+              ['Shape', () => setToolMode(sdkToolNames.rectangle, 'Shape')],
+              ['Arrow', () => setToolMode(sdkToolNames.arrow, 'Arrow')],
+            ].map(([label, action]) => (
               <button
                 key={label as string}
                 type="button"
@@ -388,24 +428,22 @@ export function PdfEditorClient() {
             </button>
           </div>
 
-          <div className="border-b border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
-            <span>{status}</span>
-            <span className="ml-4 text-amber-700 dark:text-amber-300">{limitationMessage}</span>
-          </div>
-
           {error && (
             <div className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
               {error}
             </div>
           )}
 
-          <main className="relative min-h-[calc(100vh-154px)] flex-1 bg-neutral-200 dark:bg-slate-900">
+          <main className="relative h-[calc(100vh-128px)] flex-1 bg-neutral-200 dark:bg-slate-900 xl:h-[calc(100vh-72px)]">
             {isLoading && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 text-sm font-bold text-slate-700 backdrop-blur dark:bg-slate-950/70 dark:text-slate-200">
                 Loading PDF editor...
               </div>
             )}
-            <div ref={viewerRef} className="h-[calc(100vh-154px)] min-h-[680px] w-full" />
+            <div className="absolute left-4 top-4 z-10 max-w-xl rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800 shadow-sm dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+              {limitationMessage}
+            </div>
+            <div ref={viewerRef} className="h-full w-full" />
           </main>
         </div>
       )}
