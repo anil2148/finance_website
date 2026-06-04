@@ -2,6 +2,9 @@ import assert from 'node:assert/strict';
 import {
   createEditedFileName,
   formatBytes,
+  groupSelectionBoxes,
+  mapDomRectToPdfBox,
+  padPdfSelectionBox,
   parsePageSelection,
   validateReorderInput,
 } from '@/lib/pdf-editor-utils';
@@ -25,4 +28,26 @@ export function runPdfEditorUtilsTests() {
   assert.equal(formatBytes(512), '512 B');
   assert.equal(formatBytes(1536), '1.5 KB');
   assert.equal(formatBytes(10 * 1024), '10 KB');
+
+  assert.deepEqual(
+    mapDomRectToPdfBox(
+      { left: 110, top: 220, right: 210, bottom: 240, width: 100, height: 20 },
+      { left: 10, top: 20, width: 600, height: 800 },
+      { width: 300, height: 400 },
+    ),
+    { x: 50, y: 290, width: 50, height: 10 },
+  );
+
+  assert.deepEqual(
+    padPdfSelectionBox({ x: 5, y: 7, width: 30, height: 10 }, 10, { width: 100, height: 100 }),
+    { x: 0, y: 0, width: 45, height: 27 },
+  );
+
+  assert.deepEqual(
+    groupSelectionBoxes([
+      { x: 1, y: 2, width: 3, height: 4 },
+      { x: 1, y: 2, width: 0, height: 4 },
+    ]),
+    [{ x: 1, y: 2, width: 3, height: 4 }],
+  );
 }

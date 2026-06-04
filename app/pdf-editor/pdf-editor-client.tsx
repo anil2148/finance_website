@@ -14,8 +14,12 @@ import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
 import {
   createEditedFileName,
   formatBytes,
+  groupSelectionBoxes,
+  mapDomRectToPdfBox,
+  padPdfSelectionBox,
   parsePageOrder,
   parsePageSelection,
+  type PdfSelectionBox,
 } from '@/lib/pdf-editor-utils';
 
 type PdfFileItem = {
@@ -33,6 +37,7 @@ type PageNumberFormat = 'page' | 'number' | 'page-of-total';
 type BlankPagePlacement = 'end' | 'before' | 'after';
 type EditorTool =
   | 'none'
+  | 'select-text'
   | 'add-text'
   | 'erase'
   | 'signature'
@@ -72,6 +77,12 @@ type PendingObject = {
   fontSize: number;
   color: PdfTextColor;
   bold: boolean;
+};
+
+type SelectedTextState = {
+  text: string;
+  pageIndex: number;
+  boxes: PdfSelectionBox[];
 };
 
 type PdfSnapshot = {
@@ -257,6 +268,7 @@ function isTypingTarget(target: EventTarget | null) {
 }
 
 function getToolInstruction(tool: EditorTool) {
+  if (tool === 'select-text') return 'Drag over text in the PDF to select it. Then choose Delete or Replace.';
   if (tool === 'add-text') return 'Add Text: Click anywhere on the PDF to place text. Drag to reposition before applying.';
   if (tool === 'erase') return 'Erase Text Area: Click or drag over visible text to place a white cover box. Add replacement text if needed.';
   if (tool === 'signature') return 'Signature: Click where you want your typed signature.';
@@ -397,6 +409,9 @@ const primaryButtonClassName =
 
 export function PdfEditorClient() {
   const previewWorkspaceRef = useRef<HTMLDivElement | null>(null);
+  const pdfPageLayerRef = useRef<HTMLDivElement | null>(null);
+  const pdfCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const pdfTextLayerRef = useRef<HTMLDivElement | null>(null);
   const [files, setFiles] = useState<PdfFileItem[]>([]);
   const [activeFileId, setActiveFileId] = useState<string | null>(null);
   const [editedBytes, setEditedBytes] = useState<Uint8Array | null>(null);
@@ -411,6 +426,12 @@ export function PdfEditorClient() {
   const [pendingObjects, setPendingObjects] = useState<PendingObject[]>([]);
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const [draggingObjectId, setDraggingObjectId] = useState<string | null>(null);
+  const [selectedText, setSelectedText] = useState<SelectedTextState | null>(null);
+  const [replacementText, setReplacementText] = useState('');
+  const [textLayerStatus, setTextLayerStatus] = useState('Upload a PDF to enable text selection.');
+  const [textLayerAvailable, setTextLayerAvailable] = useState(false);
+  const [pdfRenderFailed, setPdfRenderFailed] = useState(false);
+  const [pdfPageSize, setPdfPageSize] = useState<{ width: number; height: number } | null>(null);
   const [undoStack, setUndoStack] = useState<PdfSnapshot[]>([]);
   const [redoStack, setRedoStack] = useState<PdfSnapshot[]>([]);
   const [draftStatus, setDraftStatus] = useState('No local draft yet.');
@@ -489,6 +510,82 @@ export function PdfEditorClient() {
       previousIndexes.filter((pageIndex) => pageIndex >= 0 && pageIndex < currentPageCount),
     );
   }, [currentPageCount]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function renderActivePdfPage() {
+      if (!previewBytes || !pdfCanvasRef.current || !pdfTextLayerRef.current) {
+        setTextLayerAvailable(false);
+        setTextLayerStatus('Upload a PDF to enable text selection.');
+        setPdfPageSize(null);
+        return;
+      }
+
+      setPdfRenderFailed(false);
+      setTextLayerStatus('Preparing selectable text...');
+
+      try {
+        const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+        const loadingTask = pdfjs.getDocument({ data: new Uint8Array(previewBytes), disableWorker: true } as Parameters<typeof pdfjs.getDocument>[0] & { disableWorker: boolean });
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(Math.min(activePageIndex + 1, pdf.numPages));
+        if (cancelled) return;
+
+        const viewport = page.getViewport({ scale: Math.max(0.75, Math.min(1.8, zoom)) });
+        const canvas = pdfCanvasRef.current;
+        const canvasContext = canvas.getContext('2d');
+        const textLayerContainer = pdfTextLayerRef.current;
+        if (!canvas || !canvasContext || !textLayerContainer) return;
+
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        canvas.style.width = `${viewport.width}px`;
+        canvas.style.height = `${viewport.height}px`;
+        setPdfPageSize({ width: viewport.width / viewport.scale, height: viewport.height / viewport.scale });
+
+        await page.render({ canvasContext, viewport }).promise;
+        if (cancelled) return;
+
+        const textContent = await page.getTextContent();
+        if (cancelled) return;
+
+        textLayerContainer.innerHTML = '';
+        textLayerContainer.style.width = `${viewport.width}px`;
+        textLayerContainer.style.height = `${viewport.height}px`;
+        textLayerContainer.style.setProperty('--scale-factor', String(viewport.scale));
+
+        const hasText = textContent.items.some((item) => 'str' in item && String(item.str).trim());
+        setTextLayerAvailable(hasText);
+        setTextLayerStatus(
+          hasText
+            ? 'Text selection is available on this page.'
+            : 'This page appears to be scanned or flattened. Text selection is not available. Use Erase Text Area instead.',
+        );
+
+        if (hasText) {
+          const textLayer = new pdfjs.TextLayer({
+            textContentSource: textContent,
+            container: textLayerContainer,
+            viewport,
+          });
+          await textLayer.render();
+        }
+      } catch {
+        if (!cancelled) {
+          setPdfRenderFailed(true);
+          setTextLayerAvailable(false);
+          setTextLayerStatus('Text selection preview is unavailable. Use Erase Text Area instead.');
+        }
+      }
+    }
+
+    void renderActivePdfPage();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activePageIndex, previewBytes, zoom]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -1059,12 +1156,69 @@ export function PdfEditorClient() {
 
   const handlePreviewClick = (event: PointerEvent<HTMLDivElement>) => {
     if (!previewWorkspaceRef.current || !hasFiles) return;
-    if (activeTool === 'none' || activeTool === 'page-tools') return;
+    if (activeTool === 'none' || activeTool === 'page-tools' || activeTool === 'select-text') return;
 
     const rect = previewWorkspaceRef.current.getBoundingClientRect();
     const xPercent = ((event.clientX - rect.left) / rect.width) * 100;
     const yPercent = ((event.clientY - rect.top) / rect.height) * 100;
     addPendingObjectForActiveTool(xPercent, yPercent);
+  };
+
+  const captureSelectedPdfText = () => {
+    if (activeTool !== 'select-text') return;
+    const selection = window.getSelection();
+    const pageLayer = pdfTextLayerRef.current;
+    if (!selection || selection.rangeCount === 0 || !pageLayer || !pdfPageSize) return;
+
+    const selectedValue = selection.toString().trim();
+    if (!selectedValue) return;
+
+    const pageRect = pageLayer.getBoundingClientRect();
+    const selectedBoxes: PdfSelectionBox[] = [];
+    let hasRectOutsidePage = false;
+
+    for (let rangeIndex = 0; rangeIndex < selection.rangeCount; rangeIndex += 1) {
+      const range = selection.getRangeAt(rangeIndex);
+      for (const rect of Array.from(range.getClientRects())) {
+        if (rect.width <= 0 || rect.height <= 0) continue;
+        const intersectsPage =
+          rect.left >= pageRect.left - 1 &&
+          rect.right <= pageRect.right + 1 &&
+          rect.top >= pageRect.top - 1 &&
+          rect.bottom <= pageRect.bottom + 1;
+
+        if (!intersectsPage) {
+          hasRectOutsidePage = true;
+          continue;
+        }
+
+        selectedBoxes.push(
+          padPdfSelectionBox(
+            mapDomRectToPdfBox(rect, pageRect, pdfPageSize),
+            2,
+            pdfPageSize,
+          ),
+        );
+      }
+    }
+
+    const boxes = groupSelectionBoxes(selectedBoxes);
+    if (!boxes.length) {
+      setError(hasRectOutsidePage ? 'Please select text on one page at a time.' : 'No selectable text boxes were found. Use Erase Text Area instead.');
+      setSelectedText(null);
+      return;
+    }
+
+    if (hasRectOutsidePage) {
+      setError('Please select text on one page at a time.');
+      setSuccess(null);
+      return;
+    }
+
+    setSelectedText({ text: selectedValue, pageIndex: activePageIndex, boxes });
+    setReplacementText(selectedValue);
+    setSuccess(`Selected ${boxes.length} text box${boxes.length === 1 ? '' : 'es'} on page ${activePageIndex + 1}.`);
+    setError(null);
   };
 
   const handleObjectPointerDown = (event: PointerEvent<HTMLDivElement>, objectId: string) => {
@@ -1242,6 +1396,72 @@ export function PdfEditorClient() {
       fileName: getEditedFileName(activeItem.name),
       message: `${pendingObjects.length} pending edit${pendingObjects.length === 1 ? '' : 's'} applied successfully.`,
     };
+  };
+
+  const applySelectedTextEdit = async (mode: 'delete' | 'replace') => {
+    if (!currentBytes || !activeItem) {
+      setError('Please upload a PDF file.');
+      return;
+    }
+    if (!selectedText || selectedText.boxes.length === 0) {
+      setError('Select text in the PDF first.');
+      return;
+    }
+    const replacement = replacementText.trim();
+    if (mode === 'replace' && !replacement) {
+      setError('Enter replacement text first.');
+      return;
+    }
+
+    setIsProcessing(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      const pdfDoc = await PDFDocument.load(currentBytes);
+      const page = pdfDoc.getPage(Math.min(selectedText.pageIndex, pdfDoc.getPageCount() - 1));
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+      selectedText.boxes.forEach((box) => {
+        page.drawRectangle({
+          x: box.x,
+          y: box.y,
+          width: box.width,
+          height: box.height,
+          color: rgb(1, 1, 1),
+        });
+      });
+
+      if (mode === 'replace') {
+        const firstBox = selectedText.boxes[0];
+        page.drawText(replacement, {
+          x: firstBox.x,
+          y: firstBox.y + Math.max(2, firstBox.height * 0.2),
+          size: clampNumber(annotationFontSize, 6, 72),
+          font,
+          color: getTextColor(annotationColor),
+        });
+      }
+
+      const savedBytes = await pdfDoc.save();
+      const historyText = selectedText.text.slice(0, 40);
+      updateEditedPdf(
+        savedBytes,
+        pdfDoc.getPageCount(),
+        getEditedFileName(activeItem.name),
+        mode === 'delete'
+          ? `Deleted selected text: ${historyText}`
+          : 'Replaced selected text.',
+      );
+      setSelectedText(null);
+      setReplacementText('');
+      window.getSelection()?.removeAllRanges();
+      setSuccess(mode === 'delete' ? 'Selected text removed from visible PDF.' : 'Selected text replaced.');
+    } catch {
+      setError('Unable to edit the selected text. Use Erase Text Area as a fallback.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   const applyPendingObjects = async () => {
@@ -1650,6 +1870,24 @@ export function PdfEditorClient() {
 
   return (
     <section className="space-y-8">
+      <style jsx global>{`
+        .pdf-text-layer {
+          line-height: 1;
+          text-align: initial;
+        }
+        .pdf-text-layer span,
+        .pdf-text-layer br {
+          color: transparent;
+          cursor: text;
+          position: absolute;
+          transform-origin: 0% 0%;
+          white-space: pre;
+        }
+        .pdf-text-layer ::selection {
+          background: rgba(59, 130, 246, 0.35);
+          color: transparent;
+        }
+      `}</style>
       <div className="overflow-hidden rounded-[2rem] border border-emerald-400/20 bg-slate-950 text-white shadow-2xl shadow-slate-950/10">
         <div className="relative isolate px-5 py-10 sm:px-8 lg:px-10">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.25),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.86))]" />
@@ -1844,6 +2082,7 @@ export function PdfEditorClient() {
                 {
                   title: 'Edit PDF',
                   actions: [
+                    { label: 'Select Text', tool: 'select-text' as const },
                     { label: 'Text', tool: 'add-text' as const },
                     { label: 'Erase Text Area', action: 'erase' as const },
                     { label: 'Highlight', tool: 'highlight' as const },
@@ -1930,9 +2169,14 @@ export function PdfEditorClient() {
               </div>
             ) : (
               <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
-                Recommended next actions: Add Text, Erase Text Area, Sign, Add Page Numbers, then Download.
+                Recommended next actions: Select Text to delete or replace visible text, Add Text, Sign, Add Page Numbers, then Download.
               </div>
             )}
+            <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100">
+              <p className="font-bold">Selected text workflow</p>
+              <p className="mt-1">Step 1: Choose Select Text. Step 2: Highlight text in the PDF. Step 3: Delete or replace it.</p>
+              <p className="mt-2 text-xs">Use Erase Text Area when text selection is unavailable or the PDF is scanned.</p>
+            </div>
           </section>
 
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
@@ -2486,14 +2730,17 @@ export function PdfEditorClient() {
 
               <div className="overflow-auto rounded-3xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950">
                 <div
-                  ref={previewWorkspaceRef}
-                  className="relative min-h-[560px] w-full origin-top bg-white"
-                  style={{ transform: `scale(${zoom})`, transformOrigin: 'top center' }}
+                  ref={(node) => {
+                    previewWorkspaceRef.current = node;
+                    pdfPageLayerRef.current = node;
+                  }}
+                  className="relative mx-auto min-h-[560px] w-fit min-w-full origin-top bg-white"
                   onPointerMove={handlePreviewPointerMove}
                   onPointerUp={() => setDraggingObjectId(null)}
                   onPointerLeave={() => setDraggingObjectId(null)}
+                  onMouseUp={captureSelectedPdfText}
                 >
-                  {previewUrl ? (
+                  {previewUrl && pdfRenderFailed ? (
                     <object data={previewUrl} type="application/pdf" aria-label="PDF preview" className="h-[560px] w-full bg-white">
                       <div className="flex h-[560px] flex-col items-center justify-center p-6 text-center">
                         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Preview unavailable in this browser.</p>
@@ -2502,6 +2749,19 @@ export function PdfEditorClient() {
                         </p>
                       </div>
                     </object>
+                  ) : previewBytes ? (
+                    <div className="relative mx-auto w-fit bg-white shadow-sm">
+                      <canvas ref={pdfCanvasRef} className="block bg-white" aria-label="Rendered PDF page" />
+                      <div
+                        ref={pdfTextLayerRef}
+                        className="pdf-text-layer absolute inset-0 overflow-hidden text-transparent"
+                        style={{
+                          cursor: activeTool === 'select-text' ? 'text' : 'default',
+                          userSelect: activeTool === 'select-text' ? 'text' : 'none',
+                          pointerEvents: activeTool === 'select-text' ? 'auto' : 'none',
+                        }}
+                      />
+                    </div>
                   ) : (
                     <div className="flex h-[560px] flex-col items-center justify-center p-6 text-center">
                       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-200 text-xl font-bold text-slate-500">
@@ -2516,7 +2776,7 @@ export function PdfEditorClient() {
 
                   <div
                     className="absolute inset-0"
-                    style={{ pointerEvents: activeTool !== 'none' || pendingObjects.length > 0 ? 'auto' : 'none' }}
+                    style={{ pointerEvents: activeTool === 'select-text' ? 'none' : activeTool !== 'none' || pendingObjects.length > 0 ? 'auto' : 'none' }}
                     onPointerDown={handlePreviewClick}
                   >
                     {pendingObjects.filter((object) => object.pageIndex === activePageIndex).map((object) => {
@@ -2670,6 +2930,52 @@ export function PdfEditorClient() {
                 <span>Selected pages: {selectedPageIndexes.length || 0}</span>
                 <span>Zoom: {Math.round(zoom * 100)}%</span>
               </div>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 dark:border-blue-500/30 dark:bg-blue-500/10">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-bold text-blue-950 dark:text-blue-100">Selected text</h3>
+                <span className="rounded-full bg-white/70 px-2 py-1 text-[10px] font-bold text-blue-700 dark:bg-blue-500/20 dark:text-blue-100">
+                  {textLayerAvailable ? 'Selectable' : 'Fallback'}
+                </span>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-blue-800 dark:text-blue-100">{textLayerStatus}</p>
+              {selectedText ? (
+                <div className="mt-4 space-y-3">
+                  <div className="rounded-xl bg-white/80 p-3 text-sm text-slate-700 dark:bg-slate-950/70 dark:text-slate-200">
+                    <p className="text-xs font-bold uppercase tracking-wide text-slate-500">Preview</p>
+                    <p className="mt-1 max-h-28 overflow-auto">{selectedText.text}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-blue-900 dark:text-blue-100">
+                    <span>Page {selectedText.pageIndex + 1}</span>
+                    <span>{selectedText.boxes.length} text box{selectedText.boxes.length === 1 ? '' : 'es'}</span>
+                  </div>
+                  <button type="button" onClick={() => void applySelectedTextEdit('delete')} disabled={isProcessing} className="w-full rounded-xl bg-red-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-red-700 disabled:opacity-50">
+                    Delete Selected Text
+                  </button>
+                  <FieldLabel label="Replacement text">
+                    <input value={replacementText} onChange={(event) => setReplacementText(event.target.value)} className={inputClassName} />
+                  </FieldLabel>
+                  <button type="button" onClick={() => void applySelectedTextEdit('replace')} disabled={isProcessing || !replacementText.trim()} className="w-full rounded-xl bg-emerald-500 px-3 py-2 text-sm font-bold text-white transition hover:bg-emerald-600 disabled:opacity-50">
+                    Replace Selected Text
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedText(null);
+                      setReplacementText('');
+                      window.getSelection()?.removeAllRanges();
+                    }}
+                    className={`${secondaryButtonClassName} w-full`}
+                  >
+                    Clear Selection
+                  </button>
+                </div>
+              ) : (
+                <p className="mt-3 rounded-xl bg-white/70 p-3 text-sm text-blue-900 dark:bg-slate-950/70 dark:text-blue-100">
+                  Choose Select Text, then drag over text in the PDF to select it.
+                </p>
+              )}
             </div>
 
             <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">

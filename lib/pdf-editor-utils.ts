@@ -81,3 +81,61 @@ export function validateReorderInput(input: string, pageCount: number) {
 }
 
 export const parsePageOrder = validateReorderInput;
+
+export type DomRectLike = {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+};
+
+export type PdfSelectionBox = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
+export function mapDomRectToPdfBox(
+  rect: DomRectLike,
+  pageRect: Pick<DomRectLike, 'left' | 'top' | 'width' | 'height'>,
+  pdfPageSize: { width: number; height: number },
+): PdfSelectionBox {
+  const xRatio = pdfPageSize.width / pageRect.width;
+  const yRatio = pdfPageSize.height / pageRect.height;
+  const left = Math.max(0, rect.left - pageRect.left);
+  const top = Math.max(0, rect.top - pageRect.top);
+  const right = Math.min(pageRect.width, rect.right - pageRect.left);
+  const bottom = Math.min(pageRect.height, rect.bottom - pageRect.top);
+
+  return {
+    x: left * xRatio,
+    y: pdfPageSize.height - bottom * yRatio,
+    width: Math.max(0, right - left) * xRatio,
+    height: Math.max(0, bottom - top) * yRatio,
+  };
+}
+
+export function padPdfSelectionBox(
+  box: PdfSelectionBox,
+  padding: number,
+  pdfPageSize: { width: number; height: number },
+): PdfSelectionBox {
+  const x = Math.max(0, box.x - padding);
+  const y = Math.max(0, box.y - padding);
+  const right = Math.min(pdfPageSize.width, box.x + box.width + padding);
+  const top = Math.min(pdfPageSize.height, box.y + box.height + padding);
+
+  return {
+    x,
+    y,
+    width: Math.max(0, right - x),
+    height: Math.max(0, top - y),
+  };
+}
+
+export function groupSelectionBoxes(boxes: PdfSelectionBox[]) {
+  return boxes.filter((box) => box.width > 0 && box.height > 0);
+}
