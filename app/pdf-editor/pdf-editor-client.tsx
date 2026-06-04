@@ -45,6 +45,7 @@ type EditorTool =
   | 'select-text'
   | 'add-text'
   | 'erase'
+  | 'blackout'
   | 'signature'
   | 'initials'
   | 'date'
@@ -63,7 +64,7 @@ type EditorTool =
   | 'page-tools';
 type PreviewMode = 'edited' | 'original';
 type PdfTextColor = 'slate' | 'emerald' | 'blue' | 'red';
-type PendingObjectType = 'text' | 'erase' | 'highlight' | 'circle' | 'line' | 'sticky-note' | 'form-field';
+type PendingObjectType = 'text' | 'erase' | 'blackout' | 'highlight' | 'circle' | 'line' | 'sticky-note' | 'form-field';
 type FormFieldKind = 'text' | 'checkbox' | 'radio' | 'dropdown' | 'date' | 'signature';
 
 type ToolStatus = 'Ready' | 'Coming soon';
@@ -357,6 +358,7 @@ function getOriginalFileName(activeItem: PdfFileItem | null) {
 
 function getPendingObjectName(object: PendingObject) {
   if (object.type === 'erase') return 'Area to remove';
+  if (object.type === 'blackout') return 'Blackout area';
   if (object.type === 'highlight') return 'Highlight';
   if (object.type === 'circle') return 'Circle';
   if (object.type === 'line') return 'Line';
@@ -747,6 +749,7 @@ export function PdfEditorClient() {
       setSelectedObjectId(null);
       setSelectedPageIndexes([]);
       setActivePageIndex(0);
+      setActiveTool('add-text');
       setSuccess(
         loadedFiles.length === 1
           ? 'PDF loaded successfully.'
@@ -1118,10 +1121,10 @@ export function PdfEditorClient() {
       pageIndex: activePageIndex,
       xPercent: clampNumber(xPercent, 0, 92),
       yPercent: clampNumber(yPercent, 0, 92),
-      widthPercent: options?.widthPercent ?? (type === 'erase' ? 28 : type === 'line' ? 26 : type === 'form-field' ? 24 : type === 'highlight' ? 26 : 18),
-      heightPercent: options?.heightPercent ?? (type === 'erase' ? 8 : type === 'line' ? 1.5 : type === 'form-field' ? 6 : type === 'highlight' ? 5 : type === 'circle' ? 10 : 5),
-      text: type === 'erase' ? '' : objectText,
-      fontSize: options?.fontSize ?? (type === 'erase' ? 12 : activeTool === 'signature' || activeTool === 'initials' ? signatureFontSize : annotationFontSize),
+      widthPercent: options?.widthPercent ?? (type === 'erase' || type === 'blackout' ? 28 : type === 'line' ? 26 : type === 'form-field' ? 24 : type === 'highlight' ? 26 : 18),
+      heightPercent: options?.heightPercent ?? (type === 'erase' || type === 'blackout' ? 8 : type === 'line' ? 1.5 : type === 'form-field' ? 6 : type === 'highlight' ? 5 : type === 'circle' ? 10 : 5),
+      text: type === 'erase' || type === 'blackout' ? '' : objectText,
+      fontSize: options?.fontSize ?? (type === 'erase' || type === 'blackout' ? 12 : activeTool === 'signature' || activeTool === 'initials' ? signatureFontSize : annotationFontSize),
       color: options?.color ?? annotationColor,
       bold: options?.bold ?? (activeTool === 'signature' || activeTool === 'initials' || annotationBold),
     };
@@ -1135,6 +1138,11 @@ export function PdfEditorClient() {
   const addPendingObjectForActiveTool = (xPercent: number, yPercent: number) => {
     if (activeTool === 'erase') {
       addPendingObject('erase', xPercent, yPercent);
+      return;
+    }
+
+    if (activeTool === 'blackout') {
+      addPendingObject('blackout', xPercent, yPercent);
       return;
     }
 
@@ -1303,6 +1311,19 @@ export function PdfEditorClient() {
           color: getTextColor(object.color),
         });
       }
+      return;
+    }
+
+    if (object.type === 'blackout') {
+      page.drawRectangle({
+        x,
+        y: y - objectHeight,
+        width: objectWidth,
+        height: objectHeight,
+        color: rgb(0, 0, 0),
+        borderColor: rgb(0, 0, 0),
+        borderWidth: 0.5,
+      });
       return;
     }
 
@@ -2002,6 +2023,7 @@ export function PdfEditorClient() {
     'select-text': 'Replace or remove text',
     'add-text': 'Add Text',
     erase: 'Remove Area',
+    blackout: 'Blackout',
     signature: 'Sign',
     initials: 'Initials',
     date: 'Date',
@@ -2019,6 +2041,34 @@ export function PdfEditorClient() {
     'form-signature': 'Signature Field',
     'page-tools': 'Page Tools',
   };
+  const showPropertiesPanel = Boolean(selectedObject || selectedText || downloadPromptOpen || pendingObjects.length > 0 || activeTool !== 'add-text');
+  const editorRibbonTools: {
+    label: string;
+    icon: string;
+    tool?: EditorTool;
+    run?: () => void;
+    disabled?: boolean;
+  }[] = [
+    { label: 'Pages', icon: 'Pg', tool: 'page-tools' },
+    { label: 'Select', icon: 'Sel', tool: 'select-text', disabled: hasFiles && !textLayerAvailable },
+    { label: 'Text', icon: 'T', tool: 'add-text' },
+    { label: 'Sign', icon: 'Sig', run: () => applyQuickAction('signature') },
+    { label: 'Initials', icon: 'In', run: () => applyQuickAction('initials') },
+    { label: 'Erase', icon: 'Er', tool: 'erase' },
+    { label: 'Image', icon: 'Img', disabled: true },
+    { label: 'Check', icon: 'Chk', run: () => applyQuickAction('checkmark') },
+    { label: 'Cross', icon: 'X', run: () => applyQuickAction('x-mark') },
+    { label: 'Circle', icon: 'O', tool: 'circle' },
+    { label: 'Table', icon: 'Tbl', disabled: true },
+    { label: 'Text Box', icon: 'Box', tool: 'add-text' },
+    { label: 'Date', icon: 'Dt', run: () => applyQuickAction('date') },
+    { label: 'Blackout', icon: 'Blk', tool: 'blackout' },
+    { label: 'Highlight', icon: 'Hi', tool: 'highlight' },
+    { label: 'Draw', icon: 'Dr', disabled: true },
+    { label: 'Line', icon: 'Ln', tool: 'line' },
+    { label: 'Arrow', icon: 'Arr', disabled: true },
+    { label: 'Tools', icon: 'More', tool: 'page-tools' },
+  ];
 
   return (
     <section className={hasFiles ? '-mx-4 min-h-[calc(100vh-80px)] bg-slate-100 dark:bg-slate-950 sm:-mx-6 lg:-mx-8' : 'space-y-8'}>
@@ -2077,45 +2127,93 @@ export function PdfEditorClient() {
         </p>
       </section>
 
-      <div className={`${hasFiles ? 'sticky top-0 z-40' : 'hidden'} border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:px-6 lg:px-8`}>
-        <div className="flex w-full flex-wrap items-center gap-2">
-          <label className={`${topToolbarButtonClassName} cursor-pointer`}>
-            {hasFiles ? 'Upload / Replace PDF' : 'Upload PDF'}
-            <input type="file" accept="application/pdf,.pdf" multiple className="sr-only" onChange={handleInputChange} />
-          </label>
-          <span className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100">
-            Active: {activeToolLabel[activeTool]}
-          </span>
+      <div className={`${hasFiles ? 'sticky top-0 z-40' : 'hidden'} border-b border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950`}>
+        <div className="flex h-14 w-full items-center gap-2 overflow-x-auto px-3">
+          <a href="/tools" className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200">
+            Home
+          </a>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-bold text-slate-950 dark:text-white">
+              {activeItem ? hasEditedPdf ? downloadFileName ?? getEditedFileName(activeItem.name) : activeItem.name : 'PDF Editor'}
+            </p>
+            <p className="truncate text-[11px] font-semibold text-emerald-700 dark:text-emerald-300">
+              Your PDF stays in your browser. Files are not uploaded to our server.
+            </p>
+          </div>
           <button type="button" onClick={undoLastEdit} disabled={undoStack.length === 0 || isProcessing} className={topToolbarButtonClassName}>Undo</button>
           <button type="button" onClick={redoLastEdit} disabled={redoStack.length === 0 || isProcessing} className={topToolbarButtonClassName}>Redo</button>
-          <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className={topToolbarButtonClassName}>Apply Changes</button>
-          <button type="button" onClick={() => void downloadEditedPdf()} disabled={!hasFiles || isProcessing} className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50">
-            Download Edited PDF
-          </button>
-          <button type="button" onClick={resetChanges} disabled={!hasFiles || isProcessing || (!hasEditedPdf && pendingObjects.length === 0)} className={topToolbarButtonClassName}>Reset</button>
-          <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value - 0.1).toFixed(2)), 0.75, 1.5))} className={topToolbarButtonClassName}>Zoom out</button>
-          <span className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-            {Math.round(zoom * 100)}%
-          </span>
-          <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value + 0.1).toFixed(2)), 0.75, 1.5))} className={topToolbarButtonClassName}>Zoom in</button>
-          <button type="button" onClick={() => setZoom(1)} className={topToolbarButtonClassName}>Fit width</button>
-          <div className="inline-flex overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-            <button type="button" onClick={() => setPreviewMode('original')} disabled={!activeItem} className={`px-3 py-2 text-xs font-bold disabled:opacity-50 ${previewMode === 'original' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950' : 'bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300'}`}>
-              Original
-            </button>
-            <button type="button" onClick={() => setPreviewMode('edited')} className={`px-3 py-2 text-xs font-bold ${previewMode === 'edited' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300'}`}>
-              Edited
-            </button>
+          <div className="hidden h-9 min-w-48 items-center rounded-lg border border-slate-200 bg-slate-50 px-3 text-xs font-semibold text-slate-400 dark:border-slate-800 dark:bg-slate-900 md:flex">
+            Find form or field
           </div>
-          <span className="ml-auto rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
-            Your PDF stays in your browser. Files are not uploaded to our server.
+          <span className="rounded-lg bg-orange-100 px-3 py-2 text-xs font-bold text-orange-800 dark:bg-orange-500/20 dark:text-orange-100">
+            Edit & Fill
           </span>
+          <button type="button" className={topToolbarButtonClassName}>Invite to sign</button>
+          <button type="button" className={topToolbarButtonClassName}>Create form</button>
+          <button type="button" onClick={() => void downloadEditedPdf()} disabled={!hasFiles || isProcessing} className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50">
+            Download
+          </button>
+          <button type="button" onClick={printEditedPdf} disabled={!hasFiles || isProcessing} className={topToolbarButtonClassName}>Print</button>
+          <button
+            type="button"
+            onClick={() => {
+              void navigator.clipboard?.writeText(window.location.href);
+              setSuccess('Share link copied.');
+              setError(null);
+            }}
+            className={topToolbarButtonClassName}
+          >
+            Share
+          </button>
+        </div>
+        <div className="flex h-16 items-center gap-1 overflow-x-auto border-t border-slate-100 bg-slate-50 px-3 dark:border-slate-800 dark:bg-slate-900">
+          {editorRibbonTools.map((tool) => {
+            const isActive = tool.tool ? activeTool === tool.tool : false;
+            return (
+              <button
+                key={tool.label}
+                type="button"
+                onClick={() => {
+                  if (tool.disabled) return;
+                  if (tool.run) {
+                    tool.run();
+                    return;
+                  }
+                  if (tool.tool) setToolAndMessage(tool.tool);
+                }}
+                disabled={tool.disabled}
+                className={`flex h-12 min-w-[58px] flex-col items-center justify-center rounded-lg border px-2 text-[11px] font-bold transition ${
+                  isActive
+                    ? 'border-orange-300 bg-orange-100 text-orange-900 shadow-sm dark:border-orange-400/50 dark:bg-orange-500/20 dark:text-orange-100'
+                    : 'border-transparent bg-white text-slate-700 hover:border-slate-200 hover:bg-slate-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 dark:bg-slate-950 dark:text-slate-200 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:disabled:bg-slate-900'
+                }`}
+              >
+                <span className="text-[10px] leading-none">{tool.icon}</span>
+                <span className="mt-1 leading-none">{tool.label}</span>
+              </button>
+            );
+          })}
+          <div className="ml-auto flex shrink-0 items-center gap-2">
+            <span className="rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100">
+              Active: {activeToolLabel[activeTool]}
+            </span>
+            <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className={topToolbarButtonClassName}>Apply Changes</button>
+            <button type="button" onClick={resetChanges} disabled={!hasFiles || isProcessing || (!hasEditedPdf && pendingObjects.length === 0)} className={topToolbarButtonClassName}>Reset</button>
+            <div className="inline-flex overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+              <button type="button" onClick={() => setPreviewMode('original')} disabled={!activeItem} className={`px-3 py-2 text-xs font-bold disabled:opacity-50 ${previewMode === 'original' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950' : 'bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300'}`}>
+                Original
+              </button>
+              <button type="button" onClick={() => setPreviewMode('edited')} className={`px-3 py-2 text-xs font-bold ${previewMode === 'edited' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300'}`}>
+                Edited
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className={hasFiles ? 'grid min-h-[calc(100vh-145px)] gap-0 lg:grid-cols-[260px_minmax(720px,1fr)_360px]' : 'grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]'}>
-        <div className={hasFiles ? 'space-y-4 border-r border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 lg:max-h-[calc(100vh-145px)] lg:overflow-auto' : 'space-y-6'}>
-          <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
+      <div className={hasFiles ? `grid h-[calc(100vh-120px)] min-h-[680px] gap-0 ${showPropertiesPanel ? 'lg:grid-cols-[220px_minmax(760px,1fr)_360px]' : 'lg:grid-cols-[220px_minmax(760px,1fr)]'}` : 'grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]'}>
+        <div className={hasFiles ? 'space-y-4 border-r border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900 lg:h-[calc(100vh-120px)] lg:overflow-auto' : 'space-y-6'}>
+          <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className={hasFiles ? 'text-base font-bold text-slate-950 dark:text-white' : 'text-xl font-semibold text-slate-950 dark:text-white'}>Upload PDFs</h2>
@@ -2233,7 +2331,7 @@ export function PdfEditorClient() {
             )}
           </section>
 
-          <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
+          <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className={hasFiles ? 'text-base font-bold text-slate-950 dark:text-white' : 'text-xl font-semibold text-slate-950 dark:text-white'}>{hasFiles ? 'Tools' : 'What do you want to do?'}</h2>
@@ -2443,7 +2541,7 @@ export function PdfEditorClient() {
                     </select>
                   </FieldLabel>
                 </div>
-                {(selectedObject.type === 'erase' || selectedObject.type === 'highlight' || selectedObject.type === 'circle' || selectedObject.type === 'line' || selectedObject.type === 'sticky-note' || selectedObject.type === 'form-field') && (
+                {(selectedObject.type === 'erase' || selectedObject.type === 'blackout' || selectedObject.type === 'highlight' || selectedObject.type === 'circle' || selectedObject.type === 'line' || selectedObject.type === 'sticky-note' || selectedObject.type === 'form-field') && (
                   <div className="grid gap-3 sm:grid-cols-2">
                     <FieldLabel label="Width">
                       <input
@@ -2497,30 +2595,67 @@ export function PdfEditorClient() {
           </section>
 
           {hasFiles && (
-            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Pages</h2>
-                <span className="text-xs text-slate-500">{currentPageCount} total</span>
+            <section className="h-full rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-950">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <h2 className="text-sm font-bold text-slate-950 dark:text-white">Manage pages</h2>
+                  <p className="mt-0.5 text-xs text-slate-500">{currentPageCount} total</p>
+                </div>
+                <button type="button" className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-bold text-slate-500 dark:border-slate-700 dark:text-slate-300">
+                  Close
+                </button>
               </div>
-              <div className="mt-4 grid max-h-72 gap-2 overflow-auto">
+              <div className="mt-3 grid max-h-[calc(100vh-190px)] gap-3 overflow-auto pr-1">
                 {Array.from({ length: currentPageCount }, (_, pageIndex) => (
-                  <button
+                  <div
                     key={pageIndex}
-                    type="button"
-                    onClick={() => {
-                      setActivePageIndex(pageIndex);
-                      focusWorkspace();
-                    }}
-                    className={`rounded-xl border px-3 py-2 text-left text-sm font-semibold transition ${activePageIndex === pageIndex ? 'border-emerald-400 bg-emerald-50 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-100' : 'border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300'}`}
+                    className={`group rounded-xl border bg-slate-50 p-2 transition dark:bg-slate-900 ${activePageIndex === pageIndex ? 'border-orange-400 ring-2 ring-orange-200 dark:ring-orange-500/30' : 'border-slate-200 hover:border-emerald-300 dark:border-slate-800'}`}
                   >
-                    Page {pageIndex + 1}
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActivePageIndex(pageIndex);
+                        focusWorkspace();
+                      }}
+                      className="w-full text-left"
+                      aria-label={`Go to page ${pageIndex + 1}`}
+                    >
+                      <div className="mx-auto flex aspect-[3/4] w-full max-w-[140px] flex-col justify-between rounded-md border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950">
+                        <div className="space-y-1">
+                          <span className="block h-1.5 w-16 rounded bg-slate-200 dark:bg-slate-700" />
+                          <span className="block h-1.5 w-20 rounded bg-slate-200 dark:bg-slate-700" />
+                          <span className="block h-1.5 w-12 rounded bg-slate-200 dark:bg-slate-700" />
+                        </div>
+                        <span className="text-center text-lg font-black text-slate-300 dark:text-slate-600">{pageIndex + 1}</span>
+                        <div className="space-y-1">
+                          <span className="block h-1.5 w-full rounded bg-slate-100 dark:bg-slate-800" />
+                          <span className="block h-1.5 w-3/4 rounded bg-slate-100 dark:bg-slate-800" />
+                        </div>
+                      </div>
+                      <p className="mt-2 text-center text-xs font-bold text-slate-700 dark:text-slate-200">Page {pageIndex + 1}</p>
+                    </button>
+                    <div className="mt-2 grid grid-cols-4 gap-1 text-[10px] font-bold text-slate-500">
+                      <button type="button" onClick={() => moveFile(activeFileId ?? '', 'up')} disabled className="rounded border border-slate-200 px-1 py-1 opacity-50 dark:border-slate-700">Up</button>
+                      <button type="button" disabled className="rounded border border-slate-200 px-1 py-1 opacity-50 dark:border-slate-700">Down</button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setDeletePageSelection(String(pageIndex + 1));
+                          setToolAndMessage('page-tools', `Page ${pageIndex + 1} selected. Use page tools to delete, rotate, or extract it.`);
+                        }}
+                        className="rounded border border-red-100 px-1 py-1 text-red-600 dark:border-red-500/30"
+                      >
+                        Del
+                      </button>
+                      <button type="button" onClick={() => togglePageSelection(pageIndex)} className="rounded border border-slate-200 px-1 py-1 dark:border-slate-700">More</button>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>
           )}
 
-          <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
+          <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Local draft</h2>
@@ -2864,8 +2999,8 @@ export function PdfEditorClient() {
           </section>
         </div>
 
-        <main className={hasFiles ? 'min-h-[calc(100vh-145px)] bg-slate-100 p-4 dark:bg-slate-950 lg:max-h-[calc(100vh-145px)] lg:overflow-hidden' : 'space-y-6 lg:sticky lg:top-28 lg:self-start'}>
-          <section className={hasFiles ? 'flex h-full min-h-[calc(100vh-177px)] flex-col' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
+        <main className={hasFiles ? 'relative min-h-[calc(100vh-120px)] bg-neutral-200 p-4 dark:bg-slate-950 lg:h-[calc(100vh-120px)] lg:overflow-hidden' : 'space-y-6 lg:sticky lg:top-28 lg:self-start'}>
+          <section className={hasFiles ? 'flex h-full min-h-[calc(100vh-152px)] flex-col' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-slate-950 dark:text-white">PDF preview</h2>
@@ -2896,6 +3031,11 @@ export function PdfEditorClient() {
             <div className={hasFiles ? 'mt-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm font-semibold text-blue-900 shadow-sm dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100' : 'mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-3 text-sm font-medium text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100'}>
               {getToolInstruction(activeTool)}
             </div>
+            {hasFiles && !textLayerAvailable && (
+              <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+                This PDF appears scanned or flattened. Use Erase to cover text, then add replacement text.
+              </div>
+            )}
 
             <div className={hasFiles ? 'hidden' : 'mt-4 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-950'}>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Quick fill</p>
@@ -3004,13 +3144,18 @@ export function PdfEditorClient() {
                 </div>
               </div>
 
-              <div className={hasFiles ? 'min-h-[calc(100vh-300px)] overflow-auto bg-slate-200 p-6 shadow-inner dark:bg-slate-900' : 'overflow-auto rounded-3xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950'}>
+              <div className={hasFiles ? 'min-h-[calc(100vh-285px)] overflow-auto bg-neutral-300 p-6 shadow-inner dark:bg-slate-900' : 'overflow-auto rounded-3xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950'}>
+                {hasFiles && (
+                  <div className="sticky top-0 z-10 mx-auto mb-4 w-fit rounded-full bg-white/95 px-4 py-2 text-xs font-bold text-slate-700 shadow dark:bg-slate-950/95 dark:text-slate-200">
+                    Page {currentPageCount ? activePageIndex + 1 : 0} of {currentPageCount || 0}
+                  </div>
+                )}
                 <div
                   ref={(node) => {
                     previewWorkspaceRef.current = node;
                     pdfPageLayerRef.current = node;
                   }}
-                  className={hasFiles ? 'relative mx-auto min-h-[calc(100vh-340px)] w-fit origin-top bg-white shadow-xl shadow-slate-900/10' : 'relative mx-auto min-h-[560px] w-fit origin-top bg-white'}
+                  className={hasFiles ? 'relative mx-auto min-h-[calc(100vh-350px)] w-fit origin-top bg-white shadow-2xl shadow-slate-900/20' : 'relative mx-auto min-h-[560px] w-fit origin-top bg-white'}
                   onPointerMove={handlePreviewPointerMove}
                   onPointerUp={() => setDraggingObjectId(null)}
                   onPointerLeave={() => setDraggingObjectId(null)}
@@ -3075,20 +3220,24 @@ export function PdfEditorClient() {
                           role="button"
                           tabIndex={0}
                           onPointerDown={(event) => handleObjectPointerDown(event, object.id)}
-                          className={`absolute cursor-move rounded-md border-2 shadow-lg ${
-                            isSelected ? 'border-emerald-500 ring-4 ring-emerald-300/30' : 'border-blue-400'
+                          className={`absolute cursor-move rounded-md border-2 border-dashed shadow-lg ${
+                            isSelected ? 'border-orange-500 ring-4 ring-orange-300/30' : 'border-emerald-400'
                           }`}
                           style={{
                             left: `${object.xPercent}%`,
                             top: `${object.yPercent}%`,
                             width: `${object.widthPercent}%`,
                             minHeight: `${object.heightPercent}%`,
-                            backgroundColor: object.type === 'highlight' ? 'rgba(250, 204, 21, 0.35)' : object.type === 'sticky-note' ? '#fef08a' : object.type === 'line' || object.type === 'circle' ? 'transparent' : 'rgba(255, 255, 255, 0.85)',
+                            backgroundColor: object.type === 'blackout' ? '#000' : object.type === 'highlight' ? 'rgba(250, 204, 21, 0.35)' : object.type === 'sticky-note' ? '#fef08a' : object.type === 'line' || object.type === 'circle' ? 'transparent' : 'rgba(255, 255, 255, 0.85)',
                           }}
                         >
                           {object.type === 'erase' ? (
                             <div className="h-full min-h-8 rounded bg-white text-center text-[10px] font-semibold text-slate-400">
                               Area to remove
+                            </div>
+                          ) : object.type === 'blackout' ? (
+                            <div className="h-full min-h-8 rounded bg-black text-center text-[10px] font-semibold text-white/70">
+                              Blackout
                             </div>
                           ) : object.type === 'highlight' ? (
                             <div className="h-full min-h-7 rounded text-center text-[10px] font-semibold text-amber-800/70">
@@ -3107,6 +3256,19 @@ export function PdfEditorClient() {
                               {(object.formKind === 'checkbox' || object.formKind === 'radio') && <span className={object.formKind === 'radio' ? 'h-3 w-3 rounded-full border border-slate-500' : 'h-3 w-3 border border-slate-500'} />}
                               <span className="truncate">{object.label || formLabel(object.formKind)}</span>
                             </div>
+                          ) : object.type === 'text' && isSelected ? (
+                            <textarea
+                              value={object.text}
+                              onPointerDown={(event) => event.stopPropagation()}
+                              onChange={(event) => updatePendingObject(object.id, { text: event.target.value })}
+                              className="h-full min-h-10 w-full resize-none border-0 bg-transparent px-2 py-1 outline-none"
+                              style={{
+                                fontSize: `${Math.max(10, object.fontSize)}px`,
+                                fontWeight: object.bold ? 700 : 400,
+                                color: getCssTextColor(object.color),
+                              }}
+                              aria-label="Edit placed text"
+                            />
                           ) : (
                             <div
                               className="truncate px-2 py-1"
@@ -3120,7 +3282,7 @@ export function PdfEditorClient() {
                             </div>
                           )}
                           {isSelected && (
-                            <div className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-emerald-500" />
+                            <div className="absolute -bottom-1 -right-1 h-3 w-3 rounded-full border-2 border-white bg-orange-500" />
                           )}
                         </div>
                       );
@@ -3203,9 +3365,43 @@ export function PdfEditorClient() {
               </p>
             )}
           </section>
+          {hasFiles && (
+            <div className="absolute bottom-5 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-2xl border border-slate-200 bg-white/95 p-2 text-xs font-bold text-slate-700 shadow-2xl shadow-slate-900/20 backdrop-blur dark:border-slate-700 dark:bg-slate-950/95 dark:text-slate-200">
+              <button
+                type="button"
+                onClick={() => setActivePageIndex((page) => clampNumber(page - 1, 0, Math.max(0, currentPageCount - 1)))}
+                disabled={activePageIndex === 0}
+                className="rounded-lg border border-slate-200 px-2 py-1 disabled:opacity-40 dark:border-slate-700"
+              >
+                Prev
+              </button>
+              <span className="rounded-lg bg-slate-100 px-3 py-1 dark:bg-slate-800">
+                {currentPageCount ? activePageIndex + 1 : 0} / {currentPageCount || 0}
+              </span>
+              <button
+                type="button"
+                onClick={() => setActivePageIndex((page) => clampNumber(page + 1, 0, Math.max(0, currentPageCount - 1)))}
+                disabled={activePageIndex >= currentPageCount - 1}
+                className="rounded-lg border border-slate-200 px-2 py-1 disabled:opacity-40 dark:border-slate-700"
+              >
+                Next
+              </button>
+              <span className="mx-1 h-6 w-px bg-slate-200 dark:bg-slate-700" />
+              <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value - 0.1).toFixed(2)), 0.75, 1.8))} className="rounded-lg border border-slate-200 px-2 py-1 dark:border-slate-700">
+                -
+              </button>
+              <span className="rounded-lg bg-slate-100 px-3 py-1 dark:bg-slate-800">{Math.round(zoom * 100)}%</span>
+              <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value + 0.1).toFixed(2)), 0.75, 1.8))} className="rounded-lg border border-slate-200 px-2 py-1 dark:border-slate-700">
+                +
+              </button>
+              <button type="button" onClick={() => setZoom(1)} className="rounded-lg border border-slate-200 px-2 py-1 dark:border-slate-700">
+                Fit
+              </button>
+            </div>
+          )}
         </main>
 
-        <aside className={hasFiles ? 'space-y-4 border-l border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 lg:max-h-[calc(100vh-145px)] lg:overflow-auto' : 'space-y-6 lg:sticky lg:top-28 lg:self-start'}>
+        <aside className={hasFiles ? `${showPropertiesPanel ? 'space-y-4' : 'hidden'} border-l border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 lg:h-[calc(100vh-120px)] lg:overflow-auto` : 'space-y-6 lg:sticky lg:top-28 lg:self-start'}>
           <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Current step</h2>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
