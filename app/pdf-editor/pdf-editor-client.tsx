@@ -1174,10 +1174,10 @@ export function PdfEditorClient() {
   };
 
   const handlePreviewClick = (event: PointerEvent<HTMLDivElement>) => {
-    if (!previewWorkspaceRef.current || !hasFiles) return;
+    if (!pdfPageLayerRef.current || !hasFiles) return;
     if (activeTool === 'none' || activeTool === 'page-tools' || activeTool === 'select-text') return;
 
-    const rect = previewWorkspaceRef.current.getBoundingClientRect();
+    const rect = pdfPageLayerRef.current.getBoundingClientRect();
     const xPercent = ((event.clientX - rect.left) / rect.width) * 100;
     const yPercent = ((event.clientY - rect.top) / rect.height) * 100;
     addPendingObjectForActiveTool(xPercent, yPercent);
@@ -1262,9 +1262,9 @@ export function PdfEditorClient() {
   };
 
   const handlePreviewPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    if (!draggingObjectId || !previewWorkspaceRef.current) return;
+    if (!draggingObjectId || !pdfPageLayerRef.current) return;
 
-    const rect = previewWorkspaceRef.current.getBoundingClientRect();
+    const rect = pdfPageLayerRef.current.getBoundingClientRect();
     const xPercent = ((event.clientX - rect.left) / rect.width) * 100;
     const yPercent = ((event.clientY - rect.top) / rect.height) * 100;
     updatePendingObject(draggingObjectId, {
@@ -2969,7 +2969,7 @@ export function PdfEditorClient() {
                     previewWorkspaceRef.current = node;
                     pdfPageLayerRef.current = node;
                   }}
-                  className="relative mx-auto min-h-[560px] w-fit min-w-full origin-top bg-white"
+                  className="relative mx-auto min-h-[560px] w-fit origin-top bg-white"
                   onPointerMove={handlePreviewPointerMove}
                   onPointerUp={() => setDraggingObjectId(null)}
                   onPointerLeave={() => setDraggingObjectId(null)}
