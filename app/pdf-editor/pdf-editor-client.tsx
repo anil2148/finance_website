@@ -1919,14 +1919,28 @@ export function PdfEditorClient() {
   const workflowSteps = ['Upload', 'Edit', 'Apply', 'Download'];
   const goalActions: GoalAction[] = [
     {
-      title: 'Fill or add text',
-      description: 'Click the PDF and type what you need.',
+      title: 'Add Text',
+      description: 'Click anywhere on the PDF and type.',
       helper: 'Best for filling blanks and forms.',
       action: () => activateToolAndFocus('add-text'),
       disabled: !hasFiles,
     },
     {
-      title: 'Sign document',
+      title: 'Replace Text',
+      description: 'Select text directly, then type the replacement.',
+      helper: textLayerAvailable ? 'Select text in the document.' : 'Use Remove Area if text cannot be selected.',
+      action: () => activateToolAndFocus(textLayerAvailable ? 'select-text' : 'erase', textLayerAvailable ? 'Select text in the PDF, then type replacement text in the right panel.' : 'This looks scanned or flattened. Drag over the area to cover it, then add replacement text.'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Remove Text',
+      description: 'Select text and remove it, or cover an area.',
+      helper: textLayerAvailable ? 'Try selecting text first.' : 'Use Remove Area for scanned PDFs.',
+      action: () => activateToolAndFocus(textLayerAvailable ? 'select-text' : 'erase', textLayerAvailable ? 'Select text to remove. If you cannot select it, use Remove Area.' : 'Drag over the content you want to remove.'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Sign',
       description: 'Place a typed signature or initials.',
       helper: 'Click where the signature belongs.',
       action: () => {
@@ -1936,28 +1950,28 @@ export function PdfEditorClient() {
       disabled: !hasFiles,
     },
     {
-      title: 'Replace existing text',
-      description: 'Select text directly, then type the replacement.',
-      helper: textLayerAvailable ? 'Text selection is available for this page.' : 'If text cannot be selected, use Remove Area.',
-      action: () => activateToolAndFocus(textLayerAvailable ? 'select-text' : 'erase', textLayerAvailable ? 'Select text in the PDF, then type replacement text in the right panel.' : 'This looks scanned or flattened. Drag over the area to cover it, then add replacement text.'),
-      disabled: !hasFiles,
-    },
-    {
-      title: 'Remove existing text',
-      description: 'Select text and remove it, or cover an area.',
-      helper: textLayerAvailable ? 'Try selecting text first.' : 'Use Remove Area for scanned PDFs.',
-      action: () => activateToolAndFocus(textLayerAvailable ? 'select-text' : 'erase', textLayerAvailable ? 'Select text to remove. If you cannot select it, use Remove Area.' : 'Drag over the content you want to remove.'),
-      disabled: !hasFiles,
-    },
-    {
-      title: 'Add date/checkmark',
-      description: 'One-click date, checkmark, X, or N/A tools.',
-      helper: 'Choose a quick-fill item, then click the PDF.',
+      title: 'Date',
+      description: 'Click to place today’s date.',
+      helper: 'Drag it into position before applying.',
       action: () => activateToolAndFocus('date'),
       disabled: !hasFiles,
     },
     {
-      title: 'Organize pages',
+      title: 'Checkmark',
+      description: 'Click to place a checkmark.',
+      helper: 'Useful for forms and approvals.',
+      action: () => activateToolAndFocus('checkmark'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Highlight',
+      description: 'Click to place a highlight box.',
+      helper: 'Move it over the text you want to mark.',
+      action: () => activateToolAndFocus('highlight'),
+      disabled: !hasFiles,
+    },
+    {
+      title: 'Page Tools',
       description: 'Rotate, delete, extract, or reorder pages.',
       helper: 'Select pages from the page cards.',
       action: () => activateToolAndFocus('page-tools'),
@@ -1971,11 +1985,11 @@ export function PdfEditorClient() {
       disabled: files.length < 2,
     },
     {
-      title: 'Add watermark/page numbers',
+      title: 'Watermark / Page Numbers',
       description: 'Add document labels or page numbers.',
-      helper: 'Available under More tools.',
+      helper: 'Use secondary tools below.',
       action: () => {
-        setSuccess('Open More tools to add a watermark or page numbers.');
+        setSuccess('Open Secondary tools to add a watermark or page numbers.');
         setError(null);
       },
       disabled: !hasFiles,
@@ -1983,9 +1997,31 @@ export function PdfEditorClient() {
   ];
   const topToolbarButtonClassName =
     'rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-emerald-500/10';
+  const activeToolLabel: Record<EditorTool, string> = {
+    none: 'Choose a tool',
+    'select-text': 'Replace or remove text',
+    'add-text': 'Add Text',
+    erase: 'Remove Area',
+    signature: 'Sign',
+    initials: 'Initials',
+    date: 'Date',
+    checkmark: 'Checkmark',
+    'x-mark': 'X Mark',
+    circle: 'Circle',
+    line: 'Line',
+    highlight: 'Highlight',
+    'sticky-note': 'Note',
+    'form-text': 'Text Field',
+    'form-checkbox': 'Checkbox',
+    'form-radio': 'Radio Button',
+    'form-dropdown': 'Dropdown',
+    'form-date': 'Date Field',
+    'form-signature': 'Signature Field',
+    'page-tools': 'Page Tools',
+  };
 
   return (
-    <section className="space-y-8">
+    <section className={hasFiles ? '-mx-4 min-h-[calc(100vh-80px)] bg-slate-100 dark:bg-slate-950 sm:-mx-6 lg:-mx-8' : 'space-y-8'}>
       <style jsx global>{`
         .pdf-text-layer {
           line-height: 1;
@@ -2004,7 +2040,7 @@ export function PdfEditorClient() {
           color: transparent;
         }
       `}</style>
-      <div className="overflow-hidden rounded-[2rem] border border-emerald-400/20 bg-slate-950 text-white shadow-2xl shadow-slate-950/10">
+      <div className={`overflow-hidden rounded-[2rem] border border-emerald-400/20 bg-slate-950 text-white shadow-2xl shadow-slate-950/10 ${hasFiles ? 'hidden' : ''}`}>
         <div className="relative isolate px-5 py-10 sm:px-8 lg:px-10">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(16,185,129,0.25),transparent_34%),linear-gradient(135deg,rgba(15,23,42,0.96),rgba(15,23,42,0.86))]" />
           <div className="max-w-3xl">
@@ -2023,7 +2059,7 @@ export function PdfEditorClient() {
         </div>
       </div>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className={`rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900 ${hasFiles ? 'hidden' : ''}`}>
         <div className="grid gap-3 md:grid-cols-5">
           {workflowSteps.map((step, index) => {
             const isActive = step === workflowStep;
@@ -2041,21 +2077,27 @@ export function PdfEditorClient() {
         </p>
       </section>
 
-      <div className="sticky top-0 z-30 -mx-4 border-y border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2">
+      <div className={`${hasFiles ? 'sticky top-0 z-40' : 'hidden'} border-b border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:px-6 lg:px-8`}>
+        <div className="flex w-full flex-wrap items-center gap-2">
           <label className={`${topToolbarButtonClassName} cursor-pointer`}>
             {hasFiles ? 'Upload / Replace PDF' : 'Upload PDF'}
             <input type="file" accept="application/pdf,.pdf" multiple className="sr-only" onChange={handleInputChange} />
           </label>
-          <button type="button" onClick={() => void downloadEditedPdf()} disabled={!hasFiles || isProcessing} className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50">
-            Download
-          </button>
-          <button type="button" onClick={printEditedPdf} disabled={!hasFiles || isProcessing} className={topToolbarButtonClassName}>Print</button>
+          <span className="rounded-xl border border-blue-100 bg-blue-50 px-3 py-2 text-xs font-bold text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100">
+            Active: {activeToolLabel[activeTool]}
+          </span>
           <button type="button" onClick={undoLastEdit} disabled={undoStack.length === 0 || isProcessing} className={topToolbarButtonClassName}>Undo</button>
           <button type="button" onClick={redoLastEdit} disabled={redoStack.length === 0 || isProcessing} className={topToolbarButtonClassName}>Redo</button>
+          <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className={topToolbarButtonClassName}>Apply Changes</button>
+          <button type="button" onClick={() => void downloadEditedPdf()} disabled={!hasFiles || isProcessing} className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50">
+            Download Edited PDF
+          </button>
           <button type="button" onClick={resetChanges} disabled={!hasFiles || isProcessing || (!hasEditedPdf && pendingObjects.length === 0)} className={topToolbarButtonClassName}>Reset</button>
-          <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value + 0.1).toFixed(2)), 0.75, 1.5))} className={topToolbarButtonClassName}>Zoom in</button>
           <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value - 0.1).toFixed(2)), 0.75, 1.5))} className={topToolbarButtonClassName}>Zoom out</button>
+          <span className="rounded-xl bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+            {Math.round(zoom * 100)}%
+          </span>
+          <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value + 0.1).toFixed(2)), 0.75, 1.5))} className={topToolbarButtonClassName}>Zoom in</button>
           <button type="button" onClick={() => setZoom(1)} className={topToolbarButtonClassName}>Fit width</button>
           <div className="inline-flex overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
             <button type="button" onClick={() => setPreviewMode('original')} disabled={!activeItem} className={`px-3 py-2 text-xs font-bold disabled:opacity-50 ${previewMode === 'original' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950' : 'bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300'}`}>
@@ -2065,19 +2107,18 @@ export function PdfEditorClient() {
               Edited
             </button>
           </div>
-          <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className={topToolbarButtonClassName}>Apply changes</button>
           <span className="ml-auto rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
-            Privacy: browser-only
+            Your PDF stays in your browser. Files are not uploaded to our server.
           </span>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]">
-        <div className="space-y-6">
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div className={hasFiles ? 'grid min-h-[calc(100vh-145px)] gap-0 lg:grid-cols-[260px_minmax(720px,1fr)_360px]' : 'grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]'}>
+        <div className={hasFiles ? 'space-y-4 border-r border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 lg:max-h-[calc(100vh-145px)] lg:overflow-auto' : 'space-y-6'}>
+          <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Upload PDFs</h2>
+                <h2 className={hasFiles ? 'text-base font-bold text-slate-950 dark:text-white' : 'text-xl font-semibold text-slate-950 dark:text-white'}>Upload PDFs</h2>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                   Select one PDF for editing, or multiple PDFs for merge. Suggested max size: {MAX_FILE_SIZE_MB} MB each.
                 </p>
@@ -2090,7 +2131,7 @@ export function PdfEditorClient() {
             </div>
 
             <div
-              className={`mt-5 rounded-3xl border-2 border-dashed p-6 text-center transition ${
+              className={`${hasFiles ? 'mt-3 rounded-2xl p-4' : 'mt-5 rounded-3xl p-6'} border-2 border-dashed text-center transition ${
                 isDragging
                   ? 'border-emerald-400 bg-emerald-50 text-emerald-800 dark:bg-emerald-400/10 dark:text-emerald-100'
                   : 'border-slate-300 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200'
@@ -2102,12 +2143,12 @@ export function PdfEditorClient() {
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
             >
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-3xl text-emerald-600">
+              <div className={`${hasFiles ? 'hidden' : 'mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500/10 text-3xl text-emerald-600'}`}>
                 PDF
               </div>
-              <p className="mt-4 text-base font-semibold">Drag and drop PDFs here</p>
+              <p className={hasFiles ? 'text-sm font-semibold' : 'mt-4 text-base font-semibold'}>{hasFiles ? 'Replace or merge PDFs' : 'Drag and drop PDFs here'}</p>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">or choose files from your device</p>
-              <label className="mt-5 inline-flex cursor-pointer items-center justify-center rounded-2xl bg-emerald-500 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-600 focus-within:ring-2 focus-within:ring-emerald-400 focus-within:ring-offset-2 dark:focus-within:ring-offset-slate-950">
+              <label className={`${hasFiles ? 'mt-3 rounded-xl px-4 py-2 text-xs' : 'mt-5 rounded-2xl px-5 py-3 text-sm'} inline-flex cursor-pointer items-center justify-center bg-emerald-500 font-bold text-white shadow-sm transition hover:bg-emerald-600 focus-within:ring-2 focus-within:ring-emerald-400 focus-within:ring-offset-2 dark:focus-within:ring-offset-slate-950`}>
                 Choose PDF files
                 <input
                   type="file"
@@ -2146,7 +2187,7 @@ export function PdfEditorClient() {
                 {files.map((item, index) => (
                   <div
                     key={item.id}
-                    className={`rounded-2xl border p-4 transition ${
+                    className={`${hasFiles ? 'rounded-xl p-3' : 'rounded-2xl p-4'} border transition ${
                       item.id === activeItem?.id
                         ? 'border-emerald-300 bg-emerald-50/70 dark:border-emerald-500/40 dark:bg-emerald-500/10'
                         : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950'
@@ -2192,12 +2233,12 @@ export function PdfEditorClient() {
             )}
           </section>
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-xl font-semibold text-slate-950 dark:text-white">What do you want to do?</h2>
+                <h2 className={hasFiles ? 'text-base font-bold text-slate-950 dark:text-white' : 'text-xl font-semibold text-slate-950 dark:text-white'}>{hasFiles ? 'Tools' : 'What do you want to do?'}</h2>
                 <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                  Pick a goal. The editor will choose the right tool and guide your next click.
+                  {hasFiles ? 'Choose a task, then work directly on the PDF.' : 'Pick a goal. The editor will choose the right tool and guide your next click.'}
                 </p>
               </div>
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-200">
@@ -2211,11 +2252,11 @@ export function PdfEditorClient() {
                   type="button"
                   onClick={goal.action}
                   disabled={goal.disabled}
-                  className="rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-emerald-500/10"
+                  className={`${hasFiles ? 'rounded-xl px-3 py-2' : 'rounded-2xl p-4'} border border-slate-200 bg-white text-left transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-emerald-500/10`}
                 >
                   <span className="block text-sm font-bold text-slate-950 dark:text-white">{goal.title}</span>
-                  <span className="mt-1 block text-xs leading-5 text-slate-600 dark:text-slate-300">{goal.description}</span>
-                  <span className="mt-2 block text-xs font-semibold text-emerald-700 dark:text-emerald-300">{goal.helper}</span>
+                  <span className={hasFiles ? 'mt-1 block text-xs leading-4 text-slate-600 dark:text-slate-300' : 'mt-1 block text-xs leading-5 text-slate-600 dark:text-slate-300'}>{goal.description}</span>
+                  {!hasFiles && <span className="mt-2 block text-xs font-semibold text-emerald-700 dark:text-emerald-300">{goal.helper}</span>}
                 </button>
               ))}
             </div>
@@ -2236,7 +2277,7 @@ export function PdfEditorClient() {
               </div>
             )}
             <details className="mt-4 rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
-              <summary className="cursor-pointer text-sm font-bold text-slate-900 dark:text-white">More tools</summary>
+              <summary className="cursor-pointer text-sm font-bold text-slate-900 dark:text-white">Secondary tools</summary>
             <div className="mt-4 space-y-4">
               {[
                 {
@@ -2365,7 +2406,7 @@ export function PdfEditorClient() {
             </details>
           </section>
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Selected object</h2>
             {selectedObject ? (
               <div className="mt-4 space-y-3">
@@ -2479,7 +2520,7 @@ export function PdfEditorClient() {
             </section>
           )}
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Local draft</h2>
@@ -2496,7 +2537,7 @@ export function PdfEditorClient() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Shortcuts</h2>
             <div className="mt-4 grid gap-2 text-sm text-slate-600 dark:text-slate-300 sm:grid-cols-2">
               <span>Ctrl/Cmd+Z: undo</span>
@@ -2507,7 +2548,7 @@ export function PdfEditorClient() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Editing tools</h2>
@@ -2823,8 +2864,8 @@ export function PdfEditorClient() {
           </section>
         </div>
 
-        <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <main className={hasFiles ? 'min-h-[calc(100vh-145px)] bg-slate-100 p-4 dark:bg-slate-950 lg:max-h-[calc(100vh-145px)] lg:overflow-hidden' : 'space-y-6 lg:sticky lg:top-28 lg:self-start'}>
+          <section className={hasFiles ? 'flex h-full min-h-[calc(100vh-177px)] flex-col' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-xl font-semibold text-slate-950 dark:text-white">PDF preview</h2>
@@ -2841,7 +2882,7 @@ export function PdfEditorClient() {
               )}
             </div>
 
-            <div className="mt-4 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-800 dark:bg-slate-950 sm:grid-cols-2">
+            <div className={`${hasFiles ? 'hidden' : 'mt-4 grid gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm dark:border-slate-800 dark:bg-slate-950 sm:grid-cols-2'}`}>
               <div>
                 <p className="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">Original file</p>
                 <p className="mt-1 font-semibold text-slate-900 dark:text-white">{getOriginalFileName(activeItem)}</p>
@@ -2852,11 +2893,11 @@ export function PdfEditorClient() {
               </div>
             </div>
 
-            <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-3 text-sm font-medium text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100">
+            <div className={hasFiles ? 'mt-3 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm font-semibold text-blue-900 shadow-sm dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100' : 'mt-4 rounded-2xl border border-blue-100 bg-blue-50 p-3 text-sm font-medium text-blue-800 dark:border-blue-500/30 dark:bg-blue-500/10 dark:text-blue-100'}>
               {getToolInstruction(activeTool)}
             </div>
 
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-950">
+            <div className={hasFiles ? 'hidden' : 'mt-4 rounded-2xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-950'}>
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Quick fill</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {[
@@ -2881,7 +2922,7 @@ export function PdfEditorClient() {
               </div>
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-2">
+            <div className={hasFiles ? 'hidden' : 'mt-4 flex flex-wrap items-center gap-2'}>
               <div className="inline-flex overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
                 <button
                   type="button"
@@ -2910,8 +2951,8 @@ export function PdfEditorClient() {
               </button>
             </div>
 
-            <div className="mt-5 grid gap-4 xl:grid-cols-[132px_minmax(0,1fr)]">
-              <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
+            <div className={hasFiles ? 'mt-4 grid min-h-0 flex-1 gap-4' : 'mt-5 grid gap-4 xl:grid-cols-[132px_minmax(0,1fr)]'}>
+              <div className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950'}>
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Pages</h3>
                   <span className="text-xs text-slate-500">{selectedPageIndexes.length} selected</span>
@@ -2963,21 +3004,21 @@ export function PdfEditorClient() {
                 </div>
               </div>
 
-              <div className="overflow-auto rounded-3xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950">
+              <div className={hasFiles ? 'min-h-[calc(100vh-300px)] overflow-auto bg-slate-200 p-6 shadow-inner dark:bg-slate-900' : 'overflow-auto rounded-3xl border border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-950'}>
                 <div
                   ref={(node) => {
                     previewWorkspaceRef.current = node;
                     pdfPageLayerRef.current = node;
                   }}
-                  className="relative mx-auto min-h-[560px] w-fit origin-top bg-white"
+                  className={hasFiles ? 'relative mx-auto min-h-[calc(100vh-340px)] w-fit origin-top bg-white shadow-xl shadow-slate-900/10' : 'relative mx-auto min-h-[560px] w-fit origin-top bg-white'}
                   onPointerMove={handlePreviewPointerMove}
                   onPointerUp={() => setDraggingObjectId(null)}
                   onPointerLeave={() => setDraggingObjectId(null)}
                   onMouseUp={captureSelectedPdfText}
                 >
                   {previewUrl && pdfRenderFailed ? (
-                    <object data={previewUrl} type="application/pdf" aria-label="PDF preview" className="h-[560px] w-full bg-white">
-                      <div className="flex h-[560px] flex-col items-center justify-center p-6 text-center">
+                    <object data={previewUrl} type="application/pdf" aria-label="PDF preview" className={hasFiles ? 'h-[calc(100vh-340px)] min-h-[640px] w-full bg-white' : 'h-[560px] w-full bg-white'}>
+                      <div className={hasFiles ? 'flex h-[calc(100vh-340px)] min-h-[640px] flex-col items-center justify-center p-6 text-center' : 'flex h-[560px] flex-col items-center justify-center p-6 text-center'}>
                         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">Preview unavailable in this browser.</p>
                         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                           You can still download the PDF and open it in your device viewer.
@@ -3010,7 +3051,7 @@ export function PdfEditorClient() {
                       ))}
                     </div>
                   ) : (
-                    <div className="flex h-[560px] flex-col items-center justify-center p-6 text-center">
+                    <div className={hasFiles ? 'flex h-[calc(100vh-340px)] min-h-[640px] flex-col items-center justify-center p-6 text-center' : 'flex h-[560px] flex-col items-center justify-center p-6 text-center'}>
                       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-slate-200 text-xl font-bold text-slate-500">
                         PDF
                       </div>
@@ -3138,7 +3179,7 @@ export function PdfEditorClient() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+          <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Edit history</h2>
@@ -3162,10 +3203,10 @@ export function PdfEditorClient() {
               </p>
             )}
           </section>
-        </aside>
+        </main>
 
-        <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <aside className={hasFiles ? 'space-y-4 border-l border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 lg:max-h-[calc(100vh-145px)] lg:overflow-auto' : 'space-y-6 lg:sticky lg:top-28 lg:self-start'}>
+          <section className={hasFiles ? 'rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
             <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Current step</h2>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
               {workflowStep === 'Upload' ? 'Upload a PDF to begin.' : workflowStep === 'Edit' ? 'Choose a goal and edit directly on the PDF.' : workflowStep === 'Apply' ? 'Apply pending edits before downloading.' : 'Your edited PDF is ready to download.'}
@@ -3346,7 +3387,7 @@ export function PdfEditorClient() {
         </aside>
       </div>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <section className={hasFiles ? 'hidden' : 'rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'}>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-2xl font-bold text-slate-950 dark:text-white">Available PDF tools</h2>
