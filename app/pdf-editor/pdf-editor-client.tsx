@@ -11,6 +11,12 @@ import {
   type PointerEvent,
 } from 'react';
 import { PDFDocument, StandardFonts, degrees, rgb } from 'pdf-lib';
+import {
+  createEditedFileName,
+  formatBytes,
+  parsePageOrder,
+  parsePageSelection,
+} from '@/lib/pdf-editor-utils';
 
 type PdfFileItem = {
   id: string;
@@ -25,15 +31,38 @@ type WatermarkPosition = 'center' | 'top' | 'bottom' | 'diagonal';
 type PageNumberPosition = 'bottom-center' | 'bottom-right' | 'top-right';
 type PageNumberFormat = 'page' | 'number' | 'page-of-total';
 type BlankPagePlacement = 'end' | 'before' | 'after';
-type EditorTool = 'none' | 'add-text' | 'erase' | 'signature' | 'page-tools';
+type EditorTool =
+  | 'none'
+  | 'add-text'
+  | 'erase'
+  | 'signature'
+  | 'initials'
+  | 'date'
+  | 'checkmark'
+  | 'x-mark'
+  | 'circle'
+  | 'line'
+  | 'highlight'
+  | 'sticky-note'
+  | 'form-text'
+  | 'form-checkbox'
+  | 'form-radio'
+  | 'form-dropdown'
+  | 'form-date'
+  | 'form-signature'
+  | 'page-tools';
 type PreviewMode = 'edited' | 'original';
 type PdfTextColor = 'slate' | 'emerald' | 'blue' | 'red';
+type PendingObjectType = 'text' | 'erase' | 'highlight' | 'circle' | 'line' | 'sticky-note' | 'form-field';
+type FormFieldKind = 'text' | 'checkbox' | 'radio' | 'dropdown' | 'date' | 'signature';
 
 type ToolStatus = 'Ready' | 'Coming soon';
 
 type PendingObject = {
   id: string;
-  type: 'text' | 'erase';
+  type: PendingObjectType;
+  formKind?: FormFieldKind;
+  label?: string;
   pageIndex: number;
   xPercent: number;
   yPercent: number;
@@ -71,7 +100,6 @@ type ToolCard = {
 };
 
 const MAX_FILE_SIZE_MB = 50;
-const INVALID_PAGE_RANGE_MESSAGE = 'Invalid page range.';
 const PDF_EDITOR_DRAFT_KEY = 'financesphere-pdf-editor-draft-v1';
 
 const toolCards: ToolCard[] = [
@@ -177,16 +205,6 @@ function makeObjectId() {
   return `object-${Date.now()}-${Math.random().toString(36).slice(2)}`;
 }
 
-export function formatBytes(bytes: number) {
-  if (bytes === 0) return '0 B';
-
-  const units = ['B', 'KB', 'MB', 'GB'];
-  const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
-  const value = bytes / 1024 ** index;
-
-  return `${value.toFixed(value >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
-}
-
 function isPdfFile(file: File) {
   return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
 }
@@ -197,10 +215,7 @@ function toPdfBlob(bytes: Uint8Array) {
   return new Blob([buffer], { type: 'application/pdf' });
 }
 
-export function getEditedFileName(fileName: string) {
-  const baseName = fileName.replace(/\.pdf$/i, '');
-  return `${baseName || 'document'}-edited.pdf`;
-}
+export const getEditedFileName = createEditedFileName;
 
 function clampNumber(value: number, min: number, max: number) {
   if (Number.isNaN(value)) return min;
@@ -212,6 +227,13 @@ function getTextColor(color: PdfTextColor) {
   if (color === 'blue') return rgb(0.1, 0.28, 0.72);
   if (color === 'red') return rgb(0.72, 0.12, 0.12);
   return rgb(0.12, 0.16, 0.24);
+}
+
+function getCssTextColor(color: PdfTextColor) {
+  if (color === 'emerald') return '#047857';
+  if (color === 'blue') return '#1d4ed8';
+  if (color === 'red') return '#b91c1c';
+  return '#1f2937';
 }
 
 function getPageLabel(count: number) {
@@ -236,75 +258,19 @@ function isTypingTarget(target: EventTarget | null) {
 
 function getToolInstruction(tool: EditorTool) {
   if (tool === 'add-text') return 'Add Text: Click anywhere on the PDF to place text. Drag to reposition before applying.';
-  if (tool === 'erase') return 'Erase Text Area: Click to place a cover box over visible text. Add replacement text if needed.';
-  if (tool === 'signature') return 'Signature: Click where you want your signature, initials, or date.';
+  if (tool === 'erase') return 'Erase Text Area: Click or drag over visible text to place a white cover box. Add replacement text if needed.';
+  if (tool === 'signature') return 'Signature: Click where you want your typed signature.';
+  if (tool === 'initials') return 'Initials: Click where you want your initials.';
+  if (tool === 'date') return 'Date: Click where you want today’s date.';
+  if (tool === 'checkmark') return 'Checkmark: Click the checkbox or approval spot.';
+  if (tool === 'x-mark') return 'X mark: Click where you want an X.';
+  if (tool === 'circle') return 'Circle: Click to place a circle markup, then resize from properties.';
+  if (tool === 'line') return 'Line: Click to place a line, then resize from properties.';
+  if (tool === 'highlight') return 'Highlight: Click to place a translucent highlight over text.';
+  if (tool === 'sticky-note') return 'Sticky note: Click to place a note callout.';
+  if (tool.startsWith('form-')) return 'Form field: Click where the visual field placeholder should appear.';
   if (tool === 'page-tools') return 'Page Tools: Select pages from thumbnails or enter page numbers.';
   return 'Choose a quick action or tool, then review your PDF before downloading.';
-}
-
-export function parsePageSelection(input: string, pageCount: number) {
-  const trimmed = input.trim();
-
-  if (!trimmed) {
-    return Array.from({ length: pageCount }, (_, index) => index);
-  }
-
-  const selected = new Set<number>();
-  const addPage = (pageNumber: number) => {
-    if (!Number.isInteger(pageNumber) || pageNumber < 1 || pageNumber > pageCount) {
-      throw new Error(INVALID_PAGE_RANGE_MESSAGE);
-    }
-    selected.add(pageNumber - 1);
-  };
-
-  for (const part of trimmed.split(',')) {
-    const token = part.trim();
-    if (!token) throw new Error(INVALID_PAGE_RANGE_MESSAGE);
-
-    const rangeMatch = token.match(/^(\d+)\s*-\s*(\d+)$/);
-    if (rangeMatch) {
-      const start = Number(rangeMatch[1]);
-      const end = Number(rangeMatch[2]);
-      if (start > end) throw new Error(INVALID_PAGE_RANGE_MESSAGE);
-
-      for (let pageNumber = start; pageNumber <= end; pageNumber += 1) {
-        addPage(pageNumber);
-      }
-      continue;
-    }
-
-    if (!/^\d+$/.test(token)) throw new Error(INVALID_PAGE_RANGE_MESSAGE);
-    addPage(Number(token));
-  }
-
-  return Array.from(selected).sort((a, b) => a - b);
-}
-
-export function parsePageOrder(input: string, pageCount: number) {
-  const values = input
-    .split(',')
-    .map((part) => part.trim())
-    .filter(Boolean);
-
-  if (values.length !== pageCount) {
-    throw new Error(`Enter every page exactly once, from 1 to ${pageCount}.`);
-  }
-
-  const seen = new Set<number>();
-  const order = values.map((value) => {
-    if (!/^\d+$/.test(value)) throw new Error('Page order must use comma-separated page numbers.');
-    const pageNumber = Number(value);
-    if (pageNumber < 1 || pageNumber > pageCount) {
-      throw new Error(`Page ${pageNumber} is out of range.`);
-    }
-    if (seen.has(pageNumber)) {
-      throw new Error(`Page ${pageNumber} appears more than once.`);
-    }
-    seen.add(pageNumber);
-    return pageNumber - 1;
-  });
-
-  return order;
 }
 
 async function readPdfFile(file: File): Promise<PdfFileItem> {
@@ -362,6 +328,27 @@ function getPageNumberCoordinates(
 
 function getOriginalFileName(activeItem: PdfFileItem | null) {
   return activeItem?.name ?? 'document.pdf';
+}
+
+function getPendingObjectName(object: PendingObject) {
+  if (object.type === 'erase') return 'Erase box';
+  if (object.type === 'highlight') return 'Highlight';
+  if (object.type === 'circle') return 'Circle';
+  if (object.type === 'line') return 'Line';
+  if (object.type === 'sticky-note') return 'Sticky note';
+  if (object.type === 'form-field') return `${object.label || object.formKind || 'Form'} field`;
+  if (object.text === '✓') return 'Checkmark';
+  if (object.text === 'X') return 'X mark';
+  return object.text || 'Text';
+}
+
+function formLabel(kind?: FormFieldKind) {
+  if (kind === 'checkbox') return 'Checkbox';
+  if (kind === 'radio') return 'Radio button';
+  if (kind === 'dropdown') return 'Dropdown';
+  if (kind === 'date') return 'Date field';
+  if (kind === 'signature') return 'Signature field';
+  return 'Text field';
 }
 
 function ToolGroup({
@@ -993,38 +980,91 @@ export function PdfEditorClient() {
     setSelectedObjectId(nextObject.id);
   };
 
-  const addPendingObject = (type: PendingObject['type'], xPercent: number, yPercent: number, text?: string) => {
-    const objectText =
-      text ??
-      (activeTool === 'signature' ? signatureText || initialsText || 'Signature' : annotationText || 'Text');
+  const addPendingObject = (
+    type: PendingObject['type'],
+    xPercent: number,
+    yPercent: number,
+    options?: Partial<PendingObject>,
+  ) => {
+    const objectText = options?.text ??
+      (activeTool === 'signature' ? signatureText || 'Signature'
+        : activeTool === 'initials' ? initialsText || 'Initials'
+          : activeTool === 'date' ? new Intl.DateTimeFormat('en-US').format(new Date())
+            : activeTool === 'checkmark' ? '✓'
+              : activeTool === 'x-mark' ? 'X'
+                : activeTool === 'sticky-note' ? 'Note'
+                  : annotationText || 'Text');
     const nextObject: PendingObject = {
       id: makeObjectId(),
       type,
+      formKind: options?.formKind,
+      label: options?.label,
       pageIndex: activePageIndex,
       xPercent: clampNumber(xPercent, 0, 92),
       yPercent: clampNumber(yPercent, 0, 92),
-      widthPercent: type === 'erase' ? 28 : 18,
-      heightPercent: type === 'erase' ? 8 : 5,
+      widthPercent: options?.widthPercent ?? (type === 'erase' ? 28 : type === 'line' ? 26 : type === 'form-field' ? 24 : type === 'highlight' ? 26 : 18),
+      heightPercent: options?.heightPercent ?? (type === 'erase' ? 8 : type === 'line' ? 1.5 : type === 'form-field' ? 6 : type === 'highlight' ? 5 : type === 'circle' ? 10 : 5),
       text: type === 'erase' ? '' : objectText,
-      fontSize: type === 'erase' ? 12 : activeTool === 'signature' ? signatureFontSize : annotationFontSize,
-      color: annotationColor,
-      bold: activeTool === 'signature' || annotationBold,
+      fontSize: options?.fontSize ?? (type === 'erase' ? 12 : activeTool === 'signature' || activeTool === 'initials' ? signatureFontSize : annotationFontSize),
+      color: options?.color ?? annotationColor,
+      bold: options?.bold ?? (activeTool === 'signature' || activeTool === 'initials' || annotationBold),
     };
 
     setPendingObjects((previousObjects) => [...previousObjects, nextObject]);
     setSelectedObjectId(nextObject.id);
-    setSuccess(type === 'erase' ? 'Erase area placed. Review it, then apply pending edits.' : 'Text box placed. Drag or edit it, then apply pending edits.');
+    setSuccess(`${getPendingObjectName(nextObject)} placed. Drag or edit it, then apply pending edits.`);
     setError(null);
+  };
+
+  const addPendingObjectForActiveTool = (xPercent: number, yPercent: number) => {
+    if (activeTool === 'erase') {
+      addPendingObject('erase', xPercent, yPercent);
+      return;
+    }
+
+    if (activeTool === 'highlight') {
+      addPendingObject('highlight', xPercent, yPercent, { color: 'emerald', widthPercent: 28, heightPercent: 5 });
+      return;
+    }
+
+    if (activeTool === 'circle') {
+      addPendingObject('circle', xPercent, yPercent, { widthPercent: 13, heightPercent: 9 });
+      return;
+    }
+
+    if (activeTool === 'line') {
+      addPendingObject('line', xPercent, yPercent, { widthPercent: 26, heightPercent: 1.5 });
+      return;
+    }
+
+    if (activeTool === 'sticky-note') {
+      addPendingObject('sticky-note', xPercent, yPercent, { text: 'Note', widthPercent: 24, heightPercent: 10, color: 'slate' });
+      return;
+    }
+
+    if (activeTool.startsWith('form-')) {
+      const kind = activeTool.replace('form-', '') as FormFieldKind;
+      addPendingObject('form-field', xPercent, yPercent, {
+        formKind: kind,
+        label: formLabel(kind),
+        text: '',
+        widthPercent: kind === 'checkbox' || kind === 'radio' ? 14 : 26,
+        heightPercent: kind === 'checkbox' || kind === 'radio' ? 5 : 6,
+      });
+      return;
+    }
+
+    addPendingObject('text', xPercent, yPercent);
   };
 
   const handlePreviewClick = (event: PointerEvent<HTMLDivElement>) => {
     if (!previewWorkspaceRef.current || !hasFiles) return;
-    if (activeTool !== 'add-text' && activeTool !== 'signature' && activeTool !== 'erase') return;
+    if (activeTool === 'none' || activeTool === 'page-tools') return;
 
     const rect = previewWorkspaceRef.current.getBoundingClientRect();
     const xPercent = ((event.clientX - rect.left) / rect.width) * 100;
     const yPercent = ((event.clientY - rect.top) / rect.height) * 100;
-    addPendingObject(activeTool === 'erase' ? 'erase' : 'text', xPercent, yPercent);
+    addPendingObjectForActiveTool(xPercent, yPercent);
   };
 
   const handleObjectPointerDown = (event: PointerEvent<HTMLDivElement>, objectId: string) => {
@@ -1052,15 +1092,15 @@ export function PdfEditorClient() {
     const { width, height } = page.getSize();
     const x = (object.xPercent / 100) * width;
     const y = height - (object.yPercent / 100) * height;
+    const objectWidth = (object.widthPercent / 100) * width;
+    const objectHeight = (object.heightPercent / 100) * height;
 
     if (object.type === 'erase') {
-      const eraseWidth = (object.widthPercent / 100) * width;
-      const eraseHeight = (object.heightPercent / 100) * height;
       page.drawRectangle({
         x,
-        y: y - eraseHeight,
-        width: eraseWidth,
-        height: eraseHeight,
+        y: y - objectHeight,
+        width: objectWidth,
+        height: objectHeight,
         color: rgb(1, 1, 1),
         borderColor: rgb(0.85, 0.9, 0.88),
         borderWidth: 0.5,
@@ -1070,12 +1110,105 @@ export function PdfEditorClient() {
         const font = await pdfDoc.embedFont(object.bold ? StandardFonts.HelveticaBold : StandardFonts.Helvetica);
         page.drawText(object.text.trim(), {
           x: x + 4,
-          y: y - eraseHeight + 4,
+          y: y - objectHeight + 4,
           size: object.fontSize,
           font,
           color: getTextColor(object.color),
         });
       }
+      return;
+    }
+
+    if (object.type === 'highlight') {
+      page.drawRectangle({
+        x,
+        y: y - objectHeight,
+        width: objectWidth,
+        height: objectHeight,
+        color: rgb(1, 0.92, 0.2),
+        opacity: 0.35,
+      });
+      return;
+    }
+
+    if (object.type === 'circle') {
+      page.drawEllipse({
+        x: x + objectWidth / 2,
+        y: y - objectHeight / 2,
+        xScale: objectWidth / 2,
+        yScale: objectHeight / 2,
+        borderColor: getTextColor(object.color),
+        borderWidth: 2,
+      });
+      return;
+    }
+
+    if (object.type === 'line') {
+      page.drawLine({
+        start: { x, y },
+        end: { x: x + objectWidth, y: y - objectHeight },
+        color: getTextColor(object.color),
+        thickness: Math.max(1, object.fontSize / 8),
+      });
+      return;
+    }
+
+    if (object.type === 'sticky-note') {
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      page.drawRectangle({
+        x,
+        y: y - objectHeight,
+        width: objectWidth,
+        height: objectHeight,
+        color: rgb(1, 0.96, 0.55),
+        borderColor: rgb(0.82, 0.62, 0.12),
+        borderWidth: 1,
+      });
+      page.drawText(object.text.trim() || 'Note', {
+        x: x + 6,
+        y: y - object.fontSize - 6,
+        size: clampNumber(object.fontSize, 8, 28),
+        font,
+        color: rgb(0.42, 0.31, 0.05),
+        maxWidth: Math.max(20, objectWidth - 12),
+      });
+      return;
+    }
+
+    if (object.type === 'form-field') {
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const label = object.label || formLabel(object.formKind);
+      const isRound = object.formKind === 'radio';
+      const isSmallChoice = object.formKind === 'checkbox' || object.formKind === 'radio';
+
+      if (isRound) {
+        page.drawEllipse({
+          x: x + 8,
+          y: y - 8,
+          xScale: 7,
+          yScale: 7,
+          borderColor: rgb(0.15, 0.23, 0.36),
+          borderWidth: 1.2,
+        });
+      } else {
+        page.drawRectangle({
+          x,
+          y: y - objectHeight,
+          width: isSmallChoice ? 14 : objectWidth,
+          height: isSmallChoice ? 14 : objectHeight,
+          borderColor: rgb(0.15, 0.23, 0.36),
+          borderWidth: 1.2,
+          color: rgb(1, 1, 1),
+        });
+      }
+
+      page.drawText(label, {
+        x: x + (isSmallChoice ? 20 : 5),
+        y: y - Math.max(12, objectHeight / 2 + 4),
+        size: 9,
+        font,
+        color: rgb(0.28, 0.34, 0.45),
+      });
       return;
     }
 
@@ -1140,22 +1273,44 @@ export function PdfEditorClient() {
     setError(null);
   };
 
-  const applyQuickAction = (action: 'signature' | 'date' | 'name' | 'page-numbers' | 'watermark' | 'erase' | 'merge' | 'extract') => {
+  const applyQuickAction = (action: 'signature' | 'initials' | 'date' | 'name' | 'checkmark' | 'x-mark' | 'na' | 'page-numbers' | 'watermark' | 'erase' | 'merge' | 'extract') => {
     if (action === 'signature') {
       setSignatureText(signatureText || 'Signature');
-      setToolAndMessage('signature', 'Click where you want your signature/date.');
+      setToolAndMessage('signature', 'Click where you want your signature.');
+      return;
+    }
+
+    if (action === 'initials') {
+      setInitialsText(initialsText || 'AB');
+      setToolAndMessage('initials', 'Click where you want your initials.');
       return;
     }
 
     if (action === 'date') {
       setAnnotationText(new Intl.DateTimeFormat('en-US').format(new Date()));
-      setToolAndMessage('add-text', 'Click where you want the date.');
+      setToolAndMessage('date', 'Click where you want the date.');
       return;
     }
 
     if (action === 'name') {
       setAnnotationText('Name');
       setToolAndMessage('add-text', 'Click where you want the name field.');
+      return;
+    }
+
+    if (action === 'checkmark') {
+      setToolAndMessage('checkmark', 'Click where you want a checkmark.');
+      return;
+    }
+
+    if (action === 'x-mark') {
+      setToolAndMessage('x-mark', 'Click where you want an X mark.');
+      return;
+    }
+
+    if (action === 'na') {
+      setAnnotationText('N/A');
+      setToolAndMessage('add-text', 'Click where you want N/A.');
       return;
     }
 
@@ -1171,7 +1326,7 @@ export function PdfEditorClient() {
     }
 
     if (action === 'erase') {
-      setToolAndMessage('erase', 'Drag over existing text to cover it. Add replacement text if needed.');
+      setToolAndMessage('erase', 'Click or drag over existing text to cover it. Add replacement text if needed.');
       return;
     }
 
@@ -1300,6 +1455,24 @@ export function PdfEditorClient() {
     }
 
     downloadBytes(activeItem.bytes, activeItem.name, 'Original PDF download started.');
+  };
+
+  const printEditedPdf = () => {
+    if (!currentBytes) {
+      setError('Please upload a PDF file.');
+      return;
+    }
+
+    const printUrl = URL.createObjectURL(toPdfBlob(currentBytes));
+    const printWindow = window.open(printUrl, '_blank', 'noopener,noreferrer');
+    if (!printWindow) {
+      setError('Your browser blocked the print window. Allow popups or download the PDF instead.');
+      URL.revokeObjectURL(printUrl);
+      return;
+    }
+
+    setSuccess('Print preview opened for the edited PDF.');
+    window.setTimeout(() => URL.revokeObjectURL(printUrl), 30_000);
   };
 
   const resetChanges = () => {
@@ -1472,6 +1645,8 @@ export function PdfEditorClient() {
   }, [deletePendingObject, redoLastEdit, selectedObjectId, undoLastEdit]);
 
   const canEdit = hasFiles && !isProcessing;
+  const topToolbarButtonClassName =
+    'rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-emerald-500/10';
 
   return (
     <section className="space-y-8">
@@ -1487,11 +1662,45 @@ export function PdfEditorClient() {
             <div className="mt-6 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4 text-sm text-emerald-50">
               Your PDF stays in your browser. Files are not uploaded to our server.
             </div>
+            <div className="mt-3 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-50">
+              PDF text is not always directly editable. Use Erase Text Area to cover visible text, then add replacement text.
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+      <div className="sticky top-0 z-30 -mx-4 border-y border-slate-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-2">
+          <label className={`${topToolbarButtonClassName} cursor-pointer`}>
+            {hasFiles ? 'Upload / Replace PDF' : 'Upload PDF'}
+            <input type="file" accept="application/pdf,.pdf" multiple className="sr-only" onChange={handleInputChange} />
+          </label>
+          <button type="button" onClick={() => void downloadEditedPdf()} disabled={!hasFiles || isProcessing} className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-50">
+            Download
+          </button>
+          <button type="button" onClick={printEditedPdf} disabled={!hasFiles || isProcessing} className={topToolbarButtonClassName}>Print</button>
+          <button type="button" onClick={undoLastEdit} disabled={undoStack.length === 0 || isProcessing} className={topToolbarButtonClassName}>Undo</button>
+          <button type="button" onClick={redoLastEdit} disabled={redoStack.length === 0 || isProcessing} className={topToolbarButtonClassName}>Redo</button>
+          <button type="button" onClick={resetChanges} disabled={!hasFiles || isProcessing || (!hasEditedPdf && pendingObjects.length === 0)} className={topToolbarButtonClassName}>Reset</button>
+          <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value + 0.1).toFixed(2)), 0.75, 1.5))} className={topToolbarButtonClassName}>Zoom in</button>
+          <button type="button" onClick={() => setZoom((value) => clampNumber(Number((value - 0.1).toFixed(2)), 0.75, 1.5))} className={topToolbarButtonClassName}>Zoom out</button>
+          <button type="button" onClick={() => setZoom(1)} className={topToolbarButtonClassName}>Fit width</button>
+          <div className="inline-flex overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <button type="button" onClick={() => setPreviewMode('original')} disabled={!activeItem} className={`px-3 py-2 text-xs font-bold disabled:opacity-50 ${previewMode === 'original' ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-950' : 'bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300'}`}>
+              Original
+            </button>
+            <button type="button" onClick={() => setPreviewMode('edited')} className={`px-3 py-2 text-xs font-bold ${previewMode === 'edited' ? 'bg-emerald-500 text-white' : 'bg-white text-slate-600 dark:bg-slate-950 dark:text-slate-300'}`}>
+              Edited
+            </button>
+          </div>
+          <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className={topToolbarButtonClassName}>Apply changes</button>
+          <span className="ml-auto rounded-full border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-200">
+            Privacy: browser-only
+          </span>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)_320px]">
         <div className="space-y-6">
           <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -1608,22 +1817,94 @@ export function PdfEditorClient() {
                 Beginner friendly
               </span>
             </div>
+            <div className="mt-4 space-y-4">
+              {[
+                {
+                  title: 'Fill & Sign',
+                  actions: [
+                    { label: 'Add Signature', action: 'signature' as const },
+                    { label: 'Add Initials', action: 'initials' as const },
+                    { label: 'Add Date', action: 'date' as const },
+                    { label: 'Add Checkmark', action: 'checkmark' as const },
+                    { label: 'Add X', action: 'x-mark' as const },
+                    { label: 'Add N/A', action: 'na' as const },
+                  ],
+                },
+                {
+                  title: 'Form Fields',
+                  actions: [
+                    { label: 'Text field', tool: 'form-text' as const },
+                    { label: 'Checkbox field', tool: 'form-checkbox' as const },
+                    { label: 'Radio button', tool: 'form-radio' as const },
+                    { label: 'Dropdown field', tool: 'form-dropdown' as const },
+                    { label: 'Date field', tool: 'form-date' as const },
+                    { label: 'Signature field', tool: 'form-signature' as const },
+                  ],
+                },
+                {
+                  title: 'Edit PDF',
+                  actions: [
+                    { label: 'Text', tool: 'add-text' as const },
+                    { label: 'Erase Text Area', action: 'erase' as const },
+                    { label: 'Highlight', tool: 'highlight' as const },
+                    { label: 'Sticky note', tool: 'sticky-note' as const },
+                    { label: 'Circle', tool: 'circle' as const },
+                    { label: 'Line', tool: 'line' as const },
+                  ],
+                },
+                {
+                  title: 'Pages',
+                  actions: [
+                    { label: 'Page tools', tool: 'page-tools' as const },
+                    { label: 'Merge PDFs', action: 'merge' as const },
+                    { label: 'Extract Pages', action: 'extract' as const },
+                  ],
+                },
+                {
+                  title: 'Export',
+                  actions: [
+                    { label: 'Download Edited', run: () => void downloadEditedPdf() },
+                    { label: 'Print Edited', run: printEditedPdf },
+                  ],
+                },
+              ].map((group) => (
+                <div key={group.title}>
+                  <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{group.title}</h3>
+                  <div className="mt-2 grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+                    {group.actions.map((item) => (
+                      <button
+                        key={item.label}
+                        type="button"
+                        onClick={() => {
+                          if ('action' in item && item.action) applyQuickAction(item.action);
+                          if ('tool' in item && item.tool) setToolAndMessage(item.tool);
+                          if ('run' in item && item.run) item.run();
+                        }}
+                        disabled={!hasFiles && item.label !== 'Merge PDFs'}
+                        className={`rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                          'tool' in item && item.tool === activeTool
+                            ? 'border-emerald-400 bg-emerald-50 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-100'
+                            : 'border-slate-200 bg-slate-50 text-slate-800 hover:border-emerald-300 hover:bg-emerald-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-emerald-500/10'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               {[
-                { label: 'Add Signature', action: 'signature' as const },
-                { label: 'Add Date', action: 'date' as const },
                 { label: 'Add Name', action: 'name' as const },
                 { label: 'Add Page Numbers', action: 'page-numbers' as const },
                 { label: 'Add Confidential Watermark', action: 'watermark' as const },
-                { label: 'Erase Text Area', action: 'erase' as const },
-                { label: 'Merge PDFs', action: 'merge' as const },
-                { label: 'Extract Pages', action: 'extract' as const },
               ].map((quickAction) => (
                 <button
                   key={quickAction.label}
                   type="button"
                   onClick={() => applyQuickAction(quickAction.action)}
-                  disabled={!hasFiles && quickAction.action !== 'merge'}
+                  disabled={!hasFiles}
                   className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-left text-sm font-semibold text-slate-800 transition hover:border-emerald-300 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-100 dark:hover:bg-emerald-500/10"
                 >
                   {quickAction.label}
@@ -1658,15 +1939,17 @@ export function PdfEditorClient() {
             <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Selected object</h2>
             {selectedObject ? (
               <div className="mt-4 space-y-3">
-                <FieldLabel label={selectedObject.type === 'erase' ? 'Replacement text (optional)' : 'Text'}>
-                  <input
-                    value={selectedObject.text}
-                    onChange={(event) => updatePendingObject(selectedObject.id, { text: event.target.value })}
-                    className={inputClassName}
-                  />
-                </FieldLabel>
+                {selectedObject.type === 'form-field' ? (
+                  <FieldLabel label="Field label">
+                    <input value={selectedObject.label || ''} onChange={(event) => updatePendingObject(selectedObject.id, { label: event.target.value })} className={inputClassName} />
+                  </FieldLabel>
+                ) : (
+                  <FieldLabel label={selectedObject.type === 'erase' ? 'Replacement text (optional)' : selectedObject.type === 'sticky-note' ? 'Note' : 'Content'}>
+                    <input value={selectedObject.text} onChange={(event) => updatePendingObject(selectedObject.id, { text: event.target.value })} className={inputClassName} />
+                  </FieldLabel>
+                )}
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <FieldLabel label="Font size">
+                  <FieldLabel label={selectedObject.type === 'line' ? 'Line size' : 'Font size'}>
                     <input
                       type="number"
                       min={6}
@@ -1689,9 +1972,9 @@ export function PdfEditorClient() {
                     </select>
                   </FieldLabel>
                 </div>
-                {selectedObject.type === 'erase' && (
+                {(selectedObject.type === 'erase' || selectedObject.type === 'highlight' || selectedObject.type === 'circle' || selectedObject.type === 'line' || selectedObject.type === 'sticky-note' || selectedObject.type === 'form-field') && (
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <FieldLabel label="Erase width">
+                    <FieldLabel label="Width">
                       <input
                         type="number"
                         min={5}
@@ -1701,7 +1984,7 @@ export function PdfEditorClient() {
                         className={inputClassName}
                       />
                     </FieldLabel>
-                    <FieldLabel label="Erase height">
+                    <FieldLabel label="Height">
                       <input
                         type="number"
                         min={3}
@@ -1713,6 +1996,16 @@ export function PdfEditorClient() {
                     </FieldLabel>
                   </div>
                 )}
+                <FieldLabel label="Page">
+                  <input
+                    type="number"
+                    min={1}
+                    max={currentPageCount || 1}
+                    value={selectedObject.pageIndex + 1}
+                    onChange={(event) => updatePendingObject(selectedObject.id, { pageIndex: clampNumber(Number(event.target.value) - 1, 0, Math.max(0, currentPageCount - 1)) })}
+                    className={inputClassName}
+                  />
+                </FieldLabel>
                 <div className="grid gap-2 sm:grid-cols-3">
                   <button type="button" onClick={() => updatePendingObject(selectedObject.id, { bold: !selectedObject.bold })} className={secondaryButtonClassName}>
                     {selectedObject.bold ? 'Bold on' : 'Bold off'}
@@ -2234,7 +2527,7 @@ export function PdfEditorClient() {
                           role="button"
                           tabIndex={0}
                           onPointerDown={(event) => handleObjectPointerDown(event, object.id)}
-                          className={`absolute cursor-move rounded-md border-2 bg-white/85 shadow-lg ${
+                          className={`absolute cursor-move rounded-md border-2 shadow-lg ${
                             isSelected ? 'border-emerald-500 ring-4 ring-emerald-300/30' : 'border-blue-400'
                           }`}
                           style={{
@@ -2242,11 +2535,29 @@ export function PdfEditorClient() {
                             top: `${object.yPercent}%`,
                             width: `${object.widthPercent}%`,
                             minHeight: `${object.heightPercent}%`,
+                            backgroundColor: object.type === 'highlight' ? 'rgba(250, 204, 21, 0.35)' : object.type === 'sticky-note' ? '#fef08a' : object.type === 'line' || object.type === 'circle' ? 'transparent' : 'rgba(255, 255, 255, 0.85)',
                           }}
                         >
                           {object.type === 'erase' ? (
                             <div className="h-full min-h-8 rounded bg-white text-center text-[10px] font-semibold text-slate-400">
                               Erase area
+                            </div>
+                          ) : object.type === 'highlight' ? (
+                            <div className="h-full min-h-7 rounded text-center text-[10px] font-semibold text-amber-800/70">
+                              Highlight
+                            </div>
+                          ) : object.type === 'circle' ? (
+                            <div className="h-full min-h-12 rounded-[999px] border-2 border-current" style={{ color: getCssTextColor(object.color) }} />
+                          ) : object.type === 'line' ? (
+                            <div className="h-1 rounded-full bg-current" style={{ color: getCssTextColor(object.color), marginTop: '0.25rem' }} />
+                          ) : object.type === 'sticky-note' ? (
+                            <div className="min-h-12 px-2 py-1 text-xs font-semibold text-amber-950">
+                              {object.text || 'Note'}
+                            </div>
+                          ) : object.type === 'form-field' ? (
+                            <div className="flex h-full min-h-8 items-center gap-2 rounded border border-slate-500 bg-white/80 px-2 text-[10px] font-semibold text-slate-600">
+                              {(object.formKind === 'checkbox' || object.formKind === 'radio') && <span className={object.formKind === 'radio' ? 'h-3 w-3 rounded-full border border-slate-500' : 'h-3 w-3 border border-slate-500'} />}
+                              <span className="truncate">{object.label || formLabel(object.formKind)}</span>
                             </div>
                           ) : (
                             <div
@@ -2254,7 +2565,7 @@ export function PdfEditorClient() {
                               style={{
                                 fontSize: `${Math.max(10, object.fontSize)}px`,
                                 fontWeight: object.bold ? 700 : 400,
-                                color: object.color === 'emerald' ? '#047857' : object.color === 'blue' ? '#1d4ed8' : object.color === 'red' ? '#b91c1c' : '#1f2937',
+                                color: getCssTextColor(object.color),
                               }}
                             >
                               {object.text || 'Text'}
@@ -2343,6 +2654,93 @@ export function PdfEditorClient() {
                 No edits yet. Upload a PDF and your actions will appear here.
               </p>
             )}
+          </section>
+        </aside>
+
+        <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
+          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Right sidebar</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">Selected object properties, pending edits, edit history, and page info.</p>
+
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">Page info</h3>
+              <div className="mt-3 grid gap-2 text-sm text-slate-600 dark:text-slate-300">
+                <span>Current page: {currentPageCount ? activePageIndex + 1 : 'None'}</span>
+                <span>Total pages: {currentPageCount || 'Not available'}</span>
+                <span>Selected pages: {selectedPageIndexes.length || 0}</span>
+                <span>Zoom: {Math.round(zoom * 100)}%</span>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-sm font-bold text-slate-900 dark:text-white">Selected object</h3>
+                {selectedObject && <span className="rounded-full bg-emerald-100 px-2 py-1 text-[10px] font-bold text-emerald-700">Page {selectedObject.pageIndex + 1}</span>}
+              </div>
+              {selectedObject ? (
+                <div className="mt-3 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                  <p className="font-semibold text-slate-900 dark:text-white">{getPendingObjectName(selectedObject)}</p>
+                  <FieldLabel label={selectedObject.type === 'form-field' ? 'Label' : 'Content'}>
+                    <input
+                      value={selectedObject.type === 'form-field' ? selectedObject.label || '' : selectedObject.text}
+                      onChange={(event) => updatePendingObject(selectedObject.id, selectedObject.type === 'form-field' ? { label: event.target.value } : { text: event.target.value })}
+                      className={inputClassName}
+                    />
+                  </FieldLabel>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button type="button" onClick={() => duplicatePendingObject(selectedObject.id)} className={secondaryButtonClassName}>Duplicate</button>
+                    <button type="button" onClick={() => deletePendingObject(selectedObject.id)} className={secondaryButtonClassName}>Delete</button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">Select an overlay object to edit it here.</p>
+              )}
+            </div>
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Pending edits</h2>
+                <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{pendingObjects.length} object{pendingObjects.length === 1 ? '' : 's'} waiting to apply.</p>
+              </div>
+              <button type="button" onClick={() => void applyPendingObjects()} disabled={!canEdit || pendingObjects.length === 0} className="rounded-xl bg-emerald-500 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">
+                Apply all
+              </button>
+            </div>
+            {pendingObjects.length > 0 ? (
+              <div className="mt-4 space-y-2">
+                {pendingObjects.map((object) => (
+                  <div key={object.id} className={`rounded-2xl border p-3 text-sm ${object.id === selectedObjectId ? 'border-emerald-400 bg-emerald-50 dark:bg-emerald-500/10' : 'border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950'}`}>
+                    <button type="button" onClick={() => setSelectedObjectId(object.id)} className="w-full text-left">
+                      <span className="block font-semibold text-slate-900 dark:text-white">{getPendingObjectName(object)}</span>
+                      <span className="text-xs text-slate-500 dark:text-slate-400">Page {object.pageIndex + 1} · {Math.round(object.widthPercent)}% wide</span>
+                    </button>
+                    <div className="mt-2 flex gap-2">
+                      <button type="button" onClick={() => duplicatePendingObject(object.id)} className="rounded-lg border border-slate-200 px-2 py-1 text-xs font-semibold text-slate-600 dark:border-slate-700 dark:text-slate-300">Duplicate</button>
+                      <button type="button" onClick={() => deletePendingObject(object.id)} className="rounded-lg border border-red-200 px-2 py-1 text-xs font-semibold text-red-600">Delete</button>
+                    </div>
+                  </div>
+                ))}
+                <button type="button" onClick={clearPendingEdits} className={`${secondaryButtonClassName} w-full`}>Clear pending edits</button>
+              </div>
+            ) : (
+              <p className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">No pending edits yet.</p>
+            )}
+          </section>
+
+          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h2 className="text-xl font-semibold text-slate-950 dark:text-white">Help and limits</h2>
+            <div className="mt-4 grid gap-4 text-sm text-slate-600 dark:text-slate-300">
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white">Can</h3>
+                <p className="mt-1">Fill forms visually, add text/signature/date/checkmarks, cover visible text, add visual form fields, highlight, rotate/delete/reorder pages, merge/extract PDFs.</p>
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-900 dark:text-white">Cannot yet</h3>
+                <p className="mt-1">Perfectly rewrite embedded PDF text like Microsoft Word, OCR scanned PDFs, edit images inside PDFs directly, or deep-compress PDFs.</p>
+              </div>
+            </div>
           </section>
         </aside>
       </div>

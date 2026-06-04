@@ -22,6 +22,7 @@ const { runSitemapTests } = require('./sitemap.test.ts');
 const { runFinanceSphereRenderingSeoRegressionTests } = require('./financesphere-rendering-seo-regressions.test.ts');
 const { runSitemapValidationRegressionTests } = require('./sitemap-validation-regression.test.ts');
 const { runStockApiTests } = require('./stock-api.test.ts');
+const { runPdfEditorUtilsTests } = require('./pdf-editor-utils.test.ts');
 
 runUtilsTests();
 console.log('✅ utils tests passed');
@@ -43,5 +44,8 @@ console.log('✅ sitemap validation regression tests passed');
 
 runStockApiTests();
 console.log('✅ stock API freshness tests passed');
+
+runPdfEditorUtilsTests();
+console.log('✅ PDF editor utility tests passed');
 
 console.log('🎉 all unit tests passed');
