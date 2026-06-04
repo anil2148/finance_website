@@ -53,6 +53,7 @@ type EditorTool =
   | 'x-mark'
   | 'circle'
   | 'line'
+  | 'arrow'
   | 'highlight'
   | 'sticky-note'
   | 'form-text'
@@ -64,7 +65,7 @@ type EditorTool =
   | 'page-tools';
 type PreviewMode = 'edited' | 'original';
 type PdfTextColor = 'slate' | 'emerald' | 'blue' | 'red';
-type PendingObjectType = 'text' | 'erase' | 'blackout' | 'highlight' | 'circle' | 'line' | 'sticky-note' | 'form-field';
+type PendingObjectType = 'text' | 'erase' | 'blackout' | 'highlight' | 'circle' | 'line' | 'arrow' | 'sticky-note' | 'form-field';
 type FormFieldKind = 'text' | 'checkbox' | 'radio' | 'dropdown' | 'date' | 'signature';
 
 type ToolStatus = 'Ready' | 'Coming soon';
@@ -375,6 +376,7 @@ function getPendingObjectName(object: PendingObject) {
   if (object.type === 'highlight') return 'Highlight';
   if (object.type === 'circle') return 'Circle';
   if (object.type === 'line') return 'Line';
+  if (object.type === 'arrow') return 'Arrow';
   if (object.type === 'sticky-note') return 'Sticky note';
   if (object.type === 'form-field') return `${object.label || object.formKind || 'Form'} field`;
   if (object.text === '✓') return 'Checkmark';
@@ -384,6 +386,10 @@ function getPendingObjectName(object: PendingObject) {
 
 function isPlaceableEditorTool(tool: EditorTool) {
   return tool !== 'none' && tool !== 'page-tools' && tool !== 'select-text';
+}
+
+function isDragDrawableTool(tool: EditorTool) {
+  return tool === 'erase' || tool === 'blackout' || tool === 'highlight' || tool === 'circle' || tool === 'line' || tool === 'arrow';
 }
 
 function pdfSelectionBoxToPercents(box: PdfSelectionBox, pageSize: { width: number; height: number }) {
@@ -778,7 +784,7 @@ export function PdfEditorClient() {
       setSelectedObjectId(null);
       setSelectedPageIndexes([]);
       setActivePageIndex(0);
-      setActiveTool('add-text');
+      setActiveTool('select-text');
       setSuccess(
         loadedFiles.length === 1
           ? 'PDF loaded successfully.'
@@ -1150,8 +1156,8 @@ export function PdfEditorClient() {
       pageIndex: activePageIndex,
       xPercent: clampNumber(xPercent, 0, 92),
       yPercent: clampNumber(yPercent, 0, 92),
-      widthPercent: options?.widthPercent ?? (type === 'erase' || type === 'blackout' ? 28 : type === 'line' ? 26 : type === 'form-field' ? 24 : type === 'highlight' ? 26 : 18),
-      heightPercent: options?.heightPercent ?? (type === 'erase' || type === 'blackout' ? 8 : type === 'line' ? 1.5 : type === 'form-field' ? 6 : type === 'highlight' ? 5 : type === 'circle' ? 10 : 5),
+      widthPercent: options?.widthPercent ?? (type === 'erase' || type === 'blackout' ? 28 : type === 'line' || type === 'arrow' ? 26 : type === 'form-field' ? 24 : type === 'highlight' ? 26 : 18),
+      heightPercent: options?.heightPercent ?? (type === 'erase' || type === 'blackout' ? 8 : type === 'line' || type === 'arrow' ? 1.5 : type === 'form-field' ? 6 : type === 'highlight' ? 5 : type === 'circle' ? 10 : 5),
       text: type === 'erase' || type === 'blackout' ? '' : objectText,
       fontSize: options?.fontSize ?? (type === 'erase' || type === 'blackout' ? 12 : activeTool === 'signature' || activeTool === 'initials' ? signatureFontSize : annotationFontSize),
       color: options?.color ?? annotationColor,
@@ -1190,6 +1196,11 @@ export function PdfEditorClient() {
       return;
     }
 
+    if (activeTool === 'arrow') {
+      addPendingObject('arrow', xPercent, yPercent, { widthPercent: 26, heightPercent: 4 });
+      return;
+    }
+
     if (activeTool === 'sticky-note') {
       addPendingObject('sticky-note', xPercent, yPercent, { text: 'Note', widthPercent: 24, heightPercent: 10, color: 'slate' });
       return;
@@ -1208,6 +1219,48 @@ export function PdfEditorClient() {
     }
 
     addPendingObject('text', xPercent, yPercent);
+  };
+
+  const addPendingObjectForToolRect = (
+    tool: EditorTool,
+    startXPercent: number,
+    startYPercent: number,
+    endXPercent: number,
+    endYPercent: number,
+  ) => {
+    const xPercent = clampNumber(Math.min(startXPercent, endXPercent), 0, 98);
+    const yPercent = clampNumber(Math.min(startYPercent, endYPercent), 0, 98);
+    const widthPercent = clampNumber(Math.abs(endXPercent - startXPercent), 1, 100 - xPercent);
+    const heightPercent = clampNumber(Math.abs(endYPercent - startYPercent), 1, 100 - yPercent);
+
+    if (tool === 'erase') {
+      addPendingObject('erase', xPercent, yPercent, { widthPercent, heightPercent });
+      return;
+    }
+
+    if (tool === 'blackout') {
+      addPendingObject('blackout', xPercent, yPercent, { widthPercent, heightPercent });
+      return;
+    }
+
+    if (tool === 'highlight') {
+      addPendingObject('highlight', xPercent, yPercent, { color: 'emerald', widthPercent, heightPercent });
+      return;
+    }
+
+    if (tool === 'circle') {
+      addPendingObject('circle', xPercent, yPercent, { widthPercent, heightPercent });
+      return;
+    }
+
+    if (tool === 'line') {
+      addPendingObject('line', xPercent, yPercent, { widthPercent, heightPercent: Math.max(1, heightPercent) });
+      return;
+    }
+
+    if (tool === 'arrow') {
+      addPendingObject('arrow', xPercent, yPercent, { widthPercent, heightPercent: Math.max(1, heightPercent) });
+    }
   };
 
   const handlePreviewClick = (event: PointerEvent<HTMLDivElement>) => {
@@ -1406,12 +1459,21 @@ export function PdfEditorClient() {
     if (!pointerStart || !pdfPageLayerRef.current || !hasFiles || !isPlaceableEditorTool(pointerStart.tool)) return;
     if ((event.target as HTMLElement).closest('[data-editor-object="true"], [data-resize-handle="true"], button, textarea, input, select')) return;
 
-    const dragDistance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
-    if (dragDistance > 6 || window.getSelection()?.toString().trim()) return;
-
     const rect = pdfPageLayerRef.current.getBoundingClientRect();
+    const startXPercent = ((pointerStart.x - rect.left) / rect.width) * 100;
+    const startYPercent = ((pointerStart.y - rect.top) / rect.height) * 100;
     const xPercent = ((event.clientX - rect.left) / rect.width) * 100;
     const yPercent = ((event.clientY - rect.top) / rect.height) * 100;
+    const dragDistance = Math.hypot(event.clientX - pointerStart.x, event.clientY - pointerStart.y);
+
+    if (dragDistance > 6) {
+      if (isDragDrawableTool(pointerStart.tool)) {
+        addPendingObjectForToolRect(pointerStart.tool, startXPercent, startYPercent, xPercent, yPercent);
+      }
+      return;
+    }
+
+    if (window.getSelection()?.toString().trim()) return;
     addPendingObjectForActiveTool(xPercent, yPercent);
   };
 
@@ -1520,13 +1582,29 @@ export function PdfEditorClient() {
       return;
     }
 
-    if (object.type === 'line') {
+    if (object.type === 'line' || object.type === 'arrow') {
+      const endPoint = { x: x + objectWidth, y: y - objectHeight };
       page.drawLine({
         start: { x, y },
-        end: { x: x + objectWidth, y: y - objectHeight },
+        end: endPoint,
         color: getTextColor(object.color),
         thickness: Math.max(1, object.fontSize / 8),
       });
+
+      if (object.type === 'arrow') {
+        page.drawLine({
+          start: endPoint,
+          end: { x: endPoint.x - 12, y: endPoint.y + 7 },
+          color: getTextColor(object.color),
+          thickness: Math.max(1, object.fontSize / 8),
+        });
+        page.drawLine({
+          start: endPoint,
+          end: { x: endPoint.x - 12, y: endPoint.y - 7 },
+          color: getTextColor(object.color),
+          thickness: Math.max(1, object.fontSize / 8),
+        });
+      }
       return;
     }
 
@@ -2200,6 +2278,7 @@ export function PdfEditorClient() {
     'x-mark': 'X Mark',
     circle: 'Circle',
     line: 'Line',
+    arrow: 'Arrow',
     highlight: 'Highlight',
     'sticky-note': 'Note',
     'form-text': 'Text Field',
@@ -2210,7 +2289,7 @@ export function PdfEditorClient() {
     'form-signature': 'Signature Field',
     'page-tools': 'Page Tools',
   };
-  const showPropertiesPanel = Boolean(selectedObject || selectedText || downloadPromptOpen || pendingObjects.length > 0 || activeTool !== 'add-text');
+  const showPropertiesPanel = hasFiles || Boolean(selectedObject || selectedText || downloadPromptOpen || pendingObjects.length > 0 || activeTool !== 'select-text');
   const editorRibbonTools: {
     label: string;
     icon: string;
@@ -2219,7 +2298,7 @@ export function PdfEditorClient() {
     disabled?: boolean;
   }[] = [
     { label: 'Pages', icon: 'Pg', tool: 'page-tools' },
-    { label: 'Select', icon: 'Sel', tool: 'select-text', disabled: hasFiles && !textLayerAvailable },
+    { label: 'Select', icon: 'Sel', tool: 'select-text' },
     { label: 'Text', icon: 'T', tool: 'add-text' },
     { label: 'Sign', icon: 'Sig', run: () => applyQuickAction('signature') },
     { label: 'Initials', icon: 'In', run: () => applyQuickAction('initials') },
@@ -2235,7 +2314,7 @@ export function PdfEditorClient() {
     { label: 'Highlight', icon: 'Hi', tool: 'highlight' },
     { label: 'Draw', icon: 'Dr', disabled: true },
     { label: 'Line', icon: 'Ln', tool: 'line' },
-    { label: 'Arrow', icon: 'Arr', disabled: true },
+    { label: 'Arrow', icon: 'Arr', tool: 'arrow' },
     { label: 'Tools', icon: 'More', tool: 'page-tools' },
   ];
 
@@ -3383,6 +3462,7 @@ export function PdfEditorClient() {
                         >
                           <button type="button" onClick={() => createSelectedTextCoverObjects('edit')} className="rounded-lg bg-emerald-500 px-2 py-1 text-white">Edit</button>
                           <button type="button" onClick={() => createSelectedTextCoverObjects('delete')} className="rounded-lg bg-red-600 px-2 py-1 text-white">Delete</button>
+                          <button type="button" onClick={() => void applySelectedTextEdit('delete')} className="rounded-lg border border-red-200 px-2 py-1 text-red-600 dark:border-red-500/30">Delete Now</button>
                           <button type="button" onClick={copySelectedPdfText} className="rounded-lg border border-slate-200 px-2 py-1 dark:border-slate-700">Copy</button>
                           <button type="button" onClick={() => createSelectedTextCoverObjects('highlight')} className="rounded-lg border border-amber-200 px-2 py-1 text-amber-700 dark:border-amber-500/30 dark:text-amber-100">Highlight</button>
                           <button type="button" onClick={clearSelectedPdfText} className="rounded-lg border border-slate-200 px-2 py-1 dark:border-slate-700">Clear</button>
@@ -3421,7 +3501,7 @@ export function PdfEditorClient() {
                             top: `${object.yPercent}%`,
                             width: `${object.widthPercent}%`,
                             minHeight: `${object.heightPercent}%`,
-                            backgroundColor: object.type === 'blackout' ? '#000' : object.type === 'highlight' ? 'rgba(250, 204, 21, 0.35)' : object.type === 'sticky-note' ? '#fef08a' : object.type === 'line' || object.type === 'circle' ? 'transparent' : 'rgba(255, 255, 255, 0.85)',
+                            backgroundColor: object.type === 'blackout' ? '#000' : object.type === 'highlight' ? 'rgba(250, 204, 21, 0.35)' : object.type === 'sticky-note' ? '#fef08a' : object.type === 'line' || object.type === 'arrow' || object.type === 'circle' ? 'transparent' : 'rgba(255, 255, 255, 0.85)',
                           }}
                         >
                           {object.type === 'erase' ? (
@@ -3440,6 +3520,10 @@ export function PdfEditorClient() {
                             <div className="h-full min-h-12 rounded-[999px] border-2 border-current" style={{ color: getCssTextColor(object.color) }} />
                           ) : object.type === 'line' ? (
                             <div className="h-1 rounded-full bg-current" style={{ color: getCssTextColor(object.color), marginTop: '0.25rem' }} />
+                          ) : object.type === 'arrow' ? (
+                            <div className="relative h-1 rounded-full bg-current" style={{ color: getCssTextColor(object.color), marginTop: '0.25rem' }}>
+                              <span className="absolute -right-1 -top-1 h-3 w-3 rotate-45 border-r-2 border-t-2 border-current" />
+                            </div>
                           ) : object.type === 'sticky-note' ? (
                             <div className="min-h-12 px-2 py-1 text-xs font-semibold text-amber-950">
                               {object.text || 'Note'}
@@ -3715,6 +3799,9 @@ export function PdfEditorClient() {
                     <button type="button" onClick={() => createSelectedTextCoverObjects('highlight')} disabled={isProcessing} className={secondaryButtonClassName}>
                       Highlight Selected Text
                     </button>
+                    <button type="button" onClick={() => void applySelectedTextEdit('delete')} disabled={isProcessing} className={secondaryButtonClassName}>
+                      Delete Now
+                    </button>
                     <button type="button" onClick={copySelectedPdfText} className={secondaryButtonClassName}>
                       Copy Text
                     </button>
@@ -3762,7 +3849,7 @@ export function PdfEditorClient() {
                     <FieldLabel label="Height">
                       <input type="number" min={1} max={100} value={Math.round(selectedObject.heightPercent)} onChange={(event) => updatePendingObject(selectedObject.id, { heightPercent: clampNumber(Number(event.target.value), 1, 100 - selectedObject.yPercent) })} className={inputClassName} />
                     </FieldLabel>
-                    <FieldLabel label={selectedObject.type === 'line' ? 'Stroke size' : 'Font size'}>
+                    <FieldLabel label={selectedObject.type === 'line' || selectedObject.type === 'arrow' ? 'Stroke size' : 'Font size'}>
                       <input type="number" min={1} max={96} value={selectedObject.fontSize} onChange={(event) => updatePendingObject(selectedObject.id, { fontSize: clampNumber(Number(event.target.value), 1, 96) })} className={inputClassName} />
                     </FieldLabel>
                     <FieldLabel label={selectedObject.type === 'erase' ? 'Replacement color' : 'Color'}>
