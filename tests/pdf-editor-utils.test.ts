@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict';
 import {
   createEditedFileName,
+  convertDomRectToPdfRect,
   formatBytes,
   groupSelectionBoxes,
   mapDomRectToPdfBox,
   padPdfSelectionBox,
+  padSelectionRects,
   parsePageSelection,
+  validateOnePageSelection,
   validateReorderInput,
 } from '@/lib/pdf-editor-utils';
 
@@ -37,10 +40,22 @@ export function runPdfEditorUtilsTests() {
     ),
     { x: 50, y: 290, width: 50, height: 10 },
   );
+  assert.deepEqual(
+    convertDomRectToPdfRect(
+      { left: 110, top: 220, right: 210, bottom: 240, width: 100, height: 20 },
+      { left: 10, top: 20, width: 600, height: 800 },
+      { width: 300, height: 400 },
+    ),
+    { x: 50, y: 290, width: 50, height: 10 },
+  );
 
   assert.deepEqual(
     padPdfSelectionBox({ x: 5, y: 7, width: 30, height: 10 }, 10, { width: 100, height: 100 }),
     { x: 0, y: 0, width: 45, height: 27 },
+  );
+  assert.deepEqual(
+    padSelectionRects([{ x: 5, y: 7, width: 30, height: 10 }], 10, { width: 100, height: 100 }),
+    [{ x: 0, y: 0, width: 45, height: 27 }],
   );
 
   assert.deepEqual(
@@ -50,4 +65,7 @@ export function runPdfEditorUtilsTests() {
     ]),
     [{ x: 1, y: 2, width: 3, height: 4 }],
   );
+  assert.equal(validateOnePageSelection([2, 2]), 2);
+  assert.equal(validateOnePageSelection([]), null);
+  assert.throws(() => validateOnePageSelection([1, 2]), /one page at a time/);
 }

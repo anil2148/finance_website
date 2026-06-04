@@ -118,6 +118,8 @@ export function mapDomRectToPdfBox(
   };
 }
 
+export const convertDomRectToPdfRect = mapDomRectToPdfBox;
+
 export function padPdfSelectionBox(
   box: PdfSelectionBox,
   padding: number,
@@ -138,4 +140,18 @@ export function padPdfSelectionBox(
 
 export function groupSelectionBoxes(boxes: PdfSelectionBox[]) {
   return boxes.filter((box) => box.width > 0 && box.height > 0);
+}
+
+export const padSelectionRects = (
+  boxes: PdfSelectionBox[],
+  padding: number,
+  pdfPageSize: { width: number; height: number },
+) => boxes.map((box) => padPdfSelectionBox(box, padding, pdfPageSize));
+
+export function validateOnePageSelection(pageIndexes: number[]) {
+  const uniquePages = new Set(pageIndexes);
+  if (uniquePages.size > 1) {
+    throw new Error('Please select text on one page at a time.');
+  }
+  return pageIndexes[0] ?? null;
 }

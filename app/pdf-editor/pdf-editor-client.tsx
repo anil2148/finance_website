@@ -19,6 +19,7 @@ import {
   padPdfSelectionBox,
   parsePageOrder,
   parsePageSelection,
+  validateOnePageSelection,
   type PdfSelectionBox,
 } from '@/lib/pdf-editor-utils';
 
@@ -428,6 +429,7 @@ export function PdfEditorClient() {
   const [draggingObjectId, setDraggingObjectId] = useState<string | null>(null);
   const [selectedText, setSelectedText] = useState<SelectedTextState | null>(null);
   const [replacementText, setReplacementText] = useState('');
+  const [replacementFontSize, setReplacementFontSize] = useState(12);
   const [textLayerStatus, setTextLayerStatus] = useState('Upload a PDF to enable text selection.');
   const [textLayerAvailable, setTextLayerAvailable] = useState(false);
   const [pdfRenderFailed, setPdfRenderFailed] = useState(false);
@@ -560,7 +562,7 @@ export function PdfEditorClient() {
         setTextLayerStatus(
           hasText
             ? 'Text selection is available on this page.'
-            : 'This page appears to be scanned or flattened. Text selection is not available. Use Erase Text Area instead.',
+            : 'This page appears scanned or flattened. Direct text selection is unavailable. Use Erase Text Area to cover text, then add replacement text.',
         );
 
         if (hasText) {
@@ -575,7 +577,7 @@ export function PdfEditorClient() {
         if (!cancelled) {
           setPdfRenderFailed(true);
           setTextLayerAvailable(false);
-          setTextLayerStatus('Text selection preview is unavailable. Use Erase Text Area instead.');
+          setTextLayerStatus('Direct text selection is unavailable. Use Erase Text Area to cover text, then add replacement text.');
         }
       }
     }
@@ -1173,6 +1175,18 @@ export function PdfEditorClient() {
     const selectedValue = selection.toString().trim();
     if (!selectedValue) return;
 
+    const selectionPage = validateOnePageSelection([activePageIndex]);
+    if (selectionPage === null) return;
+
+    if (
+      (selection.anchorNode && !pageLayer.contains(selection.anchorNode)) ||
+      (selection.focusNode && !pageLayer.contains(selection.focusNode))
+    ) {
+      setError('Please select text on one page at a time.');
+      setSuccess(null);
+      return;
+    }
+
     const pageRect = pageLayer.getBoundingClientRect();
     const selectedBoxes: PdfSelectionBox[] = [];
     let hasRectOutsidePage = false;
@@ -1215,9 +1229,11 @@ export function PdfEditorClient() {
       return;
     }
 
-    setSelectedText({ text: selectedValue, pageIndex: activePageIndex, boxes });
+    const suggestedFontSize = clampNumber(Math.round(Math.max(...boxes.map((box) => box.height)) * 0.8), 6, 72);
+    setSelectedText({ text: selectedValue, pageIndex: selectionPage, boxes });
     setReplacementText(selectedValue);
-    setSuccess(`Selected ${boxes.length} text box${boxes.length === 1 ? '' : 'es'} on page ${activePageIndex + 1}.`);
+    setReplacementFontSize(suggestedFontSize);
+    setSuccess(`Selected ${boxes.length} text box${boxes.length === 1 ? '' : 'es'} on page ${selectionPage + 1}.`);
     setError(null);
   };
 
@@ -1437,7 +1453,7 @@ export function PdfEditorClient() {
         page.drawText(replacement, {
           x: firstBox.x,
           y: firstBox.y + Math.max(2, firstBox.height * 0.2),
-          size: clampNumber(annotationFontSize, 6, 72),
+          size: clampNumber(replacementFontSize, 6, 72),
           font,
           color: getTextColor(annotationColor),
         });
@@ -1455,6 +1471,7 @@ export function PdfEditorClient() {
       );
       setSelectedText(null);
       setReplacementText('');
+      setReplacementFontSize(12);
       window.getSelection()?.removeAllRanges();
       setSuccess(mode === 'delete' ? 'Selected text removed from visible PDF.' : 'Selected text replaced.');
     } catch {
@@ -1901,7 +1918,7 @@ export function PdfEditorClient() {
               Your PDF stays in your browser. Files are not uploaded to our server.
             </div>
             <div className="mt-3 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-50">
-              PDF text is not always directly editable. Use Erase Text Area to cover visible text, then add replacement text.
+              PDF text can be selected when the document contains real text. If the PDF is scanned or flattened, use Erase Text Area.
             </div>
           </div>
         </div>
@@ -2119,7 +2136,10 @@ export function PdfEditorClient() {
                           if ('tool' in item && item.tool) setToolAndMessage(item.tool);
                           if ('run' in item && item.run) item.run();
                         }}
-                        disabled={!hasFiles && item.label !== 'Merge PDFs'}
+                        disabled={
+                          (!hasFiles && item.label !== 'Merge PDFs') ||
+                          ('tool' in item && item.tool === 'select-text' && hasFiles && !textLayerAvailable)
+                        }
                         className={`rounded-2xl border px-4 py-3 text-left text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-50 ${
                           'tool' in item && item.tool === activeTool
                             ? 'border-emerald-400 bg-emerald-50 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-100'
@@ -2517,7 +2537,7 @@ export function PdfEditorClient() {
                 <div className="rounded-2xl bg-slate-50 p-4 dark:bg-slate-950">
                   <h4 className="text-sm font-semibold text-slate-900 dark:text-white">Erase Text Area</h4>
                   <p className="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">
-                    This covers visible text with a white box. It does not remove embedded text data or OCR content.
+                    Use Erase Text Area only when the PDF text cannot be selected. It covers visible text with a white box and does not remove embedded text data or OCR content.
                   </p>
                   <div className="mt-3 grid gap-2 sm:grid-cols-2">
                     <button type="button" onClick={() => setToolAndMessage('erase')} disabled={!canEdit} className={primaryButtonClassName}>
@@ -2761,6 +2781,18 @@ export function PdfEditorClient() {
                           pointerEvents: activeTool === 'select-text' ? 'auto' : 'none',
                         }}
                       />
+                      {selectedText && selectedText.pageIndex === activePageIndex && pdfPageSize && selectedText.boxes.map((box, index) => (
+                        <div
+                          key={`${box.x}-${box.y}-${index}`}
+                          className="pointer-events-none absolute rounded-sm border-2 border-blue-500 bg-blue-400/15"
+                          style={{
+                            left: `${(box.x / pdfPageSize.width) * 100}%`,
+                            top: `${((pdfPageSize.height - box.y - box.height) / pdfPageSize.height) * 100}%`,
+                            width: `${(box.width / pdfPageSize.width) * 100}%`,
+                            height: `${(box.height / pdfPageSize.height) * 100}%`,
+                          }}
+                        />
+                      ))}
                     </div>
                   ) : (
                     <div className="flex h-[560px] flex-col items-center justify-center p-6 text-center">
@@ -2956,6 +2988,16 @@ export function PdfEditorClient() {
                   <FieldLabel label="Replacement text">
                     <input value={replacementText} onChange={(event) => setReplacementText(event.target.value)} className={inputClassName} />
                   </FieldLabel>
+                  <FieldLabel label="Replacement font size">
+                    <input
+                      type="number"
+                      min={6}
+                      max={72}
+                      value={replacementFontSize}
+                      onChange={(event) => setReplacementFontSize(clampNumber(Number(event.target.value), 6, 72))}
+                      className={inputClassName}
+                    />
+                  </FieldLabel>
                   <button type="button" onClick={() => void applySelectedTextEdit('replace')} disabled={isProcessing || !replacementText.trim()} className="w-full rounded-xl bg-emerald-500 px-3 py-2 text-sm font-bold text-white transition hover:bg-emerald-600 disabled:opacity-50">
                     Replace Selected Text
                   </button>
@@ -2964,6 +3006,7 @@ export function PdfEditorClient() {
                     onClick={() => {
                       setSelectedText(null);
                       setReplacementText('');
+                      setReplacementFontSize(12);
                       window.getSelection()?.removeAllRanges();
                     }}
                     className={`${secondaryButtonClassName} w-full`}
@@ -2973,7 +3016,7 @@ export function PdfEditorClient() {
                 </div>
               ) : (
                 <p className="mt-3 rounded-xl bg-white/70 p-3 text-sm text-blue-900 dark:bg-slate-950/70 dark:text-blue-100">
-                  Choose Select Text, then drag over text in the PDF to select it.
+                  No selectable text selected yet.
                 </p>
               )}
             </div>
@@ -3045,6 +3088,9 @@ export function PdfEditorClient() {
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white">Cannot yet</h3>
                 <p className="mt-1">Perfectly rewrite embedded PDF text like Microsoft Word, OCR scanned PDFs, edit images inside PDFs directly, or deep-compress PDFs.</p>
+              </div>
+              <div className="rounded-2xl border border-amber-100 bg-amber-50 p-3 text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+                Some PDFs do not store text as editable text. If text selection does not work, the PDF may be scanned, flattened, or image-based. In that case, use Erase Text Area.
               </div>
             </div>
           </section>
