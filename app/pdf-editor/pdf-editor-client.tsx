@@ -52,6 +52,7 @@ type EditorTool =
   | 'checkmark'
   | 'x-mark'
   | 'circle'
+  | 'rectangle'
   | 'line'
   | 'arrow'
   | 'highlight'
@@ -65,7 +66,7 @@ type EditorTool =
   | 'page-tools';
 type PreviewMode = 'edited' | 'original';
 type PdfTextColor = 'slate' | 'emerald' | 'blue' | 'red';
-type PendingObjectType = 'text' | 'erase' | 'blackout' | 'highlight' | 'circle' | 'line' | 'arrow' | 'sticky-note' | 'form-field';
+type PendingObjectType = 'text' | 'erase' | 'blackout' | 'highlight' | 'circle' | 'rectangle' | 'line' | 'arrow' | 'sticky-note' | 'form-field';
 type FormFieldKind = 'text' | 'checkbox' | 'radio' | 'dropdown' | 'date' | 'signature';
 
 type ToolStatus = 'Ready' | 'Coming soon';
@@ -375,6 +376,7 @@ function getPendingObjectName(object: PendingObject) {
   if (object.type === 'blackout') return 'Blackout area';
   if (object.type === 'highlight') return 'Highlight';
   if (object.type === 'circle') return 'Circle';
+  if (object.type === 'rectangle') return 'Rectangle';
   if (object.type === 'line') return 'Line';
   if (object.type === 'arrow') return 'Arrow';
   if (object.type === 'sticky-note') return 'Sticky note';
@@ -389,7 +391,7 @@ function isPlaceableEditorTool(tool: EditorTool) {
 }
 
 function isDragDrawableTool(tool: EditorTool) {
-  return tool === 'erase' || tool === 'blackout' || tool === 'highlight' || tool === 'circle' || tool === 'line' || tool === 'arrow';
+  return tool === 'erase' || tool === 'blackout' || tool === 'highlight' || tool === 'circle' || tool === 'rectangle' || tool === 'line' || tool === 'arrow';
 }
 
 function pdfSelectionBoxToPercents(box: PdfSelectionBox, pageSize: { width: number; height: number }) {
@@ -1157,7 +1159,7 @@ export function PdfEditorClient() {
       xPercent: clampNumber(xPercent, 0, 92),
       yPercent: clampNumber(yPercent, 0, 92),
       widthPercent: options?.widthPercent ?? (type === 'erase' || type === 'blackout' ? 28 : type === 'line' || type === 'arrow' ? 26 : type === 'form-field' ? 24 : type === 'highlight' ? 26 : 18),
-      heightPercent: options?.heightPercent ?? (type === 'erase' || type === 'blackout' ? 8 : type === 'line' || type === 'arrow' ? 1.5 : type === 'form-field' ? 6 : type === 'highlight' ? 5 : type === 'circle' ? 10 : 5),
+      heightPercent: options?.heightPercent ?? (type === 'erase' || type === 'blackout' ? 8 : type === 'line' || type === 'arrow' ? 1.5 : type === 'form-field' ? 6 : type === 'highlight' ? 5 : type === 'circle' || type === 'rectangle' ? 10 : 5),
       text: type === 'erase' || type === 'blackout' ? '' : objectText,
       fontSize: options?.fontSize ?? (type === 'erase' || type === 'blackout' ? 12 : activeTool === 'signature' || activeTool === 'initials' ? signatureFontSize : annotationFontSize),
       color: options?.color ?? annotationColor,
@@ -1188,6 +1190,11 @@ export function PdfEditorClient() {
 
     if (activeTool === 'circle') {
       addPendingObject('circle', xPercent, yPercent, { widthPercent: 13, heightPercent: 9 });
+      return;
+    }
+
+    if (activeTool === 'rectangle') {
+      addPendingObject('rectangle', xPercent, yPercent, { widthPercent: 18, heightPercent: 9 });
       return;
     }
 
@@ -1250,6 +1257,11 @@ export function PdfEditorClient() {
 
     if (tool === 'circle') {
       addPendingObject('circle', xPercent, yPercent, { widthPercent, heightPercent });
+      return;
+    }
+
+    if (tool === 'rectangle') {
+      addPendingObject('rectangle', xPercent, yPercent, { widthPercent, heightPercent });
       return;
     }
 
@@ -1578,6 +1590,18 @@ export function PdfEditorClient() {
         yScale: objectHeight / 2,
         borderColor: getTextColor(object.color),
         borderWidth: 2,
+      });
+      return;
+    }
+
+    if (object.type === 'rectangle') {
+      page.drawRectangle({
+        x,
+        y: y - objectHeight,
+        width: objectWidth,
+        height: objectHeight,
+        borderColor: getTextColor(object.color),
+        borderWidth: Math.max(1, object.fontSize / 8),
       });
       return;
     }
@@ -2277,6 +2301,7 @@ export function PdfEditorClient() {
     checkmark: 'Checkmark',
     'x-mark': 'X Mark',
     circle: 'Circle',
+    rectangle: 'Rectangle',
     line: 'Line',
     arrow: 'Arrow',
     highlight: 'Highlight',
@@ -2307,6 +2332,7 @@ export function PdfEditorClient() {
     { label: 'Check', icon: 'Chk', run: () => applyQuickAction('checkmark') },
     { label: 'Cross', icon: 'X', run: () => applyQuickAction('x-mark') },
     { label: 'Circle', icon: 'O', tool: 'circle' },
+    { label: 'Rectangle', icon: 'Rect', tool: 'rectangle' },
     { label: 'Table', icon: 'Tbl', disabled: true },
     { label: 'Text Box', icon: 'Box', tool: 'add-text' },
     { label: 'Date', icon: 'Dt', run: () => applyQuickAction('date') },
@@ -2315,6 +2341,7 @@ export function PdfEditorClient() {
     { label: 'Draw', icon: 'Dr', disabled: true },
     { label: 'Line', icon: 'Ln', tool: 'line' },
     { label: 'Arrow', icon: 'Arr', tool: 'arrow' },
+    { label: 'Sticky Note', icon: 'Note', tool: 'sticky-note' },
     { label: 'Tools', icon: 'More', tool: 'page-tools' },
   ];
 
@@ -2789,7 +2816,7 @@ export function PdfEditorClient() {
                     </select>
                   </FieldLabel>
                 </div>
-                {(selectedObject.type === 'erase' || selectedObject.type === 'blackout' || selectedObject.type === 'highlight' || selectedObject.type === 'circle' || selectedObject.type === 'line' || selectedObject.type === 'sticky-note' || selectedObject.type === 'form-field') && (
+                {(selectedObject.type === 'erase' || selectedObject.type === 'blackout' || selectedObject.type === 'highlight' || selectedObject.type === 'circle' || selectedObject.type === 'rectangle' || selectedObject.type === 'line' || selectedObject.type === 'sticky-note' || selectedObject.type === 'form-field') && (
                   <div className="grid gap-3 sm:grid-cols-2">
                     <FieldLabel label="Width">
                       <input
@@ -3501,7 +3528,7 @@ export function PdfEditorClient() {
                             top: `${object.yPercent}%`,
                             width: `${object.widthPercent}%`,
                             minHeight: `${object.heightPercent}%`,
-                            backgroundColor: object.type === 'blackout' ? '#000' : object.type === 'highlight' ? 'rgba(250, 204, 21, 0.35)' : object.type === 'sticky-note' ? '#fef08a' : object.type === 'line' || object.type === 'arrow' || object.type === 'circle' ? 'transparent' : 'rgba(255, 255, 255, 0.85)',
+                            backgroundColor: object.type === 'blackout' ? '#000' : object.type === 'highlight' ? 'rgba(250, 204, 21, 0.35)' : object.type === 'sticky-note' ? '#fef08a' : object.type === 'line' || object.type === 'arrow' || object.type === 'circle' || object.type === 'rectangle' ? 'transparent' : 'rgba(255, 255, 255, 0.85)',
                           }}
                         >
                           {object.type === 'erase' ? (
@@ -3518,6 +3545,8 @@ export function PdfEditorClient() {
                             </div>
                           ) : object.type === 'circle' ? (
                             <div className="h-full min-h-12 rounded-[999px] border-2 border-current" style={{ color: getCssTextColor(object.color) }} />
+                          ) : object.type === 'rectangle' ? (
+                            <div className="h-full min-h-12 rounded-sm border-2 border-current" style={{ color: getCssTextColor(object.color) }} />
                           ) : object.type === 'line' ? (
                             <div className="h-1 rounded-full bg-current" style={{ color: getCssTextColor(object.color), marginTop: '0.25rem' }} />
                           ) : object.type === 'arrow' ? (
