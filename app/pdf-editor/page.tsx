@@ -2,9 +2,8 @@ import type { Metadata } from 'next';
 import { PdfEditorClient } from './pdf-editor-client';
 
 export const metadata: Metadata = {
-  title: 'Browser PDF Editor | FinanceSphere',
-  description:
-    'Upload, preview, fill, sign, mark up, organize, merge, and download PDFs in a browser-only FinanceSphere PDF editor.',
+  title: 'PDF Editor | FinanceSphere',
+  description: 'Edit, fill, sign, annotate, organize, and download PDFs in your browser.',
 };
 
 export default function PdfEditorPage() {
