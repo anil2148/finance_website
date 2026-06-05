@@ -15,6 +15,7 @@ type WebViewerInstance = {
   Core: {
     documentViewer: {
       addEventListener: (eventName: string, listener: () => void) => void;
+      removeEventListener?: (eventName: string, listener: () => void) => void;
       getDocument: () => {
         getFileData: (options?: { xfdfString?: string; downloadType?: string }) => Promise<ArrayBuffer>;
         getPageInfo?: (pageNumber: number) => { width: number; height: number };
@@ -47,7 +48,6 @@ type WebViewerInstance = {
 type WebViewerFactory = (
   options: {
     path: string;
-    initialDoc?: File | string | Blob;
     licenseKey?: string;
     fullAPI?: boolean;
   },
@@ -56,6 +56,8 @@ type WebViewerFactory = (
 
 const viewerAssetPath = '/webviewer';
 const privacyMessage = 'Your PDF stays in your browser. Files are not uploaded to our server.';
+const missingAssetsMessage =
+  'PDF editor assets are missing. Please run npm install or ensure WebViewer assets are copied to public/webviewer.';
 const limitationMessage =
   'Some PDFs allow text selection. For scanned or flattened PDFs, use Erase Area to cover content and add replacement text.';
 
@@ -88,8 +90,10 @@ export function PdfEditorClient() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const instanceRef = useRef<WebViewerInstance | null>(null);
   const fileUrlRef = useRef<string | null>(null);
+  const loadTokenRef = useRef(0);
   const [file, setFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [loadAttempt, setLoadAttempt] = useState(0);
   const [viewerReady, setViewerReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -107,8 +111,9 @@ export function PdfEditorClient() {
     fileUrlRef.current = nextUrl;
     setFile(nextFile);
     setFileUrl(nextUrl);
+    setViewerReady(false);
     setError(null);
-    setStatus('Loading PDF editor...');
+    setStatus('Preparing PDF editor...');
     setIsLoading(true);
   }, []);
 
@@ -122,18 +127,85 @@ export function PdfEditorClient() {
     if (!fileUrl || !file || !viewerRef.current) return;
 
     let cancelled = false;
+    let settled = false;
+    let timeoutId: number | undefined;
+    let fallbackId: number | undefined;
+    const loadToken = loadTokenRef.current + 1;
+    loadTokenRef.current = loadToken;
     const activeFile = file;
     const viewerElement = viewerRef.current;
 
+    const finishLoaded = () => {
+      if (cancelled || settled || loadTokenRef.current !== loadToken) return;
+      settled = true;
+      if (timeoutId) window.clearTimeout(timeoutId);
+      if (fallbackId) window.clearTimeout(fallbackId);
+      setViewerReady(true);
+      setIsLoading(false);
+      setError(null);
+      setStatus('PDF loaded. Use the toolbar to edit, fill, sign, annotate, and download.');
+    };
+
+    const failLoad = (message: string) => {
+      if (cancelled || settled || loadTokenRef.current !== loadToken) return;
+      settled = true;
+      if (timeoutId) window.clearTimeout(timeoutId);
+      if (fallbackId) window.clearTimeout(fallbackId);
+      setViewerReady(false);
+      setIsLoading(false);
+      setError(message);
+      setStatus('PDF editor failed to load.');
+    };
+
+    const startLoadWatchdog = () => {
+      timeoutId = window.setTimeout(() => {
+        failLoad('PDF editor took too long to load. Please refresh or check WebViewer assets.');
+      }, 15000);
+    };
+
+    const checkDocumentFallback = (instance: WebViewerInstance) => {
+      fallbackId = window.setTimeout(() => {
+        if (instance.Core.documentViewer.getDocument()) {
+          finishLoaded();
+        }
+      }, 1200);
+    };
+
+    const handleDocumentLoaded = (instance: WebViewerInstance) => {
+      instance.Core.documentViewer.removeEventListener?.('documentLoaded', onDocumentLoaded);
+      finishLoaded();
+    };
+
+    const onDocumentLoaded = () => {
+      const instance = instanceRef.current;
+      if (instance) handleDocumentLoaded(instance);
+    };
+
     async function initializeViewer() {
       try {
+        setViewerReady(false);
         setIsLoading(true);
+        setError(null);
+        setStatus('Preparing PDF editor...');
+        startLoadWatchdog();
+
+        setStatus('Loading editor assets...');
+        const assetResponse = await fetch(`${viewerAssetPath}/ui/index.html`, {
+          method: 'HEAD',
+          cache: 'no-store',
+        });
+
+        if (!assetResponse.ok) {
+          failLoad(missingAssetsMessage);
+          return;
+        }
 
         if (instanceRef.current) {
+          const instance = instanceRef.current;
+          setStatus('Opening PDF...');
+          instance.Core.documentViewer.addEventListener('documentLoaded', onDocumentLoaded);
           instanceRef.current.UI.loadDocument(activeFile, { filename: activeFile.name });
-          setViewerReady(true);
-          setStatus('PDF loaded. Use the toolbar to edit, fill, sign, annotate, and download.');
-          setIsLoading(false);
+          checkDocumentFallback(instance);
           return;
         }
 
@@ -142,7 +214,6 @@ export function PdfEditorClient() {
         const instance = await WebViewer(
           {
             path: viewerAssetPath,
-            initialDoc: activeFile,
             fullAPI: true,
             // TODO: Set NEXT_PUBLIC_APRYSE_LICENSE_KEY for production licensing.
             licenseKey: process.env.NEXT_PUBLIC_APRYSE_LICENSE_KEY || undefined,
@@ -155,16 +226,14 @@ export function PdfEditorClient() {
         instanceRef.current = instance;
         instance.UI.setToolbarGroup?.('toolbarGroup-Annotate');
         instance.UI.openElements?.(['leftPanel']);
-        instance.Core.documentViewer.addEventListener('documentLoaded', () => {
-          setViewerReady(true);
-          setIsLoading(false);
-          setStatus('PDF loaded. Use built-in selection, annotations, form tools, page thumbnails, and download.');
-        });
-      } catch {
+        instance.Core.documentViewer.addEventListener('documentLoaded', onDocumentLoaded);
+        setStatus('Opening PDF...');
+        instance.UI.loadDocument(activeFile, { filename: activeFile.name });
+        checkDocumentFallback(instance);
+      } catch (caughtError) {
+        console.error('[pdf-editor] WebViewer initialization failed', caughtError);
         if (!cancelled) {
-          setError('PDF editor failed to initialize.');
-          setStatus('Unable to load this PDF editor.');
-          setIsLoading(false);
+          failLoad('PDF editor failed to initialize.');
         }
       }
     }
@@ -173,10 +242,17 @@ export function PdfEditorClient() {
 
     return () => {
       cancelled = true;
+      if (timeoutId) window.clearTimeout(timeoutId);
+      if (fallbackId) window.clearTimeout(fallbackId);
+      instanceRef.current?.Core.documentViewer.removeEventListener?.('documentLoaded', onDocumentLoaded);
     };
-  }, [file, fileUrl]);
+  }, [file, fileUrl, loadAttempt]);
 
-  const chooseFile = () => fileInputRef.current?.click();
+  const chooseFile = () => {
+    if (!fileInputRef.current) return;
+    fileInputRef.current.value = '';
+    fileInputRef.current.click();
+  };
 
   const handleFileInput = (files: FileList | null) => {
     const nextFile = files?.[0];
@@ -187,6 +263,19 @@ export function PdfEditorClient() {
     event.preventDefault();
     setIsDragging(false);
     handleFileInput(event.dataTransfer.files);
+  };
+
+  const retryLoad = () => {
+    if (!file) {
+      chooseFile();
+      return;
+    }
+
+    setError(null);
+    setViewerReady(false);
+    setIsLoading(true);
+    setStatus('Preparing PDF editor...');
+    setLoadAttempt((attempt) => attempt + 1);
   };
 
   const setToolMode = (toolName: string, friendlyName: string) => {
@@ -429,15 +518,31 @@ export function PdfEditorClient() {
           </div>
 
           {error && (
-            <div className="border-b border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200">
-              {error}
+            <div className="flex flex-col gap-3 border-b border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200 sm:flex-row sm:items-center sm:justify-between">
+              <span>{error}</span>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={retryLoad}
+                  className="rounded-xl bg-red-600 px-3 py-2 text-xs font-bold text-white transition hover:bg-red-700"
+                >
+                  Retry
+                </button>
+                <button
+                  type="button"
+                  onClick={replaceFile}
+                  className="rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-bold text-red-700 transition hover:bg-red-100 dark:border-red-500/30 dark:bg-slate-950 dark:text-red-200"
+                >
+                  Replace PDF
+                </button>
+              </div>
             </div>
           )}
 
           <main className="relative h-[calc(100vh-128px)] flex-1 bg-neutral-200 dark:bg-slate-900 xl:h-[calc(100vh-72px)]">
             {isLoading && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 text-sm font-bold text-slate-700 backdrop-blur dark:bg-slate-950/70 dark:text-slate-200">
-                Loading PDF editor...
+                {status || 'Loading PDF editor...'}
               </div>
             )}
             <div className="absolute left-4 top-4 z-10 max-w-xl rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-800 shadow-sm dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">

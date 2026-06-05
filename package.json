@@ -16,7 +16,7 @@
     "test:sitemaps": "node scripts/validate-sitemaps.mjs",
     "test:render-parity": "node scripts/audit-rendering-parity.mjs",
     "generate:india-blog": "node scripts/generate-india-blog.mjs",
-    "postinstall": "node scripts/copy-webviewer-assets.mjs"
+    "postinstall": "node scripts/copy-webviewer-assets.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
