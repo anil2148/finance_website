@@ -5,11 +5,11 @@ import { AppLink } from '@/components/ui/AppLink';
 
 const primaryLinks = [
   { href: '/', label: 'Home' },
-  { href: '/credit-cards', label: 'Credit Cards' },
-  { href: '/learn/investing', label: 'Investing' },
-  { href: '/loans', label: 'Loans & Debt' },
-  { href: '/savings', label: 'Savings & Budgeting' },
+  { href: '/stock-analyzer', label: 'Stock Analyzer' },
+  { href: '/stock-opportunity', label: 'Stock Opportunity' },
+  { href: '/pdf-editor', label: 'PDF Editor' },
   { href: '/tools', label: 'Tools' },
+  { href: '/credit-cards', label: 'Credit Cards' },
   { href: '/blog', label: 'Blog / Guides' }
 ];
 
@@ -66,14 +66,14 @@ export function Footer() {
     : discoveryLinks;
 
   return (
-    <footer className="mt-10 border-t border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950">
-      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 text-sm text-slate-600 dark:text-slate-300 lg:grid-cols-[1.25fr_1fr_1fr_1fr]">
+    <footer className="mt-10 border-t border-slate-800 bg-slate-950 text-slate-300">
+      <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 text-sm lg:grid-cols-[1.25fr_1fr_1fr_1fr]">
         <section className="space-y-3">
-          <p className="text-base font-semibold text-slate-900 dark:text-slate-100">FinanceSphere</p>
-          <p>Educational planning tools and frameworks for better financial decisions.</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-base font-black text-white">FinanceSphere</p>
+          <p>Financial intelligence tools for stock research, opportunity scanning, document editing, and calculator-backed planning.</p>
+          <p className="text-xs text-slate-500">
             FinanceSphere uses affiliate links to monetize content. When you click on certain links and complete a purchase or sign-up, we may receive
-            a commission from the partner company. These partnerships do not affect our editorial independence — all opinions are based on research,
+            a commission from the partner company. These partnerships do not affect our editorial independence - all opinions are based on research,
             experience, and analysis.
           </p>
           <div className="flex flex-wrap gap-2 text-xs">
@@ -83,7 +83,7 @@ export function Footer() {
         </section>
 
         <section>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Start here</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-300">Product workspaces</p>
           <ul className="space-y-1 text-sm">
             {contextualPrimaryLinks.map((link) => (
               <li key={link.href}>
@@ -94,7 +94,7 @@ export function Footer() {
         </section>
 
         <section>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Popular pathways</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-300">Popular pathways</p>
           <ul className="space-y-1 text-sm">
             {contextualDiscoveryLinks.map((link) => (
               <li key={link.href}>
@@ -105,7 +105,7 @@ export function Footer() {
         </section>
 
         <section>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Trust, legal, and support</p>
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-emerald-300">Trust, legal, and support</p>
           <ul className="space-y-1 text-sm">
             {legalLinks.map((link) => (
               <li key={link.href}>
@@ -120,7 +120,7 @@ export function Footer() {
           </ul>
         </section>
       </div>
-      <div className="border-t border-slate-200 px-4 py-3 text-center text-xs text-slate-500 dark:border-slate-700 dark:text-slate-400">
+      <div className="border-t border-slate-800 px-4 py-3 text-center text-xs text-slate-500">
         © 2026 FinanceSphere. Educational content only; verify current terms directly with providers before acting.
       </div>
     </footer>

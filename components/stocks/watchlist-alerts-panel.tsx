@@ -137,7 +137,8 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
           <DatePickerField label="Alert reminder date" value={alertReminderDate} onChange={setAlertReminderDate} min={today} helperText="Click to choose a date. Optional. Used for earnings reminder or local review rules." />
         </div>
         <label className="mt-4 block">
-          <span className="text-sm font-semibold text-slate-300">Notes</span>
+          <span className="text-sm font-semibold text-slate-300">Why I am watching this stock</span>
+          <span className="mt-1 block text-xs text-slate-500">Example: Strong business, waiting for better valuation.</span>
           <textarea value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 min-h-24 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white outline-none focus:border-emerald-300" />
         </label>
         <button type="button" onClick={addCurrentStock} className="mt-4 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-bold text-slate-950 hover:bg-emerald-300">
@@ -148,7 +149,7 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
       <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
         <h3 className="text-2xl font-bold text-white">Saved stocks</h3>
         {items.length === 0 ? (
-          <p className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-400">No saved stocks yet.</p>
+          <p className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-400">Save stocks you like but do not want to chase today. Add a buy-below price, review date, and reason so you can come back with a plan.</p>
         ) : (
           <div className="mt-5 overflow-x-auto">
             <table className="w-full min-w-[1050px] text-left text-sm">

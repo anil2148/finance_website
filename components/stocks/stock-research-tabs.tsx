@@ -1,11 +1,18 @@
 'use client';
 
 import { useState, type ReactNode } from 'react';
+import { InsightStrip } from '@/components/ui/insight-strip';
 
 type TabItem = {
   id: string;
   label: string;
   description?: string;
+  insight?: {
+    takeaway: string;
+    watch: string;
+    risk: string;
+    next: string;
+  };
   content: ReactNode;
 };
 
@@ -48,6 +55,7 @@ export function StockResearchTabs({ tabs, defaultTab, onActiveTabChange }: Props
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">{active.label}</p>
             {active.description && <p className="mt-2 text-sm leading-6 text-slate-400">{active.description}</p>}
           </div>
+          {active.insight && <InsightStrip {...active.insight} />}
           {active.content}
         </div>
       )}

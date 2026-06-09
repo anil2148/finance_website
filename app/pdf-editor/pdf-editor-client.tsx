@@ -113,7 +113,7 @@ export function PdfEditorClient() {
     setFileUrl(nextUrl);
     setViewerReady(false);
     setError(null);
-    setStatus('Preparing PDF editor...');
+    setStatus('Preparing secure PDF workspace...');
     setIsLoading(true);
   }, []);
 
@@ -154,7 +154,7 @@ export function PdfEditorClient() {
       setViewerReady(false);
       setIsLoading(false);
       setError(message);
-      setStatus('PDF editor failed to load.');
+      setStatus('PDF editor could not start.');
     };
 
     const startLoadWatchdog = () => {
@@ -186,7 +186,7 @@ export function PdfEditorClient() {
         setViewerReady(false);
         setIsLoading(true);
         setError(null);
-        setStatus('Preparing PDF editor...');
+        setStatus('Preparing secure PDF workspace...');
         startLoadWatchdog();
 
         setStatus('Loading editor assets...');
@@ -274,7 +274,7 @@ export function PdfEditorClient() {
     setError(null);
     setViewerReady(false);
     setIsLoading(true);
-    setStatus('Preparing PDF editor...');
+    setStatus('Preparing secure PDF workspace...');
     setLoadAttempt((attempt) => attempt + 1);
   };
 
@@ -372,7 +372,7 @@ export function PdfEditorClient() {
   const replaceFile = () => chooseFile();
 
   return (
-    <section className="min-h-screen bg-neutral-200 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <section className="min-h-screen bg-slate-950 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <input
         ref={fileInputRef}
         type="file"
@@ -383,12 +383,15 @@ export function PdfEditorClient() {
 
       {!file ? (
         <div className="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-4 py-12">
-          <div className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900 sm:p-10">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-300">FinanceSphere PDF tools</p>
-            <h1 className="mt-4 text-4xl font-bold tracking-tight text-slate-950 dark:text-white">PDF Editor</h1>
-            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 dark:text-slate-300">
-              Edit, fill, sign, annotate, organize, and download PDFs in a professional browser-based workspace.
-            </p>
+          <div className="relative overflow-hidden rounded-[2rem] border border-emerald-500/20 bg-slate-900 p-6 text-white shadow-[0_30px_90px_-50px_rgba(16,185,129,0.7)] sm:p-10">
+            <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(circle_at_15%_15%,rgba(16,185,129,0.45),transparent_34%),linear-gradient(rgba(148,163,184,0.13)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.13)_1px,transparent_1px)] [background-size:auto,28px_28px,28px_28px]" />
+            <div className="relative">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-emerald-300">PDF Workspace</p>
+              <h1 className="mt-4 max-w-3xl text-4xl font-black tracking-tight text-white sm:text-5xl">Edit, fill, sign, and organize PDFs with a cleaner workflow.</h1>
+              <p className="mt-3 max-w-3xl text-base leading-7 text-slate-300">
+                Upload a PDF and work in a focused editor experience. Your files stay private in this browser and are never uploaded unless you choose a connected service.
+              </p>
+            </div>
 
             <div
               onDragOver={(event) => {
@@ -397,14 +400,14 @@ export function PdfEditorClient() {
               }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
-              className={`mt-8 rounded-3xl border-2 border-dashed p-10 text-center transition ${
+              className={`relative mt-8 rounded-3xl border-2 border-dashed p-10 text-center transition ${
                 isDragging
-                  ? 'border-emerald-400 bg-emerald-50 text-emerald-900 dark:bg-emerald-500/10 dark:text-emerald-100'
-                  : 'border-slate-300 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200'
+                  ? 'border-emerald-400 bg-emerald-400/10 text-emerald-100'
+                  : 'border-slate-700 bg-slate-950/80 text-slate-200'
               }`}
             >
               <p className="text-xl font-bold">Drag and drop a PDF here</p>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">or choose a file from your device</p>
+              <p className="mt-2 text-sm text-slate-400">Upload a PDF to start editing. Add text, signatures, highlights, shapes, and export an edited copy.</p>
               <button
                 type="button"
                 onClick={chooseFile}
@@ -414,20 +417,20 @@ export function PdfEditorClient() {
               </button>
             </div>
 
-            <div className="mt-6 grid gap-3 text-sm text-slate-700 dark:text-slate-200 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="relative mt-6 grid gap-3 text-sm text-slate-200 sm:grid-cols-2 lg:grid-cols-4">
               {['Add text', 'Sign', 'Fill forms', 'Highlight', 'Redact / erase', 'Organize pages', 'Draw and annotate', 'Download edited PDF'].map((feature) => (
-                <div key={feature} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 font-semibold dark:border-slate-800 dark:bg-slate-950">
+                <div key={feature} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 font-semibold">
                   {feature}
                 </div>
               ))}
             </div>
 
-            <div className="mt-6 grid gap-3 text-sm sm:grid-cols-2">
-              <p className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 font-semibold text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-100">
+            <div className="relative mt-6 grid gap-3 text-sm sm:grid-cols-2">
+              <p className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 font-semibold text-emerald-100">
                 {privacyMessage}
               </p>
-              <p className="rounded-2xl border border-amber-100 bg-amber-50 p-4 font-semibold text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
-                {limitationMessage}
+              <p className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 font-semibold text-amber-100">
+                Advanced PDF editing may require configured WebViewer assets. If the editor cannot start, replace the file or refresh after assets are available.
               </p>
             </div>
           </div>
@@ -441,10 +444,7 @@ export function PdfEditorClient() {
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-bold text-slate-950 dark:text-white">{file.name}</p>
               <p className="truncate text-xs font-semibold text-emerald-700 dark:text-emerald-300">{privacyMessage}</p>
-              <p className="truncate text-xs font-semibold text-slate-500 dark:text-slate-400">
-                {status}
-                <span className="hidden text-amber-700 dark:text-amber-300 md:inline"> · {limitationMessage}</span>
-              </p>
+              <p className="truncate text-xs font-semibold text-slate-500 dark:text-slate-400">{status}</p>
             </div>
             <div className="hidden max-w-[46vw] items-center gap-2 overflow-x-auto xl:flex">
               {[
@@ -520,6 +520,10 @@ export function PdfEditorClient() {
             </button>
           </div>
 
+          <div className="border-b border-amber-200 bg-amber-50 px-4 py-2 text-xs font-semibold text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-100">
+            {limitationMessage}
+          </div>
+
           {error && (
             <div className="flex flex-col gap-3 border-b border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-200 sm:flex-row sm:items-center sm:justify-between">
               <span>{error}</span>
@@ -545,7 +549,7 @@ export function PdfEditorClient() {
           <main className="relative h-[calc(100vh-128px)] flex-1 bg-neutral-200 dark:bg-slate-900 xl:h-[calc(100vh-72px)]">
             {isLoading && (
               <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 text-sm font-bold text-slate-700 backdrop-blur dark:bg-slate-950/70 dark:text-slate-200">
-                {status || 'Loading PDF editor...'}
+                {status || 'Preparing secure PDF workspace...'}
               </div>
             )}
             <div ref={viewerRef} className="h-full w-full" />

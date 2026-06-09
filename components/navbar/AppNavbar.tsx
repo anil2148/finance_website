@@ -17,7 +17,7 @@ import { useAiPageContext } from '@/components/money-copilot/useAiPageContext';
 type NavLink = {
   label: string;
   href?: string;
-  children?: Array<{ label: string; href: string }>;
+  children?: Array<{ label: string; href: string; description?: string }>;
 };
 
 const globalLinks: NavLink[] = [
@@ -25,12 +25,12 @@ const globalLinks: NavLink[] = [
   {
     label: 'Decisions',
     children: [
-      { label: 'Start a decision', href: '/ai-money-copilot' },
-      { label: 'Calculators', href: '/calculators' },
-      { label: 'Stock Analyzer', href: '/stock-analyzer' },
-      { label: 'Stock Opportunity', href: '/stock-opportunity' },
-      { label: 'PDF Editor', href: '/pdf-editor' },
-      { label: 'Comparisons', href: '/comparison' }
+      { label: 'Start a decision', href: '/ai-money-copilot', description: 'AI-guided money triage.' },
+      { label: 'Stock Analyzer', href: '/stock-analyzer', description: 'Decision, valuation, earnings, and risk.' },
+      { label: 'Stock Opportunity', href: '/stock-opportunity', description: 'Find better upside setups.' },
+      { label: 'PDF Editor', href: '/pdf-editor', description: 'Edit, fill, sign, and export PDFs.' },
+      { label: 'Tools', href: '/tools', description: 'Calculators for real trade-offs.' },
+      { label: 'Comparisons', href: '/comparison', description: 'Compare options after stress-testing.' }
     ],
   },
   {
@@ -47,12 +47,12 @@ const indiaLinks: NavLink[] = [
   {
     label: 'Decisions',
     children: [
-      { label: 'Start a decision', href: '/ai-money-copilot' },
-      { label: 'India calculators', href: '/in/calculators' },
-      { label: 'Stock Analyzer', href: '/stock-analyzer' },
-      { label: 'Stock Opportunity', href: '/stock-opportunity' },
-      { label: 'PDF Editor', href: '/pdf-editor' },
-      { label: 'Tax decisions', href: '/in/tax' }
+      { label: 'Start a decision', href: '/ai-money-copilot', description: 'AI-guided money triage.' },
+      { label: 'India calculators', href: '/in/calculators', description: 'EMI, SIP, tax, and planning tools.' },
+      { label: 'Stock Analyzer', href: '/stock-analyzer', description: 'Decision, valuation, earnings, and risk.' },
+      { label: 'Stock Opportunity', href: '/stock-opportunity', description: 'Find better upside setups.' },
+      { label: 'PDF Editor', href: '/pdf-editor', description: 'Edit, fill, sign, and export PDFs.' },
+      { label: 'Tax decisions', href: '/in/tax', description: 'Compare regimes and deductions.' }
     ],
   },
   {

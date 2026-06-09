@@ -8,7 +8,7 @@ import { ChevronDownIcon } from '@heroicons/react/24/outline';
 type NavLink = {
   label: string;
   href?: string;
-  children?: Array<{ label: string; href: string }>;
+  children?: Array<{ label: string; href: string; description?: string }>;
 };
 
 interface NavItemProps {
@@ -72,7 +72,8 @@ export function NavItem({ item, isActive, index }: NavItemProps) {
             {item.children?.map((child) => (
               <li key={child.href}>
                 <Link className="comparison-dropdown-link" href={child.href}>
-                  {child.label}
+                  <span className="block font-semibold">{child.label}</span>
+                  {child.description && <span className="mt-0.5 block text-xs font-normal opacity-75">{child.description}</span>}
                 </Link>
               </li>
             ))}

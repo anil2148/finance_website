@@ -83,13 +83,13 @@ export function StockAnalyzerHero({
     <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950 p-8 shadow-2xl">
       <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-start">
         <div>
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">FinanceSphere Research Report</p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Stock Analyzer</h1>
-          <p className="mt-4 max-w-2xl text-lg text-slate-300">A guided stock research report for beginners and experienced investors. It explains what each signal means, why it matters, and what to verify next.</p>
+          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">AI-powered market research</p>
+          <h1 className="text-4xl font-black tracking-tight sm:text-5xl">Analyze any stock like an investment committee.</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">Get a clear verdict, entry plan, valuation context, earnings risk, smart money signals, and options decision support in one guided workspace.</p>
           <div className="mt-5 grid gap-3 text-sm text-slate-300 md:grid-cols-3">
-            <GuideStep number="1" title="Quality" text="Is this a strong business with growth, profit, and manageable debt?" />
-            <GuideStep number="2" title="Valuation" text="Is the stock price reasonable compared with earnings and future expectations?" />
-            <GuideStep number="3" title="Risk" text="What can go wrong, and is the reward worth that risk?" />
+            <GuideStep number="1" title="Decision score" text="See whether the setup points to buy, wait, trim, or avoid." />
+            <GuideStep number="2" title="Entry plan" text="Build a staged buying plan instead of chasing a hot move." />
+            <GuideStep number="3" title="Risk checklist" text="Spot valuation, earnings, debt, and momentum risks before acting." />
           </div>
         </div>
 
@@ -134,7 +134,7 @@ export function StockAnalyzerHero({
             )}
           </div>
           <div className="mt-3 flex flex-col gap-2 text-xs text-slate-400">
-            <p>Start with a ticker symbol. Example: SOFI, PLTR, NVDA, AAPL, MSFT.</p>
+            <p>Search by ticker or company name. Example: SOFI, PLTR, NVDA, AAPL, MSFT.</p>
             {isAnalyzing && <p className="text-emerald-200">{isRefreshing ? `Refreshing ${selectedSymbol}...` : `Analyzing ${pendingSymbol}...`}</p>}
             {!isAnalyzing && updatedAt && <p className="text-emerald-200">{selectedSymbol} updated just now · Last updated: {updatedAt}{dataSourceStatus ? ` · Source: ${dataSourceStatus}` : ''}</p>}
             {profileError && <p className="text-red-200">Could not refresh {selectedSymbol}. Try again.</p>}
@@ -176,7 +176,7 @@ export function StockAnalyzerHero({
               )}
             </div>
           )}
-          {profileLoading && <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">Loading live quote for {selectedSymbol}...</div>}
+          {profileLoading && <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">Building investment view for {selectedSymbol}: checking valuation, growth, momentum, earnings, and risk signals...</div>}
         </div>
       </div>
     </div>

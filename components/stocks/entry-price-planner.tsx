@@ -40,7 +40,7 @@ export function EntryPricePlanner({ stock, score, upside }: Props) {
         </p>
         <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <InputCard label="Fair value estimate" value={fairValueEstimate} onChange={setFairValueEstimate} placeholder={stock.analystTarget.toFixed(2)} />
-          <InputCard label="Target allocation amount" value={allocationAmount} onChange={setAllocationAmount} placeholder="5000" />
+          <InputCard label="Target allocation amount" value={allocationAmount} onChange={setAllocationAmount} placeholder="5000" helper="How much you plan to invest in this stock over time." />
           <SelectCard label="Buy style" value={buyStyle} onChange={(value) => setBuyStyle(value as RiskTolerance)} options={['Conservative', 'Balanced', 'Aggressive']} />
           <SelectCard label="Time horizon" value={timeHorizon} onChange={(value) => setTimeHorizon(value as typeof timeHorizon)} options={['Short-term', '1 year', '3+ years']} />
           <SelectCard label="Technical pullback" value={`${pullbackPercent}`} onChange={(value) => setPullbackPercent(Number(value))} options={['3', '5', '8', '10']} suffix="%" />
@@ -105,11 +105,12 @@ export function EntryPricePlanner({ stock, score, upside }: Props) {
   );
 }
 
-function InputCard({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string }) {
+function InputCard({ label, value, onChange, placeholder, helper }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string; helper?: string }) {
   return (
     <label className="block rounded-2xl border border-white/10 bg-black/20 p-4">
       <span className="text-sm font-semibold text-slate-300">{label}</span>
       <input value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} inputMode="decimal" className="mt-2 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white outline-none focus:border-emerald-300" />
+      {helper && <span className="mt-2 block text-xs leading-5 text-slate-500">{helper}</span>}
     </label>
   );
 }

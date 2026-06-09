@@ -8,7 +8,6 @@ import { Card } from '@/components/ui/card';
 import { NewsletterForm } from '@/components/NewsletterForm';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 import { AUTHOR_PROFILES, PRIMARY_AUTHOR_ID } from '@/lib/authors';
-import { AskAIButton } from '@/components/money-copilot/AskAIButton';
 import { CalculatorCardPreview } from '@/components/home/CalculatorCardPreview';
 
 const popularCalculators = [
@@ -93,6 +92,48 @@ const tools = [
     desc: 'Stress-test one downside month, then compare products by total cost and fit.',
     href: '/comparison'
   }
+];
+
+const productSuite = [
+  {
+    title: 'Stock Analyzer',
+    tag: 'Investment committee workspace',
+    description: 'See whether a stock is worth buying today, better on a pullback, or too risky to chase.',
+    who: 'Best for investors comparing quality, valuation, earnings, and risk in one memo.',
+    href: '/stock-analyzer',
+    cta: 'Analyze a stock'
+  },
+  {
+    title: 'Stock Opportunity Finder',
+    tag: 'Upside and risk scanner',
+    description: 'Search opportunities by ticker, quality, valuation, momentum, and analyst upside before you buy.',
+    who: 'Best for building a watchlist of setups that deserve capital, patience, or avoidance.',
+    href: '/stock-opportunity',
+    cta: 'Find opportunities'
+  },
+  {
+    title: 'PDF Editor',
+    tag: 'Private document workspace',
+    description: 'Upload a PDF, add text or signatures, fill forms, organize pages, and export a clean copy.',
+    who: 'Best for quick document edits without turning a simple task into a software project.',
+    href: '/pdf-editor',
+    cta: 'Edit a PDF'
+  },
+  {
+    title: 'Decision Tools',
+    tag: 'Calculator-backed planning',
+    description: 'Model debt, savings, mortgages, investing, and retirement before making a financial move.',
+    who: 'Best for stress-testing a plan against a bad month, higher rate, or slower timeline.',
+    href: '/tools',
+    cta: 'Browse tools'
+  }
+];
+
+const realDecisionCards = [
+  { title: 'Buy now or wait?', text: 'Use valuation, momentum, upside, and risk signals before entering a stock.' },
+  { title: 'Close or hold option?', text: 'Compare premium captured, days remaining, and assignment risk before squeezing the last dollar.' },
+  { title: 'Watchlist or avoid?', text: 'Save tickers with a buy-below price and a review date so patience has a plan.' },
+  { title: 'Edit and export PDF?', text: 'Handle forms, signatures, redactions, and clean downloads from one focused workspace.' }
 ];
 
 const trustSignals = [
@@ -229,39 +270,26 @@ export function HomepageLayout() {
         <div className="grid gap-6 md:grid-cols-[1.2fr_1fr]">
           <div className="relative space-y-4">
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">
-              FinanceSphere • Interactive personal finance platform
+              FinanceSphere Intelligence
             </p>
-            <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
-              Primary entry: Start a decision
-            </p>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Make smarter money decisions with real numbers</h1>
+            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Smarter stock decisions and document tools in one focused workspace.</h1>
             <p className="max-w-xl text-blue-100/95">
-              Start with your numbers, prove the downside case, then commit only to options that still work in bad months.
+              Analyze stocks, plan entries, evaluate covered calls, find opportunities, and manage PDFs with guided tools built for real decisions.
             </p>
             <div className="flex flex-wrap gap-3">
-              <AskAIButton
-                label="Start a decision"
-                prefillQuestion="Help me make a smarter financial decision"
-                aiContext={{
-                  pageType: 'homepage',
-                  intent: 'financial-decision-triage',
-                  groundingMessage: 'I’m using this homepage context to route your next move.',
-                  structuredValues: {
-                    pageTitle: 'FinanceSphere Homepage',
-                    region: 'US',
-                    pageType: 'homepage',
-                    primaryFlow: ['Start a decision', 'Run a calculator', 'Compare options']
-                  },
-                  suggestedPrompts: [
-                    'Help me choose the best next financial move',
-                    'Which calculator should I run first?',
-                    'Stress-test my plan before I commit',
-                  ],
-                }}
-                className="border-cyan-300/60 bg-cyan-300 text-slate-950 hover:bg-cyan-200 dark:border-cyan-400/40 dark:bg-cyan-300 dark:text-slate-950"
-              />
+              <Link href="/stock-analyzer" className="rounded-xl bg-cyan-300 px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-cyan-200">
+                Analyze a Stock
+              </Link>
+              <Link href="/tools" className="rounded-xl border border-cyan-200/50 bg-white/10 px-5 py-3 text-sm font-black text-cyan-100 transition hover:bg-white/15">
+                Explore Tools
+              </Link>
             </div>
-            <p className="text-xs text-blue-200">Decision flow: triage with AI → run one calculator baseline → execute one concrete next step.</p>
+            <div className="grid gap-2 pt-1 text-xs font-semibold text-blue-100 sm:grid-cols-3">
+              <span className="rounded-xl border border-white/10 bg-white/10 px-3 py-2">Decision-first stock research</span>
+              <span className="rounded-xl border border-white/10 bg-white/10 px-3 py-2">Entry and options planning</span>
+              <span className="rounded-xl border border-white/10 bg-white/10 px-3 py-2">Private PDF workflows</span>
+            </div>
+            <p className="text-xs text-blue-200">Decision flow: choose the workspace → run one clear analysis → execute one concrete next step.</p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>
           </div>
           <div className="relative space-y-3 rounded-xl border border-cyan-100/30 bg-slate-900/60 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2)] backdrop-blur">
@@ -276,10 +304,44 @@ export function HomepageLayout() {
               />
             </div>
             <h2 className="text-xl font-semibold">Proof before commitment</h2>
-            <p className="text-sm text-cyan-100">Each decision flow turns one input set into a concrete result, risk check, and next action.</p>
+            <p className="text-sm text-cyan-100">Each workspace turns messy inputs into a verdict, risk check, and next action.</p>
           </div>
         </div>
       </Card>
+
+      <section className="rounded-3xl border border-slate-800 bg-slate-950 p-5 text-white shadow-[0_24px_70px_-45px_rgba(15,23,42,0.9)] sm:p-6" aria-labelledby="product-suite">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.28em] text-emerald-300">FinanceSphere suite</p>
+            <h2 id="product-suite" className="mt-2 text-2xl font-black">One workspace for real financial decisions.</h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-6 text-slate-400">Choose the tool by the decision you need to make next, then use the output to decide whether to act, wait, compare, or document.</p>
+        </div>
+        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {productSuite.map((item) => (
+            <article key={item.title} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-300">{item.tag}</p>
+              <h3 className="mt-3 text-xl font-black">{item.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-300">{item.description}</p>
+              <p className="mt-3 text-xs leading-5 text-slate-500">{item.who}</p>
+              <Link href={item.href} className="mt-4 inline-flex rounded-xl bg-emerald-400 px-4 py-2 text-sm font-black text-slate-950 hover:bg-emerald-300">{item.cta}</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-slate-900 to-slate-950 p-5 text-white" aria-labelledby="real-decisions">
+        <p className="text-xs font-bold uppercase tracking-[0.28em] text-emerald-300">Built for real decisions</p>
+        <h2 id="real-decisions" className="mt-2 text-2xl font-black">Less guessing. More explicit trade-offs.</h2>
+        <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {realDecisionCards.map((card) => (
+            <article key={card.title} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+              <h3 className="font-bold">{card.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-400">{card.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900" aria-labelledby="trust-summary">
         <h2 id="trust-summary" className="text-xl font-semibold text-slate-900 dark:text-slate-100">Why trust FinanceSphere?</h2>

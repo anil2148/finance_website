@@ -9,7 +9,7 @@ import { RegionSelector } from '@/components/navbar/RegionSelector';
 type NavLink = {
   label: string;
   href?: string;
-  children?: Array<{ label: string; href: string }>;
+  children?: Array<{ label: string; href: string; description?: string }>;
 };
 
 interface MobileMenuProps {
@@ -201,7 +201,8 @@ export function MobileMenu({
                                     href={child.href}
                                     onClick={onClose}
                                   >
-                                    {child.label}
+                                    <span className="block font-semibold">{child.label}</span>
+                                    {child.description && <span className="mt-0.5 block text-[11px] leading-4 text-slate-500 dark:text-slate-400">{child.description}</span>}
                                   </Link>
                                 </li>
                               ))}

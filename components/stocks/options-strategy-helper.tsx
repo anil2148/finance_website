@@ -103,9 +103,9 @@ export function OptionsStrategyHelper({ stock }: Props) {
             <Input label="Current stock price" value={currentStockPrice} onChange={setCurrentStockPrice} />
             <Input label="Strike price" value={strikePrice} onChange={setStrikePrice} />
             <DatePickerField label="Expiration date" value={expirationDate} onChange={setExpirationDate} min={today} required helperText="Click to choose a date. Choose the option expiration date." error={expirationError} />
-            <Input label="Average credit received" value={averageCredit} onChange={setAverageCredit} />
-            <Input label="Current option price" value={currentOptionPrice} onChange={setCurrentOptionPrice} />
-            <Input label="Contracts" value={contracts} onChange={setContracts} />
+            <Input label="Average credit received" value={averageCredit} onChange={setAverageCredit} helper="Use the premium you collected when selling the option, e.g. 4.38." />
+            <Input label="Current option price" value={currentOptionPrice} onChange={setCurrentOptionPrice} helper="Use the current buyback price from your broker." />
+            <Input label="Contracts" value={contracts} onChange={setContracts} helper="Enter the number of option contracts. One contract usually controls 100 shares." />
             <DatePickerField label="Date sold" value={dateSold} onChange={setDateSold} max={today} helperText="Click to choose a date. Optional. Used to understand how quickly premium was captured." error={dateSoldError} />
             <Select label="Risk tolerance" value={riskTolerance} options={['Conservative', 'Balanced', 'Aggressive']} onChange={(value) => setRiskTolerance(value as RiskTolerance)} />
             <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm font-semibold text-slate-300"><input type="checkbox" checked={ownsShares} onChange={(event) => setOwnsShares(event.target.checked)} className="h-4 w-4 accent-emerald-400" />Owns shares?</label>
@@ -165,8 +165,8 @@ export function OptionsStrategyHelper({ stock }: Props) {
   );
 }
 
-function Input({ label, value, onChange, type = 'text', readOnly = false, placeholder }: { label: string; value: string; onChange?: (value: string) => void; type?: string; readOnly?: boolean; placeholder?: string }) {
-  return <label className="block rounded-2xl border border-white/10 bg-black/20 p-4"><span className="text-sm font-semibold text-slate-300">{label}</span><input type={type} value={value} readOnly={readOnly} onChange={(event) => onChange?.(event.target.value)} placeholder={placeholder} inputMode={type === 'date' ? undefined : 'decimal'} className="mt-2 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white outline-none focus:border-emerald-300" /></label>;
+function Input({ label, value, onChange, type = 'text', readOnly = false, placeholder, helper }: { label: string; value: string; onChange?: (value: string) => void; type?: string; readOnly?: boolean; placeholder?: string; helper?: string }) {
+  return <label className="block rounded-2xl border border-white/10 bg-black/20 p-4"><span className="text-sm font-semibold text-slate-300">{label}</span><input type={type} value={value} readOnly={readOnly} onChange={(event) => onChange?.(event.target.value)} placeholder={placeholder} inputMode={type === 'date' ? undefined : 'decimal'} className="mt-2 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white outline-none focus:border-emerald-300" />{helper && <span className="mt-2 block text-xs leading-5 text-slate-500">{helper}</span>}</label>;
 }
 
 function Select({ label, value, options, onChange }: { label: string; value: string; options: string[]; onChange: (value: string) => void }) {

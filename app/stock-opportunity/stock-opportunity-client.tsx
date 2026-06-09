@@ -68,6 +68,15 @@ type Opportunity = {
   monitor: string[];
 };
 
+const presetCategories = [
+  { label: 'AI leaders', symbols: ['NVDA', 'MSFT', 'GOOGL'], note: 'Quality growth with high expectations.' },
+  { label: 'Big Tech', symbols: ['AAPL', 'AMZN', 'META'], note: 'Scale, cash flow, and valuation trade-offs.' },
+  { label: 'Fintech', symbols: ['SOFI', 'PYPL', 'SQ'], note: 'Growth setups with execution risk.' },
+  { label: 'Dividend quality', symbols: ['JNJ', 'PG', 'KO'], note: 'Durability, income, and lower volatility.' },
+  { label: 'High growth', symbols: ['PLTR', 'CRWD', 'SNOW'], note: 'Upside potential with valuation sensitivity.' },
+  { label: 'Pullback candidates', symbols: ['TSLA', 'AMD', 'SHOP'], note: 'Watch entry discipline and momentum.' },
+];
+
 function currency(value?: number) {
   if (!Number.isFinite(Number(value))) return 'N/A';
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(Number(value));
@@ -313,14 +322,20 @@ export default function StockOpportunityClient() {
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8">
       <section className="mx-auto max-w-7xl">
-        <div className="rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900 via-slate-900 to-emerald-950 p-8 shadow-2xl">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">FinanceSphere Decision Engine</p>
+        <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-slate-950 via-slate-900 to-emerald-950 p-8 shadow-2xl">
+          <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(148,163,184,0.16)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.16)_1px,transparent_1px)] [background-size:28px_28px]" />
+          <p className="relative text-sm font-semibold uppercase tracking-[0.3em] text-emerald-300">Opportunity Finder</p>
           <div className="mt-4 grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Buy / Sell Opportunity</h1>
-              <p className="mt-4 max-w-2xl text-lg text-slate-300">A dedicated decision page that converts stock data into a clear opportunity verdict, confidence score, action plan, and every reason behind the decision.</p>
+            <div className="relative">
+              <h1 className="text-4xl font-black tracking-tight sm:text-5xl">Find better stock setups before you commit capital.</h1>
+              <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">Search a ticker or explore curated market themes to compare upside, valuation, quality, momentum, and risk.</p>
+              <div className="mt-5 grid gap-3 md:grid-cols-3">
+                <SummaryCard title="Opportunity score" value="0-100" note="Ranks upside against risk." />
+                <SummaryCard title="Entry condition" value="Buy zone" note="Shows when the setup improves." />
+                <SummaryCard title="Main risk" value="Plain English" note="Explains what can break the thesis." />
+              </div>
             </div>
-            <div className="rounded-2xl border border-emerald-400/20 bg-black/30 p-5">
+            <div className="relative rounded-2xl border border-emerald-400/20 bg-black/30 p-5">
               <label htmlFor="opportunity-symbol" className="text-sm font-medium text-slate-300">Search stock symbol</label>
               <div className="relative mt-3">
                 <div className="flex gap-3">
@@ -376,14 +391,63 @@ export default function StockOpportunityClient() {
               <div className="mt-3 space-y-1 text-xs text-slate-400">
                 <p>Start typing a company or ticker.</p>
                 <p>Tip: Search by ticker or company name.</p>
-                {loading && <p className="text-emerald-200">Analyzing {selectedSymbol}...</p>}
-                <p>This page is educational and should be used with your own risk tolerance, time horizon, and position sizing.</p>
+                {loading && <p className="text-emerald-200">Scanning opportunity signals for {selectedSymbol}: upside, valuation, quality, and momentum...</p>}
+                <p>Educational analysis only. Not financial advice.</p>
               </div>
             </div>
           </div>
         </div>
 
-        {error && <div className="mt-6 rounded-2xl border border-red-400/20 bg-red-400/10 p-5 text-red-100">{error}</div>}
+        <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-emerald-300">Preset lanes</p>
+              <h2 className="mt-2 text-2xl font-black">Start with a theme, then inspect the ticker.</h2>
+            </div>
+            <p className="max-w-2xl text-sm leading-6 text-slate-400">These are quick entry points, not recommendations. Each scan still needs earnings, valuation, and risk review.</p>
+          </div>
+          <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            {presetCategories.map((preset) => (
+              <button key={preset.label} type="button" onClick={() => analyze(preset.symbols[0])} className="rounded-2xl border border-white/10 bg-black/20 p-4 text-left transition hover:border-emerald-300/40 hover:bg-emerald-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300">
+                <span className="block text-sm font-black text-white">{preset.label}</span>
+                <span className="mt-1 block text-xs text-slate-500">{preset.symbols.join(' · ')}</span>
+                <span className="mt-2 block text-sm leading-6 text-slate-400">{preset.note}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {loading && !opportunity && (
+          <section className="mt-6 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-6">
+            <div className="flex items-center gap-3 text-emerald-50">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-emerald-100/30 border-t-emerald-100" />
+              <h2 className="text-xl font-black">Scanning opportunity signals...</h2>
+            </div>
+            <p className="mt-2 text-sm leading-6 text-emerald-100/90">Ranking upside, valuation, quality, momentum, earnings context, and smart money signals for {selectedSymbol}.</p>
+            <div className="mt-5 grid gap-3 md:grid-cols-3">
+              {['Valuation context', 'Growth quality', 'Risk checklist'].map((item) => <div key={item} className="h-24 animate-pulse rounded-2xl border border-emerald-100/10 bg-black/20 p-4 text-sm text-emerald-100/70">{item}</div>)}
+            </div>
+          </section>
+        )}
+
+        {error && (
+          <div className="mt-6 rounded-2xl border border-red-400/20 bg-red-400/10 p-5 text-red-100">
+            <h2 className="text-xl font-black">We could not load this ticker.</h2>
+            <p className="mt-2 text-sm leading-6">{error}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button type="button" onClick={() => analyze()} className="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-red-400">Try again</button>
+              <button type="button" onClick={() => { setQuery(''); setSelectedSymbol(''); setError(null); setSuggestions([]); }} className="rounded-xl border border-red-300/30 px-4 py-2 text-sm font-bold text-red-100 hover:bg-red-300/10">Clear search</button>
+            </div>
+          </div>
+        )}
+
+        {!loading && !error && !opportunity && (
+          <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-8 text-center">
+            <p className="text-sm font-bold uppercase tracking-[0.25em] text-emerald-300">No scan yet</p>
+            <h2 className="mt-3 text-2xl font-black">Search a ticker or choose a preset list to find opportunities.</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-400">FinanceSphere will turn live stock data into an opportunity score, reason map, main risk, entry condition, and monitoring checklist.</p>
+          </section>
+        )}
 
         {opportunity && stock && (
           <>

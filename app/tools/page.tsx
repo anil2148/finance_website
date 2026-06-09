@@ -39,12 +39,19 @@ export default function ToolsPage() {
       {/* SEO: JSON-LD schema helps search engines understand tool/software pages. */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(toolsSchema) }} />
 
-      <div className="grid gap-5 rounded-3xl border border-slate-200 bg-white p-5 md:grid-cols-[1.25fr_1fr] md:items-center">
+      <div className="relative overflow-hidden rounded-3xl border border-emerald-500/20 bg-slate-950 p-6 text-white shadow-[0_26px_80px_-50px_rgba(16,185,129,0.7)] md:grid md:grid-cols-[1.25fr_1fr] md:items-center md:gap-5">
+        <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(circle_at_18%_20%,rgba(16,185,129,0.45),transparent_34%),linear-gradient(rgba(148,163,184,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.14)_1px,transparent_1px)] [background-size:auto,28px_28px,28px_28px]" />
         <div>
-          <h1 className="text-3xl font-bold">Finance tools for planning, not guesswork</h1>
-          <p className="text-slate-600">Each tool answers a concrete question. Run your base case first, then test it under pressure with a lower income month or one surprise expense.</p>
+          <p className="text-xs font-bold uppercase tracking-[0.28em] text-emerald-300">FinanceSphere Tools</p>
+          <h1 className="mt-3 text-4xl font-black tracking-tight">Practical tools for investing decisions and everyday documents.</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">Choose a guided workflow: analyze a stock, find opportunities, plan options, or manage PDFs.</p>
+          <div className="mt-5 grid gap-3 text-sm sm:grid-cols-3">
+            {['Baseline the decision', 'Stress-test the downside', 'Compare only after the numbers'].map((item) => (
+              <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 font-semibold text-slate-200">{item}</div>
+            ))}
+          </div>
         </div>
-        <div className="relative h-44 overflow-hidden rounded-2xl sm:h-52">
+        <div className="relative mt-5 h-44 overflow-hidden rounded-2xl border border-white/10 sm:h-52 md:mt-0">
           <Image
             src="/images/calculator-tools-illustration.svg"
             alt="Financial calculator tools illustration with planning cards and projected outcome charts"
@@ -57,9 +64,10 @@ export default function ToolsPage() {
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {tools.map((tool) => (
-          <Card key={tool.name} className="h-full">
-            <h2 className="text-lg font-semibold">{tool.name}</h2>
-            <p className="text-sm text-slate-600">{tool.value}</p>
+          <Card key={tool.name} className="h-full border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Planning workspace</p>
+            <h2 className="mt-2 text-lg font-semibold">{tool.name}</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">{tool.value}</p>
             <Link href={tool.href} className="mt-2 inline-block text-sm font-semibold text-blue-700 hover:text-blue-800">
               Test before committing →
             </Link>
