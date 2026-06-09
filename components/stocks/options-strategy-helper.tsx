@@ -1,6 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { DatePickerField } from '@/components/ui/date-picker-field';
+import { isValidDateInput, normalizeShortDateInput, todayDateInputValue, toDateInputValue } from '@/lib/date-utils';
 import type { StockMetrics } from '@/lib/stocks';
 import { calculateOptionsStrategy, currency, pct, type OptionStrategyInput, type RiskTolerance } from '@/lib/stock-decision-tools';
 
@@ -15,7 +17,7 @@ function nextMonthlyExpiration() {
   const date = new Date();
   date.setMonth(date.getMonth() + 1);
   date.setDate(20);
-  return date.toISOString().slice(0, 10);
+  return toDateInputValue(date);
 }
 
 export function OptionsStrategyHelper({ stock }: Props) {
@@ -33,13 +35,16 @@ export function OptionsStrategyHelper({ stock }: Props) {
   const [riskTolerance, setRiskTolerance] = useState<RiskTolerance>('Balanced');
   const [positionPaste, setPositionPaste] = useState('');
 
-  const validation = Math.abs(Number(contracts)) <= 0
+  const today = todayDateInputValue();
+  const expirationError = !expirationDate || !isValidDateInput(expirationDate)
+    ? 'Select an expiration date to calculate days remaining.'
+    : undefined;
+  const dateSoldError = dateSold && !isValidDateInput(dateSold) ? 'Choose a valid date sold.' : undefined;
+  const validation = expirationError || dateSoldError || (Math.abs(Number(contracts)) <= 0
     ? 'Contracts must be greater than 0.'
-    : Number.isNaN(new Date(expirationDate).getTime())
-      ? 'Enter a valid expiration date.'
-      : Number(strikePrice) <= 0 || Number(currentStockPrice) <= 0
-        ? 'Stock price and strike price must be greater than 0.'
-        : null;
+    : Number(strikePrice) <= 0 || Number(currentStockPrice) <= 0
+      ? 'Stock price and strike price must be greater than 0.'
+      : null);
 
   const result = useMemo(() => calculateOptionsStrategy({
     strategyType,
@@ -65,12 +70,14 @@ export function OptionsStrategyHelper({ stock }: Props) {
       if (lower.includes('current price') && money) setCurrentOptionPrice(money);
       else if (lower.includes('current') && lower.includes(stock.symbol.toLowerCase()) && money) setCurrentStockPrice(money);
       else if (lower.includes('expiration') && line.match(/\d{1,2}\/\d{1,2}/)) {
-        const [month, day] = line.match(/\d{1,2}\/\d{1,2}/)?.[0].split('/') || [];
-        const year = new Date().getFullYear();
-        if (month && day) setExpirationDate(`${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`);
+        const normalized = normalizeShortDateInput(line.match(/\d{1,2}\/\d{1,2}(?:\/\d{2,4})?/)?.[0] || '');
+        if (normalized) setExpirationDate(normalized);
       } else if (lower.includes('average credit') && money) setAverageCredit(money);
       else if (lower.includes('contract') && line.match(/-?\d+/)) setContracts(String(Math.abs(Number(line.match(/-?\d+/)?.[0] || '1'))));
-      else if (lower.includes('date sold')) setDateSold(line.replace(/date sold/i, '').trim());
+      else if (lower.includes('date sold')) {
+        const normalized = normalizeShortDateInput(line.replace(/date sold/i, '').trim());
+        if (normalized) setDateSold(normalized);
+      }
     }
   }
 
@@ -90,11 +97,11 @@ export function OptionsStrategyHelper({ stock }: Props) {
             <Input label="Stock symbol" value={stock.symbol} readOnly />
             <Input label="Current stock price" value={currentStockPrice} onChange={setCurrentStockPrice} />
             <Input label="Strike price" value={strikePrice} onChange={setStrikePrice} />
-            <Input label="Expiration date" type="date" value={expirationDate} onChange={setExpirationDate} />
+            <DatePickerField label="Expiration date" value={expirationDate} onChange={setExpirationDate} min={today} required helperText="Choose the option expiration date." error={expirationError} />
             <Input label="Average credit received" value={averageCredit} onChange={setAverageCredit} />
             <Input label="Current option price" value={currentOptionPrice} onChange={setCurrentOptionPrice} />
             <Input label="Contracts" value={contracts} onChange={setContracts} />
-            <Input label="Date sold" value={dateSold} onChange={setDateSold} placeholder="6/1" />
+            <DatePickerField label="Date sold" value={dateSold} onChange={setDateSold} max={today} helperText="Optional. Used to understand how quickly premium was captured." error={dateSoldError} />
             <Select label="Risk tolerance" value={riskTolerance} options={['Conservative', 'Balanced', 'Aggressive']} onChange={(value) => setRiskTolerance(value as RiskTolerance)} />
             <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm font-semibold text-slate-300"><input type="checkbox" checked={ownsShares} onChange={(event) => setOwnsShares(event.target.checked)} className="h-4 w-4 accent-emerald-400" />Owns shares?</label>
             <Input label="Shares owned" value={sharesOwned} onChange={setSharesOwned} />

@@ -7,6 +7,7 @@ const {
   getDaysToExpiration,
   rankCompetitors,
 } = require('../lib/stock-decision-tools.ts');
+const dateUtils = require('../lib/date-utils.ts');
 const { scoreStock } = require('../lib/stocks.ts');
 
 const baseStock = {
@@ -28,6 +29,12 @@ const baseStock = {
 };
 
 function runStockDecisionToolsTests() {
+  assert.equal(dateUtils.isValidDateInput('2026-08-01'), true);
+  assert.equal(dateUtils.isValidDateInput('08/01/2026'), false);
+  assert.equal(dateUtils.normalizeShortDateInput('8/1', new Date('2026-06-01')), '2026-08-01');
+  assert.equal(dateUtils.daysUntil('2026-06-08', new Date(2026, 5, 1)), 7);
+  assert.match(dateUtils.formatDateForDisplay('2026-08-01'), /2026/);
+
   const option = calculateOptionsStrategy({
     strategyType: 'Covered Call',
     action: 'Sold option',

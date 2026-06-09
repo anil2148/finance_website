@@ -1,4 +1,5 @@
 import { scoreStock, type StockMetrics } from '@/lib/stocks';
+import { daysUntil } from '@/lib/date-utils';
 
 export type RiskTolerance = 'Conservative' | 'Balanced' | 'Aggressive';
 
@@ -142,10 +143,8 @@ export function clamp(value: number, min = 0, max = 100) {
 }
 
 export function getDaysToExpiration(expirationDate: string, now = new Date()) {
-  const expiration = new Date(expirationDate);
-  if (Number.isNaN(expiration.getTime())) return 0;
-  const diff = expiration.getTime() - now.getTime();
-  return Math.max(0, Math.ceil(diff / 86400000));
+  const days = daysUntil(expirationDate, now);
+  return days === null ? 0 : Math.max(0, days);
 }
 
 function isCallStrategy(strategyType: OptionStrategyInput['strategyType']) {
