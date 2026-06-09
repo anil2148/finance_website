@@ -127,6 +127,13 @@ export function OptionsStrategyHelper({ stock }: Props) {
         <Card title="Suggested action" value={result.suggestedAction} note={`${result.daysToExpiration} days to expiration`} tone={result.suggestedAction === 'Close' ? 'good' : result.suggestedAction === 'Roll' ? 'warn' : 'neutral'} />
       </div>
 
+      <div className="grid gap-4 lg:grid-cols-4">
+        <GuidanceCard title="Premium captured" text={`You have captured ${pct(result.premiumCapturedPercent)} of the original credit. The remaining premium is the reward for keeping the risk open.`} />
+        <GuidanceCard title="Assignment risk" text={`${result.assignmentRisk} assignment risk based on distance to strike, days remaining, and stock volatility. Assignment can still happen before expiration.`} />
+        <GuidanceCard title="Why this action?" text={`${result.suggestedAction} is suggested because premium captured, remaining reward, and assignment risk need to be weighed together.`} />
+        <GuidanceCard title="Risk remaining" text="The open option can still move against you until it is closed, expires, or is assigned. Do not focus only on the last dollars of premium." />
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
           <h3 className="text-2xl font-bold text-white">Why this decision?</h3>
@@ -162,6 +169,15 @@ export function OptionsStrategyHelper({ stock }: Props) {
         </div>
       </div>
     </section>
+  );
+}
+
+function GuidanceCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">{title}</p>
+      <p className="mt-3 text-sm leading-6 text-slate-300">{text}</p>
+    </div>
   );
 }
 

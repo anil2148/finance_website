@@ -85,6 +85,22 @@ function getResearchView(stock: StockMetrics, score: Props['score'], upside: num
       'Debt rises while cash flow weakens',
       'Stock price runs far ahead of fundamentals',
     ],
+    baseCase: [
+      'Business performs near current expectations without a major positive or negative surprise.',
+      'Valuation remains supported only if earnings and guidance stay credible.',
+      'Position sizing matters because the base case may still include normal market volatility.',
+    ],
+    mustGoRight: [
+      'Revenue and EPS growth need to remain durable.',
+      'Margins should hold or improve instead of compressing.',
+      'Management guidance should support the current valuation.',
+    ],
+    couldGoWrong: [
+      'Growth slows while valuation remains high.',
+      'Earnings guidance turns negative or misses repeat.',
+      'Momentum breaks down while institutional or insider signals weaken.',
+    ],
+    thesisBreaker: 'The thesis weakens if growth slows while valuation remains high, or if earnings guidance turns negative.',
   };
 }
 
@@ -117,6 +133,17 @@ export function AdvancedResearchThesis({ stock, score, upside }: Props) {
         <ThesisCard title="Bear Thesis" tone="bear" items={view.bearCase} />
       </div>
 
+      <div className="mt-6 grid gap-5 lg:grid-cols-3">
+        <ThesisCard title="Base Case" tone="neutral" items={view.baseCase} />
+        <ThesisCard title="What must go right" tone="bull" items={view.mustGoRight} />
+        <ThesisCard title="What could go wrong" tone="bear" items={view.couldGoWrong} />
+      </div>
+
+      <div className="mt-6 rounded-xl border border-red-300/20 bg-red-300/10 p-4">
+        <h4 className="font-bold text-white">Thesis breaker</h4>
+        <p className="mt-2 text-sm leading-6 text-red-100">{view.thesisBreaker}</p>
+      </div>
+
       <div className="mt-6 grid gap-5 lg:grid-cols-4">
         <SwotCard title="Strengths" items={view.swot.strengths} />
         <SwotCard title="Weaknesses" items={view.swot.weaknesses} />
@@ -147,12 +174,17 @@ function ProbabilityCard({ label, value, text }: { label: string; value: number;
   );
 }
 
-function ThesisCard({ title, items, tone }: { title: string; items: string[]; tone: 'bull' | 'bear' }) {
+function ThesisCard({ title, items, tone }: { title: string; items: string[]; tone: 'bull' | 'bear' | 'neutral' }) {
+  const toneClass = tone === 'bull'
+    ? 'border-emerald-300/20 bg-emerald-300/10'
+    : tone === 'bear'
+      ? 'border-amber-300/20 bg-amber-300/10'
+      : 'border-white/10 bg-black/20';
   return (
-    <div className={`rounded-xl border p-4 ${tone === 'bull' ? 'border-emerald-300/20 bg-emerald-300/10' : 'border-amber-300/20 bg-amber-300/10'}`}>
+    <div className={`rounded-xl border p-4 ${toneClass}`}>
       <h4 className="font-bold text-white">{title}</h4>
       <ul className="mt-3 space-y-2 text-sm leading-6 text-slate-200">
-        {items.map((item) => <li key={item}>{tone === 'bull' ? '✓' : '⚠'} {item}</li>)}
+        {items.map((item) => <li key={item}>{item}</li>)}
       </ul>
     </div>
   );

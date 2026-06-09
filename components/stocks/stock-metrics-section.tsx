@@ -42,8 +42,33 @@ function currency(value: number) {
 }
 
 function compactNumber(value?: number) {
-  if (!value || !Number.isFinite(value)) return 'N/A';
+  if (!value || !Number.isFinite(value)) return 'Not available from the current data source.';
   return new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 2 }).format(value);
+}
+
+function unavailable(value: number | undefined, formatter: (value: number) => string) {
+  return Number.isFinite(Number(value)) ? formatter(Number(value)) : 'Not available from the current data source.';
+}
+
+function metricStatus(label: string, value: number): 'Good' | 'Neutral' | 'Caution' | 'Risk' {
+  if (!Number.isFinite(value)) return 'Neutral';
+  if (label === 'P/E Ratio') return value > 45 ? 'Risk' : value > 30 ? 'Caution' : value > 0 ? 'Neutral' : 'Neutral';
+  if (label === 'Forward P/E') return value > 40 ? 'Risk' : value > 30 ? 'Caution' : value > 0 && value <= 22 ? 'Good' : 'Neutral';
+  if (label === 'EPS Growth' || label === 'Revenue Growth') return value >= 15 ? 'Good' : value >= 5 ? 'Neutral' : value < 0 ? 'Risk' : 'Caution';
+  if (label === 'Profit Margin') return value >= 18 ? 'Good' : value >= 8 ? 'Neutral' : 'Caution';
+  if (label === 'Debt / Equity') return value > 1.5 ? 'Risk' : value > 0.8 ? 'Caution' : 'Good';
+  if (label === 'RSI') return value >= 75 ? 'Risk' : value >= 68 ? 'Caution' : value <= 30 ? 'Caution' : 'Neutral';
+  if (label === 'Beta') return value > 1.6 ? 'Risk' : value > 1.2 ? 'Caution' : 'Neutral';
+  if (label === 'Analyst Upside') return value >= 15 ? 'Good' : value >= 5 ? 'Neutral' : value < 0 ? 'Risk' : 'Caution';
+  if (label === 'Dividend Yield') return value > 0 ? 'Neutral' : 'Neutral';
+  return 'Neutral';
+}
+
+function statusClass(status: string) {
+  if (status === 'Good') return 'border-emerald-300/30 bg-emerald-300/10 text-emerald-100';
+  if (status === 'Caution') return 'border-amber-300/30 bg-amber-300/10 text-amber-100';
+  if (status === 'Risk') return 'border-red-300/30 bg-red-300/10 text-red-100';
+  return 'border-slate-300/20 bg-slate-300/10 text-slate-100';
 }
 
 function MetricCard({ label, value, note }: { label: string; value: string; note: string }) {
@@ -52,6 +77,24 @@ function MetricCard({ label, value, note }: { label: string; value: string; note
       <p className="text-sm text-slate-400">{label}</p>
       <p className="mt-2 break-words text-3xl font-bold text-white">{value}</p>
       <p className="mt-2 text-sm leading-6 text-slate-400">{note}</p>
+    </div>
+  );
+}
+
+function ExplainedMetricCard({ category, label, value, rawValue, means, matters }: { category: string; label: string; value: string; rawValue: number; means: string; matters: string }) {
+  const status = metricStatus(label, rawValue);
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-5">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">{category}</p>
+          <h4 className="mt-2 font-bold text-white">{label}</h4>
+        </div>
+        <span className={`shrink-0 rounded-full border px-2 py-1 text-xs font-bold ${statusClass(status)}`}>{status}</span>
+      </div>
+      <p className="mt-3 text-2xl font-black text-white">{value}</p>
+      <p className="mt-3 text-sm leading-6 text-slate-300"><span className="font-semibold text-slate-100">What it means:</span> {means}</p>
+      <p className="mt-2 text-sm leading-6 text-slate-400"><span className="font-semibold text-slate-200">Why it matters:</span> {matters}</p>
     </div>
   );
 }
@@ -147,14 +190,19 @@ export function StockMetricsSection({ stock, score, candles, upside }: Props) {
 
       <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
         <h3 className="text-xl font-bold">Key Metrics Explained</h3>
-        <p className="mt-2 text-sm text-slate-400">These numbers help you judge valuation, growth, profitability, debt risk, momentum, and income potential.</p>
+        <p className="mt-2 text-sm text-slate-400">Read these together. A stock can be high quality and still expensive, or cheap because growth and balance-sheet quality are weak.</p>
         <div className="mt-5 grid gap-6 lg:grid-cols-3">
-          <MetricCard label="P/E Ratio" value={stock.pe.toFixed(2)} note="Price divided by earnings. High P/E means investors expect growth; low P/E may mean cheap or low expectations." />
-          <MetricCard label="EPS Growth" value={`${stock.epsGrowth.toFixed(2)}%`} note="Earnings per share growth. Higher is usually bullish because profits are growing." />
-          <MetricCard label="Profit Margin" value={`${stock.profitMargin.toFixed(2)}%`} note="How much profit remains from sales. Higher margin can mean pricing power and efficiency." />
-          <MetricCard label="Debt / Equity" value={stock.debtToEquity.toFixed(2)} note="Compares debt with shareholder equity. Lower usually means less financial risk." />
-          <MetricCard label="RSI" value={stock.rsi.toFixed(2)} note="Momentum indicator. Above 70 may be overbought; below 30 may be oversold." />
-          <MetricCard label="Dividend Yield" value={`${stock.dividendYield.toFixed(2)}%`} note="Cash paid to shareholders as a percentage of price. Useful for income investors." />
+          <ExplainedMetricCard category="Valuation" label="P/E Ratio" rawValue={stock.pe} value={unavailable(stock.pe, (value) => value.toFixed(2))} means="Price divided by trailing earnings." matters="High P/E can be acceptable for durable growth, but creates downside risk if growth slows." />
+          <ExplainedMetricCard category="Valuation" label="Forward P/E" rawValue={stock.forwardPe} value={unavailable(stock.forwardPe, (value) => value.toFixed(2))} means="How much investors are paying for expected future earnings." matters="Forward valuation should be compared with expected growth, not read alone." />
+          <ExplainedMetricCard category="Growth" label="EPS Growth" rawValue={stock.epsGrowth} value={unavailable(stock.epsGrowth, (value) => `${value.toFixed(2)}%`)} means="Earnings per share growth." matters="EPS growth shows whether profits are improving for each share." />
+          <ExplainedMetricCard category="Growth" label="Revenue Growth" rawValue={stock.revenueGrowth} value={unavailable(stock.revenueGrowth, (value) => `${value.toFixed(2)}%`)} means="Sales growth trend." matters="Revenue growth shows demand; EPS growth shows whether demand converts into profit." />
+          <ExplainedMetricCard category="Profitability" label="Profit Margin" rawValue={stock.profitMargin} value={unavailable(stock.profitMargin, (value) => `${value.toFixed(2)}%`)} means="Profit kept from each dollar of sales." matters="Stronger margins can signal pricing power and room to handle cost pressure." />
+          <ExplainedMetricCard category="Balance Sheet" label="Debt / Equity" rawValue={stock.debtToEquity} value={unavailable(stock.debtToEquity, (value) => value.toFixed(2))} means="Debt compared with shareholder equity." matters="Higher leverage can increase risk when rates rise or earnings weaken." />
+          <ExplainedMetricCard category="Momentum" label="RSI" rawValue={stock.rsi} value={unavailable(stock.rsi, (value) => value.toFixed(2))} means="A momentum indicator from 0 to 100." matters="Above 70 can mean the stock is overheated short term; below 30 can mean weak or oversold." />
+          <ExplainedMetricCard category="Momentum" label="Beta" rawValue={stock.beta} value={unavailable(stock.beta, (value) => value.toFixed(2))} means="Volatility compared with the broad market." matters="Higher beta can create larger drawdowns, so position sizing matters." />
+          <ExplainedMetricCard category="Company Size" label="Market Cap" rawValue={stock.marketCap ?? Number.NaN} value={compactNumber(stock.marketCap)} means="The total market value of the company." matters="Large companies can be more established; smaller companies can offer more upside and more risk." />
+          <ExplainedMetricCard category="Shareholder Returns" label="Dividend Yield" rawValue={stock.dividendYield} value={unavailable(stock.dividendYield, (value) => `${value.toFixed(2)}%`)} means="Annual dividend as a percentage of share price." matters="Useful for income investors, but dividend yield should be checked against payout safety and growth." />
+          <ExplainedMetricCard category="Risk / Reward" label="Analyst Upside" rawValue={upside} value={`${upside.toFixed(1)}%`} means="Estimated distance between current price and analyst target." matters="Targets are context, not promises. They can change quickly after earnings or major news." />
         </div>
       </section>
     </>

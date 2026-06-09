@@ -34,6 +34,7 @@ type WatchlistItem = {
   targetDate?: string;
   nextReviewDate?: string;
   notes: string;
+  riskNote?: string;
   alerts: AlertRule[];
 };
 
@@ -58,6 +59,7 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
   const [targetDate, setTargetDate] = useState('');
   const [nextReviewDate, setNextReviewDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [riskNote, setRiskNote] = useState('');
   const [alertType, setAlertType] = useState<AlertRule['type']>('price_below');
   const [alertValue, setAlertValue] = useState(String((stock.price * 0.95).toFixed(2)));
   const [alertReminderDate, setAlertReminderDate] = useState('');
@@ -93,6 +95,7 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
       targetDate,
       nextReviewDate,
       notes,
+      riskNote,
       alerts: alertValue || alertReminderDate ? [{ type: alertType, value: alertValue, reminderDate: alertReminderDate, enabled: true }] : [],
     };
     persist([nextItem, ...items.filter((item) => item.symbol !== stock.symbol)]);
@@ -125,8 +128,13 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Watchlist and Alert Planning</p>
         <h2 className="mt-2 text-3xl font-black text-white">Save stocks, planned entries, notes, and local alert rules.</h2>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-400">
-          Local watchlist only. Alerts are saved as rules, but background notifications require a future backend job.
+          Local watchlist only. Background alerts require a future backend. Use this as a planning worksheet for stocks you like but do not want to chase today.
         </p>
+        <div className="mt-5 grid gap-3 md:grid-cols-3">
+          <PlanningNote title="Why save it?" text="Write the reason you like the business so you can revisit the thesis later." />
+          <PlanningNote title="What price matters?" text="Set a buy-below or trim-above level before emotion takes over." />
+          <PlanningNote title="When to review?" text="Use the date picker to schedule a fresh look after earnings, news, or a pullback." />
+        </div>
         <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Input label="Planned entry price or zone" value={entryZone} onChange={setEntryZone} placeholder={`${currency(stock.price * 0.95)} - ${currency(stock.price)}`} />
           <Input label="Target trim price" value={targetPrice} onChange={setTargetPrice} />
@@ -141,6 +149,11 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
           <span className="mt-1 block text-xs text-slate-500">Example: Strong business, waiting for better valuation.</span>
           <textarea value={notes} onChange={(event) => setNotes(event.target.value)} className="mt-2 min-h-24 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white outline-none focus:border-emerald-300" />
         </label>
+        <label className="mt-4 block">
+          <span className="text-sm font-semibold text-slate-300">Risk note</span>
+          <span className="mt-1 block text-xs text-slate-500">Example: Valuation is high, so only buy after a pullback or stronger earnings.</span>
+          <textarea value={riskNote} onChange={(event) => setRiskNote(event.target.value)} className="mt-2 min-h-20 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-white outline-none focus:border-emerald-300" />
+        </label>
         <button type="button" onClick={addCurrentStock} className="mt-4 rounded-xl bg-emerald-400 px-5 py-3 text-sm font-bold text-slate-950 hover:bg-emerald-300">
           Add {stock.symbol} to watchlist
         </button>
@@ -153,7 +166,7 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
         ) : (
           <div className="mt-5 overflow-x-auto">
             <table className="w-full min-w-[1050px] text-left text-sm">
-              <thead className="text-slate-400"><tr><th className="py-2">Symbol</th><th>Price at save</th><th>Current loaded price</th><th>Decision</th><th>Confidence</th><th>Entry plan</th><th>Target</th><th>Review</th><th>Notes</th><th>Alerts</th><th></th></tr></thead>
+              <thead className="text-slate-400"><tr><th className="py-2">Symbol</th><th>Price at save</th><th>Current loaded price</th><th>Decision</th><th>Confidence</th><th>Entry plan</th><th>Target</th><th>Review</th><th>Notes</th><th>Risk note</th><th>Alerts</th><th></th></tr></thead>
               <tbody>
                 {items.map((item) => (
                   <tr key={item.symbol} className="border-t border-white/10 text-slate-200">
@@ -176,6 +189,7 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
                       <span className="mt-1 block text-xs text-slate-500">{formatDateForDisplay(item.nextReviewDate || '')}</span>
                     </td>
                     <td><input value={item.notes} onChange={(event) => updateItem(item.symbol, { notes: event.target.value })} className="w-56 rounded-lg border border-white/10 bg-slate-950 px-2 py-1 text-white" /></td>
+                    <td><input value={item.riskNote || ''} onChange={(event) => updateItem(item.symbol, { riskNote: event.target.value })} className="w-56 rounded-lg border border-white/10 bg-slate-950 px-2 py-1 text-white" /></td>
                     <td>{item.alerts.length ? item.alerts.map(alertLabel).join('; ') : 'None'}<button type="button" onClick={() => addAlert(item.symbol)} className="ml-2 rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-300">Add rule</button></td>
                     <td><button type="button" onClick={() => remove(item.symbol)} className="rounded-lg border border-red-300/20 px-2 py-1 text-xs text-red-100">Remove</button></td>
                   </tr>
@@ -187,6 +201,15 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
         <p className="mt-4 rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm leading-6 text-amber-100">Educational analysis only, not financial advice. Watchlist and alert rules are saved locally in this browser.</p>
       </div>
     </section>
+  );
+}
+
+function PlanningNote({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+      <h3 className="text-sm font-bold text-white">{title}</h3>
+      <p className="mt-2 text-xs leading-5 text-slate-400">{text}</p>
+    </div>
   );
 }
 

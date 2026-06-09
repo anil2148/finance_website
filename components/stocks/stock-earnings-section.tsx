@@ -27,7 +27,22 @@ function InfoMini({ title, text }: { title: string; text: string }) {
   );
 }
 
+function getBeatRate(earnings: EarningsItem[], field: 'eps' | 'revenue') {
+  const actualKey = field === 'eps' ? 'epsActual' : 'revenueActual';
+  const estimateKey = field === 'eps' ? 'epsEstimate' : 'revenueEstimate';
+  const rows = earnings.slice(0, 8).filter((item) => typeof item[actualKey] === 'number' && typeof item[estimateKey] === 'number');
+  if (!rows.length) return null;
+  const beats = rows.filter((item) => Number(item[actualKey]) >= Number(item[estimateKey])).length;
+  return Math.round((beats / rows.length) * 100);
+}
+
 export function StockEarningsSection({ earnings, source }: Props) {
+  const epsBeatRate = getBeatRate(earnings, 'eps');
+  const revenueBeatRate = getBeatRate(earnings, 'revenue');
+  const earningsRiskSummary = earnings.length
+    ? `Recent provider rows show ${epsBeatRate === null ? 'limited EPS comparability' : `${epsBeatRate}% EPS beat rate`} and ${revenueBeatRate === null ? 'limited revenue comparability' : `${revenueBeatRate}% revenue beat rate`}.`
+    : 'Provider earnings rows are unavailable, so treat earnings risk as unverified until you check company filings or investor relations.';
+
   return (
     <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -37,6 +52,17 @@ export function StockEarningsSection({ earnings, source }: Props) {
         </div>
         {source && <span className="rounded-full border border-white/10 bg-black/20 px-3 py-1 text-xs text-slate-300">Source: {source}</span>}
       </div>
+
+      <section className="mt-5 rounded-2xl border border-amber-300/20 bg-amber-300/10 p-5 text-amber-50">
+        <h4 className="text-lg font-bold">Earnings decision guide</h4>
+        <p className="mt-2 text-sm leading-6">{earningsRiskSummary}</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <InfoMini title="What would be bullish" text="EPS beat, revenue growth acceleration, margin improvement, and raised guidance." />
+          <InfoMini title="What would be bearish" text="Guidance cut, slowing revenue growth, margin compression, or repeated EPS misses." />
+          <InfoMini title="Hold through earnings?" text="Use caution if the position is large, valuation is stretched, or you cannot tolerate a sharp gap move." />
+          <InfoMini title="Add before earnings?" text="Avoid adding aggressively before earnings when confidence is low or data coverage is limited." />
+        </div>
+      </section>
 
       {earnings.length ? (
         <div className="mt-4 overflow-x-auto">

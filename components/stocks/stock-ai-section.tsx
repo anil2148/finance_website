@@ -10,11 +10,14 @@ type Props = {
 };
 
 const suggestedQuestions = [
-  'Explain this stock like I am new to investing.',
-  'What is the bull case?',
-  'What are the biggest risks?',
-  'Is the valuation expensive?',
-  'What should I verify before buying?',
+  'Explain this stock in beginner terms',
+  'Should I buy now or wait?',
+  'What is the biggest risk?',
+  'Create bull/base/bear case',
+  'Explain valuation risk',
+  'Summarize earnings risk',
+  'Create a 3-month action plan',
+  'What would make this stock a sell?',
 ];
 
 export function StockAISection({ question, setQuestion, answer, loading, error, askAi }: Props) {
@@ -22,6 +25,7 @@ export function StockAISection({ question, setQuestion, answer, loading, error, 
     <div className="mt-6 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-6">
       <h3 className="text-xl font-bold">Ask FinanceSphere AI</h3>
       <p className="mt-2 text-sm text-slate-300">Use AI like an investment research assistant. Ask for bull case, bear case, valuation risk, earnings risk, and what to verify next.</p>
+      <p className="mt-2 rounded-xl border border-amber-300/20 bg-amber-300/10 p-3 text-xs leading-5 text-amber-100">Use the assistant to explain the current analysis, not as financial advice.</p>
       <textarea
         value={question}
         onChange={(event) => setQuestion(event.target.value)}

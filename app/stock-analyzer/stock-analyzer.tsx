@@ -356,7 +356,7 @@ export default function StockAnalyzer() {
     { id: 'options', label: 'Options', description: 'Covered call, cash-secured put, and buy-to-close decision helper.', insight: tabInsights.options, content: <OptionsStrategyHelper stock={stock} /> },
     { id: 'compare', label: 'Compare', description: 'Compare this stock against competitors using growth, valuation, risk, and quality.', insight: tabInsights.compare, content: <CompetitorComparison stock={stock} /> },
     { id: 'watchlist', label: 'Watchlist', description: 'Save stocks, planned entry prices, and alert conditions locally.', insight: tabInsights.watchlist, content: <WatchlistAlertsPanel stock={stock} score={score} upside={upside} /> },
-    { id: 'overview', label: 'Overview', description: 'Executive summary, beginner checklist, and live intelligence.', insight: tabInsights.overview, content: <>{beginnerVerdict && <StockOverviewSection verdict={beginnerVerdict} score={score} upside={upside} />}<section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section><LiveIntelligencePanel symbol={selectedSymbol} refreshKey={refreshKey} /></> },
+    { id: 'overview', label: 'Overview', description: 'Executive summary, beginner checklist, and live intelligence.', insight: tabInsights.overview, content: <>{beginnerVerdict && <StockOverviewSection stock={stock} verdict={beginnerVerdict} score={score} upside={upside} />}<section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section><LiveIntelligencePanel symbol={selectedSymbol} refreshKey={refreshKey} /></> },
     { id: 'thesis', label: 'Thesis', description: 'Investment thesis, bull case, bear case, SWOT, and committee-style decision support.', insight: tabInsights.thesis, content: <><AdvancedResearchThesis stock={stock} score={score} upside={upside} /><InvestmentCommitteeVerdict stock={stock} /><DecisionSupportInsights stock={stock} /><StockOutlookInsights stock={stock} /></> },
     { id: 'smart-money', label: 'Smart Money', description: 'Insider transactions and institutional ownership signals.', insight: tabInsights['smart-money'], content: <SmartMoneyPanel symbol={selectedSymbol} refreshKey={refreshKey} /> },
     { id: 'metrics', label: 'Metrics', description: 'Score, chart, company overview, and key metric explanations.', insight: tabInsights.metrics, content: <>{chartLoading && <LoadingCard title="Refreshing market tape..." text={`Fetching fresh price history for ${selectedSymbol}.`} />}<WarningCard text={chartWarning || chartError} /><StockMetricsSection stock={stock} score={score} candles={candles} upside={upside} /></> },
@@ -459,4 +459,32 @@ function StatusCard({ active, title, text }: { active: boolean; title: string; t
   );
 }
 
-function GlossaryPanel() { const terms = [['Bullish', 'You expect the stock may go up. Usually supported by strong growth, profits, momentum, or positive news.'], ['Bearish', 'You expect the stock may go down or underperform. Often caused by weak growth, high valuation, debt, or bad news.'], ['P/E Ratio', 'Price divided by earnings. It helps judge whether the stock is expensive compared with profits.'], ['EPS', 'Earnings per share. It shows how much profit belongs to each share. Growing EPS is usually positive.'], ['Revenue', 'Total sales. Revenue growth means the business is selling more.'], ['Profit Margin', 'Profit as a percentage of sales. Higher margin means the company keeps more money after expenses.'], ['Debt / Equity', 'Debt compared with shareholder equity. Higher debt can increase risk.'], ['RSI', 'Relative Strength Index. A momentum signal: above 70 may be overbought, below 30 may be oversold.'], ['Market Cap', 'Stock price times shares outstanding. It measures company size.'], ['Dividend Yield', 'Annual dividends divided by stock price. Important for income investors.']]; return <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between"><div><p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Stock Market Legend</p><h2 className="mt-2 text-2xl font-bold">New to stocks? Start here.</h2></div><p className="max-w-2xl text-sm text-slate-400">Use this legend while reading the page. It explains the most common terms in plain English.</p></div><div className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">{terms.map(([term, explanation]) => <div key={term} className="rounded-xl border border-white/10 bg-black/20 p-4"><h3 className="font-bold text-white">{term}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{explanation}</p></div>)}</div></section>; }
+function GlossaryPanel() {
+  const terms = [
+    ['P/E', 'Price divided by trailing earnings. It helps judge whether the stock is expensive compared with profits.'],
+    ['Forward P/E', 'Price divided by expected future earnings. Useful, but only if estimates are reliable.'],
+    ['EPS', 'Earnings per share. It shows how much profit belongs to each share.'],
+    ['Revenue Growth', 'How quickly sales are growing. It should be checked with margins and EPS growth.'],
+    ['Profit Margin', 'Profit as a percentage of sales. Higher margin can show efficiency or pricing power.'],
+    ['Debt/Equity', 'Debt compared with shareholder equity. Higher values can increase financial risk.'],
+    ['RSI', 'A short-term momentum indicator from 0 to 100. Above 70 may be overheated.'],
+    ['Beta', 'Volatility compared with the market. Higher beta can mean bigger swings.'],
+    ['Analyst Target', 'A directional estimate from analysts, not a guaranteed future price.'],
+    ['Premium Captured', 'How much of an option credit you have already kept if you close now.'],
+    ['Assignment Risk', 'The chance a short option position results in shares being called away or assigned.'],
+  ];
+  return (
+    <details className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <summary className="cursor-pointer text-sm font-bold uppercase tracking-[0.22em] text-emerald-300">Quick glossary</summary>
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">Open this when a metric or options term needs a plain-English reminder.</p>
+      <div className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+        {terms.map(([term, explanation]) => (
+          <div key={term} className="rounded-xl border border-white/10 bg-black/20 p-4">
+            <h3 className="font-bold text-white">{term}</h3>
+            <p className="mt-2 text-sm leading-6 text-slate-400">{explanation}</p>
+          </div>
+        ))}
+      </div>
+    </details>
+  );
+}

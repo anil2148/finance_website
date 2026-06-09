@@ -55,6 +55,13 @@ export function EntryPricePlanner({ stock, score, upside }: Props) {
         <ResultCard title="Stop-review level" value={currency(plan.stopReviewLevel)} note="Review thesis if price breaks below this area." tone="warn" />
       </div>
 
+      <div className="grid gap-4 lg:grid-cols-4">
+        <GuidanceCard title="Why this plan?" text="Starter buys help reduce regret, while staged buying protects you if the stock pulls back after entry." />
+        <GuidanceCard title="When to buy more" text="Add only when price moves into your planned zone and the growth, earnings, and risk thesis still holds." />
+        <GuidanceCard title="When to wait" text="Wait if valuation expands, RSI is stretched, or the stock trades above the avoid-adding level." />
+        <GuidanceCard title="When to stop adding" text="Stop adding if price breaks the stop-review area or earnings and guidance weaken." />
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
           <h3 className="text-2xl font-bold text-white">Suggested staged allocation</h3>
@@ -102,6 +109,15 @@ export function EntryPricePlanner({ stock, score, upside }: Props) {
         </div>
       </div>
     </section>
+  );
+}
+
+function GuidanceCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">{title}</p>
+      <p className="mt-3 text-sm leading-6 text-slate-300">{text}</p>
+    </div>
   );
 }
 

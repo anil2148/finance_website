@@ -677,11 +677,20 @@ export function ResearchReportExport(props: Props) {
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-emerald-300">Research Report Export</p>
           <h3 className="mt-2 text-2xl font-bold">Clean PDF reports for {stock.symbol}</h3>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-300">
-            Export a focused report for the last selected research tab or a full report across all Stock Analyzer sections. The clean report removes navigation, buttons, raw links, dark UI, and technical error output.
+            Create a concise research memo you can copy, print, or save. The clean report removes navigation, buttons, raw links, dark UI, and technical error output.
           </p>
         </div>
         <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-slate-300">
           Current report tab: <span className="font-bold text-white">{currentTabLabel}</span>
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
+        <p className="text-sm font-bold text-white">Memo sections included when available</p>
+        <div className="mt-3 grid gap-2 text-sm text-slate-300 sm:grid-cols-2 lg:grid-cols-4">
+          {['Decision summary', 'Key metrics', 'Entry plan context', 'Options snapshot', 'Earnings risk', 'Watchlist notes', 'AI explanation', 'Disclaimer'].map((item) => (
+            <span key={item} className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2">{item}</span>
+          ))}
         </div>
       </div>
 

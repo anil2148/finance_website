@@ -122,6 +122,21 @@ function buildDecision(stock: StockMetrics, score: Score, earnings: EarningsItem
         : verdict === 'REDUCE'
           ? 'Trim 25% - 50% if already owned, avoid adding'
           : '0%; avoid new buying until thesis improves';
+  const mainRisk = bearish[0]?.detail || 'No single dominant caution factor was returned, but valuation, earnings, and position size still need review.';
+  const nextBestAction = verdict === 'STRONG BUY'
+    ? 'Use staged buying instead of buying the full position at once.'
+    : verdict === 'BUY'
+      ? 'Consider a starter position only after checking earnings risk and valuation.'
+      : verdict === 'HOLD / WATCH'
+        ? 'Wait for a better entry or clearer earnings confirmation.'
+        : verdict === 'REDUCE'
+          ? 'Review whether trimming lowers portfolio risk.'
+          : 'Avoid new buying until the thesis improves.';
+  const confidenceExplanation = confidence >= 75
+    ? 'Confidence is higher because bullish factors clearly outweigh caution factors in the available data.'
+    : confidence >= 55
+      ? 'Confidence is moderate because supportive and caution signals are both present.'
+      : 'Confidence is low because risk, valuation, growth, or missing earnings evidence weakens the setup.';
 
   return {
     verdict,
@@ -132,6 +147,9 @@ function buildDecision(stock: StockMetrics, score: Score, earnings: EarningsItem
     riskLevel,
     expectedValue,
     positionSize,
+    mainRisk,
+    nextBestAction,
+    confidenceExplanation,
     scenarios: [
       { name: 'Bull Case', price: bullPrice, probability: bullProbability, note: 'Growth remains strong, earnings execution improves, and valuation stays supported.' },
       { name: 'Base Case', price: basePrice, probability: baseProbability, note: 'Business performs near current expectations without major positive or negative surprise.' },
@@ -197,6 +215,13 @@ export function StockDecisionSection({ stock, score, earnings, upside }: Props) 
         </div>
       </div>
 
+      <div className="grid gap-4 lg:grid-cols-4">
+        <DecisionExplainer title="Why this verdict?" text="This view combines valuation, growth, momentum, earnings risk, analyst upside, and balance-sheet signals. The goal is to explain what would make the setup better or worse." />
+        <DecisionExplainer title="Main risk" text={decision.mainRisk} />
+        <DecisionExplainer title="Next best action" text={decision.nextBestAction} />
+        <DecisionExplainer title="Confidence explanation" text={decision.confidenceExplanation} />
+      </div>
+
       <div className="grid gap-4 lg:grid-cols-3">
         <GaugeCard title="Opportunity Score" value={decision.opportunityScore} suffix="/100" note="Higher means bullish signals outweigh bearish signals." tone="bull" />
         <GaugeCard title="Risk Score" value={decision.riskScore} suffix="/100" note="Higher means valuation, debt, volatility, or timing risk is elevated." tone="risk" />
@@ -246,8 +271,8 @@ export function StockDecisionSection({ stock, score, earnings, upside }: Props) 
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <PointerList title="Why this could be a BUY" tone="bull" items={decision.bullish} />
-        <PointerList title="Why this could be a SELL / Avoid" tone="bear" items={decision.bearish} />
+        <PointerList title="Top bullish factors" tone="bull" items={decision.bullish} />
+        <PointerList title="Top caution factors" tone="bear" items={decision.bearish} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -260,6 +285,15 @@ export function StockDecisionSection({ stock, score, earnings, upside }: Props) 
         <p className="mt-2">Use this as a decision checklist, not a blind buy/sell signal. The best decision depends on your time horizon, portfolio size, existing exposure, and risk tolerance.</p>
       </div>
     </section>
+  );
+}
+
+function DecisionExplainer({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+      <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">{title}</p>
+      <p className="mt-3 text-sm leading-6 text-slate-300">{text}</p>
+    </div>
   );
 }
 

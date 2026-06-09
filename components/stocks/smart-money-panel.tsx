@@ -48,6 +48,13 @@ function signalClass(signal?: string) {
   return 'border-slate-300/20 bg-slate-300/10 text-slate-100';
 }
 
+function signalInterpretation(signal?: string) {
+  if (signal === 'Bullish') return 'Accumulation';
+  if (signal === 'Bearish') return 'Distribution';
+  if (signal === 'Neutral') return 'Neutral';
+  return 'Mixed';
+}
+
 export function SmartMoneyPanel({ symbol, refreshKey = 0 }: { symbol: string; refreshKey?: number }) {
   const [data, setData] = useState<SmartMoneyResponse | null>(null);
   const [loading, setLoading] = useState(true);
@@ -82,6 +89,11 @@ export function SmartMoneyPanel({ symbol, refreshKey = 0 }: { symbol: string; re
           <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
             This section tracks insider transactions and institutional ownership. It helps users see whether company insiders or large investors appear to be accumulating, reducing, or staying neutral.
           </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            <InterpretationCard title="What smart money means" text="Insider and institutional activity can support or challenge a thesis, but it should not override earnings, valuation, and risk." />
+            <InterpretationCard title="Signal interpretation" text="Bullish maps to accumulation, bearish maps to distribution, and neutral or mixed signals need confirmation." />
+            <InterpretationCard title="What to watch next" text="Look for repeated insider buying, broad institutional accumulation, or warnings about missing provider data." />
+          </div>
         </div>
         {data && (
           <div className={`rounded-2xl border p-4 text-center ${signalClass(data.signal)}`}>
@@ -100,9 +112,15 @@ export function SmartMoneyPanel({ symbol, refreshKey = 0 }: { symbol: string; re
         <>
           <div className="mt-6 grid gap-4 lg:grid-cols-3">
             <InsightCard title="Smart Money Score" value={`${data.score}/100`} note="Combines insider and institutional activity into a simple signal." />
-            <InsightCard title="Insider Signal" value={data.insider.signal} note="Bullish when insiders are net buyers; bearish when net selling dominates." />
-            <InsightCard title="Institutional Signal" value={data.institutional.signal} note="Bullish when large holders appear to be increasing positions." />
+            <InsightCard title="Insider Signal" value={signalInterpretation(data.insider.signal)} note="Bullish when insiders are net buyers; bearish when net selling dominates." />
+            <InsightCard title="Institutional Signal" value={signalInterpretation(data.institutional.signal)} note="Bullish when large holders appear to be increasing positions." />
           </div>
+
+          {!data.insider.transactions.length && !data.institutional.holders.length && (
+            <div className="mt-5 rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm leading-6 text-amber-100">
+              Smart money data is limited from the current source. Treat this section as supporting context, not a standalone decision.
+            </div>
+          )}
 
           <div className="mt-6 grid gap-5 lg:grid-cols-2">
             <div className="rounded-xl border border-white/10 bg-black/20 p-5">
@@ -175,6 +193,15 @@ export function SmartMoneyPanel({ symbol, refreshKey = 0 }: { symbol: string; re
         </>
       )}
     </section>
+  );
+}
+
+function InterpretationCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+      <h4 className="text-sm font-bold text-white">{title}</h4>
+      <p className="mt-2 text-xs leading-5 text-slate-400">{text}</p>
+    </div>
   );
 }
 
