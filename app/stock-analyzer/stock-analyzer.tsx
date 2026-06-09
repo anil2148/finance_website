@@ -2,10 +2,14 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { AdvancedResearchThesis } from '@/components/stocks/advanced-research-thesis';
+import { CompetitorComparison } from '@/components/stocks/competitor-comparison';
 import { DecisionSupportInsights } from '@/components/stocks/decision-support-insights';
 import { EarningsIntelligencePanel } from '@/components/stocks/earnings-intelligence-panel';
+import { EntryPricePlanner } from '@/components/stocks/entry-price-planner';
 import { InvestmentCommitteeVerdict } from '@/components/stocks/investment-committee-verdict';
 import { LiveIntelligencePanel } from '@/components/stocks/live-intelligence-panel';
+import { OptionsStrategyHelper } from '@/components/stocks/options-strategy-helper';
+import { PortfolioAwareDecision } from '@/components/stocks/portfolio-aware-decision';
 import { ResearchReportExport } from '@/components/stocks/research-report-export';
 import { SmartMoneyPanel } from '@/components/stocks/smart-money-panel';
 import { StockAISection } from '@/components/stocks/stock-ai-section';
@@ -16,6 +20,8 @@ import { StockMetricsSection } from '@/components/stocks/stock-metrics-section';
 import { StockOverviewSection } from '@/components/stocks/stock-overview-section';
 import { StockResearchTabs } from '@/components/stocks/stock-research-tabs';
 import { StockOutlookInsights } from '@/components/stocks/stock-outlook-insights';
+import { WatchlistAlertsPanel } from '@/components/stocks/watchlist-alerts-panel';
+import { WhatChangedPanel } from '@/components/stocks/what-changed-panel';
 import { scoreStock, type StockMetrics } from '@/lib/stocks';
 
 type SearchResult = { symbol: string; description: string; exchange?: string; type: string };
@@ -29,6 +35,11 @@ type EarningsResponse = StockApiMeta & { earnings?: EarningsItem[] };
 
 const researchTabLabels: Record<string, string> = {
   decision: 'Decision',
+  entry: 'Entry Planner',
+  portfolio: 'Portfolio',
+  options: 'Options',
+  compare: 'Compare',
+  watchlist: 'Watchlist',
   overview: 'Overview',
   thesis: 'Thesis',
   'smart-money': 'Smart Money',
@@ -238,7 +249,12 @@ export default function StockAnalyzer() {
   async function askAi() { setChatLoading(true); setChatError(null); setChatAnswer(null); try { const response = await fetch('/api/stocks/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify({ symbol: selectedSymbol, question: chatQuestion }) }); const data = await response.json(); if (!response.ok) throw new Error(data?.error || 'Unable to generate AI answer.'); setChatAnswer(data.answer); } catch (error) { setChatError(error instanceof Error ? error.message : 'Unable to generate AI answer.'); } finally { setChatLoading(false); } }
 
   const tabs = stock && score && !profileLoading && !profileError ? [
-    { id: 'decision', label: 'Decision', description: 'Buy, hold, reduce, or sell view with confidence, reasons, risks, and what to monitor.', content: earningsLoading ? <LoadingCard title={`Updating decision model for ${selectedSymbol}...`} text="Checking earnings history and recalculating risk/reward before showing the Decision tab." /> : <><WarningCard text={earningsWarning} /><StockDecisionSection stock={stock} score={score} earnings={earnings} upside={upside} /></> },
+    { id: 'decision', label: 'Decision', description: 'Buy, hold, reduce, or sell view with confidence, reasons, risks, and what to monitor.', content: earningsLoading ? <LoadingCard title={`Updating decision model for ${selectedSymbol}...`} text="Checking earnings history and recalculating risk/reward before showing the Decision tab." /> : <><WarningCard text={earningsWarning} /><WhatChangedPanel stock={stock} score={score} upside={upside} /><div className="mt-6"><StockDecisionSection stock={stock} score={score} earnings={earnings} upside={upside} /></div></> },
+    { id: 'entry', label: 'Entry Planner', description: 'Plan buy zones, staged entries, pullbacks, and risk levels.', content: <EntryPricePlanner stock={stock} score={score} upside={upside} /> },
+    { id: 'portfolio', label: 'Portfolio', description: 'Personalize buy/hold/trim decision based on your portfolio exposure.', content: <PortfolioAwareDecision stock={stock} score={score} /> },
+    { id: 'options', label: 'Options', description: 'Covered call, cash-secured put, and buy-to-close decision helper.', content: <OptionsStrategyHelper stock={stock} /> },
+    { id: 'compare', label: 'Compare', description: 'Compare this stock against competitors using growth, valuation, risk, and quality.', content: <CompetitorComparison stock={stock} /> },
+    { id: 'watchlist', label: 'Watchlist', description: 'Save stocks, planned entry prices, and alert conditions locally.', content: <WatchlistAlertsPanel stock={stock} score={score} upside={upside} /> },
     { id: 'overview', label: 'Overview', description: 'Executive summary, beginner checklist, and live intelligence.', content: <>{beginnerVerdict && <StockOverviewSection verdict={beginnerVerdict} score={score} upside={upside} />}<section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-6"><h3 className="text-xl font-bold">Decision Checklist</h3><p className="mt-2 text-sm text-slate-400">A beginner-friendly checklist to help you avoid making a decision from only one number.</p><div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">{checklist.map((item) => <div key={item.title} className="rounded-xl border border-white/10 bg-black/20 p-4"><p className="text-sm text-slate-400">{item.title}</p><h4 className="mt-1 text-lg font-bold text-white">{item.status}</h4><p className="mt-2 text-sm leading-6 text-slate-400">{item.detail}</p></div>)}</div></section><LiveIntelligencePanel symbol={selectedSymbol} refreshKey={refreshKey} /></> },
     { id: 'thesis', label: 'Thesis', description: 'Investment thesis, bull case, bear case, SWOT, and committee-style decision support.', content: <><AdvancedResearchThesis stock={stock} score={score} upside={upside} /><InvestmentCommitteeVerdict stock={stock} /><DecisionSupportInsights stock={stock} /><StockOutlookInsights stock={stock} /></> },
     { id: 'smart-money', label: 'Smart Money', description: 'Insider transactions and institutional ownership signals.', content: <SmartMoneyPanel symbol={selectedSymbol} refreshKey={refreshKey} /> },

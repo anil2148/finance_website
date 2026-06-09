@@ -23,6 +23,7 @@ const { runFinanceSphereRenderingSeoRegressionTests } = require('./financesphere
 const { runSitemapValidationRegressionTests } = require('./sitemap-validation-regression.test.ts');
 const { runStockApiTests } = require('./stock-api.test.ts');
 const { runPdfEditorUtilsTests } = require('./pdf-editor-utils.test.ts');
+const { runStockDecisionToolsTests } = require('./stock-decision-tools.test.ts');
 
 runUtilsTests();
 console.log('✅ utils tests passed');
@@ -47,5 +48,8 @@ console.log('✅ stock API freshness tests passed');
 
 runPdfEditorUtilsTests();
 console.log('✅ PDF editor utility tests passed');
+
+runStockDecisionToolsTests();
+console.log('✅ stock decision tools tests passed');
 
 console.log('🎉 all unit tests passed');
