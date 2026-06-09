@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { DatePickerField } from '@/components/ui/date-picker-field';
-import { isValidDateInput, normalizeShortDateInput, todayDateInputValue, toDateInputValue } from '@/lib/date-utils';
+import { daysUntil, isValidDateInput, normalizeShortDateInput, todayDateInputValue, toDateInputValue } from '@/lib/date-utils';
 import type { StockMetrics } from '@/lib/stocks';
 import { calculateOptionsStrategy, currency, pct, type OptionStrategyInput, type RiskTolerance } from '@/lib/stock-decision-tools';
 
@@ -36,8 +36,11 @@ export function OptionsStrategyHelper({ stock }: Props) {
   const [positionPaste, setPositionPaste] = useState('');
 
   const today = todayDateInputValue();
+  const expirationDaysRemaining = daysUntil(expirationDate);
   const expirationError = !expirationDate || !isValidDateInput(expirationDate)
     ? 'Select an expiration date to calculate days remaining.'
+    : expirationDaysRemaining !== null && expirationDaysRemaining < 0
+      ? 'Expiration date is in the past.'
     : undefined;
   const dateSoldError = dateSold && !isValidDateInput(dateSold) ? 'Choose a valid date sold.' : undefined;
   const validation = expirationError || dateSoldError || (Math.abs(Number(contracts)) <= 0
@@ -69,13 +72,15 @@ export function OptionsStrategyHelper({ stock }: Props) {
       const money = line.match(/-?\$?([\d,]+(?:\.\d+)?)/)?.[1]?.replace(/,/g, '');
       if (lower.includes('current price') && money) setCurrentOptionPrice(money);
       else if (lower.includes('current') && lower.includes(stock.symbol.toLowerCase()) && money) setCurrentStockPrice(money);
-      else if (lower.includes('expiration') && line.match(/\d{1,2}\/\d{1,2}/)) {
-        const normalized = normalizeShortDateInput(line.match(/\d{1,2}\/\d{1,2}(?:\/\d{2,4})?/)?.[0] || '');
+      else if (lower.includes('expiration') && (line.match(/\d{4}-\d{2}-\d{2}/) || line.match(/\d{1,2}\/\d{1,2}/))) {
+        const dateValue = line.match(/\d{4}-\d{2}-\d{2}/)?.[0] || line.match(/\d{1,2}\/\d{1,2}(?:\/\d{2,4})?/)?.[0] || '';
+        const normalized = isValidDateInput(dateValue) ? dateValue : normalizeShortDateInput(dateValue);
         if (normalized) setExpirationDate(normalized);
       } else if (lower.includes('average credit') && money) setAverageCredit(money);
       else if (lower.includes('contract') && line.match(/-?\d+/)) setContracts(String(Math.abs(Number(line.match(/-?\d+/)?.[0] || '1'))));
       else if (lower.includes('date sold')) {
-        const normalized = normalizeShortDateInput(line.replace(/date sold/i, '').trim());
+        const dateValue = line.match(/\d{4}-\d{2}-\d{2}/)?.[0] || line.replace(/date sold/i, '').trim();
+        const normalized = isValidDateInput(dateValue) ? dateValue : normalizeShortDateInput(dateValue);
         if (normalized) setDateSold(normalized);
       }
     }
@@ -97,18 +102,18 @@ export function OptionsStrategyHelper({ stock }: Props) {
             <Input label="Stock symbol" value={stock.symbol} readOnly />
             <Input label="Current stock price" value={currentStockPrice} onChange={setCurrentStockPrice} />
             <Input label="Strike price" value={strikePrice} onChange={setStrikePrice} />
-            <DatePickerField label="Expiration date" value={expirationDate} onChange={setExpirationDate} min={today} required helperText="Choose the option expiration date." error={expirationError} />
+            <DatePickerField label="Expiration date" value={expirationDate} onChange={setExpirationDate} min={today} required helperText="Click to choose a date. Choose the option expiration date." error={expirationError} />
             <Input label="Average credit received" value={averageCredit} onChange={setAverageCredit} />
             <Input label="Current option price" value={currentOptionPrice} onChange={setCurrentOptionPrice} />
             <Input label="Contracts" value={contracts} onChange={setContracts} />
-            <DatePickerField label="Date sold" value={dateSold} onChange={setDateSold} max={today} helperText="Optional. Used to understand how quickly premium was captured." error={dateSoldError} />
+            <DatePickerField label="Date sold" value={dateSold} onChange={setDateSold} max={today} helperText="Click to choose a date. Optional. Used to understand how quickly premium was captured." error={dateSoldError} />
             <Select label="Risk tolerance" value={riskTolerance} options={['Conservative', 'Balanced', 'Aggressive']} onChange={(value) => setRiskTolerance(value as RiskTolerance)} />
             <label className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm font-semibold text-slate-300"><input type="checkbox" checked={ownsShares} onChange={(event) => setOwnsShares(event.target.checked)} className="h-4 w-4 accent-emerald-400" />Owns shares?</label>
             <Input label="Shares owned" value={sharesOwned} onChange={setSharesOwned} />
           </div>
           <div className="rounded-2xl border border-white/10 bg-black/20 p-4">
             <label className="text-sm font-semibold text-slate-300">Paste position details</label>
-            <textarea value={positionPaste} onChange={(event) => setPositionPaste(event.target.value)} placeholder={'Market value -$3,830\nCurrent price $19.15\nCurrent MSFT price $426.42\nExpiration date 11/20\nAverage credit $33.45\nContracts -2\nDate sold 6/1'} className="mt-2 min-h-52 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-emerald-300" />
+            <textarea value={positionPaste} onChange={(event) => setPositionPaste(event.target.value)} placeholder={'Market value -$3,830\nCurrent price $19.15\nCurrent MSFT price $426.42\nExpiration date 2026-11-20\nAverage credit $33.45\nContracts -2\nDate sold 2026-06-01'} className="mt-2 min-h-52 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-emerald-300" />
             <button type="button" onClick={parsePositionDetails} className="mt-3 rounded-xl bg-emerald-400 px-4 py-2 text-sm font-bold text-slate-950 hover:bg-emerald-300">Parse details</button>
             <p className="mt-3 text-xs leading-5 text-slate-400">Parser is a convenience helper. Review fields before using the output.</p>
           </div>

@@ -132,9 +132,9 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
           <Input label="Target trim price" value={targetPrice} onChange={setTargetPrice} />
           <Select label="Alert type" value={alertType} onChange={(value) => setAlertType(value as AlertRule['type'])} options={['price_below', 'price_above', 'opportunity_score_above', 'risk_score_above', 'earnings_reminder']} />
           <Input label="Alert value" value={alertValue} onChange={setAlertValue} />
-          <DatePickerField label="Saved target date" value={targetDate} onChange={setTargetDate} min={today} helperText="Optional date for your target or trim plan." />
-          <DatePickerField label="Next review date" value={nextReviewDate} onChange={setNextReviewDate} min={today} helperText="Choose when you want to review this stock again." />
-          <DatePickerField label="Alert reminder date" value={alertReminderDate} onChange={setAlertReminderDate} min={today} helperText="Optional. Used for earnings reminder or local review rules." />
+          <DatePickerField label="Saved target date" value={targetDate} onChange={setTargetDate} min={today} helperText="Click to choose a date. Optional date for your target or trim plan." />
+          <DatePickerField label="Next review date" value={nextReviewDate} onChange={setNextReviewDate} min={today} helperText="Click to choose a date. Choose when you want to review this stock again." />
+          <DatePickerField label="Alert reminder date" value={alertReminderDate} onChange={setAlertReminderDate} min={today} helperText="Click to choose a date. Optional. Used for earnings reminder or local review rules." />
         </div>
         <label className="mt-4 block">
           <span className="text-sm font-semibold text-slate-300">Notes</span>
@@ -164,11 +164,15 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
                     <td><input value={item.entryZone} onChange={(event) => updateItem(item.symbol, { entryZone: event.target.value })} className="w-40 rounded-lg border border-white/10 bg-slate-950 px-2 py-1 text-white" /></td>
                     <td>
                       <input value={item.targetPrice} onChange={(event) => updateItem(item.symbol, { targetPrice: event.target.value })} className="w-28 rounded-lg border border-white/10 bg-slate-950 px-2 py-1 text-white" />
-                      <input type="date" value={item.targetDate || ''} min={today} onChange={(event) => updateItem(item.symbol, { targetDate: event.target.value })} className="mt-2 w-36 rounded-lg border border-white/10 bg-slate-950 px-2 py-1 text-white" />
+                      <div className="mt-2 min-w-48">
+                        <DatePickerField id={`${item.symbol.toLowerCase()}-saved-target-date`} label="Saved target date" value={item.targetDate || ''} min={today} onChange={(value) => updateItem(item.symbol, { targetDate: value })} helperText="Click to choose a date." />
+                      </div>
                     </td>
                     <td>
-                      <input type="date" value={item.nextReviewDate || ''} min={today} onChange={(event) => updateItem(item.symbol, { nextReviewDate: event.target.value })} className="w-36 rounded-lg border border-white/10 bg-slate-950 px-2 py-1 text-white" />
-                      <span className="mt-1 block text-xs text-slate-500">{item.nextReviewDate ? formatDateForDisplay(item.nextReviewDate) : 'No review date'}</span>
+                      <div className="min-w-48">
+                        <DatePickerField id={`${item.symbol.toLowerCase()}-next-review-date`} label="Next review date" value={item.nextReviewDate || ''} min={today} onChange={(value) => updateItem(item.symbol, { nextReviewDate: value })} helperText="Click to choose a date." />
+                      </div>
+                      <span className="mt-1 block text-xs text-slate-500">{formatDateForDisplay(item.nextReviewDate || '')}</span>
                     </td>
                     <td><input value={item.notes} onChange={(event) => updateItem(item.symbol, { notes: event.target.value })} className="w-56 rounded-lg border border-white/10 bg-slate-950 px-2 py-1 text-white" /></td>
                     <td>{item.alerts.length ? item.alerts.map(alertLabel).join('; ') : 'None'}<button type="button" onClick={() => addAlert(item.symbol)} className="ml-2 rounded-lg border border-white/10 px-2 py-1 text-xs text-slate-300">Add rule</button></td>

@@ -35,12 +35,16 @@ export function daysUntil(dateInputValue: string, now = new Date()): number | nu
 
 export function formatDateForDisplay(dateInputValue: string): string {
   const date = parseDateInput(dateInputValue);
-  if (!date) return 'N/A';
+  if (!date) return 'Not selected';
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
 }
 
 export function todayDateInputValue(now = new Date()): string {
   return toDateInputValue(now);
+}
+
+export function getTodayDateInputValue(now = new Date()): string {
+  return todayDateInputValue(now);
 }
 
 export function normalizeShortDateInput(value: string, now = new Date()): string {
