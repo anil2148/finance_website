@@ -7,7 +7,6 @@ const primaryLinks = [
   { href: '/', label: 'Home' },
   { href: '/stock-analyzer', label: 'Stock Analyzer' },
   { href: '/stock-opportunity', label: 'Stock Opportunity' },
-  { href: '/pdf-editor', label: 'PDF Editor' },
   { href: '/tools', label: 'Tools' },
   { href: '/credit-cards', label: 'Credit Cards' },
   { href: '/blog', label: 'Blog / Guides' }

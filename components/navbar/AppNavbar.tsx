@@ -28,7 +28,6 @@ const globalLinks: NavLink[] = [
       { label: 'Start a decision', href: '/ai-money-copilot', description: 'AI-guided money triage.' },
       { label: 'Stock Analyzer', href: '/stock-analyzer', description: 'Decision, valuation, earnings, and risk.' },
       { label: 'Stock Opportunity', href: '/stock-opportunity', description: 'Find better upside setups.' },
-      { label: 'PDF Editor', href: '/pdf-editor', description: 'Edit, fill, sign, and export PDFs.' },
       { label: 'Tools', href: '/tools', description: 'Calculators for real trade-offs.' },
       { label: 'Comparisons', href: '/comparison', description: 'Compare options after stress-testing.' }
     ],
@@ -51,7 +50,6 @@ const indiaLinks: NavLink[] = [
       { label: 'India calculators', href: '/in/calculators', description: 'EMI, SIP, tax, and planning tools.' },
       { label: 'Stock Analyzer', href: '/stock-analyzer', description: 'Decision, valuation, earnings, and risk.' },
       { label: 'Stock Opportunity', href: '/stock-opportunity', description: 'Find better upside setups.' },
-      { label: 'PDF Editor', href: '/pdf-editor', description: 'Edit, fill, sign, and export PDFs.' },
       { label: 'Tax decisions', href: '/in/tax', description: 'Compare regimes and deductions.' }
     ],
   },

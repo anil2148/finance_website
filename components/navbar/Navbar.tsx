@@ -34,7 +34,6 @@ const globalLinks: NavLink[] = [
       { label: 'All Calculators', href: '/calculators' },
       { label: 'Stock Analyzer', href: '/stock-analyzer' },
       { label: 'Stock Opportunity', href: '/stock-opportunity' },
-      { label: 'PDF Editor', href: '/pdf-editor' },
       { label: 'Mortgage Calculator', href: '/calculators/mortgage-calculator' },
       { label: 'Investment Growth', href: '/calculators/investment-growth-calculator' },
       { label: 'Tax Calculator', href: '/calculators/salary-after-tax-calculator' },
@@ -67,8 +66,7 @@ const indiaLinks: NavLink[] = [
       { label: 'Tax Calculator (India)', href: '/in/tax' },
       { label: 'All Calculators', href: '/in/calculators' },
       { label: 'Stock Analyzer', href: '/stock-analyzer' },
-      { label: 'Stock Opportunity', href: '/stock-opportunity' },
-      { label: 'PDF Editor', href: '/pdf-editor' }
+      { label: 'Stock Opportunity', href: '/stock-opportunity' }
     ]
   },
   {

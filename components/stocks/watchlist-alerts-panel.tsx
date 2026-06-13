@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { DatePickerField } from '@/components/ui/date-picker-field';
 import { daysUntil, formatDateForDisplay, isValidDateInput, todayDateInputValue } from '@/lib/date-utils';
+import { getSavedAnalysisSnapshots, type SavedAnalysisSnapshot } from '@/lib/stock-local-storage';
 import type { StockMetrics } from '@/lib/stocks';
 import type { scoreStock } from '@/lib/stocks';
 import { buildDecisionSnapshot, currency, pct } from '@/lib/stock-decision-tools';
@@ -63,6 +64,7 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
   const [alertType, setAlertType] = useState<AlertRule['type']>('price_below');
   const [alertValue, setAlertValue] = useState(String((stock.price * 0.95).toFixed(2)));
   const [alertReminderDate, setAlertReminderDate] = useState('');
+  const [savedSnapshots, setSavedSnapshots] = useState<SavedAnalysisSnapshot[]>([]);
   const snapshot = useMemo(() => buildDecisionSnapshot(stock, score, upside), [score, stock, upside]);
   const today = todayDateInputValue();
 
@@ -70,8 +72,10 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
     try {
       const stored = JSON.parse(window.localStorage.getItem(watchlistKey) || '[]') as WatchlistItem[];
       setItems(stored.map(normalizeWatchlistItem));
+      setSavedSnapshots(getSavedAnalysisSnapshots());
     } catch {
       setItems([]);
+      setSavedSnapshots([]);
     }
   }, []);
 
@@ -160,6 +164,40 @@ export function WatchlistAlertsPanel({ stock, score, upside }: Props) {
       </div>
 
       <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-emerald-300">Saved analysis snapshots</p>
+            <h3 className="mt-2 text-2xl font-bold text-white">Latest local research saves</h3>
+          </div>
+          <button type="button" onClick={() => setSavedSnapshots(getSavedAnalysisSnapshots())} className="rounded-xl border border-white/10 px-4 py-2 text-sm font-bold text-slate-200 hover:bg-white/10">Refresh list</button>
+        </div>
+        {savedSnapshots.length === 0 ? (
+          <p className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-400">Use the Decision tab&apos;s Save Analysis button to keep a local snapshot with price, verdict, opportunity score, risk score, entry plan, and your note.</p>
+        ) : (
+          <div className="mt-5 grid gap-3 lg:grid-cols-2">
+            {savedSnapshots.map((item) => (
+              <article key={item.symbol} className="rounded-2xl border border-white/10 bg-black/20 p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h4 className="text-lg font-black text-white">{item.symbol} · {item.companyName}</h4>
+                    <p className="text-xs text-slate-500">Saved {new Date(item.savedAt).toLocaleString()}</p>
+                  </div>
+                  <span className="rounded-full border border-emerald-300/20 bg-emerald-300/10 px-3 py-1 text-xs font-bold text-emerald-100">{item.verdict}</span>
+                </div>
+                <div className="mt-4 grid gap-2 text-sm sm:grid-cols-3">
+                  <Metric label="Price" value={currency(item.lastPrice)} />
+                  <Metric label="Opportunity" value={`${Math.round(item.opportunityScore)}/100`} />
+                  <Metric label="Risk" value={`${Math.round(item.riskScore)}/100`} />
+                </div>
+                {item.entryPlan && <p className="mt-3 text-sm leading-6 text-slate-300"><strong className="text-white">Entry plan:</strong> {item.entryPlan}</p>}
+                {item.userNote && <p className="mt-2 text-sm leading-6 text-slate-400"><strong className="text-slate-200">Note:</strong> {item.userNote}</p>}
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-6">
         <h3 className="text-2xl font-bold text-white">Saved stocks</h3>
         {items.length === 0 ? (
           <p className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-400">Save stocks you like but do not want to chase today. Add a buy-below price, review date, and reason so you can come back with a plan.</p>
@@ -226,6 +264,10 @@ function isAlertMet(alert: AlertRule, stock: StockMetrics, snapshot: ReturnType<
 function alertLabel(alert: AlertRule) {
   const reminder = alert.reminderDate ? ` on ${formatDateForDisplay(alert.reminderDate)}` : '';
   return `${alert.type.replaceAll('_', ' ')} ${alert.value}${reminder}`;
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-xl border border-white/10 bg-slate-950/60 p-3"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 font-bold text-white">{value}</p></div>;
 }
 
 function Input({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (value: string) => void; placeholder?: string }) {

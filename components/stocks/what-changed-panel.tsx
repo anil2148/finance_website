@@ -1,6 +1,11 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import {
+  getLatestSavedAnalysisSnapshot,
+  upsertSavedAnalysisSnapshot,
+  type SavedAnalysisSnapshot,
+} from '@/lib/stock-local-storage';
 import type { StockMetrics } from '@/lib/stocks';
 import type { scoreStock } from '@/lib/stocks';
 import { buildDecisionSnapshot, compareAnalysisSnapshots, currency, pct, type StockDecisionSnapshot } from '@/lib/stock-decision-tools';
@@ -16,7 +21,8 @@ function storageKey(symbol: string) {
 }
 
 export function WhatChangedPanel({ stock, score, upside }: Props) {
-  const [previous, setPrevious] = useState<StockDecisionSnapshot | null>(null);
+  const [previous, setPrevious] = useState<SavedAnalysisSnapshot | StockDecisionSnapshot | null>(null);
+  const [userNote, setUserNote] = useState('');
   const [savedMessage, setSavedMessage] = useState<string | null>(null);
   const current = useMemo(() => buildDecisionSnapshot(stock, score, upside), [score, stock, upside]);
   const changes = previous ? compareAnalysisSnapshots(previous, current) : [];
@@ -26,7 +32,13 @@ export function WhatChangedPanel({ stock, score, upside }: Props) {
 
   useEffect(() => {
     setSavedMessage(null);
+    setUserNote('');
     try {
+      const saved = getLatestSavedAnalysisSnapshot(stock.symbol);
+      if (saved) {
+        setPrevious(saved);
+        return;
+      }
       const stored = window.localStorage.getItem(storageKey(stock.symbol));
       setPrevious(stored ? JSON.parse(stored) as StockDecisionSnapshot : null);
     } catch {
@@ -35,8 +47,18 @@ export function WhatChangedPanel({ stock, score, upside }: Props) {
   }, [stock.symbol]);
 
   function saveSnapshot() {
+    const snapshot: SavedAnalysisSnapshot = {
+      ...current,
+      companyName: stock.name,
+      lastPrice: stock.price,
+      verdict: current.decision,
+      savedAt: new Date().toISOString(),
+      entryPlan: `${currency(stock.price * 0.95)} - ${currency(stock.price)} starter zone; reassess above ${currency(stock.analystTarget || stock.price * 1.1)}.`,
+      userNote: userNote.trim(),
+    };
     window.localStorage.setItem(storageKey(stock.symbol), JSON.stringify(current));
-    setPrevious(current);
+    upsertSavedAnalysisSnapshot(snapshot);
+    setPrevious(snapshot);
     setSavedMessage(`Saved current ${stock.symbol} analysis snapshot.`);
   }
 
@@ -50,16 +72,26 @@ export function WhatChangedPanel({ stock, score, upside }: Props) {
             Save a snapshot after researching a ticker, then compare the next analysis against it.
           </p>
         </div>
-        <button type="button" onClick={saveSnapshot} className="rounded-xl bg-emerald-400 px-5 py-3 text-sm font-bold text-slate-950 hover:bg-emerald-300">
-          Save current analysis snapshot
-        </button>
+        <div className="w-full max-w-sm">
+          <label className="block text-sm font-semibold text-slate-300" htmlFor="analysis-note">User note</label>
+          <textarea
+            id="analysis-note"
+            value={userNote}
+            onChange={(event) => setUserNote(event.target.value)}
+            placeholder="Why save this analysis?"
+            className="mt-2 min-h-20 w-full rounded-xl border border-white/10 bg-slate-950 px-3 py-2 text-sm text-white outline-none focus:border-emerald-300"
+          />
+          <button type="button" onClick={saveSnapshot} className="mt-3 w-full rounded-xl bg-emerald-400 px-5 py-3 text-sm font-bold text-slate-950 hover:bg-emerald-300">
+            Save Analysis
+          </button>
+        </div>
       </div>
 
       {savedMessage && <p className="mt-4 rounded-xl border border-emerald-300/20 bg-emerald-300/10 p-3 text-sm text-emerald-100">{savedMessage}</p>}
 
       {!previous ? (
         <div className="mt-5 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">
-          This is your first saved analysis for {stock.symbol}. Save the current snapshot to track future changes.
+          This is your first saved analysis for this ticker.
         </div>
       ) : (
         <div className="mt-5 space-y-5">
@@ -69,6 +101,11 @@ export function WhatChangedPanel({ stock, score, upside }: Props) {
             <Mini label="Price change" value={`${currency(previous.price)} -> ${currency(current.price)}`} note={`${pct(((current.price - previous.price) / Math.max(1, previous.price)) * 100)} since snapshot`} />
             <Mini label="Risk score" value={`${Math.round(previous.riskScore)} -> ${Math.round(current.riskScore)}`} note="Lower is better" />
           </div>
+          {'userNote' in previous && previous.userNote && (
+            <p className="rounded-xl border border-white/10 bg-black/20 p-4 text-sm leading-6 text-slate-300">
+              <strong className="text-white">Saved note:</strong> {previous.userNote}
+            </p>
+          )}
           {changes.length === 0 ? (
             <p className="rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-300">No meaningful saved metric changes yet.</p>
           ) : (

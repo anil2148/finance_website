@@ -1,6 +1,7 @@
 'use client';
 
 import type { StockMetrics } from '@/lib/stocks';
+import type { RecentAnalyzedStock } from '@/lib/stock-local-storage';
 
 type SearchResult = { symbol: string; description: string; exchange?: string; type: string };
 
@@ -22,6 +23,7 @@ type Props = {
   stock: StockMetrics | null;
   score: { total: number; rating: string } | null;
   upside: number;
+  recentStocks?: RecentAnalyzedStock[];
   analyzeStock: (symbolOverride?: string) => void;
   onRefresh: () => void;
 };
@@ -53,6 +55,12 @@ function formatUpdated(value?: string | null) {
   return date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 }
 
+function formatRecentTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Saved locally';
+  return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
 export function StockAnalyzerHero({
   query,
   setQuery,
@@ -71,6 +79,7 @@ export function StockAnalyzerHero({
   stock,
   score,
   upside,
+  recentStocks = [],
   analyzeStock,
   onRefresh,
 }: Props) {
@@ -139,6 +148,31 @@ export function StockAnalyzerHero({
             {!isAnalyzing && updatedAt && <p className="text-emerald-200">{selectedSymbol} updated just now · Last updated: {updatedAt}{dataSourceStatus ? ` · Source: ${dataSourceStatus}` : ''}</p>}
             {profileError && <p className="text-red-200">Could not refresh {selectedSymbol}. Try again.</p>}
           </div>
+
+          {recentStocks.length > 0 && (
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.05] p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-emerald-300">Recently analyzed</p>
+                <p className="text-xs text-slate-500">Saved in this browser</p>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {recentStocks.map((item) => (
+                  <button
+                    key={item.symbol}
+                    type="button"
+                    onClick={() => analyzeStock(item.symbol)}
+                    className="rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-left text-xs transition hover:border-emerald-300/40 hover:bg-emerald-300/10"
+                  >
+                    <span className="block font-black text-white">{item.symbol}</span>
+                    <span className="block max-w-32 truncate text-slate-400">{item.companyName}</span>
+                    <span className="block text-slate-500">
+                      {currency(item.lastPrice)}{item.verdict ? ` · ${item.verdict}` : ''} · {formatRecentTime(item.analyzedAt)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {stock && score && !profileLoading && !profileError && (
             <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.06] p-4">

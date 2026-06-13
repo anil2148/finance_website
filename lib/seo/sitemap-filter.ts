@@ -43,7 +43,6 @@ const INCLUDED_STATIC = new Set([
   '/ai-money-copilot',
   '/stock-analyzer',
   '/stock-opportunity',
-  '/pdf-editor',
   '/in'
 ]);
 

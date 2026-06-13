@@ -9,6 +9,7 @@ import { NewsletterForm } from '@/components/NewsletterForm';
 import { HumanJudgmentCallout } from '@/components/common/HumanJudgmentCallout';
 import { AUTHOR_PROFILES, PRIMARY_AUTHOR_ID } from '@/lib/authors';
 import { CalculatorCardPreview } from '@/components/home/CalculatorCardPreview';
+import { RecentStockAnalyses } from '@/components/home/RecentStockAnalyses';
 
 const popularCalculators = [
   {
@@ -308,6 +309,8 @@ export function HomepageLayout() {
           </div>
         </div>
       </Card>
+
+      <RecentStockAnalyses />
 
       <section className="rounded-3xl border border-slate-800 bg-slate-950 p-5 text-white shadow-[0_24px_70px_-45px_rgba(15,23,42,0.9)] sm:p-6" aria-labelledby="product-suite">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">

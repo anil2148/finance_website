@@ -23,6 +23,7 @@ import { StockOutlookInsights } from '@/components/stocks/stock-outlook-insights
 import { WatchlistAlertsPanel } from '@/components/stocks/watchlist-alerts-panel';
 import { WhatChangedPanel } from '@/components/stocks/what-changed-panel';
 import { StatusPill } from '@/components/ui/status-pill';
+import { getRecentAnalyses, saveRecentAnalysis, type RecentAnalyzedStock } from '@/lib/stock-local-storage';
 import { scoreStock, type StockMetrics } from '@/lib/stocks';
 
 type SearchResult = { symbol: string; description: string; exchange?: string; type: string };
@@ -166,6 +167,29 @@ function getNextBestAction(score: ReturnType<typeof scoreStock>, upside: number,
   return 'Avoid rushing. Look for stronger fundamentals, better price, or clearer earnings confirmation.';
 }
 
+function getInitialSymbol() {
+  if (typeof window === 'undefined') return 'MSFT';
+  const params = new URLSearchParams(window.location.search);
+  return (params.get('symbol') || 'MSFT').trim().toUpperCase();
+}
+
+function getMissingImportantMetrics(stock: StockMetrics) {
+  const checks: Array<[string, number | undefined]> = [
+    ['P/E', stock.pe],
+    ['Forward P/E', stock.forwardPe],
+    ['EPS growth', stock.epsGrowth],
+    ['Revenue growth', stock.revenueGrowth],
+    ['Profit margin', stock.profitMargin],
+    ['Debt/equity', stock.debtToEquity],
+    ['RSI', stock.rsi],
+    ['Beta', stock.beta],
+    ['Analyst target', stock.analystTarget],
+  ];
+  return checks
+    .filter(([, value]) => !Number.isFinite(Number(value)) || Number(value) === 0)
+    .map(([label]) => label);
+}
+
 export default function StockAnalyzer() {
   const [query, setQuery] = useState('MSFT');
   const [selectedSymbol, setSelectedSymbol] = useState('MSFT');
@@ -196,6 +220,18 @@ export default function StockAnalyzer() {
   const [chatLoading, setChatLoading] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
   const [currentReportTab, setCurrentReportTab] = useState('decision');
+  const [recentStocks, setRecentStocks] = useState<RecentAnalyzedStock[]>([]);
+
+  useEffect(() => {
+    setRecentStocks(getRecentAnalyses());
+    const initialSymbol = getInitialSymbol();
+    if (initialSymbol && initialSymbol !== 'MSFT') {
+      setQuery(initialSymbol);
+      setSelectedSymbol(initialSymbol);
+      setRefreshMode('new');
+      setRefreshKey((key) => key + 1);
+    }
+  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -317,6 +353,19 @@ export default function StockAnalyzer() {
   const upside = stock && stock.price > 0 ? ((stock.analystTarget - stock.price) / stock.price) * 100 : 0;
   const beginnerVerdict = stock && score ? getBeginnerVerdict(stock, score, upside) : null;
   const checklist = stock && score ? getDecisionChecklist(stock, score, upside) : [];
+  const missingImportantMetrics = stock ? getMissingImportantMetrics(stock) : [];
+
+  useEffect(() => {
+    if (!stock || !score || profileLoading || profileError) return;
+    const next = saveRecentAnalysis({
+      symbol: stock.symbol,
+      companyName: stock.name,
+      lastPrice: stock.price,
+      verdict: score.rating,
+      analyzedAt: profileFetchedAt || new Date().toISOString(),
+    });
+    setRecentStocks(next);
+  }, [profileError, profileFetchedAt, profileLoading, score, stock]);
 
   function analyzeStock(symbolOverride?: string) {
     const symbol = (symbolOverride || query).trim().toUpperCase();
@@ -367,8 +416,16 @@ export default function StockAnalyzer() {
 
   return (
     <main className="min-h-screen bg-slate-950 px-4 py-10 text-white sm:px-6 lg:px-8"><section className="mx-auto max-w-7xl">
-      <StockAnalyzerHero query={query} setQuery={setQuery} selectedSymbol={selectedSymbol} suggestions={suggestions} searchLoading={searchLoading} searchMessage={searchMessage} profileLoading={profileLoading} profileError={profileError} isAnalyzing={profileLoading || chartLoading || earningsLoading} isRefreshing={refreshMode === 'same'} lastUpdated={profileFetchedAt} dataSourceStatus={profileSource} isFallback={profileFallback} profileWarning={profileWarning} stock={stock} score={score} upside={upside} analyzeStock={analyzeStock} onRefresh={refreshCurrentStock} />
+      <StockAnalyzerHero query={query} setQuery={setQuery} selectedSymbol={selectedSymbol} suggestions={suggestions} searchLoading={searchLoading} searchMessage={searchMessage} profileLoading={profileLoading} profileError={profileError} isAnalyzing={profileLoading || chartLoading || earningsLoading} isRefreshing={refreshMode === 'same'} lastUpdated={profileFetchedAt} dataSourceStatus={profileSource} isFallback={profileFallback} profileWarning={profileWarning} stock={stock} score={score} upside={upside} recentStocks={recentStocks} analyzeStock={analyzeStock} onRefresh={refreshCurrentStock} />
       {stock && score && !profileLoading && !profileError && <TickerIntelligenceHeader stock={stock} score={score} upside={upside} />}
+      {stock && !profileLoading && !profileError && (
+        <DataQualityNotice
+          lastUpdated={profileFetchedAt}
+          source={profileSource}
+          missingMetrics={missingImportantMetrics}
+          warning={profileWarning || chartWarning || earningsWarning}
+        />
+      )}
       <GlossaryPanel />
       {(profileLoading || chartLoading || earningsLoading) && <StatusGrid symbol={selectedSymbol} profileLoading={profileLoading} chartLoading={chartLoading} earningsLoading={earningsLoading} status={requestStatus} />}
       {profileError && !profileLoading && <div className="mt-8 rounded-2xl border border-red-400/20 bg-red-400/10 p-6 text-red-100"><h2 className="text-2xl font-bold">Could not load live data for {selectedSymbol}</h2><p className="mt-2">{profileError}</p><p className="mt-3 text-sm">Please verify the ticker or try again. The analyzer will not show stale data for a failed request.</p></div>}
@@ -413,6 +470,29 @@ function MemoCard({ title, value, text }: { title: string; value: string; text: 
       <p className="mt-2 text-xl font-black text-white">{value}</p>
       <p className="mt-2 text-sm leading-6 text-slate-400">{text}</p>
     </article>
+  );
+}
+
+function DataQualityNotice({ lastUpdated, source, missingMetrics, warning }: { lastUpdated?: string | null; source?: string | null; missingMetrics: string[]; warning?: string | null }) {
+  const formatted = lastUpdated && !Number.isNaN(new Date(lastUpdated).getTime())
+    ? new Date(lastUpdated).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
+    : 'Just now';
+  const hasQualityIssue = missingMetrics.length > 0 || Boolean(warning);
+
+  return (
+    <section className="mt-6 rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-sm leading-6 text-slate-300">
+      <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+        <p><strong className="text-white">Last updated:</strong> {formatted}{source ? ` · Source: ${source}` : ''}</p>
+        <p className="font-semibold text-amber-100">Educational analysis only. Not financial advice.</p>
+      </div>
+      {hasQualityIssue && (
+        <p className="mt-3 rounded-xl border border-amber-300/20 bg-amber-300/10 p-3 text-amber-100">
+          Some metrics are unavailable from the current data source, so confidence may be lower.
+          {missingMetrics.length ? ` Missing or incomplete: ${missingMetrics.join(', ')}.` : ''}
+          {warning ? ` ${warning}` : ''}
+        </p>
+      )}
+    </section>
   );
 }
 

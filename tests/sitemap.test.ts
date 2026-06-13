@@ -4,7 +4,7 @@ import { absoluteUrl } from '@/lib/seo';
 import { getAllIndexableRoutes } from '@/lib/sitemap-routes';
 import { createUrlSetXml } from '@/lib/sitemap-xml';
 
-const REQUIRED_PUBLIC_PATHS = ['/', '/stock-analyzer', '/stock-opportunity', '/pdf-editor'];
+const REQUIRED_PUBLIC_PATHS = ['/', '/stock-analyzer', '/stock-opportunity'];
 const CHILD_SITEMAP_PATH_PATTERN = /\/sitemap-[^/]+\.xml/;
 
 export function runSitemapTests() {

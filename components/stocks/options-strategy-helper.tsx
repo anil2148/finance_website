@@ -120,9 +120,11 @@ export function OptionsStrategyHelper({ stock }: Props) {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <Card title="Total credit" value={currency(result.totalCredit)} note="Original premium collected across all contracts." />
+        <Card title="Buyback cost" value={currency(result.buybackCost)} note="Estimated cost to close the position now." tone={result.buybackCost <= result.totalCredit * 0.3 ? 'good' : 'neutral'} />
         <Card title="Profit if closed now" value={currency(result.currentProfit)} note={`${pct(result.premiumCapturedPercent)} premium captured`} tone={result.currentProfit >= 0 ? 'good' : 'warn'} />
-        <Card title="Remaining max premium" value={currency(result.remainingPremium)} note="Premium left if the option goes to zero." />
+        <Card title="Remaining premium" value={currency(result.remainingPremium)} note="Premium left if the option goes to zero." />
         <Card title="Distance to strike" value={`${currency(result.distanceToStrike)} (${pct(result.distanceToStrikePercent)})`} note={`${result.assignmentRisk} assignment risk`} tone={result.assignmentRisk === 'High' ? 'warn' : 'neutral'} />
         <Card title="Suggested action" value={result.suggestedAction} note={`${result.daysToExpiration} days to expiration`} tone={result.suggestedAction === 'Close' ? 'good' : result.suggestedAction === 'Roll' ? 'warn' : 'neutral'} />
       </div>

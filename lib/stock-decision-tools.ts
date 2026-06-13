@@ -12,6 +12,7 @@ export type StockDecisionSnapshot = {
   opportunityScore: number;
   riskScore: number;
   analystTarget: number;
+  analystUpside?: number;
   revenueGrowth: number;
   epsGrowth: number;
   forwardPe: number;
@@ -248,6 +249,7 @@ export function buildDecisionSnapshot(stock: StockMetrics, score: ReturnType<typ
     opportunityScore: confidence,
     riskScore,
     analystTarget: stock.analystTarget,
+    analystUpside: upside,
     revenueGrowth: stock.revenueGrowth,
     epsGrowth: stock.epsGrowth,
     forwardPe: stock.forwardPe,
@@ -369,6 +371,8 @@ export function rankCompetitors(stocks: StockMetrics[]): CompetitorRanking {
 
 export function compareAnalysisSnapshots(previous: StockDecisionSnapshot, current: StockDecisionSnapshot): AnalysisChange[] {
   const changes: AnalysisChange[] = [];
+  const previousAnalystUpside = Number.isFinite(previous.analystUpside) ? Number(previous.analystUpside) : previous.price > 0 ? ((previous.analystTarget - previous.price) / previous.price) * 100 : 0;
+  const currentAnalystUpside = Number.isFinite(current.analystUpside) ? Number(current.analystUpside) : current.price > 0 ? ((current.analystTarget - current.price) / current.price) * 100 : 0;
   const add = (label: string, before: string, after: string, tone: AnalysisChange['tone'], explanation: string) => {
     if (before !== after) changes.push({ label, before, after, tone, explanation });
   };
@@ -377,7 +381,7 @@ export function compareAnalysisSnapshots(previous: StockDecisionSnapshot, curren
   add('Opportunity score', `${Math.round(previous.opportunityScore)}`, `${Math.round(current.opportunityScore)}`, current.opportunityScore > previous.opportunityScore ? 'positive' : 'negative', 'Higher opportunity score means the setup improved.');
   add('Risk score', `${Math.round(previous.riskScore)}`, `${Math.round(current.riskScore)}`, current.riskScore < previous.riskScore ? 'positive' : 'negative', 'Lower risk score is generally better.');
   add('Price', currency(previous.price), currency(current.price), current.price < previous.price ? 'neutral' : 'neutral', 'Price changed since the last saved analysis.');
-  add('Analyst target', currency(previous.analystTarget), currency(current.analystTarget), current.analystTarget > previous.analystTarget ? 'positive' : 'negative', 'Target changes can alter upside and margin of safety.');
+  add('Analyst upside', pct(previousAnalystUpside), pct(currentAnalystUpside), currentAnalystUpside > previousAnalystUpside ? 'positive' : 'negative', 'Analyst upside compares the target price with the current stock price.');
   add('RSI', previous.rsi.toFixed(1), current.rsi.toFixed(1), current.rsi < previous.rsi && current.rsi <= 65 ? 'positive' : current.rsi > 70 ? 'negative' : 'neutral', 'RSI cooling from overbought levels can improve entry timing.');
   add('Forward P/E', previous.forwardPe.toFixed(1), current.forwardPe.toFixed(1), current.forwardPe < previous.forwardPe ? 'positive' : 'negative', 'A lower forward P/E can mean valuation compressed.');
   add('Revenue growth', pct(previous.revenueGrowth), pct(current.revenueGrowth), current.revenueGrowth > previous.revenueGrowth ? 'positive' : 'negative', 'Revenue growth is a key demand signal.');

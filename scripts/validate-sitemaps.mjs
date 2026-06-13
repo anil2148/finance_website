@@ -37,7 +37,6 @@ const REQUIRED_PUBLIC_URLS = new Set([
   `${SITE_ORIGIN}/`,
   `${SITE_ORIGIN}/stock-analyzer`,
   `${SITE_ORIGIN}/stock-opportunity`,
-  `${SITE_ORIGIN}/pdf-editor`,
 ]);
 
 function fail(message) {

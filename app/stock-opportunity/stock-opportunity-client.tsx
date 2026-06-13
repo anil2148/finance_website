@@ -69,12 +69,12 @@ type Opportunity = {
 };
 
 const presetCategories = [
-  { label: 'AI leaders', symbols: ['NVDA', 'MSFT', 'GOOGL'], note: 'Quality growth with high expectations.' },
+  { label: 'AI Leaders', symbols: ['NVDA', 'MSFT', 'GOOGL'], note: 'Quality growth with high expectations.' },
   { label: 'Big Tech', symbols: ['AAPL', 'AMZN', 'META'], note: 'Scale, cash flow, and valuation trade-offs.' },
   { label: 'Fintech', symbols: ['SOFI', 'PYPL', 'SQ'], note: 'Growth setups with execution risk.' },
-  { label: 'Dividend quality', symbols: ['JNJ', 'PG', 'KO'], note: 'Durability, income, and lower volatility.' },
-  { label: 'High growth', symbols: ['PLTR', 'CRWD', 'SNOW'], note: 'Upside potential with valuation sensitivity.' },
-  { label: 'Pullback candidates', symbols: ['TSLA', 'AMD', 'SHOP'], note: 'Watch entry discipline and momentum.' },
+  { label: 'Dividend Quality', symbols: ['JNJ', 'PG', 'KO'], note: 'Durability, income, and lower volatility.' },
+  { label: 'High Growth', symbols: ['PLTR', 'CRWD', 'SNOW'], note: 'Upside potential with valuation sensitivity.' },
+  { label: 'Pullback Watchlist', symbols: ['TSLA', 'AMD', 'SHOP'], note: 'Watch entry discipline and momentum.' },
 ];
 
 function currency(value?: number) {
@@ -234,6 +234,7 @@ export default function StockOpportunityClient() {
   const [smartMoney, setSmartMoney] = useState<SmartMoney | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedPreset, setSelectedPreset] = useState<(typeof presetCategories)[number] | null>(null);
   const analysisRequestId = useRef(0);
 
   const opportunity = useMemo(() => stock ? buildOpportunity(stock, earnings, smartMoney) : null, [stock, earnings, smartMoney]);
@@ -408,13 +409,26 @@ export default function StockOpportunityClient() {
           </div>
           <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {presetCategories.map((preset) => (
-              <button key={preset.label} type="button" onClick={() => analyze(preset.symbols[0])} className="rounded-2xl border border-white/10 bg-black/20 p-4 text-left transition hover:border-emerald-300/40 hover:bg-emerald-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300">
+              <button key={preset.label} type="button" onClick={() => { setSelectedPreset(preset); setQuery(preset.symbols[0]); setSuggestions([]); setSearchMessage(null); }} className="rounded-2xl border border-white/10 bg-black/20 p-4 text-left transition hover:border-emerald-300/40 hover:bg-emerald-300/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300">
                 <span className="block text-sm font-black text-white">{preset.label}</span>
                 <span className="mt-1 block text-xs text-slate-500">{preset.symbols.join(' · ')}</span>
                 <span className="mt-2 block text-sm leading-6 text-slate-400">{preset.note}</span>
               </button>
             ))}
           </div>
+          {selectedPreset && (
+            <div className="mt-5 rounded-2xl border border-emerald-300/20 bg-emerald-300/10 p-4">
+              <p className="text-sm font-bold text-emerald-50">{selectedPreset.label} suggestions</p>
+              <p className="mt-1 text-xs leading-5 text-emerald-100/80">Choose a ticker to run a real scan. These presets only fill examples; they do not create analysis results.</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {selectedPreset.symbols.map((symbol) => (
+                  <button key={symbol} type="button" onClick={() => analyze(symbol)} className="rounded-xl bg-emerald-300 px-3 py-2 text-sm font-black text-slate-950 hover:bg-emerald-200">
+                    {symbol}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </section>
 
         {loading && !opportunity && (

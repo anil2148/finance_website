@@ -4,7 +4,7 @@ import { getAllIndexableRoutes, type SitemapEntry } from '@/lib/sitemap-routes';
 
 type ChangeFrequency = NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>;
 
-const REQUIRED_PUBLIC_PATHS = ['/', '/stock-analyzer', '/stock-opportunity', '/pdf-editor'];
+const REQUIRED_PUBLIC_PATHS = ['/', '/stock-analyzer', '/stock-opportunity'];
 
 function getChangeFrequency(pathname: string): ChangeFrequency {
   if (pathname === '/') return 'weekly';
@@ -16,7 +16,7 @@ function getChangeFrequency(pathname: string): ChangeFrequency {
 function getPriority(pathname: string) {
   if (pathname === '/') return 1;
   if (pathname === '/stock-analyzer') return 0.9;
-  if (pathname === '/stock-opportunity' || pathname === '/pdf-editor') return 0.8;
+  if (pathname === '/stock-opportunity') return 0.8;
   if (pathname === '/calculators' || pathname === '/in') return 0.8;
   if (pathname.startsWith('/blog/')) return 0.6;
   return 0.7;
