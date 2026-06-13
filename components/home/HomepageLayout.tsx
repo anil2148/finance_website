@@ -113,14 +113,6 @@ const productSuite = [
     cta: 'Find opportunities'
   },
   {
-    title: 'PDF Editor',
-    tag: 'Private document workspace',
-    description: 'Upload a PDF, add text or signatures, fill forms, organize pages, and export a clean copy.',
-    who: 'Best for quick document edits without turning a simple task into a software project.',
-    href: '/pdf-editor',
-    cta: 'Edit a PDF'
-  },
-  {
     title: 'Decision Tools',
     tag: 'Calculator-backed planning',
     description: 'Model debt, savings, mortgages, investing, and retirement before making a financial move.',
@@ -134,7 +126,7 @@ const realDecisionCards = [
   { title: 'Buy now or wait?', text: 'Use valuation, momentum, upside, and risk signals before entering a stock.' },
   { title: 'Close or hold option?', text: 'Compare premium captured, days remaining, and assignment risk before squeezing the last dollar.' },
   { title: 'Watchlist or avoid?', text: 'Save tickers with a buy-below price and a review date so patience has a plan.' },
-  { title: 'Edit and export PDF?', text: 'Handle forms, signatures, redactions, and clean downloads from one focused workspace.' }
+  { title: 'Compare or commit?', text: 'Use calculators and trade-off checks before switching products, adding debt, or changing a plan.' }
 ];
 
 const trustSignals = [
@@ -273,9 +265,9 @@ export function HomepageLayout() {
             <p className="inline-flex items-center gap-2 rounded-full border border-cyan-200/60 bg-white/15 px-3 py-1 text-xs font-medium text-cyan-100">
               FinanceSphere Intelligence
             </p>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Smarter stock decisions and document tools in one focused workspace.</h1>
+            <h1 className="text-4xl font-bold leading-tight md:text-5xl">Smarter stock decisions and planning tools in one focused workspace.</h1>
             <p className="max-w-xl text-blue-100/95">
-              Analyze stocks, plan entries, evaluate covered calls, find opportunities, and manage PDFs with guided tools built for real decisions.
+              Analyze stocks, plan entries, evaluate covered calls, find opportunities, and model money decisions with guided tools built for real outcomes.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/stock-analyzer" className="rounded-xl bg-cyan-300 px-5 py-3 text-sm font-black text-slate-950 transition hover:bg-cyan-200">
@@ -288,7 +280,7 @@ export function HomepageLayout() {
             <div className="grid gap-2 pt-1 text-xs font-semibold text-blue-100 sm:grid-cols-3">
               <span className="rounded-xl border border-white/10 bg-white/10 px-3 py-2">Decision-first stock research</span>
               <span className="rounded-xl border border-white/10 bg-white/10 px-3 py-2">Entry and options planning</span>
-              <span className="rounded-xl border border-white/10 bg-white/10 px-3 py-2">Private PDF workflows</span>
+              <span className="rounded-xl border border-white/10 bg-white/10 px-3 py-2">Calculator-backed planning</span>
             </div>
             <p className="text-xs text-blue-200">Decision flow: choose the workspace → run one clear analysis → execute one concrete next step.</p>
             <p className="text-xs text-blue-200">Last homepage review: April 8, 2026 • Educational content only; verify final terms with providers before action.</p>

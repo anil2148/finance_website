@@ -43,8 +43,8 @@ export default function ToolsPage() {
         <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:radial-gradient(circle_at_18%_20%,rgba(16,185,129,0.45),transparent_34%),linear-gradient(rgba(148,163,184,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.14)_1px,transparent_1px)] [background-size:auto,28px_28px,28px_28px]" />
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.28em] text-emerald-300">FinanceSphere Tools</p>
-          <h1 className="mt-3 text-4xl font-black tracking-tight">Practical tools for investing decisions and everyday documents.</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">Choose a guided workflow: analyze a stock, find opportunities, plan options, or manage PDFs.</p>
+          <h1 className="mt-3 text-4xl font-black tracking-tight">Practical tools for investing decisions and everyday money planning.</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">Choose a guided workflow: analyze a stock, find opportunities, plan options, or model a financial decision.</p>
           <div className="mt-5 grid gap-3 text-sm sm:grid-cols-3">
             {['Baseline the decision', 'Stress-test the downside', 'Compare only after the numbers'].map((item) => (
               <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 font-semibold text-slate-200">{item}</div>

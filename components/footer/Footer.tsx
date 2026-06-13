@@ -69,7 +69,7 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-8 text-sm lg:grid-cols-[1.25fr_1fr_1fr_1fr]">
         <section className="space-y-3">
           <p className="text-base font-black text-white">FinanceSphere</p>
-          <p>Financial intelligence tools for stock research, opportunity scanning, document editing, and calculator-backed planning.</p>
+          <p>Financial intelligence tools for stock research, opportunity scanning, options planning, and calculator-backed decisions.</p>
           <p className="text-xs text-slate-500">
             FinanceSphere uses affiliate links to monetize content. When you click on certain links and complete a purchase or sign-up, we may receive
             a commission from the partner company. These partnerships do not affect our editorial independence - all opinions are based on research,
