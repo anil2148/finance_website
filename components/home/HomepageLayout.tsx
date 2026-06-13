@@ -310,7 +310,7 @@ export function HomepageLayout() {
             <p className="text-xs font-bold uppercase tracking-[0.28em] text-emerald-300">FinanceSphere suite</p>
             <h2 id="product-suite" className="mt-2 text-2xl font-black">One workspace for real financial decisions.</h2>
           </div>
-          <p className="max-w-2xl text-sm leading-6 text-slate-400">Choose the tool by the decision you need to make next, then use the output to decide whether to act, wait, compare, or document.</p>
+          <p className="max-w-2xl text-sm leading-6 text-slate-400">Choose the tool by the decision you need to make next, then use the output to decide whether to act, wait, compare, or revise the plan.</p>
         </div>
         <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {productSuite.map((item) => (
