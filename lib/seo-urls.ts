@@ -1,4 +1,4 @@
-export const SITE_ORIGIN = 'https://www.financesphere.io';
+export const SITE_ORIGIN = 'https://financesphere.io';
 
 export type RegionCode = 'us' | 'in';
 

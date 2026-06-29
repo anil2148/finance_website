@@ -24,7 +24,7 @@ export function runSitemapTests() {
   }
 
   for (const url of sitemapUrls) {
-    assert.ok(url.startsWith('https://www.financesphere.io/'), `Sitemap URL must be absolute and canonical: ${url}`);
+    assert.ok(url.startsWith('https://financesphere.io/'), `Sitemap URL must be absolute and canonical: ${url}`);
     assert.equal(url.includes('localhost'), false, `Sitemap URL must not include localhost: ${url}`);
     assert.equal(url.includes('/api/'), false, `Sitemap URL must not include API routes: ${url}`);
     assert.equal(url.includes('/admin/'), false, `Sitemap URL must not include admin routes: ${url}`);

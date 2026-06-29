@@ -130,7 +130,7 @@ Pending:
 
 - Manual editorial expansion if the business wants noindexed generated variants to become indexable pages later.
 
-## Second-Pass QA Audit
+## Second-Pass AdSense QA Audit
 
 Date: 2026-06-29
 
@@ -168,6 +168,21 @@ These pages are public or reachable but should not compete as AdSense/content la
 - `/compare/best-investment-apps` — duplicate comparison route canonicalized to `/best-investment-apps`.
 - `/compare/best-savings-accounts-usa` — duplicate comparison route canonicalized to `/best-savings-accounts-usa`.
 - `/compare/high-yield-savings-accounts` — duplicate comparison route canonicalized to `/high-yield-savings-accounts`.
+
+### Second-Pass Flagged Pages
+
+| URL/path | Issue type | Why it may trigger AdSense low-value content | Estimated unique word count | Current index status | Sitemap status | Recommended action | Minimum unique content needed | Implementation status |
+|---|---|---|---:|---|---|---|---|---|
+| `/assistant` | Utility / thin app shell | Interactive assistant shell has little standalone editorial content for search visitors. | <100 source words | noindex | excluded | noindex | Full standalone assistant guide if indexing is desired later. | Implemented noindex/follow |
+| `/media-kit` | Utility page | Partnership/media utility page is not a public finance guide. | <300 source words | noindex | excluded | noindex | Not needed unless converted into a public partnership guide. | Implemented noindex/follow |
+| `/help` | Support utility | Useful support page, but not intended as AdSense content landing page. | ~300-500 component-rendered words | noindex | excluded | noindex | Not needed; keep as support utility. | Implemented noindex/follow |
+| `/legal` | Thin legal utility | Short trademark/legal notice is not meaningful finance content. | <200 source words | noindex | excluded | noindex | Not needed; keep as legal utility. | Implemented noindex/follow |
+| `/high-yield-savings-vs-cds` | Thin affiliate-led article | Affiliate disclosure appears before a short comparison; needs deeper original analysis before indexing. | ~300-450 source words | noindex | excluded | improve | 800+ words with scenarios, rate-cycle examples, liquidity risks, and original FAQ. | Implemented noindex/follow pending rewrite |
+| `/improve-credit-score-fast` | Thin affiliate-led article | Affiliate disclosure appears before a short guide; topic needs deeper original examples before indexing. | ~300-450 source words | noindex | excluded | improve | 900+ words with timelines, score-factor examples, disputes, utilization scenarios, and unique FAQ. | Implemented noindex/follow pending rewrite |
+| `/compare/best-credit-cards-2026` | Duplicate comparison route | Duplicate of stronger `/best-credit-cards-2026` page. | duplicate/shared framework | noindex | excluded | canonicalize | None if duplicate remains canonicalized. | Noindex/follow + canonical implemented |
+| `/compare/best-investment-apps` | Duplicate comparison route | Duplicate access path for stronger `/best-investment-apps` framework. | duplicate/shared framework | noindex | excluded | canonicalize | None if duplicate remains canonicalized. | Noindex/follow + canonical implemented |
+| `/compare/best-savings-accounts-usa` | Duplicate comparison route | Duplicate of stronger `/best-savings-accounts-usa` page. | duplicate/shared framework | noindex | excluded | canonicalize | None if duplicate remains canonicalized. | Noindex/follow + canonical implemented |
+| `/compare/high-yield-savings-accounts` | Duplicate comparison route | Duplicate of stronger `/high-yield-savings-accounts` route. | duplicate/shared framework | noindex | excluded | canonicalize | None if duplicate remains canonicalized. | Noindex/follow + canonical implemented |
 
 ### Pages Added To Sitemap Eligibility
 
@@ -225,7 +240,7 @@ Current robots strategy remains correct:
 
 - Allows public crawling.
 - Disallows `/admin/`, `/api/`, and `/dashboard/`.
-- Includes sitemap reference through `SITE_ORIGIN`.
+- Includes sitemap reference through `SITE_ORIGIN` (`https://financesphere.io/sitemap.xml`).
 - Does not block noindexed pages that Google needs to crawl to see `robots: { index: false, follow: true }`.
 
 ### Remaining Manual Content-Writing Tasks
@@ -245,3 +260,4 @@ Current robots strategy remains correct:
 - Duplicate meta descriptions are resolved.
 - Robots.txt does not block noindexed pages from being crawled.
 - Machine-readable page inventory is available at `docs/page-quality-inventory.json`.
+- Canonical sitemap host is `https://financesphere.io`.

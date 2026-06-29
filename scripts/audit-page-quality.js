@@ -76,7 +76,8 @@ function extractLiteral(source, key) {
 function extractMetadata(source) {
   return {
     title: extractLiteral(source, 'title'),
-    metaDescription: extractLiteral(source, 'description')
+    metaDescription: extractLiteral(source, 'description'),
+    canonical: extractLiteral(source, 'canonical')
   };
 }
 
@@ -110,14 +111,15 @@ function isRoutePattern(route) {
 }
 
 function recommendedActionFor({ indexStatus, sitemapIncluded, estimatedUniqueWords, issueTypes, path: route }) {
-  if (issueTypes.includes('redirect')) return 'keep redirected and excluded from sitemap';
-  if (indexStatus === 'noindex') return 'keep noindex/follow and out of sitemap';
-  if (issueTypes.includes('placeholder')) return 'complete content or noindex immediately';
-  if (issueTypes.includes('missing-title') || issueTypes.includes('missing-description')) return 'add complete metadata';
-  if (issueTypes.includes('indexable-missing-from-sitemap')) return 'add to sitemap if high-value, otherwise noindex';
-  if (estimatedUniqueWords < WARNING_WORD_THRESHOLD && !route.startsWith('/calculators/')) return 'review manually for thin content';
-  if (sitemapIncluded) return 'keep indexed';
-  return 'review manually';
+  if (issueTypes.includes('redirect')) return 'remove';
+  if (indexStatus === 'noindex') return 'noindex';
+  if (issueTypes.includes('placeholder')) return 'noindex';
+  if (issueTypes.includes('missing-title') || issueTypes.includes('missing-description')) return 'improve';
+  if (issueTypes.includes('indexable-missing-from-sitemap')) return 'improve';
+  if (issueTypes.includes('canonicalized-duplicate')) return 'canonicalize';
+  if (estimatedUniqueWords < WARNING_WORD_THRESHOLD && !route.startsWith('/calculators/')) return 'improve';
+  if (sitemapIncluded) return 'keep-indexed';
+  return 'improve';
 }
 
 function main() {
@@ -138,6 +140,7 @@ function main() {
     if (calculatorSlug && calculatorMap[calculatorSlug]) {
       metadata.title = calculatorMap[calculatorSlug].seoTitle;
       metadata.metaDescription = calculatorMap[calculatorSlug].seoDescription;
+      metadata.canonical = `/calculators/${calculatorSlug}`;
     }
     const hasMetadata = hasMetadataExport(source) || Boolean(calculatorSlug && calculatorMap[calculatorSlug]);
     const issueTypes = [];
@@ -145,6 +148,7 @@ function main() {
 
     if (redirect) issueTypes.push('redirect');
     if (noindex) issueTypes.push('noindex');
+    if (metadata.canonical && metadata.canonical !== route) issueTypes.push('canonicalized-duplicate');
     if (!metadata.title && !redirect && !hasMetadata && indexStatus === 'index') issueTypes.push('missing-title');
     if (!metadata.metaDescription && !redirect && !hasMetadata && indexStatus === 'index') issueTypes.push('missing-description');
     if (hasPlaceholderPhrase(source)) issueTypes.push('placeholder');
@@ -158,6 +162,7 @@ function main() {
       path: route,
       title: metadata.title,
       metaDescription: metadata.metaDescription,
+      canonical: metadata.canonical || (isRoutePattern(route) ? '' : route),
       indexStatus,
       sitemapIncluded,
       estimatedUniqueWords,
@@ -182,6 +187,7 @@ function main() {
         path: route,
         title: '',
         metaDescription: '',
+        canonical: route,
         indexStatus: 'index',
         sitemapIncluded: true,
         estimatedUniqueWords: 0,
