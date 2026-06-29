@@ -29,7 +29,8 @@ export function generateMetadata({ params }: { params: { audience: string } }): 
   return {
     title: `Best Investment Apps for ${data.label} | FinanceSphere`,
     description: `${data.intro} ${data.nextStep}`,
-    alternates: { canonical: `/compare/best-investment-apps/${params.audience}` }
+    alternates: { canonical: '/best-investment-apps' },
+    robots: { index: false, follow: true }
   };
 }
 

@@ -1,15 +1,13 @@
-"use client";
+import type { Metadata } from 'next';
+import { AssistantPageClient } from './AssistantPageClient';
 
-import dynamic from 'next/dynamic';
-
-const AssistantShell = dynamic(() => import('@/components/assistant/AssistantShell'), {
-  ssr: false
-});
+export const metadata: Metadata = {
+  title: 'FinanceSphere Assistant',
+  description: 'Private assistant workspace for FinanceSphere decision support.',
+  robots: { index: false, follow: true },
+  alternates: { canonical: '/assistant' }
+};
 
 export default function AssistantPage() {
-  return (
-    <div className="w-screen h-screen overflow-hidden bg-[#0f0f1a] flex items-center justify-center">
-      <AssistantShell />
-    </div>
-  );
+  return <AssistantPageClient />;
 }

@@ -5,7 +5,8 @@ import { CreditScoreImpactSimulator } from '@/components/blog/BlogInteractiveToo
 export const metadata: Metadata = {
   title: 'How to Improve Your Credit Score Fast',
   description: 'A practical plan to improve payment history, credit utilization, and account health quickly and responsibly.',
-  alternates: { canonical: '/improve-credit-score-fast' }
+  alternates: { canonical: '/improve-credit-score-fast' },
+  robots: { index: false, follow: true }
 };
 
 export default function ImproveCreditScoreFastPage() {

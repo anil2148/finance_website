@@ -29,7 +29,8 @@ export function generateMetadata({ params }: { params: { region: string } }): Me
   return {
     title: `${data.title} (2026) | FinanceSphere`,
     description: `${data.intro} Best for: ${data.bestFor}.`,
-    alternates: { canonical: `/compare/credit-cards-for/${params.region}` }
+    alternates: { canonical: '/best-credit-cards-2026' },
+    robots: { index: false, follow: true }
   };
 }
 

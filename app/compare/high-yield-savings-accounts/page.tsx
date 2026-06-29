@@ -6,7 +6,8 @@ export const metadata: Metadata = {
   description: 'Use a transparent framework to evaluate high-yield savings options by APY durability, liquidity reliability, and account rule risk.',
   alternates: {
     canonical: '/high-yield-savings-accounts'
-  }
+  },
+  robots: { index: false, follow: true }
 };
 
 export default function HighYieldSavingsAccountsPage() {

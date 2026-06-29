@@ -5,7 +5,8 @@ import { SavingsGrowthCalculator } from '@/components/blog/BlogInteractiveTools'
 export const metadata: Metadata = {
   title: 'High Yield Savings vs CDs',
   description: 'Compare high-yield savings accounts and certificates of deposit by return, risk, and liquidity.',
-  alternates: { canonical: '/high-yield-savings-vs-cds' }
+  alternates: { canonical: '/high-yield-savings-vs-cds' },
+  robots: { index: false, follow: true }
 };
 
 export default function HighYieldSavingsVsCDsPage() {

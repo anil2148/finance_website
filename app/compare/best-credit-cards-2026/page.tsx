@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
 import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
-import { createPageMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = createPageMetadata({
+export const metadata: Metadata = {
   title: 'Credit Card Comparison Framework (2026) | FinanceSphere',
-  description: 'Use a transparent framework to compare credit card options by annual value, downside APR risk, and approval fit.',
-  pathname: '/best-credit-cards-2026'
-});
+  description: 'Duplicate comparison route for the canonical FinanceSphere 2026 credit card framework.',
+  alternates: { canonical: '/best-credit-cards-2026' },
+  robots: { index: false, follow: true }
+};
 
 export default function BestCreditCards2026Page() {
   return (

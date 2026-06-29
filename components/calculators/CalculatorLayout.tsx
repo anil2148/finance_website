@@ -776,8 +776,6 @@ export function CalculatorLayout({ slug }: { slug: string }) {
       </section>
       <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
 
-      <SocialShareButtons title={definition.title} url={absoluteUrl(`/calculators/${slug}`)} />
-
       <AdUnit slot={AD_SLOTS.CALCULATOR} format="auto" className="my-2" />
 
     </section>

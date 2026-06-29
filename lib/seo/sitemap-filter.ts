@@ -16,8 +16,7 @@ const EXCLUDED_PREFIXES = [
 ];
 
 const EXCLUDED_EXACT = new Set([
-  '/media-kit',
-  '/tools'
+  '/media-kit'
 ]);
 
 const INCLUDED_STATIC = new Set([
@@ -31,19 +30,47 @@ const INCLUDED_STATIC = new Set([
   '/terms-and-conditions',
   '/cookie-policy',
   '/how-we-make-money',
+  '/blog',
   '/best-credit-cards-2026',
   '/best-credit-cards-everyday-spending',
   '/best-investment-apps',
   '/best-savings-accounts-usa',
   '/credit-cards',
+  '/high-yield-savings-accounts',
+  '/investing-apps',
   '/savings',
   '/loans',
   '/comparison',
   '/calculators',
   '/ai-money-copilot',
+  '/options-trading',
   '/stock-analyzer',
   '/stock-opportunity',
-  '/in'
+  '/tools',
+  '/learn',
+  '/in',
+  '/in/80c-deductions',
+  '/in/80c-deductions-guide',
+  '/in/banking',
+  '/in/best-credit-cards-india',
+  '/in/best-fixed-deposits-india',
+  '/in/best-investment-apps-india',
+  '/in/best-savings-accounts-india',
+  '/in/blog',
+  '/in/fixed-deposit-vs-sip-india',
+  '/in/home-affordability-india',
+  '/in/home-loan-interest-rates-india',
+  '/in/investing',
+  '/in/loans',
+  '/in/old-vs-new-tax-regime',
+  '/in/personal-loan-comparison-india',
+  '/in/real-estate',
+  '/in/rent-vs-buy-india',
+  '/in/sip-strategy-india',
+  '/in/tax',
+  '/in/tax-saving-strategies',
+  '/in/tax-slabs',
+  '/in/tax-slabs-2026-india'
 ]);
 
 const OPTIONAL_HUBS = new Set([

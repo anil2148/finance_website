@@ -8,7 +8,8 @@ export const metadata: Metadata = {
     'Use FinanceSphere\'s side-by-side investment app comparison table to evaluate fees, ratings, account features, and platform fit.',
   alternates: {
     canonical: '/best-investment-apps'
-  }
+  },
+  robots: { index: false, follow: true }
 };
 
 export default function BestInvestmentAppsPage() {

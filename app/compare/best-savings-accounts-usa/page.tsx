@@ -3,7 +3,9 @@ import { SeoComparisonPage } from '@/components/comparison/SeoComparisonPage';
 
 export const metadata: Metadata = {
   title: 'Savings Account Comparison Framework (US) | FinanceSphere',
-  description: 'Use a practical framework to evaluate U.S. savings account options by APY durability, transfer reliability, and account rules.'
+  description: 'Duplicate comparison route for the canonical FinanceSphere U.S. savings account framework.',
+  alternates: { canonical: '/best-savings-accounts-usa' },
+  robots: { index: false, follow: true }
 };
 
 export default function BestSavingsAccountsUSAPage() {

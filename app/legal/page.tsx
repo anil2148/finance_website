@@ -3,7 +3,9 @@ import { LegalPageLayout } from '@/components/legal/LegalPageLayout';
 
 export const metadata: Metadata = {
   title: 'Legal Notice | Financesphere.io™',
-  description: 'Trademark and intellectual property notice for Financesphere.io™.'
+  description: 'Trademark and intellectual property notice for Financesphere.io™.',
+  robots: { index: false, follow: true },
+  alternates: { canonical: '/legal' }
 };
 
 export default function LegalPage() {

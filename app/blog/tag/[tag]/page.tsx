@@ -29,7 +29,7 @@ export function generateMetadata({ params }: { params: { tag: string } }): Metad
     title: `#${safeTag} Guides and Decision Support | FinanceSphere Blog`,
     description: `Browse FinanceSphere guides tagged ${safeTag} with direct next steps into calculators and comparison frameworks.`,
     alternates: { canonical: hasPosts ? `/blog/tag/${safeTag}` : '/blog' },
-    robots: { index: hasPosts, follow: true }
+    robots: { index: false, follow: true }
   };
 }
 

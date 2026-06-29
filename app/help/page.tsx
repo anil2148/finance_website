@@ -5,7 +5,8 @@ export const metadata: Metadata = {
   title: 'Help Center | FinanceSphere Support for Calculators, Comparisons, and Guides',
   description:
     'Get support for FinanceSphere calculators, comparisons, and finance guides. Find FAQs, troubleshooting tips, and direct links to the right tools and pages.',
-  alternates: { canonical: '/help' }
+  alternates: { canonical: '/help' },
+  robots: { index: false, follow: true }
 };
 
 export default function HelpPage() {
