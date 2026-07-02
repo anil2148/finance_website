@@ -9,6 +9,7 @@
     "lint": "next lint",
     "generate:blog": "node scripts/generate-blog.mjs",
     "audit:seo": "node scripts/audit-page-quality.js",
+    "audit:adsense": "node scripts/adsense-full-audit.js",
     "test": "node tests/run-tests.js && npm run test:sitemaps",
     "test:links": "node scripts/link-audit.mjs",
     "validate:links": "npm run test && npm run test:links",
